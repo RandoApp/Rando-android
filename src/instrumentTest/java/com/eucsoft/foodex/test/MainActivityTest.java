@@ -31,4 +31,9 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         assertOnScreen(foodexMainActivity.getWindow().getDecorView(), takePictureButton);
     }
 
+    // Methods whose names are prefixed with test will automatically be run
+    public void testTakePictureButtonExistFail() {
+        assertOnScreen(foodexMainActivity.getWindow().getDecorView(), null);
+    }
+
 }
