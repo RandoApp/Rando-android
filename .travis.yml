@@ -30,9 +30,10 @@ before_install:
   - echo yes | android update sdk --filter extra-android-m2repository --no-ui --force > /dev/null
 
   #install missing maven dependencies - WORKAROUND, NEED TO BE DELETED LATER!
-  - sudo apt-get install maven
+  - sudo apt-get install -qq maven
   - wget http://repo1.maven.org/maven2/net/sf/proguard/proguard-gradle/4.9/proguard-gradle-4.9.jar
   - mvn install:install-file -Dfile=proguard-gradle-4.9.jar -DgroupId=net.sf.proguard -DartifactId=proguard-gradle -Dversion=4.9 -Dpackaging=jar
+
   # Create and start emulator
   - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
   - emulator -avd test -no-skin -no-audio -no-window &
