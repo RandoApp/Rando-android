@@ -9,7 +9,6 @@ buildscript {
 apply plugin: 'android'
 
 repositories {
-    mavenLocal()
     mavenCentral()
 }
 
@@ -24,5 +23,5 @@ android {
 }
 
 dependencies {
-	compile 'com.android.support:appcompat-v7:+'
+    compile 'com.android.support:appcompat-v7:+'
 }
