@@ -19,11 +19,12 @@
             android:layout_width="fill_parent"
             android:layout_height="62dp"
             android:text="@string/facebook"
-            android:background="@drawable/button_background"
+            android:background="@drawable/facebook_button_background"
             android:textColor="@color/auth_text"
             android:textSize="35dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="28dp"
             android:layout_marginBottom="65dp" />
 
         <TextView
@@ -66,8 +67,10 @@
             android:text="@string/signup"
             android:textColor="@color/auth_text"
             android:textSize="32dp"
+            android:background="@drawable/signup_button_background"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="14dp"
             android:layout_marginBottom="30dp" />
 
         <TextView
