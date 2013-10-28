@@ -13,7 +13,7 @@
         <item name="android:scrollHorizontally">true</item>
         <item name="android:singleLine">true</item>
         <item name="android:padding">10dp</item>
-        <item name="android:textColor">@color/table_text</item>
+        <item name="android:textColor">@color/auth_input_text</item>
         <item name="android:textSize">20sp</item>
     </style>
 

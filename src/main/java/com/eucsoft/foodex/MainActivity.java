@@ -59,14 +59,6 @@ public class MainActivity extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.auth, container, false);
-//            Button facebookButton = (Button) container.findViewById(R.id.facebookButton);
-//            facebookButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    System.console().writer().write("asdasdad");
-//                }
-//            });
-
             return rootView;
         }
     }
