@@ -1,25 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/takepicture_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white"
+        android:id="@+id/top_toolbar"
+        android:paddingTop="5dp">
+
+        <Button
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" * Back " />
+    </LinearLayout>
 
     <SurfaceView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/cameraPreview"
-        android:layout_gravity="center_horizontal"
-        android:focusable="true"
-        android:clickable="true"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp" />
+        android:layout_below="@+id/top_toolbar"
+        android:layout_gravity="center_horizontal" />
 
-    <Button
-        android:id="@+id/takepicture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=" * Take Picture "
-        android:layout_gravity="right"
-        android:layout_margin="10px" />
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignBottom="@+id/cameraPreview"
+        android:layout_alignParentLeft="true"
+        android:background="@color/white">
+
+        <Button
+            android:id="@+id/takepicture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" * Take Picture " />
+    </LinearLayout>
+
+</RelativeLayout>

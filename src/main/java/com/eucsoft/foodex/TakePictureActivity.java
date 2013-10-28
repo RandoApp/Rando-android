@@ -2,11 +2,9 @@ package com.eucsoft.foodex;
 
 
 import android.app.Activity;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
-import android.graphics.Point;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.view.Display;
@@ -17,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 
 import java.io.IOException;
+import java.util.List;
 
 public class TakePictureActivity extends Activity implements SurfaceHolder.Callback {
 
@@ -30,20 +29,17 @@ public class TakePictureActivity extends Activity implements SurfaceHolder.Callb
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_takepicture);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         getWindow().setFormat(PixelFormat.UNKNOWN);
         surfaceView = (SurfaceView) findViewById(R.id.cameraPreview);
+        surfaceView.setZOrderOnTop(false);
         surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(this);
 
         Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-        int height = size.y;
+        int width = display.getWidth();
 
-        surfaceHolder.setFixedSize(width, width);
+        //surfaceHolder.setFixedSize(width, width);
 
         Button buttonTakePicture = (Button) findViewById(R.id.takepicture);
         buttonTakePicture.setOnClickListener(new Button.OnClickListener() {
@@ -105,6 +101,7 @@ public class TakePictureActivity extends Activity implements SurfaceHolder.Callb
     public void surfaceCreated(SurfaceHolder holder) {
         camera = Camera.open();
         camera.setDisplayOrientation(90);
+        List<Camera.Size> sizes = camera.getParameters().getSupportedPictureSizes();
     }
 
     @Override

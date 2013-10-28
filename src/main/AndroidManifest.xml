@@ -26,7 +26,8 @@
             android:name=".TakePictureActivity"
             android:label="@string/take_picture_screen_label"
             android:configChanges="orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
     </application>
 
     <uses-feature android:name="android.hardware.camera" />
