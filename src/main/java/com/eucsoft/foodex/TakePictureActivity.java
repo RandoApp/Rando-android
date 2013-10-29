@@ -48,13 +48,10 @@ public class TakePictureActivity extends Activity implements SurfaceHolder.Callb
         int bottomToolbarHeight = height - width - 50;
 
         LinearLayout bottomPanel = (LinearLayout) findViewById(R.id.bottom_panel);
-        //bottomPanel.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,bottomToolbarHeight));
-
         RelativeLayout.LayoutParams bottomPanelParams = (RelativeLayout.LayoutParams) bottomPanel.getLayoutParams();
 
         bottomPanelParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
         bottomPanelParams.height = bottomToolbarHeight;
-
 
         Button buttonTakePicture = (Button) findViewById(R.id.takepicture);
         buttonTakePicture.setOnClickListener(new Button.OnClickListener() {
@@ -63,6 +60,15 @@ public class TakePictureActivity extends Activity implements SurfaceHolder.Callb
             public void onClick(View arg0) {
                 camera.takePicture(myShutterCallback,
                         myPictureCallback_RAW, myPictureCallback_JPG);
+            }
+        });
+
+        Button backButton = (Button) findViewById(R.id.back_button);
+        backButton.setOnClickListener(new Button.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                finish();
             }
         });
     }
