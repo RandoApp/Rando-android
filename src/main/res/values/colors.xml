@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <resources>
     <color name="white">#ffffffff</color>
+    <color name="auth_button">#006DCC</color>
+    <color name="auth_text">#FFFFFF</color>
+    <color name="auth_input_text">#000000</color>
+
 </resources>

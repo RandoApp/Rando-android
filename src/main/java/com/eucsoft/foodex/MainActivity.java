@@ -28,7 +28,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -56,10 +56,10 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+                                 Bundle savedInstanceState) {
+            final View rootView = inflater.inflate(R.layout.auth, container, false);
 
-            Button takePictureButton = (Button) rootView.findViewById(R.id.takePictureButton);
+            Button takePictureButton = (Button) rootView.findViewById(R.id.signupButton);
             takePictureButton.setOnClickListener(new View.OnClickListener() {
 
                 @Override
