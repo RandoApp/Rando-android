@@ -13,6 +13,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,8 +40,21 @@ public class TakePictureActivity extends Activity implements SurfaceHolder.Callb
 
         Display display = getWindowManager().getDefaultDisplay();
         int width = display.getWidth();
+        int height = display.getHeight();
 
-        //surfaceHolder.setFixedSize(width, width);
+        LinearLayout toolbar = (LinearLayout) findViewById(R.id.top_toolbar);
+        int toolbarHeight = toolbar.getHeight();
+
+        int bottomToolbarHeight = height - width - 50;
+
+        LinearLayout bottomPanel = (LinearLayout) findViewById(R.id.bottom_panel);
+        //bottomPanel.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,bottomToolbarHeight));
+
+        RelativeLayout.LayoutParams bottomPanelParams = (RelativeLayout.LayoutParams) bottomPanel.getLayoutParams();
+
+        bottomPanelParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+        bottomPanelParams.height = bottomToolbarHeight;
+
 
         Button buttonTakePicture = (Button) findViewById(R.id.takepicture);
         buttonTakePicture.setOnClickListener(new Button.OnClickListener() {
@@ -112,3 +127,4 @@ public class TakePictureActivity extends Activity implements SurfaceHolder.Callb
         previewing = false;
     }
 }
+
