@@ -22,7 +22,7 @@
             android:layout_gravity="center_vertical" />
     </LinearLayout>
 
-    <SurfaceView
+    <com.eucsoft.foodex.views.FoodexSurfaceView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/cameraPreview"
@@ -41,14 +41,43 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/takepicture"
+        android:id="@+id/take_picture_button"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:background="@drawable/take_picture_button_background"
+        android:layout_alignParentBottom="false"
+        android:layout_alignBottom="@+id/bottom_panel"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="30dp"
+        android:text="TAKE"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentRight="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentEnd="false" />
+
+    <Button
+        android:id="@+id/select_photo_button"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="SELECT"
         android:layout_alignParentBottom="true"
         android:layout_alignBottom="@+id/bottom_panel"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="30dp"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="true" />
+
+    <Button
+        android:id="@+id/upload_photo_button"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="Upload"
+        android:layout_alignParentBottom="true"
+        android:layout_alignBottom="@+id/bottom_panel"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="30dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentRight="true" />
 
 </RelativeLayout>
