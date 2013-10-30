@@ -23,7 +23,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         super.setUp();
 
         foodexMainActivity = getActivity();
-        takePictureButton = (Button) foodexMainActivity.findViewById(R.id.takePictureButton);
+//        takePictureButton = (Button) foodexMainActivity.findViewById(R.id.takePictureButton);
     }
 
     // Methods whose names are prefixed with test will automatically be run

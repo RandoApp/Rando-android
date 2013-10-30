@@ -1,5 +1,6 @@
 package com.eucsoft.foodex;
 
+import android.graphics.drawable.GradientDrawable;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.os.Build;
+import android.widget.LinearLayout;
+
+import com.eucsoft.foodex.com.eucsoft.foodex.view.FoodView;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -58,7 +62,19 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.auth, container, false);
+            View rootView = inflater.inflate(R.layout.homeland, container, false);
+            int ORIENTATION_PORTRAIT = 1;
+            int ORIENTATION_LANDSCAPE = 2;
+            if(getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
+                rootView = inflater.inflate(R.layout.homeland, container, false);
+            } else {
+                rootView = inflater.inflate(R.layout.home, container, false);
+                LinearLayout foodContainer = (LinearLayout) rootView.findViewById(R.id.foodContainer);
+                FoodView foodView = new FoodView(rootView.getContext(), R.drawable.f);
+                foodContainer.addView(foodView.getView());
+                FoodView foodView1 = new FoodView(rootView.getContext(), R.drawable.f1);
+                foodContainer.addView(foodView1.getView());
+            }
             return rootView;
         }
     }
