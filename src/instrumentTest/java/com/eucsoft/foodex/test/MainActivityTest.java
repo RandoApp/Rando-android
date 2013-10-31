@@ -26,16 +26,27 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         foodexMainActivity = getActivity();
     }
 
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
+
     // Methods whose names are prefixed with test will automatically be run
     public void testSignUpBackScenario() {
         onView(withId(R.id.signupButton)).check(matches(isDisplayed()));
-        System.out.println("onView(withId(R.id.signupButton)).check(matches(isDisplayed()));");
         onView(withId(R.id.signupButton)).perform(click());
-        System.out.println("onView(withId(R.id.takepicture_layout)).check(matches(isDisplayed()));");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(withId(R.id.back_button)).check(matches(isDisplayed()));
-        System.out.println("onView(withId(R.id.back_button)).check(matches(isDisplayed()));");
         onView(withId(R.id.back_button)).perform(click());
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(withId(R.id.signupButton)).check(matches(isDisplayed()));
-        System.out.println("onView(withId(R.id.signupButton)).check(matches(isDisplayed()));");
     }
 }
