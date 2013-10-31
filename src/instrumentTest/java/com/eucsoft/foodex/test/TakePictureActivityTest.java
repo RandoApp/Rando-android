@@ -15,7 +15,7 @@ import static org.hamcrest.Matchers.not;
 public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<TakePictureActivity>
 
 {
-    //^Activity to test
+    //Activity to test
     private TakePictureActivity takePictureActivity;
 
     // Be careful about letting the IDE create the constructor.  As of this writing,
@@ -28,8 +28,6 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        //if (takePictureActivity!=null)
-        //   //takePictureActivity.finish();
         //Sleep is necessary because Camera Service is not always freed in time
         Thread.sleep(500);
         takePictureActivity = getActivity();
@@ -51,9 +49,6 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
 
     public void testTakePictureOnReStart() {
         assertNotNull(takePictureActivity);
-        //getInstrumentation().callActivityOnRestart(takePictureActivity);
-        //getInstrumentation().waitForIdleSync();
-
         takePictureActivity.finish();
         setActivity(null);
 

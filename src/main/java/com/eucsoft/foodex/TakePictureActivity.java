@@ -113,14 +113,13 @@ public class TakePictureActivity extends Activity {
             @Override
             public void onClick(View arg0) {
                 setResult(RESULT_OK);
-                cropAndSave(foodexSurfaceView.getCurrentBitmap());
+                cropSaveAndUpload(foodexSurfaceView.getCurrentBitmap());
                 finish();
             }
         });
     }
 
-    private String cropAndSave(Bitmap originalBmp) {
-
+    private String cropSaveAndUpload(Bitmap originalBmp) {
         int size = Math.min(originalBmp.getWidth(), originalBmp.getHeight());
         Bitmap croppedBmp = Bitmap.createBitmap(originalBmp, 0, 0, size, size);
 
@@ -141,7 +140,7 @@ public class TakePictureActivity extends Activity {
                     public void onScanCompleted(String path, Uri uri) {
                     }
                 });
-
+        //TODO: Implement Upload
         return imagePath;
     }
 
@@ -152,7 +151,6 @@ public class TakePictureActivity extends Activity {
                 Configuration.ALBUM_NAME);
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
-                //Log.d("ABRA", "failed to create directory");
                 return null;
             }
         }
