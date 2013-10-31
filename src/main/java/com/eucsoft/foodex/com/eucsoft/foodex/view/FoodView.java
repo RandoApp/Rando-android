@@ -42,6 +42,7 @@ public class FoodView {
         linearLayout.addView(relativeLayout);
     }
 
+
     private ImageView createFoodImage(Context context, int drawableFood) {
         ImageView foodImage = new ImageView(context);
         foodImage.setImageResource(drawableFood);
