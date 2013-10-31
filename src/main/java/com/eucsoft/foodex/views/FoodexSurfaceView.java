@@ -28,7 +28,6 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
 
     public FoodexSurfaceView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        setZOrderOnTop(false);
         getHolder().addCallback(this);
         getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         getHolder().setKeepScreenOn(true);

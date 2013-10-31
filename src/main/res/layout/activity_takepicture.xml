@@ -37,8 +37,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignBottom="@+id/cameraPreview"
         android:layout_alignParentLeft="true"
-        android:background="@color/white">
-    </LinearLayout>
+        android:background="@color/white"></LinearLayout>
 
     <Button
         android:id="@+id/take_picture_button"
@@ -73,6 +72,7 @@
         android:layout_height="100dp"
         android:text="Upload"
         android:layout_alignParentBottom="true"
+        android:visibility="gone"
         android:layout_alignBottom="@+id/bottom_panel"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="30dp"

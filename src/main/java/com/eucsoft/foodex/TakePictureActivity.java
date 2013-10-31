@@ -76,12 +76,13 @@ public class TakePictureActivity extends Activity {
         bottomPanelParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
         bottomPanelParams.height = bottomToolbarHeight;
 
-        Button buttonTakePicture = (Button) findViewById(R.id.take_picture_button);
-        buttonTakePicture.setOnClickListener(new Button.OnClickListener() {
+        Button takePictureButton = (Button) findViewById(R.id.take_picture_button);
+        takePictureButton.setOnClickListener(new Button.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
                 foodexSurfaceView.takePicture();
+                showUploadButton();
             }
         });
 
@@ -163,6 +164,17 @@ public class TakePictureActivity extends Activity {
                 + "IMG_" + timeStamp + ".png");
 
         return mediaFile;
+    }
+
+    private void showUploadButton() {
+        Button takePictureButton = (Button) findViewById(R.id.take_picture_button);
+        takePictureButton.setVisibility(View.GONE);
+
+        Button selectPhotoButton = (Button) findViewById(R.id.select_photo_button);
+        selectPhotoButton.setVisibility(View.GONE);
+
+        Button uploadPhotoButton = (Button) findViewById(R.id.upload_photo_button);
+        uploadPhotoButton.setVisibility(View.VISIBLE);
     }
 
 }

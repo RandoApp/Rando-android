@@ -1,28 +1,22 @@
 package com.eucsoft.foodex.test;
 
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.TouchUtils;
-import android.widget.Button;
-import android.widget.RelativeLayout;
 
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.TakePictureActivity;
-import com.eucsoft.foodex.views.FoodexSurfaceView;
 
-import static android.test.ViewAsserts.assertGroupNotContains;
-import static android.test.ViewAsserts.assertOnScreen;
+import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
+import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
+import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
+import static org.hamcrest.Matchers.not;
 
 public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<TakePictureActivity>
 
 {
     //^Activity to test
     private TakePictureActivity takePictureActivity;
-    private RelativeLayout takePictureScreen;
-    private Button backButton;
-    private Button selectPhotoButton;
-    private Button takePictureButton;
-    private Button uploadPhotoButton;
-    private FoodexSurfaceView cameraPreview;
 
     // Be careful about letting the IDE create the constructor.  As of this writing,
     // it creates a constructor that's compiles cleanly but doesn't run any tests
@@ -30,43 +24,71 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
         super(TakePictureActivity.class);
     }
 
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
+        //if (takePictureActivity!=null)
+        //   //takePictureActivity.finish();
+        //Sleep is necessary because Camera Service is not always freed in time
+        Thread.sleep(500);
         takePictureActivity = getActivity();
-        takePictureScreen = (RelativeLayout) takePictureActivity.findViewById(R.id.takepicture_layout);
-        backButton = (Button) takePictureActivity.findViewById(R.id.back_button);
-        selectPhotoButton = (Button) takePictureActivity.findViewById(R.id.select_photo_button);
-        takePictureButton = (Button) takePictureActivity.findViewById(R.id.take_picture_button);
-        uploadPhotoButton = (Button) takePictureActivity.findViewById(R.id.upload_photo_button);
-        cameraPreview = (FoodexSurfaceView) takePictureActivity.findViewById(R.id.cameraPreview);
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
     }
 
     // Methods whose names are prefixed with test will automatically be run
     public void testTakePictureOnStart() {
-        assertOnScreen(takePictureActivity.getWindow().getDecorView(), takePictureButton);
-        assertOnScreen(takePictureActivity.getWindow().getDecorView(), backButton);
-        assertOnScreen(takePictureActivity.getWindow().getDecorView(), selectPhotoButton);
-        assertOnScreen(takePictureActivity.getWindow().getDecorView(), cameraPreview);
-        assertGroupNotContains(takePictureScreen, uploadPhotoButton);
+        onView(withId(R.id.cameraPreview)).check(matches(isDisplayed()));
+        onView(withId(R.id.select_photo_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.take_picture_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.back_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.upload_photo_button)).check(matches(not(isDisplayed())));
     }
 
-    // Methods whose names are prefixed with test will automatically be run
-    public void testTakePictureAfterPhotoSelected() {
-        assertGroupNotContains(takePictureScreen, takePictureButton);
-        assertOnScreen(takePictureActivity.getWindow().getDecorView(), backButton);
-        assertGroupNotContains(takePictureScreen, selectPhotoButton);
-        assertOnScreen(takePictureActivity.getWindow().getDecorView(), cameraPreview);
-        assertOnScreen(takePictureScreen, uploadPhotoButton);
+    public void testTakePictureOnReStart() {
+        assertNotNull(takePictureActivity);
+        //getInstrumentation().callActivityOnRestart(takePictureActivity);
+        //getInstrumentation().waitForIdleSync();
+
+        takePictureActivity.finish();
+        setActivity(null);
+
+        //Sleep is necessary because Camera Service is not always freed in time and Activity not starts properly
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        takePictureActivity = getActivity();
+        onView(withId(R.id.cameraPreview)).check(matches(isDisplayed()));
+        onView(withId(R.id.select_photo_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.take_picture_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.back_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.upload_photo_button)).check(matches(not(isDisplayed())));
     }
+
+    //TODO: Findout how to work with external Activities (looks like impossible)
+    // Methods whose names are prefixed with test will automatically be run
+        /*public void testTakePictureAfterPhotoSelected(){
+            onView(withId(R.id.select_photo_button)).perform(click());
+            onView(withId(R.id.cameraPreview)).check(matches(isDisplayed()));
+            onView(withId(R.id.select_photo_button)).check(matches(isDisplayed()));
+            onView(withId(R.id.take_picture_button)).check(matches(isDisplayed()));
+            onView(withId(R.id.back_button)).check(matches(isDisplayed()));
+            onView(withId(R.id.upload_photo_button)).check(doesNotExist());
+        }*/
 
     // Methods whose names are prefixed with test will automatically be run
     public void testTakePictureAfterPictureTaken() {
-        TouchUtils.clickView(this, takePictureButton);
-        assertOnScreen(takePictureActivity.getWindow().getDecorView(), takePictureButton);
-        assertOnScreen(takePictureActivity.getWindow().getDecorView(), backButton);
-        assertOnScreen(takePictureActivity.getWindow().getDecorView(), selectPhotoButton);
-        assertOnScreen(takePictureActivity.getWindow().getDecorView(), cameraPreview);
-        assertGroupNotContains(takePictureScreen, uploadPhotoButton);
+        onView(withId(R.id.take_picture_button)).perform(click());
+        onView(withId(R.id.cameraPreview)).check(matches(isDisplayed()));
+        onView(withId(R.id.select_photo_button)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.take_picture_button)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.back_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.upload_photo_button)).check(matches(isDisplayed()));
     }
 }
