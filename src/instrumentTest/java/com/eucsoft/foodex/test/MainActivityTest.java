@@ -23,18 +23,19 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 
     protected void setUp() throws Exception {
         super.setUp();
-
         foodexMainActivity = getActivity();
     }
 
     // Methods whose names are prefixed with test will automatically be run
     public void testSignUpBackScenario() {
         onView(withId(R.id.signupButton)).check(matches(isDisplayed()));
+        System.out.println("onView(withId(R.id.signupButton)).check(matches(isDisplayed()));");
         onView(withId(R.id.signupButton)).perform(click());
-        onView(withId(R.id.takepicture_layout)).check(matches(isDisplayed()));
+        System.out.println("onView(withId(R.id.takepicture_layout)).check(matches(isDisplayed()));");
         onView(withId(R.id.back_button)).check(matches(isDisplayed()));
+        System.out.println("onView(withId(R.id.back_button)).check(matches(isDisplayed()));");
         onView(withId(R.id.back_button)).perform(click());
         onView(withId(R.id.signupButton)).check(matches(isDisplayed()));
+        System.out.println("onView(withId(R.id.signupButton)).check(matches(isDisplayed()));");
     }
-
 }
