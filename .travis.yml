@@ -12,6 +12,11 @@ before_install:
   - export ANDROID_HOME=$PWD/android-sdk-linux
   - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
 
+  #add Espresso local repo to git project
+  - wget https://github.com/stephanenicolas/Quality-Tools-for-Android/archive/master.zip
+  - unzip master.zip
+  - cp -avr Quality-Tools-for-Android-master/android-sample-espresso-tests/repo/* repo/
+
   # install android build tools
   - wget https://dl-ssl.google.com/android/repository/build-tools_r18.1.1-linux.zip
   - unzip build-tools_r18.1.1-linux.zip -d $ANDROID_HOME

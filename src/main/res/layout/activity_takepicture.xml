@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/takepicture_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white"
+        android:id="@+id/top_toolbar"
+        android:paddingTop="5dp">
+
+        <Button
+            android:id="@+id/back_button"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:background="@drawable/back_button"
+            android:text=" * Back "
+            android:layout_marginLeft="20dp"
+            android:layout_gravity="center_vertical" />
+    </LinearLayout>
+
+    <com.eucsoft.foodex.views.FoodexSurfaceView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/cameraPreview"
+        android:layout_below="@+id/top_toolbar"
+        android:layout_gravity="center_horizontal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:id="@+id/bottom_panel"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignBottom="@+id/cameraPreview"
+        android:layout_alignParentLeft="true"
+        android:background="@color/white"></LinearLayout>
+
+    <Button
+        android:id="@+id/take_picture_button"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/take_picture_button_background"
+        android:layout_alignParentBottom="false"
+        android:layout_alignBottom="@+id/bottom_panel"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="30dp"
+        android:text="TAKE"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentRight="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentEnd="false" />
+
+    <Button
+        android:id="@+id/select_photo_button"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="SELECT"
+        android:layout_alignParentBottom="true"
+        android:layout_alignBottom="@+id/bottom_panel"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="30dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="true" />
+
+    <Button
+        android:id="@+id/upload_photo_button"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:text="Upload"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        android:layout_alignBottom="@+id/bottom_panel"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="30dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp" />
+
+</RelativeLayout>
