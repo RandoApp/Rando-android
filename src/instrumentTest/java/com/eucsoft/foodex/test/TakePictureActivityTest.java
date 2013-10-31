@@ -28,6 +28,10 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        if (takePictureActivity != null) {
+            takePictureActivity.finish();
+            setActivity(null);
+        }
         //Sleep is necessary because Camera Service is not always freed in time
         Thread.sleep(500);
         takePictureActivity = getActivity();
@@ -86,4 +90,16 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
         onView(withId(R.id.back_button)).check(matches(isDisplayed()));
         onView(withId(R.id.upload_photo_button)).check(matches(isDisplayed()));
     }
+
+    // Methods whose names are prefixed with test will automatically be run
+    public void testTakePictureAndUpload() {
+        onView(withId(R.id.take_picture_button)).perform(click());
+        onView(withId(R.id.cameraPreview)).check(matches(isDisplayed()));
+        onView(withId(R.id.select_photo_button)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.take_picture_button)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.back_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.upload_photo_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.upload_photo_button)).perform(click());
+    }
 }
+
