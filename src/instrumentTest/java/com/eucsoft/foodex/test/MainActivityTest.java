@@ -35,18 +35,8 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
     public void testSignUpBackScenario() {
         onView(withId(R.id.signupButton)).check(matches(isDisplayed()));
         onView(withId(R.id.signupButton)).perform(click());
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         onView(withId(R.id.back_button)).check(matches(isDisplayed()));
         onView(withId(R.id.back_button)).perform(click());
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         onView(withId(R.id.signupButton)).check(matches(isDisplayed()));
     }
 }
