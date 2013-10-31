@@ -68,7 +68,7 @@
 
     <Button
         android:id="@+id/upload_photo_button"
-        android:layout_width="100dp"
+        android:layout_width="match_parent"
         android:layout_height="100dp"
         android:text="Upload"
         android:layout_alignParentBottom="true"
@@ -78,6 +78,8 @@
         android:layout_marginBottom="30dp"
         android:layout_centerHorizontal="true"
         android:layout_alignParentLeft="false"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp" />
 
 </RelativeLayout>

@@ -34,6 +34,8 @@ before_install:
   - emulator -avd test -no-skin -no-audio -no-window &
 
   #add Espresso local repo to git project
+  - echo "host *" >> ~/.ssh/config
+  - echo "StrictHostKeyChecking no" >> ~/.ssh/config
   - echo yes | git clone git@github.com:stephanenicolas/Quality-Tools-for-Android.git > /dev/null
   - cp -avr Quality-Tools-for-Android/android-sample-espresso-tests/repo/* foodex-android/repo/
 
