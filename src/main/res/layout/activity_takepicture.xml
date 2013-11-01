@@ -22,7 +22,7 @@
             android:layout_gravity="center_vertical" />
     </LinearLayout>
 
-    <com.eucsoft.foodex.views.FoodexSurfaceView
+    <com.eucsoft.foodex.view.FoodexSurfaceView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/cameraPreview"
