@@ -1,4 +1,4 @@
-package com.eucsoft.foodex.views;
+package com.eucsoft.foodex.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;

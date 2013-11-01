@@ -1,6 +1,7 @@
 package com.eucsoft.foodex.view;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,12 +9,10 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
-import com.eucsoft.foodex.R;
-import com.eucsoft.foodex.config.Configuration;
-
-import android.net.Uri;
 import android.widget.RelativeLayout;
+
+import com.eucsoft.foodex.Constants;
+import com.eucsoft.foodex.R;
 
 abstract class FoodOrientedView {
 
@@ -58,7 +57,7 @@ abstract class FoodOrientedView {
         ImageButton bonAppetitButton = new ImageButton(context);
         bonAppetitButton.setImageResource(R.drawable.bonappetit2);
         bonAppetitButton.setBackgroundDrawable(null);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(Configuration.BON_APPETIT_BUTTON_SIZE, Configuration.BON_APPETIT_BUTTON_SIZE);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(Constants.BON_APPETIT_BUTTON_SIZE, Constants.BON_APPETIT_BUTTON_SIZE);
         bonAppetitButton.setLayoutParams(layoutParams);
         return bonAppetitButton;
     }
@@ -66,7 +65,7 @@ abstract class FoodOrientedView {
     protected RelativeLayout createRelativeLayout() {
         RelativeLayout relativeLayout = new RelativeLayout(context);
         RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        relativeParams.topMargin = Configuration.BON_APPETIT_MARGIN_RIGHT;
+        relativeParams.topMargin = Constants.BON_APPETIT_MARGIN_RIGHT;
         relativeLayout.setLayoutParams(relativeParams);
         return relativeLayout;
     }

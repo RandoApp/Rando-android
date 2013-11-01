@@ -7,14 +7,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
-import com.eucsoft.foodex.config.Configuration;
 
 class FoodPortraitView extends FoodOrientedView {
 
     public static final int LAYOUT_FRAGMENT_RESOURCE = R.layout.homeport;
 
-    public FoodPortraitView (View rootView, Uri food) {
+    public FoodPortraitView(View rootView, Uri food) {
         super(food, rootView);
     }
 
@@ -26,10 +26,10 @@ class FoodPortraitView extends FoodOrientedView {
     }
 
     private LinearLayout buildLayout() {
-        LinearLayout linearLayout = createLinerLayout(Configuration.FOOD_MARGIN_PORTRAIT_COLUMN_TOP,
-                Configuration.FOOD_MARGIN_PORTRAIT_COLUMN_LEFT, Configuration.FOOD_MARGIN_PORTRAIT_COLUMN_RIGHT);
+        LinearLayout linearLayout = createLinerLayout(Constants.FOOD_MARGIN_PORTRAIT_COLUMN_TOP,
+                Constants.FOOD_MARGIN_PORTRAIT_COLUMN_LEFT, Constants.FOOD_MARGIN_PORTRAIT_COLUMN_RIGHT);
 
-        int foodImageSize = displayWidth - Configuration.FOOD_MARGIN_PORTRAIT;
+        int foodImageSize = displayWidth - Constants.FOOD_MARGIN_PORTRAIT;
         ImageView foodImage = createFoodImage(foodImageSize, foodImageSize);
 
         RelativeLayout relativeLayout = createRelativeLayout();

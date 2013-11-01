@@ -22,9 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.eucsoft.foodex.config.Configuration;
 import com.eucsoft.foodex.service.UploadService;
-import com.eucsoft.foodex.views.FoodexSurfaceView;
+import com.eucsoft.foodex.view.FoodexSurfaceView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -43,7 +42,7 @@ public class TakePictureActivity extends Activity {
         public void onReceive(Context context, Intent intent) {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
-                int resultCode = bundle.getInt(Configuration.RESULT);
+                int resultCode = bundle.getInt(Constants.RESULT);
                 if (resultCode == RESULT_OK) {
                     Toast.makeText(TakePictureActivity.this,
                             R.string.photo_upload_ok,
@@ -84,7 +83,7 @@ public class TakePictureActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(receiver, new IntentFilter(Configuration.UPLOAD_SERVICE_NOTIFICATION));
+        registerReceiver(receiver, new IntentFilter(Constants.UPLOAD_SERVICE_NOTIFICATION));
     }
 
     @Override
@@ -174,7 +173,7 @@ public class TakePictureActivity extends Activity {
                         });
                 //TODO: Call Service to upload
                 Intent intent = new Intent(getApplicationContext(), UploadService.class);
-                intent.putExtra(Configuration.FILENAME, imagePath);
+                intent.putExtra(Constants.FILENAME, imagePath);
                 startService(intent);
             }
         });
@@ -195,7 +194,7 @@ public class TakePictureActivity extends Activity {
         File mediaStorageDir = new File(
                 Environment
                         .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                Configuration.ALBUM_NAME);
+                Constants.ALBUM_NAME);
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
                 return null;
