@@ -12,7 +12,7 @@ import com.eucsoft.foodex.config.Configuration;
 
 class FoodLandscapeView extends FoodOrientedView {
 
-    public static final int LAYOUT_FRAGMENT_RESOURCE = R.layout.homeland2;
+    public static final int LAYOUT_FRAGMENT_RESOURCE = R.layout.homeland;
     private static boolean odd = true;
 
     public FoodLandscapeView(View rootView, Uri food) {

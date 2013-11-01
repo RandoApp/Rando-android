@@ -11,8 +11,7 @@ public class FoodView {
     private Uri food;
     private View rootView;
 
-    public FoodView(View rootView, Uri food)
-    {
+    public FoodView(View rootView, Uri food) {
         this.rootView = rootView;
         this.food = food;
     }

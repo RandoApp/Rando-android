@@ -11,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+
+import com.eucsoft.foodex.fragment.AuthFragment;
 import com.eucsoft.foodex.view.FoodView;
 
 public class MainActivity extends ActionBarActivity {
@@ -22,7 +24,7 @@ public class MainActivity extends ActionBarActivity {
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.main_screen, new PlaceholderFragment())
+                    .add(R.id.main_screen, new AuthFragment())
                     .commit();
         }
     }
@@ -30,7 +32,6 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -53,39 +54,4 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-
-            Uri uri1 = Uri.parse("android.resource://com.eucsoft.foodex/"+R.drawable.f);
-            Uri uri2 = Uri.parse("android.resource://com.eucsoft.foodex/"+R.drawable.f1);
-
-            final View rootView = inflater.inflate(FoodView.getLayoutFragmentResource(container.getContext()), container, false);
-
-            new FoodView(rootView, uri1).display();
-            new FoodView(rootView, uri2).display();
-            new FoodView(rootView, uri1).display();
-            new FoodView(rootView, uri2).display();
-            new FoodView(rootView, uri1).display();
-
-            ImageButton takePictureButton = (ImageButton) rootView.findViewById(R.id.cameraButton);
-            takePictureButton.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(rootView.getContext(), TakePictureActivity.class);
-                    startActivityForResult(intent, 100);
-                }
-            });
-            return rootView;
-        }
-    }
 }
