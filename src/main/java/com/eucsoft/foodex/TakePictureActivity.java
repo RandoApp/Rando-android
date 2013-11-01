@@ -2,7 +2,10 @@ package com.eucsoft.foodex;
 
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,8 +20,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.eucsoft.foodex.config.Configuration;
+import com.eucsoft.foodex.service.UploadService;
 import com.eucsoft.foodex.views.FoodexSurfaceView;
 
 import java.io.File;
@@ -31,6 +36,27 @@ public class TakePictureActivity extends Activity {
     private FoodexSurfaceView foodexSurfaceView;
 
     private static final int REQ_CODE_SELECT_PHOTO = 100;
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getExtras();
+            if (bundle != null) {
+                int resultCode = bundle.getInt(Configuration.RESULT);
+                if (resultCode == RESULT_OK) {
+                    Toast.makeText(TakePictureActivity.this,
+                            R.string.photo_upload_ok,
+                            Toast.LENGTH_LONG).show();
+                    TakePictureActivity.this.setResult(Activity.RESULT_OK);
+                    TakePictureActivity.this.finish();
+                } else {
+                    Toast.makeText(TakePictureActivity.this, R.string.photo_upload_failed,
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -53,6 +79,18 @@ public class TakePictureActivity extends Activity {
                 }
                 break;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(receiver, new IntentFilter(Configuration.UPLOAD_SERVICE_NOTIFICATION));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
     }
 
     @Override
@@ -112,36 +150,45 @@ public class TakePictureActivity extends Activity {
 
             @Override
             public void onClick(View arg0) {
-                setResult(RESULT_OK);
-                cropSaveAndUpload(foodexSurfaceView.getCurrentBitmap());
-                finish();
+                Bitmap originalBmp = foodexSurfaceView.getCurrentBitmap();
+
+                int size = Math.min(originalBmp.getWidth(), originalBmp.getHeight());
+                Bitmap croppedBmp = Bitmap.createBitmap(originalBmp, 0, 0, size, size);
+
+                File file = getOutputMediaFile();
+                String imagePath = file.getAbsolutePath();
+                try {
+                    FileOutputStream out = new FileOutputStream(file);
+                    croppedBmp.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                    out.close();
+                } catch (Exception e) {
+                    //TODO: Handle exception
+                }
+
+                //scan the image so show up in album
+                MediaScannerConnection.scanFile(getApplicationContext(),
+                        new String[]{imagePath}, null,
+                        new MediaScannerConnection.OnScanCompletedListener() {
+                            public void onScanCompleted(String path, Uri uri) {
+                            }
+                        });
+                //TODO: Call Service to upload
+                Intent intent = new Intent(getApplicationContext(), UploadService.class);
+                intent.putExtra(Configuration.FILENAME, imagePath);
+                startService(intent);
             }
         });
     }
 
-    private String cropSaveAndUpload(Bitmap originalBmp) {
-        int size = Math.min(originalBmp.getWidth(), originalBmp.getHeight());
-        Bitmap croppedBmp = Bitmap.createBitmap(originalBmp, 0, 0, size, size);
+    private void showUploadButton() {
+        Button takePictureButton = (Button) findViewById(R.id.take_picture_button);
+        takePictureButton.setVisibility(View.GONE);
 
-        File file = getOutputMediaFile();
-        String imagePath = file.getAbsolutePath();
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            croppedBmp.compress(Bitmap.CompressFormat.PNG, 90, out);
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Button selectPhotoButton = (Button) findViewById(R.id.select_photo_button);
+        selectPhotoButton.setVisibility(View.GONE);
 
-        //scan the image so show up in album
-        MediaScannerConnection.scanFile(this,
-                new String[]{imagePath}, null,
-                new MediaScannerConnection.OnScanCompletedListener() {
-                    public void onScanCompleted(String path, Uri uri) {
-                    }
-                });
-        //TODO: Implement Upload
-        return imagePath;
+        Button uploadPhotoButton = (Button) findViewById(R.id.upload_photo_button);
+        uploadPhotoButton.setVisibility(View.VISIBLE);
     }
 
     private static File getOutputMediaFile() {
@@ -159,21 +206,16 @@ public class TakePictureActivity extends Activity {
                 .format(new Date());
         File mediaFile;
         mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                + "IMG_" + timeStamp + ".png");
+                + "IMG_" + timeStamp + ".jpg");
 
         return mediaFile;
     }
 
-    private void showUploadButton() {
-        Button takePictureButton = (Button) findViewById(R.id.take_picture_button);
-        takePictureButton.setVisibility(View.GONE);
-
-        Button selectPhotoButton = (Button) findViewById(R.id.select_photo_button);
-        selectPhotoButton.setVisibility(View.GONE);
-
-        Button uploadPhotoButton = (Button) findViewById(R.id.upload_photo_button);
-        uploadPhotoButton.setVisibility(View.VISIBLE);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        foodexSurfaceView.setCurrentBitmap(null);
+        foodexSurfaceView = null;
     }
-
 }
 
