@@ -29,7 +29,7 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
 
-        <service android:name=".services.UploadService" />
+        <service android:name=".service.UploadService" />
     </application>
 
     <uses-feature android:name="android.hardware.camera" />

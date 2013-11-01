@@ -23,7 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.eucsoft.foodex.config.Configuration;
-import com.eucsoft.foodex.services.UploadService;
+import com.eucsoft.foodex.service.UploadService;
 import com.eucsoft.foodex.views.FoodexSurfaceView;
 
 import java.io.File;

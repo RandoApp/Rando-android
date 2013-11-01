@@ -1,4 +1,4 @@
-package com.eucsoft.foodex.services;
+package com.eucsoft.foodex.service;
 
 import android.app.Activity;
 import android.app.IntentService;
