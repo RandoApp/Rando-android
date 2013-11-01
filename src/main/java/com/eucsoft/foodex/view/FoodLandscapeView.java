@@ -2,7 +2,9 @@ package com.eucsoft.foodex.view;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -13,23 +15,27 @@ import android.widget.RelativeLayout;
 
 import com.eucsoft.foodex.R;
 
-public class FoodLandscapeView {
+class FoodLandscapeView extends FoodOrientedView {
 
     private static boolean odd = false;
-    private boolean isColumnResized = false;
 
-    public FoodLandscapeView(LinearLayout column1, LinearLayout column2, int drawableFood)
-    {
-        Context context = column1.getContext();
-        if (!isColumnResized) {
-            resizeColumns(column1, column2);
-        }
+    public FoodLandscapeView(LayoutInflater inflater, ViewGroup container, Uri food) {
+        super(food);
+        init(inflater.inflate(R.layout.homeland2, container, false));
+    }
 
-        LinearLayout linearLayout = createLinerLayout(context);
-        ImageView foodImage = createFoodImage(context, drawableFood);
+    @Override
+    public void display() {
+        LinearLayout column1 = (LinearLayout) rootView.findViewById(R.id.column1);
+        LinearLayout column2 = (LinearLayout) rootView.findViewById(R.id.column2);
 
-        RelativeLayout relativeLayout = createRelativeLayout(context);
-        ImageButton bonAppetitButton = createBonAppetitButton(context);
+        resizeColumns(column1, column2);
+
+        LinearLayout linearLayout = createLinerLayout();
+        ImageView foodImage = createFoodImage(displayWidth / 2 - 20, displayHeight / 2 - 20);
+
+        RelativeLayout relativeLayout = createRelativeLayout();
+        ImageButton bonAppetitButton = createBonAppetitButton();
 
         RelativeLayout.LayoutParams bonAppetitParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         bonAppetitParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -48,34 +54,13 @@ public class FoodLandscapeView {
     }
 
     private void resizeColumns(LinearLayout column1, LinearLayout column2) {
-        WindowManager windowManager = (WindowManager) column1.getContext().getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
-        int width = display.getWidth();
-
-        int columnWidth = width/2;
-
-        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(columnWidth, LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(displayWidth / 2, LinearLayout.LayoutParams.MATCH_PARENT);
         column1.setLayoutParams(linearParams);
         column2.setLayoutParams(linearParams);
     }
 
 
-    private ImageView createFoodImage(Context context, int drawableFood) {
-        ImageView foodImage = new ImageView(context);
-        foodImage.setImageResource(drawableFood);
-
-        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
-        int width = display.getWidth();
-        int height = display.getHeight();
-
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width/2 - 20, width/2 - 20);
-        foodImage.setLayoutParams(layoutParams);
-
-        return foodImage;
-    }
-
-    private LinearLayout createLinerLayout(Context context) {
+    private LinearLayout createLinerLayout() {
         LinearLayout linearLayout = new LinearLayout(context);
         LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         linearParams.topMargin = 15;
@@ -86,22 +71,12 @@ public class FoodLandscapeView {
         return linearLayout;
     }
 
-    private RelativeLayout createRelativeLayout(Context context) {
+    private RelativeLayout createRelativeLayout() {
         RelativeLayout relativeLayout = new RelativeLayout(context);
         RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         relativeParams.topMargin = 5;
         relativeLayout.setLayoutParams(relativeParams);
         return relativeLayout;
     }
-
-    private ImageButton createBonAppetitButton(Context context) {
-        ImageButton bonAppetitButton = new ImageButton(context);
-        bonAppetitButton.setImageResource(R.drawable.bonappetit2);
-        bonAppetitButton.setBackgroundDrawable(null);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(100, 100);
-        bonAppetitButton.setLayoutParams(layoutParams);
-        return bonAppetitButton;
-    }
-
 
 }

@@ -10,6 +10,9 @@ apply plugin: 'android'
 
 repositories {
     mavenCentral()
+    maven {
+        url "./repo"
+    }
 }
 
 android {
@@ -19,9 +22,13 @@ android {
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 18
+        testPackageName "com.eucsoft.foodex.test"
+        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
     }
 }
 
 dependencies {
     compile 'com.android.support:appcompat-v7:+'
+
+    instrumentTestCompile "com.google.android:android-espresso:1.0-SNAPSHOT"
 }

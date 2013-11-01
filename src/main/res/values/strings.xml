@@ -9,4 +9,8 @@
     <string name="skip">Skip...</string>
     <string name="action_settings">Settings</string>
 
+
+    <!-- Take Picture Screen Strings -->
+    <string name="take_picture_screen_label">Take Picture</string>
+
 </resources>

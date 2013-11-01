@@ -1,7 +1,9 @@
 package com.eucsoft.foodex;
 
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -9,9 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-
-import com.eucsoft.foodex.view.FoodLandscapeView;
 import com.eucsoft.foodex.view.FoodView;
+import android.widget.Button;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -22,7 +23,7 @@ public class MainActivity extends ActionBarActivity {
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.main_screen, new PlaceholderFragment())
                     .commit();
         }
     }
@@ -30,10 +31,15 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -59,30 +65,22 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.homeland, container, false);
-            int ORIENTATION_PORTRAIT = 1;
-            int ORIENTATION_LANDSCAPE = 2;
-            if(getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
-                rootView = inflater.inflate(R.layout.homeland2, container, false);
-                LinearLayout column1 = (LinearLayout) rootView.findViewById(R.id.column1);
-                LinearLayout column2 = (LinearLayout) rootView.findViewById(R.id.column2);
-                FoodLandscapeView foodLandscapeView1 = new FoodLandscapeView(column1, column2, R.drawable.f);
-                FoodLandscapeView foodLandscapeView2 = new FoodLandscapeView(column1, column2, R.drawable.f1);
-                FoodLandscapeView foodLandscapeView3 = new FoodLandscapeView(column1, column2, R.drawable.f);
-                FoodLandscapeView foodLandscapeView4 = new FoodLandscapeView(column1, column2, R.drawable.f1);
-                FoodLandscapeView foodLandscapeView5 = new FoodLandscapeView(column1, column2, R.drawable.f);
-                FoodLandscapeView foodLandscapeView6 = new FoodLandscapeView(column1, column2, R.drawable.f1);
 
-            } else {
-                rootView = inflater.inflate(R.layout.home, container, false);
-                LinearLayout foodContainer = (LinearLayout) rootView.findViewById(R.id.foodContainer);
-                FoodView foodView = new FoodView(rootView.getContext(), R.drawable.f);
-                foodContainer.addView(foodView.getView());
-                FoodView foodView1 = new FoodView(rootView.getContext(), R.drawable.f1);
-                foodContainer.addView(foodView1.getView());
-            }
+            Uri uri1 = Uri.parse("android.resource://com.eucsoft.foodex/"+R.drawable.f);
+            Uri uri2 = Uri.parse("android.resource://com.eucsoft.foodex/"+R.drawable.f1);
+
+            FoodView foodView1 = new FoodView(inflater, container, uri1);
+            FoodView foodView2 = new FoodView(inflater, container, uri2);
+            FoodView foodView3 = new FoodView(inflater, container, uri1);
+            FoodView foodView5 = new FoodView(inflater, container, uri2);
+            FoodView foodView6 = new FoodView(inflater, container, uri1);
+            foodView1.display();
+            foodView2.display();
+            foodView3.display();
+            foodView5.display();
+            View rootView = foodView6.display();
+
             return rootView;
         }
     }
-
 }
