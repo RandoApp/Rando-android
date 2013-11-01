@@ -10,9 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
 import com.eucsoft.foodex.view.FoodView;
-import android.widget.Button;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -69,17 +68,23 @@ public class MainActivity extends ActionBarActivity {
             Uri uri1 = Uri.parse("android.resource://com.eucsoft.foodex/"+R.drawable.f);
             Uri uri2 = Uri.parse("android.resource://com.eucsoft.foodex/"+R.drawable.f1);
 
-            FoodView foodView1 = new FoodView(inflater, container, uri1);
-            FoodView foodView2 = new FoodView(inflater, container, uri2);
-            FoodView foodView3 = new FoodView(inflater, container, uri1);
-            FoodView foodView5 = new FoodView(inflater, container, uri2);
-            FoodView foodView6 = new FoodView(inflater, container, uri1);
-            foodView1.display();
-            foodView2.display();
-            foodView3.display();
-            foodView5.display();
-            View rootView = foodView6.display();
+            final View rootView = inflater.inflate(FoodView.getLayoutFragmentResource(container.getContext()), container, false);
 
+            new FoodView(rootView, uri1).display();
+            new FoodView(rootView, uri2).display();
+            new FoodView(rootView, uri1).display();
+            new FoodView(rootView, uri2).display();
+            new FoodView(rootView, uri1).display();
+
+            ImageButton takePictureButton = (ImageButton) rootView.findViewById(R.id.cameraButton);
+            takePictureButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(rootView.getContext(), TakePictureActivity.class);
+                    startActivityForResult(intent, 100);
+                }
+            });
             return rootView;
         }
     }

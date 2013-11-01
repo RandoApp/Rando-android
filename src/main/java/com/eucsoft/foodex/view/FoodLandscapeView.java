@@ -1,27 +1,22 @@
 package com.eucsoft.foodex.view;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.view.Display;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.eucsoft.foodex.R;
+import com.eucsoft.foodex.config.Configuration;
 
 class FoodLandscapeView extends FoodOrientedView {
 
-    private static boolean odd = false;
+    public static final int LAYOUT_FRAGMENT_RESOURCE = R.layout.homeland2;
+    private static boolean odd = true;
 
-    public FoodLandscapeView(LayoutInflater inflater, ViewGroup container, Uri food) {
-        super(food);
-        init(inflater.inflate(R.layout.homeland2, container, false));
+    public FoodLandscapeView(View rootView, Uri food) {
+        super(food, rootView);
     }
 
     @Override
@@ -31,8 +26,11 @@ class FoodLandscapeView extends FoodOrientedView {
 
         resizeColumns(column1, column2);
 
-        LinearLayout linearLayout = createLinerLayout();
-        ImageView foodImage = createFoodImage(displayWidth / 2 - 20, displayHeight / 2 - 20);
+        LinearLayout linearLayout = createLinerLayout(Configuration.FOOD_MARGIN_LANDSCAPE_COLUMN_TOP,
+                Configuration.FOOD_MARGIN_LANDSCAPE_COLUMN_LEFT, Configuration.FOOD_MARGIN_LANDSCAPE_COLUMN_RIGHT);
+
+        int foodImageSize = displayWidth / 2 - (Configuration.FOOD_MARGIN_LANDSCAPE_COLUMN_LEFT + Configuration.FOOD_MARGIN_PORTRAIT_COLUMN_RIGHT);
+        ImageView foodImage = createFoodImage(foodImageSize, foodImageSize);
 
         RelativeLayout relativeLayout = createRelativeLayout();
         ImageButton bonAppetitButton = createBonAppetitButton();
@@ -57,26 +55,6 @@ class FoodLandscapeView extends FoodOrientedView {
         LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(displayWidth / 2, LinearLayout.LayoutParams.MATCH_PARENT);
         column1.setLayoutParams(linearParams);
         column2.setLayoutParams(linearParams);
-    }
-
-
-    private LinearLayout createLinerLayout() {
-        LinearLayout linearLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        linearParams.topMargin = 15;
-        linearParams.leftMargin = 10;
-        linearParams.rightMargin = 10;
-        linearLayout.setLayoutParams(linearParams);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        return linearLayout;
-    }
-
-    private RelativeLayout createRelativeLayout() {
-        RelativeLayout relativeLayout = new RelativeLayout(context);
-        RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        relativeParams.topMargin = 5;
-        relativeLayout.setLayoutParams(relativeParams);
-        return relativeLayout;
     }
 
 }
