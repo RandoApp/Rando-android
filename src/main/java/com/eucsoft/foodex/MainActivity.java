@@ -1,8 +1,6 @@
 package com.eucsoft.foodex;
 
-import android.graphics.drawable.GradientDrawable;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,12 +8,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.os.Build;
 import android.widget.LinearLayout;
 
-import com.eucsoft.foodex.com.eucsoft.foodex.view.FoodLandscapeView;
-import com.eucsoft.foodex.com.eucsoft.foodex.view.FoodView;
+import com.eucsoft.foodex.view.FoodLandscapeView;
+import com.eucsoft.foodex.view.FoodView;
 
 public class MainActivity extends ActionBarActivity {
 

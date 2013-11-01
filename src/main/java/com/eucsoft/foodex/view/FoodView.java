@@ -1,4 +1,4 @@
-package com.eucsoft.foodex.com.eucsoft.foodex.view;
+package com.eucsoft.foodex.view;
 
 import android.app.ActionBar;
 import android.app.WallpaperInfo;
