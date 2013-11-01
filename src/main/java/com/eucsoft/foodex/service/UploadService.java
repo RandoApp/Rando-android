@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.app.IntentService;
 import android.content.Intent;
 
-import static com.eucsoft.foodex.config.Configuration.RESULT;
-import static com.eucsoft.foodex.config.Configuration.UPLOAD_SERVICE_NOTIFICATION;
+import static com.eucsoft.foodex.Constants.RESULT;
+import static com.eucsoft.foodex.Constants.UPLOAD_SERVICE_NOTIFICATION;
 
 public class UploadService extends IntentService {
 
