@@ -1,5 +1,6 @@
 package com.eucsoft.foodex;
 
+import android.content.Context;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
@@ -17,9 +18,14 @@ import com.eucsoft.foodex.view.FoodView;
 
 public class MainActivity extends ActionBarActivity {
 
+    public static Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        context = getApplicationContext();
+
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {

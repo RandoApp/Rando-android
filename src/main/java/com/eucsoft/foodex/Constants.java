@@ -25,4 +25,20 @@ public class Constants {
     public static final String RESULT = "RESULT";
     public static final String FILENAME = "FILENAME";
 
+    public static final String SERVER_URL = "http://10.0.2.2:8888";
+
+    public static final String SEESSION_COOKIE_NAME = "connect.sid";
+
+    public static final String SIGNUP_EMAIL_PARAM = "username";
+    public static final String SIGNUP_PASSWORD_PARAM = "password";
+    public static final String FOOD_ID_PARAM = "id";
+
+    public static final String SIGNUP_URL = SERVER_URL + "/user";
+    public static final String FETCH_USER_URL = SERVER_URL + "/user";
+    public static final String DOWNLOAD_FOOD_URL = SERVER_URL + "/food/";
+    public static final String ULOAD_FOOD_URL = SERVER_URL + "/food";
+    public static final String REPORT_URL = SERVER_URL + "/report";
+    public static final String BON_APPETIT_URL = SERVER_URL + "/bonappetit";
+
+
 }
