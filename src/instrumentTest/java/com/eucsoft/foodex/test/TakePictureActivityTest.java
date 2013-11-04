@@ -70,7 +70,7 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
         onView(withId(R.id.upload_photo_button)).check(matches(not(isDisplayed())));
     }
 
-    //TODO: Findout how to work with external Activities (looks like impossible)
+    //TODO: Findout how to work with external Activities in tests (looks like impossible)
     // Methods whose names are prefixed with test will automatically be run
         /*public void testTakePictureAfterPhotoSelected(){
             onView(withId(R.id.select_photo_button)).perform(click());
@@ -93,7 +93,14 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
 
     // Methods whose names are prefixed with test will automatically be run
     public void testTakePictureAndUpload() {
+        onView(withId(R.id.take_picture_button)).check(matches(isDisplayed()));
         onView(withId(R.id.take_picture_button)).perform(click());
+        //Sleep is necessary because Camera produces picture on callback
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(withId(R.id.cameraPreview)).check(matches(isDisplayed()));
         onView(withId(R.id.select_photo_button)).check(matches(not(isDisplayed())));
         onView(withId(R.id.take_picture_button)).check(matches(not(isDisplayed())));
