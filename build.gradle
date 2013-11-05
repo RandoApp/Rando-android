@@ -29,6 +29,16 @@ android {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:+'
-    instrumentTestCompile 'com.google.android:android-espresso:1.0-SNAPSHOT'
-    instrumentTestCompile 'org.mockito:mockito-all:1.9.+'
+
+    instrumentTestCompile files('repo/espresso-1.0-SNAPSHOT.jar', 'repo/testrunner-1.0-SNAPSHOT.jar', 'repo/testrunner-runtime-1.0-SNAPSHOT.jar', 'repo/hamcrest-integration-1.1.jar', 'repo/hamcrest-library-1.1.jar')
+    instrumentTestCompile 'com.squareup:javawriter:2.1.1'
+    instrumentTestCompile 'javax.annotation:javax.annotation-api:1.2'
+    instrumentTestCompile 'javax.inject:javax.inject:1'
+    instrumentTestCompile 'com.google.code.findbugs:jsr305:1.3.9'
+    instrumentTestCompile 'com.google.guava:guava:14.0.1'
+    instrumentTestCompile 'com.squareup.dagger:dagger:1.1.0'
+    instrumentTestCompile 'com.squareup.dagger:dagger-compiler:1.1.0'
+    instrumentTestCompile 'org.mockito:mockito-core:1.9.5'
+    instrumentTestCompile 'com.google.dexmaker:dexmaker-mockito:1.0'
+    instrumentTestCompile 'com.google.dexmaker:dexmaker:1.0'
 }
