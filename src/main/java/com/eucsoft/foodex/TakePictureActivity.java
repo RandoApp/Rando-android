@@ -29,6 +29,7 @@ public class TakePictureActivity extends Activity implements TaskCallback {
     private FoodexSurfaceView foodexSurfaceView;
 
     private static final int REQ_CODE_SELECT_PHOTO = 100;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
