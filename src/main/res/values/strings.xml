@@ -15,4 +15,6 @@
     <string name="photo_upload_ok">Upload Finished Successfully.</string>
     <string name="photo_upload_failed">"Upload Failed. Please check you connection and try again."</string>
 
+    <string name="error_incorrect_arg">"Incorrect arg: "</string>
+
 </resources>

@@ -11,24 +11,24 @@ apply plugin: 'android'
 repositories {
     mavenCentral()
     maven {
-        url "./repo"
+        url './repo'
     }
 }
 
 android {
     compileSdkVersion 18
-    buildToolsVersion "18.1.1"
+    buildToolsVersion '18.1.1'
 
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 18
-        testPackageName "com.eucsoft.foodex.test"
-        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
+        testPackageName 'com.eucsoft.foodex.test'
+        testInstrumentationRunner 'com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner'
     }
 }
 
 dependencies {
     compile 'com.android.support:appcompat-v7:+'
-
-    instrumentTestCompile "com.google.android:android-espresso:1.0-SNAPSHOT"
+    instrumentTestCompile 'com.google.android:android-espresso:1.0-SNAPSHOT'
+    instrumentTestCompile 'org.mockito:mockito-all:1.9.+'
 }
