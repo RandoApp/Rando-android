@@ -28,7 +28,6 @@ public class Log {
         }
 
         StringBuilder sb = new StringBuilder();
-
         for (String msg : msgs) {
             sb.append(msg).append(" ");
         }
