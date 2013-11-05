@@ -9,6 +9,7 @@ import android.os.Environment;
 
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.callback.TaskCallback;
+import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.Food;
 import com.eucsoft.foodex.log.Log;
 
@@ -35,12 +36,19 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
     @Override
     protected Long doInBackground(Bitmap... params) {
         Log.d(CreateFoodAndUploadTask.class, "doInBackground");
+
+        if (params == null || params.length == 0) {
+            return RESULT_ERROR;
+        }
         Bitmap originalBmp = params[0];
 
         int size = Math.min(originalBmp.getWidth(), originalBmp.getHeight());
         Bitmap croppedBmp = Bitmap.createBitmap(originalBmp, 0, 0, size, size);
 
         File file = getOutputMediaFile();
+        if (file == null) {
+            return RESULT_ERROR;
+        }
         String imagePath = file.getAbsolutePath();
         try {
             FileOutputStream out = new FileOutputStream(file);
@@ -58,9 +66,10 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
                     }
                 });
 
-
         Food food = new Food();
 
+        FoodDAO foodDAO = new FoodDAO(ctx);
+        foodDAO.createFood(food);
         return RESULT_OK;
     }
 
