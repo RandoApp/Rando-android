@@ -8,7 +8,6 @@ import android.util.Log;
 
 import com.eucsoft.foodex.db.model.Food;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,11 +22,8 @@ public class FoodDAO {
 
     public FoodDAO(Context context) {
         foodDBHelper = new FoodDBHelper(context);
-
-    }
-
-    public void open() throws SQLException {
         database = foodDBHelper.getWritableDatabase();
+
     }
 
     public void close() {

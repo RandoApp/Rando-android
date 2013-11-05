@@ -16,7 +16,6 @@ import com.eucsoft.foodex.log.Log;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -64,13 +63,8 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
         food.setUserLocalFile("bla" + file.getName());
 
         FoodDAO foodDAO = new FoodDAO(ctx);
-        try {
-            foodDAO.open();
-            foodDAO.createFood(food);
-            foodDAO.close();
-        } catch (SQLException ex) {
-            return RESULT_ERROR;
-        }
+        foodDAO.createFood(food);
+        foodDAO.close();
 
         file.renameTo(new File(getOutputMediaDir().getAbsolutePath() + food.getUserLocalFile()));
 

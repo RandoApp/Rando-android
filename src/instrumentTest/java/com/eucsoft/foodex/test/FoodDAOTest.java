@@ -15,8 +15,6 @@ public class FoodDAOTest extends AndroidTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         foodDAO = new FoodDAO(getContext());
-        foodDAO.open();
-
         foodDAO.beginTransaction();
     }
 
