@@ -4,37 +4,30 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Environment;
-import android.support.v7.appcompat.R;
 import android.test.AndroidTestCase;
 
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.db.model.Food;
+import com.eucsoft.foodex.test.until.APITestHelper;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.DefaultHttpClient;
 
-import static org.hamcrest.CoreMatchers.anyOf;
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 
 import static org.mockito.Mockito.*;
 
@@ -50,14 +43,7 @@ public class APITest extends AndroidTestCase {
     }
 
     public void testUploadFood() throws Exception {
-        String expected = "http://api.foodex.com/food/abcd/abcdadfwefwef.jpeg";
-
-        API.client = mockClient(200,
-            "{" +
-                "\"creation\": \"1383670800877\"," +
-                 "\"foodUrl\": \"" + expected + "\"," +
-                 "\"mapUrl\": \"\"" +
-             "}");
+        APITestHelper.mockAPIForUploadFood();
 
         Location locationMock = mock(Location.class);
         when(locationMock.getLatitude()).thenReturn(123.45);
@@ -65,7 +51,22 @@ public class APITest extends AndroidTestCase {
 
         Food food = API.uploadFood(file, locationMock);
         String actual = food.getUserPhotoURL();
-        assertThat(actual, is(expected));
+        assertThat(new Date(1383670800877l).compareTo(food.creation), is(0));
+        assertThat(actual, is("http://api.foodex.com/food/abcd/abcdadfwefwef.jpg"));
+    }
+
+    public void testUploadFoodWithError() throws Exception {
+        APITestHelper.mockAPIWithError();
+
+        Location locationMock = mock(Location.class);
+        when(locationMock.getLatitude()).thenReturn(123.45);
+        when(locationMock.getLongitude()).thenReturn(567.89);
+        try {
+            Food food = API.uploadFood(file, locationMock);
+            fail();
+        } catch (Exception e) {
+            assertThat(e.getMessage(), is("Internal Server Error"));
+        }
     }
 
     private Context mockContext () {

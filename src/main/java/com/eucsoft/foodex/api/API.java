@@ -40,9 +40,13 @@ public class API {
     public static HttpClient client = new DefaultHttpClient();
 
     static {
-        SharedPreferences sharedPref = MainActivity.context.getSharedPreferences(Constants.SEESSION_COOKIE_NAME, Context.MODE_PRIVATE);
-        BasicClientCookie cookie = new BasicClientCookie(Constants.SEESSION_COOKIE_NAME, sharedPref.getString(Constants.SEESSION_COOKIE_NAME, ""));
-        ((DefaultHttpClient) client).getCookieStore().addCookie(cookie);
+        try {
+            SharedPreferences sharedPref = MainActivity.context.getSharedPreferences(Constants.SEESSION_COOKIE_NAME, Context.MODE_PRIVATE);
+            BasicClientCookie cookie = new BasicClientCookie(Constants.SEESSION_COOKIE_NAME, sharedPref.getString(Constants.SEESSION_COOKIE_NAME, ""));
+            ((DefaultHttpClient) client).getCookieStore().addCookie(cookie);
+        } catch (Exception e) {
+            //Why is the world so cruel?
+        }
     }
 
     public static void signup(String email, String password) throws Exception {
@@ -211,7 +215,10 @@ public class API {
 
     private static Exception processError(Object json) {
         if (json instanceof JSONObject) {
-            return new Exception("NOT IMPLEMENTED");
+            try {
+                return new Exception(((JSONObject) json).getString("message"));
+            } catch (JSONException e) {
+            }
         }
         if (json instanceof Exception) {
             return new Exception("NOT IMPLEMENTED");
