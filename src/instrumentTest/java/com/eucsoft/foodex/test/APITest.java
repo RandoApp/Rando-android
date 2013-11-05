@@ -2,6 +2,7 @@ package com.eucsoft.foodex.test;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Environment;
 import android.support.v7.appcompat.R;
 import android.test.AndroidTestCase;
@@ -58,7 +59,11 @@ public class APITest extends AndroidTestCase {
                  "\"mapUrl\": \"\"" +
              "}");
 
-        Food food = API.uploadFood(file);
+        Location locationMock = mock(Location.class);
+        when(locationMock.getLatitude()).thenReturn(123.45);
+        when(locationMock.getLongitude()).thenReturn(567.89);
+
+        Food food = API.uploadFood(file, locationMock);
         String actual = food.getUserPhotoURL();
         assertThat(actual, is(expected));
     }

@@ -2,6 +2,7 @@ package com.eucsoft.foodex.api;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
 
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.MainActivity;
@@ -21,6 +22,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class API {
@@ -55,7 +58,7 @@ public class API {
 
             storeSession(((DefaultHttpClient) client).getCookieStore());
         } catch (IOException e) {
-            //TODO: handle exception
+            throw processError(e);
         }
     }
 
@@ -63,17 +66,38 @@ public class API {
         try {
             HttpGet request = new HttpGet(Constants.FETCH_USER_URL);
             HttpResponse response = client.execute(request);
-            JSONObject json = readJSON(response);
+
+
             if (response.getStatusLine().getStatusCode() == 200) {
-                //TODO: Convert JSONOBject to Food List
-                return null;
+                JSONObject json = readJSON(response);
+                JSONArray jsonFoods = json.getJSONArray(Constants.FOODS_PARAM);
+
+                List<Food> foods = new ArrayList<Food>(jsonFoods.length());
+
+                for (int i = 0; i < jsonFoods.length(); i++) {
+                    Food food = new Food();
+                    JSONObject jsonFood = jsonFoods.getJSONObject(i);
+                    JSONObject user = jsonFood.getJSONObject(Constants.USER_PARAM);
+                    JSONObject stranger = jsonFood.getJSONObject(Constants.STRANGER_PARAM);
+                    food.setUserPhotoURL(user.getString(Constants.FOOD_URL_PARAM));
+                    food.setUserMap(user.getString(Constants.MAP_URL_PARAM));
+                    food.setUserLiked(user.getInt(Constants.BON_APPETIT_PARAM));
+
+                    food.setStrangerPhotoURL(stranger.getString(Constants.FOOD_URL_PARAM));
+                    food.setStrangerMap(stranger.getString(Constants.MAP_URL_PARAM));
+                    food.setStrangerLiked(stranger.getInt(Constants.BON_APPETIT_PARAM));
+
+                    food.creation = new Date(user.getLong(Constants.CREATION_PARAM));
+
+                    foods.add(food);
+                }
+                return foods;
             } else {
-                throw processError(json);
+                throw processError(readJSON(response));
             }
         } catch (IOException e) {
-            //TODO: handle exception
+            throw processError(e);
         }
-        return null;
     }
 
     public static byte[] downloadFood(String url) throws Exception {
@@ -88,23 +112,25 @@ public class API {
                 throw processError(readJSON(response));
             }
         } catch (IOException e) {
-            //TODO: handle exception
+            throw processError(e);
         }
-        return new byte[0];
     }
 
-    public static Food uploadFood(File foodFile) throws Exception {
+    public static Food uploadFood(File foodFile, Location location) throws Exception {
         try {
             HttpPost request = new HttpPost(Constants.ULOAD_FOOD_URL);
             FileEntity fileEntity = new FileEntity(foodFile, Constants.IMAGE_MIME_TYPE);
             request.setEntity(fileEntity);
+            addParamsToRequest(request, Constants.LATITUDE_PARAM, String.valueOf(location.getLatitude()));
+            addParamsToRequest(request, Constants.LONGITUDE_PARAM, String.valueOf(location.getLongitude()));
 
             HttpResponse response = client.execute(request);
 
             if (response.getStatusLine().getStatusCode() == 200) {
                 JSONObject json = readJSON(response);
                 Food food = new Food();
-                food.setUserPhotoURL(json.getString("foodUrl"));
+                food.setUserPhotoURL(json.getString(Constants.FOOD_URL_PARAM));
+                food.creation = new Date(json.getLong(Constants.CREATION_PARAM));
                 return food;
             } else {
                 throw processError(readJSON(response));
@@ -125,11 +151,11 @@ public class API {
                 throw processError(json);
             }
         } catch (UnsupportedEncodingException e) {
-            //TODO: handle exception
+            throw processError(e);
         } catch (ClientProtocolException e) {
-            //TODO: handle exception
+            throw processError(e);
         } catch (IOException e) {
-            //TODO: handle exception
+            throw processError(e);
         }
     }
 
@@ -143,11 +169,11 @@ public class API {
                 throw processError(json);
             }
         } catch (UnsupportedEncodingException e) {
-            //TODO: handle exception
+            throw processError(e);
         } catch (ClientProtocolException e) {
-            //TODO: handle exception
+            throw processError(e);
         } catch (IOException e) {
-            //TODO: handle exception
+            throw processError(e);
         }
     }
 

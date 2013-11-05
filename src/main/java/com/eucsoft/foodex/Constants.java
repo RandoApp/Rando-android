@@ -32,6 +32,15 @@ public class Constants {
     public static final String SIGNUP_EMAIL_PARAM = "username";
     public static final String SIGNUP_PASSWORD_PARAM = "password";
     public static final String FOOD_ID_PARAM = "id";
+    public static final String BON_APPETIT_PARAM = "bonAppetit";
+    public static final String FOOD_URL_PARAM = "foodUrl";
+    public static final String MAP_URL_PARAM = "foodUrl";
+    public static final String CREATION_PARAM = "creation";
+    public static final String USER_PARAM = "user";
+    public static final String STRANGER_PARAM = "stranger";
+    public static final String FOODS_PARAM = "foods";
+    public static final String LATITUDE_PARAM = "latitude";
+    public static final String LONGITUDE_PARAM = "longitude";
 
     public static final String IMAGE_MIME_TYPE = "image/jpeg";
 
