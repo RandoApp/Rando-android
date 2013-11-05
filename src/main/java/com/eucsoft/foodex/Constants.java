@@ -33,6 +33,8 @@ public class Constants {
     public static final String SIGNUP_PASSWORD_PARAM = "password";
     public static final String FOOD_ID_PARAM = "id";
 
+    public static final String IMAGE_MIME_TYPE = "image/jpeg";
+
     public static final String SIGNUP_URL = SERVER_URL + "/user";
     public static final String FETCH_USER_URL = SERVER_URL + "/user";
     public static final String DOWNLOAD_FOOD_URL = SERVER_URL + "/food/";

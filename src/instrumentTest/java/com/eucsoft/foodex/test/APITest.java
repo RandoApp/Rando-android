@@ -2,52 +2,100 @@ package com.eucsoft.foodex.test;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Environment;
+import android.support.v7.appcompat.R;
 import android.test.AndroidTestCase;
 
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.api.API;
+import com.eucsoft.foodex.db.model.Food;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
+
+import static org.hamcrest.CoreMatchers.anyOf;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import static org.mockito.Mockito.*;
 
 
 public class APITest extends AndroidTestCase {
 
-    public void testSignup() throws Exception {
+    private File file = new File(".");
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        MainActivity.context = mockContext();
+    }
+
+    public void testUploadFood() throws Exception {
+        String expected = "http://api.foodex.com/food/abcd/abcdadfwefwef.jpeg";
+
+        API.client = mockClient(200,
+            "{" +
+                "\"creation\": \"1383670800877\"," +
+                 "\"foodUrl\": \"" + expected + "\"," +
+                 "\"mapUrl\": \"\"" +
+             "}");
+
+        Food food = API.uploadFood(file);
+        String actual = food.getUserPhotoURL();
+        assertThat(actual, is(expected));
+    }
+
+    private Context mockContext () {
         SharedPreferences sharedPreferencesMock = Mockito.mock(SharedPreferences.class);
         when(sharedPreferencesMock.getString(Constants.SEESSION_COOKIE_NAME, "")).thenReturn("123456789");
 
         Context contextMock = mock(Context.class);
         when(contextMock.getSharedPreferences(Constants.SEESSION_COOKIE_NAME, Context.MODE_PRIVATE)).thenReturn(sharedPreferencesMock);
 
+        return contextMock;
+    }
+
+    private HttpClient mockClient(int statusCode, String response) throws IOException {
         HttpEntity entityMock = mock(HttpEntity.class);
-        when(entityMock.getContent()).thenReturn(new ByteArrayInputStream("Bla".getBytes()));
+        when(entityMock.getContent()).thenReturn(new ByteArrayInputStream(response.getBytes()));
 
         StatusLine statusLineMock = mock(StatusLine.class);
-        when(statusLineMock.getStatusCode()).thenReturn(200);
+        when(statusLineMock.getStatusCode()).thenReturn(statusCode);
 
         HttpResponse responseMock = mock(HttpResponse.class);
         when(responseMock.getEntity()).thenReturn(entityMock);
-        responseMock.setStatusLine(statusLineMock);
+        when(responseMock.getStatusLine()).thenReturn(statusLineMock);
 
-        DefaultHttpClient clientMock =  mock(DefaultHttpClient.class);
-        when(clientMock.execute(Matchers.<HttpUriRequest>anyObject())).thenReturn(responseMock);
+        HttpClient clientMock = mock(HttpClient.class);
+        when(clientMock.execute(isA(HttpUriRequest.class))).thenReturn(responseMock);
 
-
-        MainActivity.context = contextMock;
-        API.client = clientMock;
-
-        API.signup("user@mail.com", "password");
+        return clientMock;
     }
 
+    private File createFile() throws IOException {
+        File file = new File(Environment.getExternalStorageDirectory().getPath() + "/Android/data/tmp.png");
+        FileOutputStream fileStream = new FileOutputStream(file);
+        fileStream.write("This is a stub food file".getBytes());
+        fileStream.flush();
+        fileStream.close();
+        return file;
+    }
 }
