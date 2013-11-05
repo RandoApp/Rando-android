@@ -2,18 +2,13 @@ package com.eucsoft.foodex;
 
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.Display;
 import android.view.View;
@@ -22,45 +17,19 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.eucsoft.foodex.service.UploadService;
+import com.eucsoft.foodex.callback.TaskCallback;
+import com.eucsoft.foodex.task.CreateFoodAndUploadTask;
 import com.eucsoft.foodex.view.FoodexSurfaceView;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.HashMap;
 
-public class TakePictureActivity extends Activity {
+public class TakePictureActivity extends Activity implements TaskCallback {
 
     private FoodexSurfaceView foodexSurfaceView;
 
     private static final int REQ_CODE_SELECT_PHOTO = 100;
-
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle bundle = intent.getExtras();
-            if (bundle != null) {
-                int resultCode = bundle.getInt(Constants.RESULT);
-                if (resultCode == RESULT_OK) {
-                    Toast.makeText(TakePictureActivity.this,
-                            R.string.photo_upload_ok,
-                            Toast.LENGTH_LONG).show();
-                    TakePictureActivity.this.setResult(Activity.RESULT_OK);
-                    TakePictureActivity.this.finish();
-                } else {
-                    Toast.makeText(TakePictureActivity.this, R.string.photo_upload_failed,
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        }
-    };
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        Bitmap imageBitmap = null;
 
         switch (requestCode) {
             case REQ_CODE_SELECT_PHOTO:
@@ -78,18 +47,6 @@ public class TakePictureActivity extends Activity {
                 }
                 break;
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        registerReceiver(receiver, new IntentFilter(Constants.UPLOAD_SERVICE_NOTIFICATION));
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unregisterReceiver(receiver);
     }
 
     @Override
@@ -151,30 +108,8 @@ public class TakePictureActivity extends Activity {
             public void onClick(View arg0) {
                 Bitmap originalBmp = foodexSurfaceView.getCurrentBitmap();
 
-                int size = Math.min(originalBmp.getWidth(), originalBmp.getHeight());
-                Bitmap croppedBmp = Bitmap.createBitmap(originalBmp, 0, 0, size, size);
-
-                File file = getOutputMediaFile();
-                String imagePath = file.getAbsolutePath();
-                try {
-                    FileOutputStream out = new FileOutputStream(file);
-                    croppedBmp.compress(Bitmap.CompressFormat.JPEG, 100, out);
-                    out.close();
-                } catch (Exception e) {
-                    //TODO: Handle exception
-                }
-
-                //scan the image so show up in album
-                MediaScannerConnection.scanFile(getApplicationContext(),
-                        new String[]{imagePath}, null,
-                        new MediaScannerConnection.OnScanCompletedListener() {
-                            public void onScanCompleted(String path, Uri uri) {
-                            }
-                        });
-                //TODO: Call Service to upload
-                Intent intent = new Intent(getApplicationContext(), UploadService.class);
-                intent.putExtra(Constants.FILENAME, imagePath);
-                startService(intent);
+                CreateFoodAndUploadTask uploadTask = new CreateFoodAndUploadTask(TakePictureActivity.this, getApplicationContext());
+                uploadTask.execute(originalBmp);
             }
         });
     }
@@ -190,24 +125,23 @@ public class TakePictureActivity extends Activity {
         uploadPhotoButton.setVisibility(View.VISIBLE);
     }
 
-    private static File getOutputMediaFile() {
-        File mediaStorageDir = new File(
-                Environment
-                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                Constants.ALBUM_NAME);
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                return null;
-            }
-        }
-        // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
-                .format(new Date());
-        File mediaFile;
-        mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                + "IMG_" + timeStamp + ".jpg");
+    @Override
+    public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
 
-        return mediaFile;
+        switch (taskCode) {
+            case CreateFoodAndUploadTask.TASK_ID:
+                if (resultCode == RESULT_OK) {
+                    Toast.makeText(TakePictureActivity.this,
+                            R.string.photo_upload_ok,
+                            Toast.LENGTH_LONG).show();
+                    TakePictureActivity.this.setResult(Activity.RESULT_OK);
+                    TakePictureActivity.this.finish();
+                } else {
+                    Toast.makeText(TakePictureActivity.this, R.string.photo_upload_failed,
+                            Toast.LENGTH_LONG).show();
+                }
+                break;
+        }
     }
 
     @Override
