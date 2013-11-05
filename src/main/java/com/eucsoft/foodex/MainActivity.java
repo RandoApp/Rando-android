@@ -1,8 +1,9 @@
 package com.eucsoft.foodex;
 
+import android.content.Context;
+import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -10,9 +11,14 @@ import com.eucsoft.foodex.fragment.AuthFragment;
 
 public class MainActivity extends ActionBarActivity {
 
+    public static Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        context = getApplicationContext();
+
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {

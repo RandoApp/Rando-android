@@ -1,5 +1,7 @@
 package com.eucsoft.foodex.db.model;
 
+import java.util.Date;
+
 public class Food {
 
     private long id;
@@ -15,6 +17,7 @@ public class Food {
     private boolean strangerLiked;
     private String strangerMap;
 
+    public Date creation;
 
     public long getId() {
         return id;
