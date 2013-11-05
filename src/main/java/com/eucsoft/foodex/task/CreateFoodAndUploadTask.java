@@ -57,6 +57,7 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
             out.close();
         } catch (IOException ex) {
             Log.e(CreateFoodAndUploadTask.class, "doInBackground", ex.getMessage());
+            return RESULT_ERROR;
         }
 
         FoodPair foodPair = null;
