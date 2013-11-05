@@ -10,29 +10,29 @@ public class FoodDBHelper extends SQLiteOpenHelper {
     public static final String TAG = "database";
 
     public static String COLUMN_ID = "_id";
-    public static String COLUMN_USER_PHOTO_URL = "USER_PHOTO_URL";
-    public static String COLUMN_USER_LOCAL_FILE = "USER_LOCAL_FILE";
-    public static String COLUMN_USER_LIKED = "USER_LIKED";
-    public static String COLUMN_USER_MAP = "USER_MAP";
+    public static String COLUMN_USER_FOOD_URL = "USER_FOOD_URL";
+    public static String COLUMN_USER_FOOD_DATE = "USER_FOOD_DATE";
+    public static String COLUMN_USER_BON_APPETIT = "USER_BON_APPETIT";
+    public static String COLUMN_USER_MAP_URL = "USER_MAP_URL";
 
-    public static String COLUMN_STRANGER_PHOTO_URL = "STRANGER_PHOTO_URL";
-    public static String COLUMN_STRANGER_LOCAL_FILE = "STRANGER_LOCAL_FILE";
-    public static String COLUMN_STRANGER_LIKED = "STRANGER_LIKED";
-    public static String COLUMN_STRANGER_MAP = "STRANGER_MAP";
+    public static String COLUMN_STRANGER_FOOD_URL = "STRANGER_PHOTO_URL";
+    public static String COLUMN_STRANGER_FOOD_DATE = "STRANGER_FOOD_DATE";
+    public static String COLUMN_STRANGER_BON_APPETIT = "STRANGER_BON_APPETIT";
+    public static String COLUMN_STRANGER_MAP_URL = "STRANGER_MAP_URL";
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 6;
     public static final String TABLE_FOOD = "food";
     private static final String DATABASE_NAME = "foodex.db";
     private static final String FOOD_TABLE_CREATE = "CREATE TABLE " + TABLE_FOOD +
             " (" + COLUMN_ID + " integer primary key autoincrement, " +
-            COLUMN_USER_PHOTO_URL + " text," +
-            COLUMN_USER_LOCAL_FILE + " text not null," +
-            COLUMN_USER_LIKED + " integer not null," +
-            COLUMN_USER_MAP + " text," +
-            COLUMN_STRANGER_PHOTO_URL + " text," +
-            COLUMN_STRANGER_LOCAL_FILE + " text," +
-            COLUMN_STRANGER_LIKED + " integer not null," +
-            COLUMN_STRANGER_MAP + " text" +
+            COLUMN_USER_FOOD_URL + " text," +
+            COLUMN_USER_FOOD_DATE + " integer," +
+            COLUMN_USER_BON_APPETIT + " integer not null," +
+            COLUMN_USER_MAP_URL + " text," +
+            COLUMN_STRANGER_FOOD_URL + " text," +
+            COLUMN_STRANGER_FOOD_DATE + " integer," +
+            COLUMN_STRANGER_BON_APPETIT + " integer not null," +
+            COLUMN_STRANGER_MAP_URL + " text" +
             ");";
 
     FoodDBHelper(Context context) {
@@ -51,5 +51,10 @@ public class FoodDBHelper extends SQLiteOpenHelper {
                         + newVersion + ", which will destroy all old data");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOOD);
         onCreate(db);
+    }
+
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        onUpgrade(db, oldVersion, newVersion);
     }
 }

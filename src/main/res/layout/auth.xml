@@ -36,6 +36,7 @@
 
         <EditText
             style="@style/SignInEditText"
+            android:id="@+id/emailEditText"
             android:imeOptions="actionDone"
             android:textSize="28dp"
             android:inputType="textEmailAddress"
@@ -52,6 +53,7 @@
 
         <EditText
             style="@style/SignInEditText"
+            android:id="@+id/passwordEditText"
             android:textSize="28dp"
             android:imeOptions="actionDone"
             android:inputType="textPassword"

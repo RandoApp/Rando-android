@@ -1,5 +1,9 @@
 language: java
 jdk: oraclejdk7
+cache:
+  directories:
+  - $HOME/.m2
+  apt
 env:
   matrix:
     - ANDROID_SDKS=android-18,sysimg-18 ANDROID_TARGET=android-18 ANDROID_ABI=armeabi-v7a
@@ -13,9 +17,11 @@ before_install:
   - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
 
   #add Espresso local repo to git project
-  - wget https://github.com/stephanenicolas/Quality-Tools-for-Android/archive/master.zip
-  - unzip master.zip
-  - cp -avr Quality-Tools-for-Android-master/android-sample-espresso-tests/repo/* repo/
+  - wget http://cool-project.com/foodex/espresso-1.0-SNAPSHOT.jar -P repo/
+  - wget http://cool-project.com/foodex/testrunner-1.0-SNAPSHOT.jar -P repo/
+  - wget http://cool-project.com/foodex/testrunner-runtime-1.0-SNAPSHOT.jar -P repo/
+  - wget http://cool-project.com/foodex/hamcrest-integration-1.1.jar -P repo/
+  - wget http://cool-project.com/foodex/hamcrest-library-1.1.jar -P repo/
 
   # install android build tools
   - wget https://dl-ssl.google.com/android/repository/build-tools_r18.1.1-linux.zip

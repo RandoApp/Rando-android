@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.eucsoft.foodex.callback.TaskCallback;
+import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.CreateFoodAndUploadTask;
 import com.eucsoft.foodex.view.FoodexSurfaceView;
 
@@ -130,7 +131,7 @@ public class TakePictureActivity extends Activity implements TaskCallback {
 
         switch (taskCode) {
             case CreateFoodAndUploadTask.TASK_ID:
-                if (resultCode == RESULT_OK) {
+                if (resultCode == BaseTask.RESULT_OK) {
                     Toast.makeText(TakePictureActivity.this,
                             R.string.photo_upload_ok,
                             Toast.LENGTH_LONG).show();

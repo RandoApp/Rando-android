@@ -41,7 +41,9 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
             canvas.drawBitmap(scaledBitmap, 0, 0, null);
             getHolder().unlockCanvasAndPost(canvas);
         } else {
-            camera = Camera.open();
+            if (camera == null) {
+                camera = Camera.open();
+            }
             camera.setDisplayOrientation(90);
         }
     }
@@ -73,6 +75,7 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
     public void releaseCamera() {
         if (camera != null) {
             camera.stopPreview();
+            camera.setPreviewCallback(null);
             camera.release();
             camera = null;
         }
