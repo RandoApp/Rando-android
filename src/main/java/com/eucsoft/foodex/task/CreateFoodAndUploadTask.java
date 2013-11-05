@@ -16,6 +16,7 @@ import com.eucsoft.foodex.log.Log;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -58,6 +59,21 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
             Log.e(CreateFoodAndUploadTask.class, "doInBackground", ex.getMessage());
         }
 
+        Food food = new Food();
+
+        food.setUserLocalFile("bla" + file.getName());
+
+        FoodDAO foodDAO = new FoodDAO(ctx);
+        try {
+            foodDAO.open();
+            foodDAO.createFood(food);
+            foodDAO.close();
+        } catch (SQLException ex) {
+            return RESULT_ERROR;
+        }
+
+        file.renameTo(new File(getOutputMediaDir().getAbsolutePath() + food.getUserLocalFile()));
+
         //scan the image so show up in album
         MediaScannerConnection.scanFile(ctx,
                 new String[]{imagePath}, null,
@@ -66,10 +82,6 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
                     }
                 });
 
-        Food food = new Food();
-
-        FoodDAO foodDAO = new FoodDAO(ctx);
-        foodDAO.createFood(food);
         return RESULT_OK;
     }
 
@@ -79,8 +91,7 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
         taskCallback.onTaskResult(TASK_ID, aLong, data);
     }
 
-    private static File getOutputMediaFile() {
-        Log.d(CreateFoodAndUploadTask.class, "getOutputMediaFile");
+    private static File getOutputMediaDir() {
         File mediaStorageDir = new File(
                 Environment
                         .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
@@ -90,13 +101,22 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
                 return null;
             }
         }
+        return mediaStorageDir;
+    }
+
+    private static File getOutputMediaFile() {
+        Log.d(CreateFoodAndUploadTask.class, "getOutputMediaFile");
+
+        File mediaStorageDir = getOutputMediaDir();
+        if (mediaStorageDir == null) {
+            return null;
+        }
         // Create a media file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
                 .format(new Date());
         File mediaFile;
         mediaFile = new File(mediaStorageDir.getPath() + File.separator
                 + "IMG_" + timeStamp + ".jpg");
-
         return mediaFile;
     }
 }
