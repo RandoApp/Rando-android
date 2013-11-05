@@ -67,13 +67,11 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
             return RESULT_ERROR;
         }
 
-        food.setUserLocalFile("bla" + file.getName());
-
         FoodDAO foodDAO = new FoodDAO(context);
         foodDAO.createFood(food);
         foodDAO.close();
 
-        file.renameTo(new File(getOutputMediaDir().getAbsolutePath() + food.getUserLocalFile()));
+        file.renameTo(new File(getOutputMediaDir().getAbsolutePath() + food.user.getFoodFileName()));
 
         //scan the image so show up in album
         MediaScannerConnection.scanFile(context,

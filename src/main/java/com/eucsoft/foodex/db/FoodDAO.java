@@ -9,6 +9,7 @@ import android.util.Log;
 import com.eucsoft.foodex.db.model.Food;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class FoodDAO {
@@ -17,8 +18,8 @@ public class FoodDAO {
     private SQLiteDatabase database;
     private FoodDBHelper foodDBHelper;
     private String[] allColumns = {FoodDBHelper.COLUMN_ID,
-            FoodDBHelper.COLUMN_USER_PHOTO_URL, FoodDBHelper.COLUMN_USER_LOCAL_FILE, FoodDBHelper.COLUMN_USER_LIKED, FoodDBHelper.COLUMN_USER_MAP,
-            FoodDBHelper.COLUMN_STRANGER_PHOTO_URL, FoodDBHelper.COLUMN_STRANGER_LOCAL_FILE, FoodDBHelper.COLUMN_STRANGER_LIKED, FoodDBHelper.COLUMN_STRANGER_MAP};
+            FoodDBHelper.COLUMN_USER_FOOD_URL, FoodDBHelper.COLUMN_USER_FOOD_DATE, FoodDBHelper.COLUMN_USER_BON_APPETIT, FoodDBHelper.COLUMN_USER_MAP_URL,
+            FoodDBHelper.COLUMN_STRANGER_FOOD_URL, FoodDBHelper.COLUMN_STRANGER_FOOD_DATE, FoodDBHelper.COLUMN_STRANGER_BON_APPETIT, FoodDBHelper.COLUMN_STRANGER_MAP};
 
     public FoodDAO(Context context) {
         foodDBHelper = new FoodDBHelper(context);
@@ -69,7 +70,7 @@ public class FoodDAO {
      * @param food
      */
     public void deleteFood(Food food) {
-        long id = food.getId();
+        long id = food.id;
         database.delete(FoodDBHelper.TABLE_FOOD, FoodDBHelper.COLUMN_ID
                 + " = " + id, null);
         Log.w(FoodDBHelper.TAG, "Food deleted with id: " + id);
@@ -82,7 +83,7 @@ public class FoodDAO {
      * @param food
      */
     public void updateFood(Food food) {
-        long id = food.getId();
+        long id = food.id;
 
         ContentValues values = foodToContentValues(food);
 
@@ -172,17 +173,17 @@ public class FoodDAO {
             return null;
         } else {
             Food food = new Food();
-            food.setId(cursor.getInt(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_ID)));
+            food.id = cursor.getInt(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_ID));
 
-            food.setUserPhotoURL(cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_PHOTO_URL)));
-            food.setUserLocalFile(cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_LOCAL_FILE)));
-            food.setUserLiked(cursor.getInt(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_LIKED)));
-            food.setUserMap(cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_MAP)));
+            food.user.foodURL = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_URL));
+            food.user.foodDate = new Date(cursor.getLong(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_DATE)));
+            food.user.bonAppetit = cursor.getInt(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_BON_APPETIT));
+            food.user.mapURL = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_MAP_URL));
 
-            food.setStrangerPhotoURL(cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_PHOTO_URL)));
-            food.setStrangerLocalFile(cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_LOCAL_FILE)));
-            food.setStrangerLiked(cursor.getInt(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_LIKED)));
-            food.setStrangerMap(cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_MAP)));
+            food.stranger.foodURL = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_URL));
+            food.stranger.foodDate = new Date(cursor.getLong(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_DATE)));
+            food.stranger.bonAppetit = cursor.getInt(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_BON_APPETIT));
+            food.stranger.mapURL = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_MAP_URL));
 
             return food;
         }
@@ -197,15 +198,15 @@ public class FoodDAO {
     private ContentValues foodToContentValues(Food food) {
         ContentValues values = new ContentValues();
 
-        values.put(FoodDBHelper.COLUMN_USER_LOCAL_FILE, food.getUserLocalFile());
-        values.put(FoodDBHelper.COLUMN_USER_PHOTO_URL, food.getUserPhotoURL());
-        values.put(FoodDBHelper.COLUMN_USER_LIKED, food.isUserLiked());
-        values.put(FoodDBHelper.COLUMN_USER_MAP, food.getUserMap());
+        values.put(FoodDBHelper.COLUMN_USER_FOOD_DATE, food.user.foodDate.getTime());
+        values.put(FoodDBHelper.COLUMN_USER_FOOD_URL, food.user.foodURL);
+        values.put(FoodDBHelper.COLUMN_USER_BON_APPETIT, food.user.bonAppetit);
+        values.put(FoodDBHelper.COLUMN_USER_MAP_URL, food.user.mapURL);
 
-        values.put(FoodDBHelper.COLUMN_STRANGER_PHOTO_URL, food.getStrangerPhotoURL());
-        values.put(FoodDBHelper.COLUMN_STRANGER_LOCAL_FILE, food.getStrangerLocalFile());
-        values.put(FoodDBHelper.COLUMN_STRANGER_LIKED, food.isStrangerLiked());
-        values.put(FoodDBHelper.COLUMN_STRANGER_MAP, food.getStrangerMap());
+        values.put(FoodDBHelper.COLUMN_STRANGER_FOOD_URL, food.stranger.foodURL);
+        values.put(FoodDBHelper.COLUMN_STRANGER_FOOD_DATE, food.stranger.foodDate.getTime());
+        values.put(FoodDBHelper.COLUMN_STRANGER_BON_APPETIT, food.stranger.bonAppetit);
+        values.put(FoodDBHelper.COLUMN_STRANGER_MAP, food.stranger.mapURL);
 
         return values;
     }

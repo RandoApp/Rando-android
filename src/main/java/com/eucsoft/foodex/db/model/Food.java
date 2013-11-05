@@ -1,92 +1,14 @@
 package com.eucsoft.foodex.db.model;
 
+import java.util.Date;
+
 public class Food {
 
-    private long id;
+    public long id;
     //user Food props
-    private String userPhotoURL;
-    private String userLocalFile;
-    private boolean userLiked;
-    private String userMap;
-
+    public User user;
     //stranger Food props
-    private String strangerPhotoURL;
-    private String strangerLocalFile;
-    private boolean strangerLiked;
-    private String strangerMap;
-
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getUserPhotoURL() {
-        return userPhotoURL;
-    }
-
-    public void setUserPhotoURL(String userPhotoURL) {
-        this.userPhotoURL = userPhotoURL;
-    }
-
-    public String getUserLocalFile() {
-        return userLocalFile;
-    }
-
-    public void setUserLocalFile(String userLocalFile) {
-        this.userLocalFile = userLocalFile;
-    }
-
-    public boolean isUserLiked() {
-        return userLiked;
-    }
-
-    public void setUserLiked(int userLiked) {
-        this.userLiked = userLiked > 0;
-    }
-
-    public String getUserMap() {
-        return userMap;
-    }
-
-    public void setUserMap(String userMap) {
-        this.userMap = userMap;
-    }
-
-    public String getStrangerPhotoURL() {
-        return strangerPhotoURL;
-    }
-
-    public void setStrangerPhotoURL(String strangerPhotoURL) {
-        this.strangerPhotoURL = strangerPhotoURL;
-    }
-
-    public String getStrangerLocalFile() {
-        return strangerLocalFile;
-    }
-
-    public void setStrangerLocalFile(String strangerLocalFile) {
-        this.strangerLocalFile = strangerLocalFile;
-    }
-
-    public boolean isStrangerLiked() {
-        return strangerLiked;
-    }
-
-    public void setStrangerLiked(int strangerLiked) {
-        this.strangerLiked = strangerLiked > 0;
-    }
-
-    public String getStrangerMap() {
-        return strangerMap;
-    }
-
-    public void setStrangerMap(String strangerMap) {
-        this.strangerMap = strangerMap;
-    }
+    public User stranger;
 
     @Override
     public boolean equals(Object o) {
@@ -95,33 +17,62 @@ public class Food {
 
         Food food = (Food) o;
 
-        if (strangerLiked != food.strangerLiked) return false;
-        if (userLiked != food.userLiked) return false;
-        if (strangerLocalFile != null ? !strangerLocalFile.equals(food.strangerLocalFile) : food.strangerLocalFile != null)
+        if (stranger != null ? !stranger.equals(food.stranger) : food.stranger != null)
             return false;
-        if (strangerMap != null ? !strangerMap.equals(food.strangerMap) : food.strangerMap != null)
-            return false;
-        if (strangerPhotoURL != null ? !strangerPhotoURL.equals(food.strangerPhotoURL) : food.strangerPhotoURL != null)
-            return false;
-        if (userLocalFile != null ? !userLocalFile.equals(food.userLocalFile) : food.userLocalFile != null)
-            return false;
-        if (userMap != null ? !userMap.equals(food.userMap) : food.userMap != null) return false;
-        if (userPhotoURL != null ? !userPhotoURL.equals(food.userPhotoURL) : food.userPhotoURL != null)
-            return false;
+        if (user != null ? !user.equals(food.user) : food.user != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = userPhotoURL != null ? userPhotoURL.hashCode() : 0;
-        result = 31 * result + (userLocalFile != null ? userLocalFile.hashCode() : 0);
-        result = 31 * result + (userLiked ? 1 : 0);
-        result = 31 * result + (userMap != null ? userMap.hashCode() : 0);
-        result = 31 * result + (strangerPhotoURL != null ? strangerPhotoURL.hashCode() : 0);
-        result = 31 * result + (strangerLocalFile != null ? strangerLocalFile.hashCode() : 0);
-        result = 31 * result + (strangerLiked ? 1 : 0);
-        result = 31 * result + (strangerMap != null ? strangerMap.hashCode() : 0);
+        int result = user != null ? user.hashCode() : 0;
+        result = 31 * result + (stranger != null ? stranger.hashCode() : 0);
         return result;
+    }
+
+    public class User {
+        public String foodURL;
+        public Date foodDate;
+        public int bonAppetit;
+        public String mapURL;
+
+        public boolean isBonAppetit() {
+            return bonAppetit > 0;
+        }
+
+        public String getFoodFileName() {
+            return foodURL.substring(foodURL.lastIndexOf('/'));
+        }
+
+        public String getMapFileName() {
+            return mapURL.substring(foodURL.lastIndexOf('/'));
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            User user = (User) o;
+
+            if (bonAppetit != user.bonAppetit) return false;
+            if (foodDate != null ? !foodDate.equals(user.foodDate) : user.foodDate != null)
+                return false;
+            if (foodURL != null ? !foodURL.equals(user.foodURL) : user.foodURL != null)
+                return false;
+            if (mapURL != null ? !mapURL.equals(user.mapURL) : user.mapURL != null) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = foodURL != null ? foodURL.hashCode() : 0;
+            result = 31 * result + (foodDate != null ? foodDate.hashCode() : 0);
+            result = 31 * result + bonAppetit;
+            result = 31 * result + (mapURL != null ? mapURL.hashCode() : 0);
+            return result;
+        }
     }
 }
