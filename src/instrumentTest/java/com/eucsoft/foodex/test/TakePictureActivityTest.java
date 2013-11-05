@@ -28,18 +28,19 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        if (takePictureActivity != null) {
-            takePictureActivity.finish();
-            setActivity(null);
-        }
-        //Sleep is necessary because Camera Service is not always freed in time
-        Thread.sleep(500);
         takePictureActivity = getActivity();
     }
 
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
+        if (takePictureActivity != null) {
+            getInstrumentation().callActivityOnDestroy(takePictureActivity);
+            takePictureActivity.finish();
+            setActivity(null);
+        }
+        //Sleep is necessary because Camera Service is not always freed in time
+        Thread.sleep(500);
     }
 
     // Methods whose names are prefixed with test will automatically be run
