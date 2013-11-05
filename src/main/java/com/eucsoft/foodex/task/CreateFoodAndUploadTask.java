@@ -10,9 +10,11 @@ import android.os.Environment;
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.callback.TaskCallback;
 import com.eucsoft.foodex.db.model.Food;
+import com.eucsoft.foodex.log.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,7 +34,7 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
 
     @Override
     protected Long doInBackground(Bitmap... params) {
-
+        Log.d(CreateFoodAndUploadTask.class, "doInBackground");
         Bitmap originalBmp = params[0];
 
         int size = Math.min(originalBmp.getWidth(), originalBmp.getHeight());
@@ -44,8 +46,8 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
             FileOutputStream out = new FileOutputStream(file);
             croppedBmp.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.close();
-        } catch (Exception e) {
-            //TODO: Handle exception
+        } catch (IOException ex) {
+            Log.e(CreateFoodAndUploadTask.class, "doInBackground", ex.getMessage());
         }
 
         //scan the image so show up in album
@@ -64,10 +66,12 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
 
     @Override
     protected void onPostExecute(Long aLong) {
+        Log.d(CreateFoodAndUploadTask.class, "onPostExecute", aLong.toString());
         taskCallback.onTaskResult(TASK_ID, aLong, data);
     }
 
     private static File getOutputMediaFile() {
+        Log.d(CreateFoodAndUploadTask.class, "getOutputMediaFile");
         File mediaStorageDir = new File(
                 Environment
                         .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
