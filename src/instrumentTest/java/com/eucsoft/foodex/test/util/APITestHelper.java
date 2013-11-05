@@ -1,4 +1,4 @@
-package com.eucsoft.foodex.test.until;
+package com.eucsoft.foodex.test.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;

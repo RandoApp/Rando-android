@@ -6,6 +6,7 @@ import android.location.Location;
 
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.MainActivity;
+import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.db.model.Food;
 
 import org.apache.http.HttpEntity;
@@ -216,14 +217,11 @@ public class API {
     private static Exception processError(Object json) {
         if (json instanceof JSONObject) {
             try {
-                return new Exception(((JSONObject) json).getString("message"));
+                return new Exception(((JSONObject) json).getString(Constants.ERROR_MESSAGE_PARAM));
             } catch (JSONException e) {
             }
         }
-        if (json instanceof Exception) {
-            return new Exception("NOT IMPLEMENTED");
-        }
-        return new Exception("NOT IMPLEMENTED");
+        return new Exception(MainActivity.context.getResources().getString(R.string.error_unknown_err));
     }
 
 }

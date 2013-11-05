@@ -42,6 +42,8 @@ public class Constants {
     public static final String LATITUDE_PARAM = "latitude";
     public static final String LONGITUDE_PARAM = "longitude";
 
+    public static final String ERROR_MESSAGE_PARAM = "message";
+
     public static final String IMAGE_MIME_TYPE = "image/jpeg";
 
     public static final String SIGNUP_URL = SERVER_URL + "/user";
