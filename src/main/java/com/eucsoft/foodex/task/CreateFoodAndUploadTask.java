@@ -11,7 +11,7 @@ import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.callback.TaskCallback;
 import com.eucsoft.foodex.db.FoodDAO;
-import com.eucsoft.foodex.db.model.Food;
+import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.log.Log;
 
 import java.io.File;
@@ -59,19 +59,20 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
             Log.e(CreateFoodAndUploadTask.class, "doInBackground", ex.getMessage());
         }
 
-        Food food = null;
+        FoodPair foodPair = null;
         try {
-            food = API.uploadFood(file);
+            //TODO: set correct location
+            foodPair = API.uploadFood(file, null);
         } catch (Exception e) {
             Log.w(CreateFoodAndUploadTask.class, "File failed to upload. File=", file.getAbsolutePath());
             return RESULT_ERROR;
         }
 
         FoodDAO foodDAO = new FoodDAO(context);
-        foodDAO.createFood(food);
+        foodDAO.createFood(foodPair);
         foodDAO.close();
 
-        file.renameTo(new File(getOutputMediaDir().getAbsolutePath() + food.user.getFoodFileName()));
+        file.renameTo(new File(getOutputMediaDir().getAbsolutePath() + foodPair.user.getFoodFileName()));
 
         //scan the image so show up in album
         MediaScannerConnection.scanFile(context,

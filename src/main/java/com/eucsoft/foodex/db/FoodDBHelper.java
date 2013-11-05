@@ -18,21 +18,21 @@ public class FoodDBHelper extends SQLiteOpenHelper {
     public static String COLUMN_STRANGER_FOOD_URL = "STRANGER_PHOTO_URL";
     public static String COLUMN_STRANGER_FOOD_DATE = "STRANGER_FOOD_DATE";
     public static String COLUMN_STRANGER_BON_APPETIT = "STRANGER_BON_APPETIT";
-    public static String COLUMN_STRANGER_MAP = "STRANGER_MAP";
+    public static String COLUMN_STRANGER_MAP_URL = "STRANGER_MAP_URL";
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 6;
     public static final String TABLE_FOOD = "food";
     private static final String DATABASE_NAME = "foodex.db";
     private static final String FOOD_TABLE_CREATE = "CREATE TABLE " + TABLE_FOOD +
             " (" + COLUMN_ID + " integer primary key autoincrement, " +
             COLUMN_USER_FOOD_URL + " text," +
-            COLUMN_USER_FOOD_DATE + " text not null," +
+            COLUMN_USER_FOOD_DATE + " integer," +
             COLUMN_USER_BON_APPETIT + " integer not null," +
             COLUMN_USER_MAP_URL + " text," +
             COLUMN_STRANGER_FOOD_URL + " text," +
-            COLUMN_STRANGER_FOOD_DATE + " text," +
+            COLUMN_STRANGER_FOOD_DATE + " integer," +
             COLUMN_STRANGER_BON_APPETIT + " integer not null," +
-            COLUMN_STRANGER_MAP + " text" +
+            COLUMN_STRANGER_MAP_URL + " text" +
             ");";
 
     FoodDBHelper(Context context) {

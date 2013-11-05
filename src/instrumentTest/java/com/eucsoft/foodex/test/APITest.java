@@ -9,7 +9,7 @@ import android.test.AndroidTestCase;
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.api.API;
-import com.eucsoft.foodex.db.model.Food;
+import com.eucsoft.foodex.db.model.FoodPair;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -41,7 +41,7 @@ public class APITest extends AndroidTestCase {
     }
 
     public void testUploadFood() throws Exception {
-        String expected = "http://api.foodex.com/food/abcd/abcdadfwefwef.jpeg";
+        String expected = "http://api.foodex.com/foodPair/abcd/abcdadfwefwef.jpeg";
 
         API.client = mockClient(200,
             "{" +
@@ -54,8 +54,8 @@ public class APITest extends AndroidTestCase {
         when(locationMock.getLatitude()).thenReturn(123.45);
         when(locationMock.getLongitude()).thenReturn(567.89);
 
-        Food food = API.uploadFood(file, locationMock);
-        String actual = food.getUserPhotoURL();
+        FoodPair foodPair = API.uploadFood(file, locationMock);
+        String actual = foodPair.user.foodURL;
         assertThat(actual, is(expected));
     }
 

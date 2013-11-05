@@ -3,7 +3,7 @@ package com.eucsoft.foodex.test;
 import android.test.AndroidTestCase;
 
 import com.eucsoft.foodex.db.FoodDAO;
-import com.eucsoft.foodex.db.model.Food;
+import com.eucsoft.foodex.db.model.FoodPair;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -28,107 +28,107 @@ public class FoodDAOTest extends AndroidTestCase {
     }
 
     public void testCreateNotPairedFood() throws SQLException {
-        Food food = new Food();
+        FoodPair foodPair = new FoodPair();
 
-        food.user.foodURL = "blaURL";
-        food.user.mapURL = "blaFile";
-        food.user.bonAppetit = 0;
-        food.user.foodDate = new Date();
+        foodPair.user.foodURL = "blaURL";
+        foodPair.user.mapURL = "blaFile";
+        foodPair.user.bonAppetit = 0;
+        foodPair.user.foodDate = new Date();
 
         int count = foodDAO.getAllFoodsCount();
-        Food newFood = foodDAO.createFood(food);
+        FoodPair newFoodPair = foodDAO.createFood(foodPair);
         assertEquals(count + 1, foodDAO.getAllFoodsCount());
-        assertTrue(food.equals(newFood));
+        assertTrue(foodPair.equals(newFoodPair));
     }
 
     public void testCreatePairedFood() throws SQLException {
-        Food food = new Food();
+        FoodPair foodPair = new FoodPair();
 
-        food.user.foodURL = "blaURL";
-        food.user.mapURL = "blaFile";
-        food.user.bonAppetit = 0;
-        food.user.foodDate = new Date();
+        foodPair.user.foodURL = "blaURL";
+        foodPair.user.mapURL = "blaFile";
+        foodPair.user.bonAppetit = 0;
+        foodPair.user.foodDate = new Date();
 
-        food.stranger.foodURL = "Bla2URL";
-        food.stranger.mapURL = "LocalFileStranger";
-        food.stranger.bonAppetit = 0;
-        food.stranger.foodDate = new Date();
+        foodPair.stranger.foodURL = "Bla2URL";
+        foodPair.stranger.mapURL = "LocalFileStranger";
+        foodPair.stranger.bonAppetit = 0;
+        foodPair.stranger.foodDate = new Date();
 
         int count = foodDAO.getAllFoodsCount();
-        Food newFood = foodDAO.createFood(food);
+        FoodPair newFoodPair = foodDAO.createFood(foodPair);
         assertEquals(count + 1, foodDAO.getAllFoodsCount());
-        assertTrue(food.equals(newFood));
+        assertTrue(foodPair.equals(newFoodPair));
     }
 
     public void testCreateFreshFood() throws SQLException {
-        Food food = new Food();
+        FoodPair foodPair = new FoodPair();
 
-        food.user.foodURL = null;
-        food.user.mapURL = "blaFile";
-        food.user.bonAppetit = 0;
-        food.user.foodDate = new Date();
+        foodPair.user.foodURL = null;
+        foodPair.user.mapURL = "blaFile";
+        foodPair.user.bonAppetit = 0;
+        foodPair.user.foodDate = new Date();
 
         int count = foodDAO.getAllFoodsCount();
-        Food newFood = foodDAO.createFood(food);
+        FoodPair newFoodPair = foodDAO.createFood(foodPair);
         assertEquals(count + 1, foodDAO.getAllFoodsCount());
-        assertTrue(food.equals(newFood));
+        assertTrue(foodPair.equals(newFoodPair));
     }
 
     public void testDeleteFood() throws SQLException {
-        Food food = new Food();
+        FoodPair foodPair = new FoodPair();
 
-        food.user.foodURL = null;
-        food.user.mapURL = "blaFile";
-        food.user.bonAppetit = 0;
-        food.user.foodDate = new Date();
+        foodPair.user.foodURL = null;
+        foodPair.user.mapURL = "blaFile";
+        foodPair.user.bonAppetit = 0;
+        foodPair.user.foodDate = new Date();
 
         int count = foodDAO.getAllFoodsCount();
-        Food newFood = foodDAO.createFood(food);
+        FoodPair newFoodPair = foodDAO.createFood(foodPair);
         assertEquals(count + 1, foodDAO.getAllFoodsCount());
-        assertTrue(food.equals(newFood));
+        assertTrue(foodPair.equals(newFoodPair));
 
-        long id = newFood.id;
-        foodDAO.deleteFood(newFood);
+        long id = newFoodPair.id;
+        foodDAO.deleteFood(newFoodPair);
         assertNull(foodDAO.getFoodById(id));
     }
 
     public void testUpdateFood() throws SQLException {
-        Food food = new Food();
+        FoodPair foodPair = new FoodPair();
 
-        food.user.foodURL = null;
-        food.user.mapURL = "blaFile";
-        food.user.bonAppetit = 0;
-        food.user.foodDate = new Date();
+        foodPair.user.foodURL = null;
+        foodPair.user.mapURL = "blaFile";
+        foodPair.user.bonAppetit = 0;
+        foodPair.user.foodDate = new Date();
 
         int count = foodDAO.getAllFoodsCount();
-        Food newFood = foodDAO.createFood(food);
+        FoodPair newFoodPair = foodDAO.createFood(foodPair);
         assertEquals(count + 1, foodDAO.getAllFoodsCount());
-        assertTrue(food.equals(newFood));
-        long id = newFood.id;
+        assertTrue(foodPair.equals(newFoodPair));
+        long id = newFoodPair.id;
 
         String newMapValue = "MAP1";
-        newFood.user.mapURL = newMapValue;
-        foodDAO.updateFood(newFood);
+        newFoodPair.user.mapURL = newMapValue;
+        foodDAO.updateFood(newFoodPair);
 
-        Food updatedFood = foodDAO.getFoodById(id);
-        assertNotNull(updatedFood);
-        assertEquals(newMapValue, updatedFood.user.mapURL);
+        FoodPair updatedFoodPair = foodDAO.getFoodById(id);
+        assertNotNull(updatedFoodPair);
+        assertEquals(newMapValue, updatedFoodPair.user.mapURL);
     }
 
     public void testSelectFood() throws SQLException {
-        Food food = new Food();
-        food.user.foodURL = "blaURL";
-        food.user.mapURL = "blaFile";
-        food.user.bonAppetit = 0;
-        food.user.foodDate = new Date();
+        FoodPair foodPair = new FoodPair();
+        foodPair.user.foodURL = "blaURL";
+        foodPair.user.mapURL = "blaFile";
+        foodPair.user.bonAppetit = 0;
+        foodPair.user.foodDate = new Date();
 
-        food.stranger.foodURL = "Bla2URL";
-        food.stranger.mapURL = "LocalFileStranger";
-        food.stranger.bonAppetit = 0;
-        food.stranger.foodDate = new Date();
+        foodPair.stranger.foodURL = "Bla2URL";
+        foodPair.stranger.mapURL = "LocalFileStranger";
+        foodPair.stranger.bonAppetit = 0;
+        foodPair.stranger.foodDate = new Date();
 
-        Food newFood = foodDAO.createFood(food);
-        newFood = foodDAO.getFoodById(newFood.id);
-        assertTrue(food.equals(newFood));
+        FoodPair newFoodPair = foodDAO.createFood(foodPair);
+        newFoodPair = foodDAO.getFoodById(newFoodPair.id);
+        assertTrue(foodPair.equals(newFoodPair));
     }
 }

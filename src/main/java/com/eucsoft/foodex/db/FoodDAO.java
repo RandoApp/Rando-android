@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.eucsoft.foodex.db.model.Food;
+import com.eucsoft.foodex.db.model.FoodPair;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,7 +19,7 @@ public class FoodDAO {
     private FoodDBHelper foodDBHelper;
     private String[] allColumns = {FoodDBHelper.COLUMN_ID,
             FoodDBHelper.COLUMN_USER_FOOD_URL, FoodDBHelper.COLUMN_USER_FOOD_DATE, FoodDBHelper.COLUMN_USER_BON_APPETIT, FoodDBHelper.COLUMN_USER_MAP_URL,
-            FoodDBHelper.COLUMN_STRANGER_FOOD_URL, FoodDBHelper.COLUMN_STRANGER_FOOD_DATE, FoodDBHelper.COLUMN_STRANGER_BON_APPETIT, FoodDBHelper.COLUMN_STRANGER_MAP};
+            FoodDBHelper.COLUMN_STRANGER_FOOD_URL, FoodDBHelper.COLUMN_STRANGER_FOOD_DATE, FoodDBHelper.COLUMN_STRANGER_BON_APPETIT, FoodDBHelper.COLUMN_STRANGER_MAP_URL};
 
     public FoodDAO(Context context) {
         foodDBHelper = new FoodDBHelper(context);
@@ -32,15 +32,15 @@ public class FoodDAO {
     }
 
     /**
-     * Creates food and returns instance of created food.
+     * Creates foodPair and returns instance of created foodPair.
      *
-     * @param food
-     * @return returns instance of created food.
+     * @param foodPair
+     * @return returns instance of created foodPair.
      */
 
-    public Food createFood(Food food) {
+    public FoodPair createFood(FoodPair foodPair) {
 
-        ContentValues values = foodToContentValues(food);
+        ContentValues values = foodToContentValues(foodPair);
 
         long insertId = database.insert(FoodDBHelper.TABLE_FOOD, null,
                 values);
@@ -51,66 +51,66 @@ public class FoodDAO {
      * Finds food instance.
      *
      * @param id
-     * @return Food instance or null if food hasn't been found
+     * @return FoodPair instance or null if food hasn't been found
      */
 
-    public Food getFoodById(long id) {
+    public FoodPair getFoodById(long id) {
         Cursor cursor = database.query(FoodDBHelper.TABLE_FOOD,
                 allColumns, FoodDBHelper.COLUMN_ID + " = " + id, null,
                 null, null, null);
         cursor.moveToFirst();
-        Food newFood = cursorToFood(cursor);
+        FoodPair newFoodPair = cursorToFood(cursor);
         cursor.close();
-        return newFood;
+        return newFoodPair;
     }
 
     /**
-     * Deletes food instance from DB.
+     * Deletes foodPair instance from DB.
      *
-     * @param food
+     * @param foodPair
      */
-    public void deleteFood(Food food) {
-        long id = food.id;
+    public void deleteFood(FoodPair foodPair) {
+        long id = foodPair.id;
         database.delete(FoodDBHelper.TABLE_FOOD, FoodDBHelper.COLUMN_ID
                 + " = " + id, null);
-        Log.w(FoodDBHelper.TAG, "Food deleted with id: " + id);
+        Log.w(FoodDBHelper.TAG, "FoodPair deleted with id: " + id);
     }
 
 
     /**
-     * Updates food instance from DB.
+     * Updates foodPair instance from DB.
      *
-     * @param food
+     * @param foodPair
      */
-    public void updateFood(Food food) {
-        long id = food.id;
+    public void updateFood(FoodPair foodPair) {
+        long id = foodPair.id;
 
-        ContentValues values = foodToContentValues(food);
+        ContentValues values = foodToContentValues(foodPair);
 
         database.update(FoodDBHelper.TABLE_FOOD, values, FoodDBHelper.COLUMN_ID
                 + " = " + id, null);
-        Log.w(FoodDBHelper.TAG, "Food updated with id: " + id);
+        Log.w(FoodDBHelper.TAG, "FoodPair updated with id: " + id);
     }
 
 
     /**
      * @return all food instances found in DB
      */
-    public List<Food> getAllFoods() {
-        List<Food> foods = new ArrayList<Food>();
+    public List<FoodPair> getAllFoods() {
+        List<FoodPair> foodPairs = new ArrayList<FoodPair>();
 
         Cursor cursor = database.query(FoodDBHelper.TABLE_FOOD,
                 allColumns, null, null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            Food food = cursorToFood(cursor);
-            foods.add(food);
+            FoodPair foodPair = cursorToFood(cursor);
+            foodPairs.add(foodPair);
             cursor.moveToNext();
         }
         // make sure to close the cursor
         cursor.close();
-        return foods;
+        return foodPairs;
     }
 
     /**
@@ -129,15 +129,15 @@ public class FoodDAO {
     }
 
     /**
-     * Inserts list of foods into DB
+     * Inserts list of foodPairs into DB
      *
-     * @param foods
+     * @param foodPairs
      */
-    public void insertFoods(List<Food> foods) {
+    public void insertFoods(List<FoodPair> foodPairs) {
         database.beginTransaction();
         try {
-            for (Food food : foods) {
-                createFood(food);
+            for (FoodPair foodPair : foodPairs) {
+                createFood(foodPair);
             }
             database.setTransactionSuccessful();
         } finally {
@@ -162,51 +162,53 @@ public class FoodDAO {
     }
 
     /**
-     * Extracts Food object from Cursor object
+     * Extracts FoodPair object from Cursor object
      *
      * @param cursor
      * @return food object extracted from cursor
      */
 
-    private Food cursorToFood(Cursor cursor) {
+    private FoodPair cursorToFood(Cursor cursor) {
         if (cursor.getCount() == 0) {
             return null;
         } else {
-            Food food = new Food();
-            food.id = cursor.getInt(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_ID));
+            FoodPair foodPair = new FoodPair();
+            foodPair.id = cursor.getInt(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_ID));
 
-            food.user.foodURL = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_URL));
-            food.user.foodDate = new Date(cursor.getLong(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_DATE)));
-            food.user.bonAppetit = cursor.getInt(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_BON_APPETIT));
-            food.user.mapURL = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_MAP_URL));
+            foodPair.user.foodURL = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_URL));
+            long userDate = cursor.getLong(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_DATE));
+            foodPair.user.foodDate = userDate != 0 ? new Date(userDate) : null;
+            foodPair.user.bonAppetit = cursor.getInt(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_BON_APPETIT));
+            foodPair.user.mapURL = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_MAP_URL));
 
-            food.stranger.foodURL = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_URL));
-            food.stranger.foodDate = new Date(cursor.getLong(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_DATE)));
-            food.stranger.bonAppetit = cursor.getInt(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_BON_APPETIT));
-            food.stranger.mapURL = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_MAP_URL));
+            foodPair.stranger.foodURL = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_FOOD_URL));
+            long strangerDate = cursor.getLong(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_FOOD_DATE));
+            foodPair.stranger.foodDate = strangerDate != 0 ? new Date(strangerDate) : null;
+            foodPair.stranger.bonAppetit = cursor.getInt(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_BON_APPETIT));
+            foodPair.stranger.mapURL = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_MAP_URL));
 
-            return food;
+            return foodPair;
         }
     }
 
     /**
-     * Converts Food object into ContentValues object
+     * Converts FoodPair object into ContentValues object
      *
-     * @param food
-     * @return ContentValues representing food
+     * @param foodPair
+     * @return ContentValues representing foodPair
      */
-    private ContentValues foodToContentValues(Food food) {
+    private ContentValues foodToContentValues(FoodPair foodPair) {
         ContentValues values = new ContentValues();
 
-        values.put(FoodDBHelper.COLUMN_USER_FOOD_DATE, food.user.foodDate.getTime());
-        values.put(FoodDBHelper.COLUMN_USER_FOOD_URL, food.user.foodURL);
-        values.put(FoodDBHelper.COLUMN_USER_BON_APPETIT, food.user.bonAppetit);
-        values.put(FoodDBHelper.COLUMN_USER_MAP_URL, food.user.mapURL);
+        values.put(FoodDBHelper.COLUMN_USER_FOOD_URL, foodPair.user.foodURL);
+        values.put(FoodDBHelper.COLUMN_USER_FOOD_DATE, foodPair.user.foodDate.getTime());
+        values.put(FoodDBHelper.COLUMN_USER_BON_APPETIT, foodPair.user.bonAppetit);
+        values.put(FoodDBHelper.COLUMN_USER_MAP_URL, foodPair.user.mapURL);
 
-        values.put(FoodDBHelper.COLUMN_STRANGER_FOOD_URL, food.stranger.foodURL);
-        values.put(FoodDBHelper.COLUMN_STRANGER_FOOD_DATE, food.stranger.foodDate.getTime());
-        values.put(FoodDBHelper.COLUMN_STRANGER_BON_APPETIT, food.stranger.bonAppetit);
-        values.put(FoodDBHelper.COLUMN_STRANGER_MAP, food.stranger.mapURL);
+        values.put(FoodDBHelper.COLUMN_STRANGER_FOOD_URL, foodPair.stranger.foodURL);
+        values.put(FoodDBHelper.COLUMN_STRANGER_FOOD_DATE, foodPair.stranger.foodDate != null ? foodPair.stranger.foodDate.getTime() : null);
+        values.put(FoodDBHelper.COLUMN_STRANGER_BON_APPETIT, foodPair.stranger.bonAppetit);
+        values.put(FoodDBHelper.COLUMN_STRANGER_MAP_URL, foodPair.stranger.mapURL);
 
         return values;
     }

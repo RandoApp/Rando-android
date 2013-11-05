@@ -6,7 +6,7 @@ import android.location.Location;
 
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.MainActivity;
-import com.eucsoft.foodex.db.model.Food;
+import com.eucsoft.foodex.db.model.FoodPair;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -62,7 +62,7 @@ public class API {
         }
     }
 
-    public static List<Food> fetchUser() throws Exception {
+    public static List<FoodPair> fetchUser() throws Exception {
         try {
             HttpGet request = new HttpGet(Constants.FETCH_USER_URL);
             HttpResponse response = client.execute(request);
@@ -72,26 +72,28 @@ public class API {
                 JSONObject json = readJSON(response);
                 JSONArray jsonFoods = json.getJSONArray(Constants.FOODS_PARAM);
 
-                List<Food> foods = new ArrayList<Food>(jsonFoods.length());
+                List<FoodPair> foodPairs = new ArrayList<FoodPair>(jsonFoods.length());
 
                 for (int i = 0; i < jsonFoods.length(); i++) {
-                    Food food = new Food();
+                    FoodPair foodPair = new FoodPair();
                     JSONObject jsonFood = jsonFoods.getJSONObject(i);
                     JSONObject user = jsonFood.getJSONObject(Constants.USER_PARAM);
                     JSONObject stranger = jsonFood.getJSONObject(Constants.STRANGER_PARAM);
-                    food.setUserPhotoURL(user.getString(Constants.FOOD_URL_PARAM));
-                    food.setUserMap(user.getString(Constants.MAP_URL_PARAM));
-                    food.setUserLiked(user.getInt(Constants.BON_APPETIT_PARAM));
+                    foodPair.user.foodURL = user.getString(Constants.FOOD_URL_PARAM);
+                    foodPair.user.mapURL = user.getString(Constants.MAP_URL_PARAM);
+                    foodPair.user.bonAppetit = user.getInt(Constants.BON_APPETIT_PARAM);
+                    //TODO: we need to set correct date parsed from response
+                    foodPair.user.foodDate = new Date(user.getLong(Constants.CREATION_PARAM));
 
-                    food.setStrangerPhotoURL(stranger.getString(Constants.FOOD_URL_PARAM));
-                    food.setStrangerMap(stranger.getString(Constants.MAP_URL_PARAM));
-                    food.setStrangerLiked(stranger.getInt(Constants.BON_APPETIT_PARAM));
+                    foodPair.stranger.foodURL = stranger.getString(Constants.FOOD_URL_PARAM);
+                    foodPair.stranger.mapURL = stranger.getString(Constants.MAP_URL_PARAM);
+                    foodPair.stranger.bonAppetit = stranger.getInt(Constants.BON_APPETIT_PARAM);
+                    //TODO: we need to set correct date parsed from response
+                    foodPair.stranger.foodDate = new Date(user.getLong(Constants.CREATION_PARAM));
 
-                    food.creation = new Date(user.getLong(Constants.CREATION_PARAM));
-
-                    foods.add(food);
+                    foodPairs.add(foodPair);
                 }
-                return foods;
+                return foodPairs;
             } else {
                 throw processError(readJSON(response));
             }
@@ -116,7 +118,7 @@ public class API {
         }
     }
 
-    public static Food uploadFood(File foodFile, Location location) throws Exception {
+    public static FoodPair uploadFood(File foodFile, Location location) throws Exception {
         try {
             HttpPost request = new HttpPost(Constants.ULOAD_FOOD_URL);
             FileEntity fileEntity = new FileEntity(foodFile, Constants.IMAGE_MIME_TYPE);
@@ -128,10 +130,10 @@ public class API {
 
             if (response.getStatusLine().getStatusCode() == 200) {
                 JSONObject json = readJSON(response);
-                Food food = new Food();
-                food.setUserPhotoURL(json.getString(Constants.FOOD_URL_PARAM));
-                food.creation = new Date(json.getLong(Constants.CREATION_PARAM));
-                return food;
+                FoodPair foodPair = new FoodPair();
+                foodPair.user.foodURL = json.getString(Constants.FOOD_URL_PARAM);
+                foodPair.user.foodDate = new Date(json.getLong(Constants.CREATION_PARAM));
+                return foodPair;
             } else {
                 throw processError(readJSON(response));
             }

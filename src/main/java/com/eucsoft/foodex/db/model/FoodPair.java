@@ -2,24 +2,24 @@ package com.eucsoft.foodex.db.model;
 
 import java.util.Date;
 
-public class Food {
+public class FoodPair {
 
     public long id;
-    //user Food props
-    public User user;
-    //stranger Food props
-    public User stranger;
+    //user FoodPair props
+    public User user = new User();
+    //stranger FoodPair props
+    public User stranger = new User();
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Food food = (Food) o;
+        FoodPair foodPair = (FoodPair) o;
 
-        if (stranger != null ? !stranger.equals(food.stranger) : food.stranger != null)
+        if (stranger != null ? !stranger.equals(foodPair.stranger) : foodPair.stranger != null)
             return false;
-        if (user != null ? !user.equals(food.user) : food.user != null) return false;
+        if (user != null ? !user.equals(foodPair.user) : foodPair.user != null) return false;
 
         return true;
     }
@@ -42,11 +42,11 @@ public class Food {
         }
 
         public String getFoodFileName() {
-            return foodURL.substring(foodURL.lastIndexOf('/'));
+            return foodURL == null ? null : foodURL.substring(foodURL.lastIndexOf('/') + 1);
         }
 
         public String getMapFileName() {
-            return mapURL.substring(foodURL.lastIndexOf('/'));
+            return mapURL == null ? null : mapURL.substring(mapURL.lastIndexOf('/') + 1);
         }
 
         @Override
@@ -75,4 +75,5 @@ public class Food {
             return result;
         }
     }
+
 }
