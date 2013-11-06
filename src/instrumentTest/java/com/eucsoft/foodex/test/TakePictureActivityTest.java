@@ -2,10 +2,10 @@ package com.eucsoft.foodex.test;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
-import android.widget.RelativeLayout;
 
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.TakePictureActivity;
+import com.eucsoft.foodex.log.Log;
 
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
@@ -118,13 +118,12 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
 
     @Override
     protected void runTest() throws Throwable {
-
-        RelativeLayout view = (RelativeLayout) takePictureActivity.findViewById(R.id.takepicture_layout);
-
-        if (view != null) {
+        try {
+            Log.i(TakePictureActivity.class, "Checking........");
+            onView(withId(R.id.take_picture_button)).check(matches(isDisplayed()));
             super.runTest();
-        } else {
-            System.out.println("Test skipped.");
+        } catch (Exception e) {
+            Log.e(TakePictureActivityTest.class, e.getMessage());
         }
     }
 }

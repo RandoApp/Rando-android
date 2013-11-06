@@ -56,5 +56,5 @@ before_script:
   - adb shell input keyevent 82 &
 
 script:
-  - gradle connectedInstrumentTest
+  - gradle connectedInstrumentTest --debug
 
