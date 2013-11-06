@@ -30,7 +30,7 @@ public class Constants {
     public static final String FOOD_ID_PARAM = "id";
     public static final String BON_APPETIT_PARAM = "bonAppetit";
     public static final String FOOD_URL_PARAM = "foodUrl";
-    public static final String MAP_URL_PARAM = "foodUrl";
+    public static final String MAP_URL_PARAM = "mapUrl";
     public static final String CREATION_PARAM = "creation";
     public static final String USER_PARAM = "user";
     public static final String STRANGER_PARAM = "stranger";

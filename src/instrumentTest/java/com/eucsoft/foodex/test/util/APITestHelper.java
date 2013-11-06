@@ -12,6 +12,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.util.EntityUtils;
 import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
@@ -25,44 +26,53 @@ public class APITestHelper {
 
     public static void mockAPIWithError() throws IOException {
         MainActivity.context = mockContext();
-        API.client = mockClient(500, "{\"code\": \"501\"," +
-            "\"message\": \"Internal Server Error\"," +
-            "\"description\": \"See https://github.com/dimhold/foodex/wiki/Errors/#system\"}");
+        API.client = mockClient(500, "{'code': '501'," +
+            "'message': 'Internal Server Error'," +
+            "'description': 'See https://github.com/dimhold/foodex/wiki/Errors/#system'}");
     }
 
     public static void mockAPIForUploadFood() throws IOException {
         MainActivity.context = mockContext();
         API.client = mockClient(200, "{" +
-            "\"creation\": \"1383670800877\"," +
-            "\"foodUrl\": \"http://api.foodex.com/food/abcd/abcdadfwefwef.jpg\"," +
-            "\"mapUrl\": \"\"}");
+            "'creation': '1383670800877'," +
+            "'foodUrl': 'http://api.foodex.com/food/abcd/abcdadfwefwef.jpg'," +
+            "'mapUrl': ''}");
     }
 
     public static void mockAPIForDownloadFood() throws IOException {
-        throw new UnsupportedOperationException();
+        MainActivity.context = mockContext();
+        API.client = mockClient(200, "jpg file");
     }
 
     public static void mockAPIForFetchUser() throws IOException {
         MainActivity.context = mockContext();
-        API.client = mockClient(500, "{\"email\": \"user@mail.com\"," +
-            "\"foods\": [" +
-                "{{\"user\": {\"foodUrl\": \"http://api.foodex.com/food/dddd/ddddcwef3242f32f.jpg\", " +
-                    "\"createion\": \"1383690800877\"," +
-                    "\"mapUrl\": \"http://api.foodex.com/map/eeee/eeeewef3242f32f.jpg\"," +
-                    "\"bonAppetit\": \"0\"}," +
-                "{\"stranger\": {\"foodUrl\": \"http://api.foodex.com/food/abc/abcwef3242f32f.jpg\", " +
-                    "\"createion\": \"1383630800877\"," +
-                    "\"mapUrl\": \"http://api.foodex.com/map/azca/azcacwef3242f32f.jpg\"," +
-                    "\"bonAppetit\": \"1\"}}," +
-
-                "{{\"user\": {\"foodUrl\": \"http://api.foodex.com/food/abcd/abcdw0ef3242f32f.jpg\", " +
-                    "\"createion\": \"1383670400877\"," +
-                    "\"mapUrl\": \"http://api.foodex.com/map/bcde/bcdecwef3242f32f.jpg\"," +
-                    "\"bonAppetit\": \"1\"}," +
-                "{\"stranger\": {\"foodUrl\": \"http://api.foodex.com/food/abcd/abcd3cwef3242f32f.jpg\", " +
-                    "\"createion\": \"1383670801877\"," +
-                    "\"mapUrl\": \"http://api.foodex.com/map/abcd/abcd5wef3242f32f.jpg\"," +
-                    "\"bonAppetit\": \"0\"}}]}");
+        API.client = mockClient(200, "{'email': 'user@mail.com'," +
+            "'foods': [" +
+                "{" +
+                    "'user': {" +
+                        "'foodUrl': 'http://api.foodex.com/food/dddd/ddddcwef3242f32f.jpg', " +
+                        "'creation': '1383690800877'," +
+                        "'mapUrl': 'http://api.foodex.com/map/eeee/eeeewef3242f32f.jpg'," +
+                        "'bonAppetit': '0'" +
+                    "}," +
+                    "'stranger': {" +
+                        "'foodUrl': 'http://api.foodex.com/food/abc/abcwef3242f32f.jpg', " +
+                        "'mapUrl': 'http://api.foodex.com/map/azca/azcacwef3242f32f.jpg'," +
+                        "'bonAppetit': '1'" +
+                    "}" +
+                "},{" +
+                "'user': {" +
+                    "'foodUrl': 'http://api.foodex.com/food/abcd/abcdw0ef3242f32f.jpg', " +
+                    "'creation': '1383670400877'," +
+                    "'mapUrl': 'http://api.foodex.com/map/bcde/bcdecwef3242f32f.jpg'," +
+                    "'bonAppetit': '1'" +
+                "}," +
+                "'stranger': {" +
+                    "'foodUrl': 'http://api.foodex.com/food/abcd/abcd3cwef3242f32f.jpg', " +
+                    "'mapUrl': 'http://api.foodex.com/map/abcd/abcd5wef3242f32f.jpg'," +
+                    "'bonAppetit': '0'" +
+                "}" +
+            "}]}");
     }
 
     public static void mockAPI (int statusCode, String response) throws IOException {
