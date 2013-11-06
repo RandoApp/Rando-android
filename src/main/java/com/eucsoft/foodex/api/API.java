@@ -92,7 +92,6 @@ public class API {
                     food.stranger.foodURL = stranger.getString(Constants.FOOD_URL_PARAM);
                     food.stranger.mapURL = stranger.getString(Constants.MAP_URL_PARAM);
                     food.stranger.bonAppetit = stranger.getInt(Constants.BON_APPETIT_PARAM);
-                    food.stranger.foodDate = new Date(stranger.getLong(Constants.CREATION_PARAM));
 
                     foods.add(food);
                 }
@@ -151,9 +150,8 @@ public class API {
             addParamsToRequest(request, Constants.FOOD_ID_PARAM, id);
 
             HttpResponse response = client.execute(request);
-            JSONObject json = readJSON(response);
             if (response.getStatusLine().getStatusCode() != 200) {
-                throw processError(json);
+                throw processError(readJSON(response));
             }
         } catch (UnsupportedEncodingException e) {
             throw processError(e);
@@ -169,9 +167,9 @@ public class API {
             HttpPost request = new HttpPost(Constants.REPORT_URL);
             addParamsToRequest(request, Constants.BON_APPETIT_URL, id);
             HttpResponse response = client.execute(request);
-            JSONObject json = readJSON(response);
+
             if (response.getStatusLine().getStatusCode() != 200) {
-                throw processError(json);
+                throw processError(readJSON(response));
             }
         } catch (UnsupportedEncodingException e) {
             throw processError(e);

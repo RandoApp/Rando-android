@@ -12,6 +12,7 @@ import com.eucsoft.foodex.test.util.APITestHelper;
 
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -67,5 +68,67 @@ public class APITest extends AndroidTestCase {
             assertThat(e.getMessage(), is(MainActivity.context.getResources().getString(R.string.error_unknown_err)));
         }
     }
+
+    @SmallTest
+    public void testFetchUser() throws Exception {
+        APITestHelper.mockAPIForFetchUser();
+
+        List<FoodPair> foods = API.fetchUser();
+
+        assertThat(foods.size(), is(2));
+
+        assertThat(foods.get(0).user.foodURL, is("http://api.foodex.com/food/dddd/ddddcwef3242f32f.jpg"));
+        assertThat(foods.get(0).user.mapURL, is("http://api.foodex.com/map/eeee/eeeewef3242f32f.jpg"));
+        assertThat(foods.get(0).user.bonAppetit, is(0));
+        assertThat(foods.get(0).user.foodDate.compareTo(new Date(1383690800877l)), is(0));
+        assertThat(foods.get(0).stranger.foodURL, is("http://api.foodex.com/food/abc/abcwef3242f32f.jpg"));
+        assertThat(foods.get(0).stranger.mapURL, is("http://api.foodex.com/map/azca/azcacwef3242f32f.jpg"));
+        assertThat(foods.get(0).stranger.bonAppetit, is(1));
+
+        assertThat(foods.get(1).user.foodURL, is("http://api.foodex.com/food/abcd/abcdw0ef3242f32f.jpg"));
+        assertThat(foods.get(1).user.mapURL, is("http://api.foodex.com/map/bcde/bcdecwef3242f32f.jpg"));
+        assertThat(foods.get(1).user.bonAppetit, is(1));
+        assertThat(foods.get(1).user.foodDate.compareTo(new Date(1383670400877l)), is(0));
+        assertThat(foods.get(1).stranger.foodURL, is("http://api.foodex.com/food/abcd/abcd3cwef3242f32f.jpg"));
+        assertThat(foods.get(1).stranger.mapURL, is("http://api.foodex.com/map/abcd/abcd5wef3242f32f.jpg"));
+        assertThat(foods.get(1).stranger.bonAppetit, is(0));
+    }
+
+    @SmallTest
+    public void testFetchUserWithEmptyFoods() throws Exception {
+        APITestHelper.mockAPI(200, "{'email': 'user@mail.com', 'foods': []}");
+
+        List<FoodPair> foods = API.fetchUser();
+
+        assertThat(foods.size(), is(0));
+    }
+
+    @SmallTest
+    public void testFetchUserWithError() throws Exception {
+        APITestHelper.mockAPIWithError();
+
+        try {
+            List<FoodPair> foods = API.fetchUser();
+            fail();
+        } catch (Exception e) {
+            assertThat(e.getMessage(), is("Internal Server Error"));
+        }
+    }
+
+    @SmallTest
+    public void testFetchUserWithUnknownError() throws Exception {
+        APITestHelper.mockAPI(500, "not a json, that throw JSONException");
+        MainActivity.context = this.getContext();
+
+        try {
+            API.fetchUser();
+            fail();
+        } catch (Exception e) {
+            assertThat(e.getMessage(), is(MainActivity.context.getResources().getString(R.string.error_unknown_err)));
+        }
+    }
+
+
+
 
 }
