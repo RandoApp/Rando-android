@@ -42,7 +42,7 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
             setActivity(null);
         }
         //Sleep is necessary because Camera Service is not always freed in time
-        Thread.sleep(500);
+        Thread.sleep(2000);
     }
 
     // Methods whose names are prefixed with test will automatically be run
