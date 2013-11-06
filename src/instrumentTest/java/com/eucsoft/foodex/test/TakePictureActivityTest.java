@@ -25,7 +25,6 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
         super(TakePictureActivity.class);
     }
 
-
     @Override
     protected void setUp() throws Exception {
         super.setUp();
