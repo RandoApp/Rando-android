@@ -24,18 +24,19 @@ before_install:
   - export GRADLE_HOME=$PWD/gradle-1.8
   - export PATH=$GRADLE_HOME/bin:$PATH
 
-  #add Espresso local repo to git project
-  - wget http://cool-project.com/foodex/espresso-1.0-SNAPSHOT.jar -P repo/
-  - wget http://cool-project.com/foodex/testrunner-1.0-SNAPSHOT.jar -P repo/
-  - wget http://cool-project.com/foodex/testrunner-runtime-1.0-SNAPSHOT.jar -P repo/
-  - wget http://cool-project.com/foodex/hamcrest-integration-1.1.jar -P repo/
-  - wget http://cool-project.com/foodex/hamcrest-library-1.1.jar -P repo/
-
   # install android build tools
   - if [ ! -f build-tools_r18.1.1-linux.zip ]; then wget https://dl-ssl.google.com/android/repository/build-tools_r18.1.1-linux.zip > /dev/null; fi
   - unzip build-tools_r18.1.1-linux.zip -d $ANDROID_HOME
   - mkdir -p $ANDROID_HOME/build-tools/
   - mv $ANDROID_HOME/android-4.3.1 $ANDROID_HOME/build-tools/18.1.1
+
+  #add Espresso local repo to git project
+  - cd ..
+  - wget http://cool-project.com/foodex/espresso-1.0-SNAPSHOT.jar -P repo/
+  - wget http://cool-project.com/foodex/testrunner-1.0-SNAPSHOT.jar -P repo/
+  - wget http://cool-project.com/foodex/testrunner-runtime-1.0-SNAPSHOT.jar -P repo/
+  - wget http://cool-project.com/foodex/hamcrest-integration-1.1.jar -P repo/
+  - wget http://cool-project.com/foodex/hamcrest-library-1.1.jar -P repo/
 
   # Install required components.
   # For a full list, run `android list sdk -a --extended`
@@ -53,7 +54,6 @@ before_install:
   - emulator -avd test -no-skin -no-audio -no-window &
 
 before_script:
-  - cd ..
   - chmod +x ci/wait_for_emulator.sh
   - ci/wait_for_emulator.sh
   - adb shell input keyevent 82 &
