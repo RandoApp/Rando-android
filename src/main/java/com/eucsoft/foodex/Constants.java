@@ -4,9 +4,6 @@ public class Constants {
 
     public static final String ALBUM_NAME = "Foodex";
 
-    public static final int ORIENTATION_PORTRAIT = 1;
-    public static final int ORIENTATION_LANDSCAPE = 2;
-
     public static final int BON_APPETIT_BUTTON_SIZE = 100;
 
     public static final int BON_APPETIT_MARGIN_RIGHT = 5;
@@ -48,6 +45,8 @@ public class Constants {
     public static final String ULOAD_FOOD_URL = SERVER_URL + "/food";
     public static final String REPORT_URL = SERVER_URL + "/report";
     public static final String BON_APPETIT_URL = SERVER_URL + "/bonappetit";
+
+    public static final String FILENAME = "FILENAME";
 
 
 }

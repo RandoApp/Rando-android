@@ -1,6 +1,5 @@
 package com.eucsoft.foodex.view;
 
-import android.net.Uri;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -9,13 +8,14 @@ import android.widget.RelativeLayout;
 
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
+import com.eucsoft.foodex.db.model.FoodPair;
 
 class FoodPortraitView extends FoodOrientedView {
 
     public static final int LAYOUT_FRAGMENT_RESOURCE = R.layout.homeport;
 
-    public FoodPortraitView(View rootView, Uri food) {
-        super(food, rootView);
+    public FoodPortraitView(View rootView, FoodPair foodPair) {
+        super(foodPair, rootView);
     }
 
     @Override

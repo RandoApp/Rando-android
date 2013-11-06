@@ -13,17 +13,23 @@ import android.widget.RelativeLayout;
 
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
+import com.eucsoft.foodex.callback.TaskCallback;
+import com.eucsoft.foodex.db.model.FoodPair;
+import com.eucsoft.foodex.task.DownloadFoodPicsTask;
 
-abstract class FoodOrientedView {
+import java.util.HashMap;
+
+abstract class FoodOrientedView implements TaskCallback {
 
     protected Context context;
-    protected Uri food;
+    protected FoodPair foodPair;
     protected int displayWidth;
     protected int displayHeight;
     protected View rootView;
+    protected ImageView foodImage;
 
-    public FoodOrientedView(Uri food, View rootView) {
-        this.food = food;
+    public FoodOrientedView(FoodPair foodPair, View rootView) {
+        this.foodPair = foodPair;
         this.rootView = rootView;
         context = rootView.getContext();
         determineDisplaySize();
@@ -43,9 +49,10 @@ abstract class FoodOrientedView {
     }
 
     protected ImageView createFoodImage(int width, int height) {
-        ImageView foodImage = new ImageView(context);
+        foodImage = new ImageView(context);
         foodImage.setImageURI(null);
-        foodImage.setImageURI(food);
+        DownloadFoodPicsTask downloadFoodPicsTask = new DownloadFoodPicsTask(this, context);
+        downloadFoodPicsTask.execute(foodPair);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, height);
 
         foodImage.setLayoutParams(layoutParams);
@@ -79,5 +86,11 @@ abstract class FoodOrientedView {
         linearLayout.setLayoutParams(linearParams);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         return linearLayout;
+    }
+
+    @Override
+    public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
+        String filename = (String) data.get(Constants.FILENAME);
+        foodImage.setImageURI(Uri.parse(filename));
     }
 }

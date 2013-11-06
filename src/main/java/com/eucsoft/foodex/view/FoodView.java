@@ -1,19 +1,19 @@
 package com.eucsoft.foodex.view;
 
 import android.content.Context;
-import android.net.Uri;
+import android.content.res.Configuration;
 import android.view.View;
 
-import com.eucsoft.foodex.Constants;
+import com.eucsoft.foodex.db.model.FoodPair;
 
 public class FoodView {
 
-    private Uri food;
+    private FoodPair foodPair;
     private View rootView;
 
-    public FoodView(View rootView, Uri food) {
+    public FoodView(View rootView, FoodPair foodPair) {
         this.rootView = rootView;
-        this.food = food;
+        this.foodPair = foodPair;
     }
 
     public View display() {
@@ -26,7 +26,7 @@ public class FoodView {
 
 
     public static int getLayoutFragmentResource(Context context) {
-        if (context.getResources().getConfiguration().orientation == Constants.ORIENTATION_LANDSCAPE) {
+        if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             return FoodLandscapeView.LAYOUT_FRAGMENT_RESOURCE;
         } else {
             return FoodPortraitView.LAYOUT_FRAGMENT_RESOURCE;
@@ -34,10 +34,10 @@ public class FoodView {
     }
 
     private FoodOrientedView createFoodOrientedView () {
-        if (rootView.getContext().getResources().getConfiguration().orientation == Constants.ORIENTATION_LANDSCAPE) {
-            return new FoodLandscapeView(rootView, food);
+        if (rootView.getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            return new FoodLandscapeView(rootView, foodPair);
         } else {
-            return new FoodPortraitView(rootView, food);
+            return new FoodPortraitView(rootView, foodPair);
         }
     }
 

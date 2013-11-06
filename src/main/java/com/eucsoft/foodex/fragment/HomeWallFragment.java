@@ -1,7 +1,6 @@
 package com.eucsoft.foodex.fragment;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,7 +10,11 @@ import android.widget.ImageButton;
 
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.TakePictureActivity;
+import com.eucsoft.foodex.db.FoodDAO;
+import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.view.FoodView;
+
+import java.util.List;
 
 public class HomeWallFragment extends Fragment {
 
@@ -20,13 +23,11 @@ public class HomeWallFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(FoodView.getLayoutFragmentResource(container.getContext()), container, false);
 
-        Uri uri1 = Uri.parse("android.resource://com.eucsoft.foodex/" + R.drawable.f);
-        new FoodView(rootView, uri1).display();
-        new FoodView(rootView, uri1).display();
-        new FoodView(rootView, uri1).display();
-        new FoodView(rootView, uri1).display();
-        new FoodView(rootView, uri1).display();
+        List<FoodPair> foods = new FoodDAO(container.getContext()).getAllFoods();
 
+        for (FoodPair foodPair : foods) {
+            new FoodView(rootView, foodPair).display();
+        }
         ImageButton takePictureButton = (ImageButton) rootView.findViewById(R.id.cameraButton);
         takePictureButton.setOnClickListener(new View.OnClickListener() {
 
