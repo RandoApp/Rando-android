@@ -4,21 +4,33 @@ import android.location.Location;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.test.util.APITestHelper;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.mockito.ArgumentCaptor;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 
 public class APITest extends AndroidTestCase {
 
@@ -128,7 +140,43 @@ public class APITest extends AndroidTestCase {
         }
     }
 
+    @SmallTest
+    public void testReport() throws Exception {
+        API.client = mock(HttpClient.class);
+        StatusLine statusLineMock = mock(StatusLine.class);
+        when(statusLineMock.getStatusCode()).thenReturn(200);
+        HttpResponse responseMock = mock(HttpResponse.class);
+        when(responseMock.getStatusLine()).thenReturn(statusLineMock);
+        when(API.client.execute(isA(HttpUriRequest.class))).thenReturn(responseMock);
+        ArgumentCaptor<HttpPost> captor = ArgumentCaptor.forClass(HttpPost.class);
 
+        API.report("2222");
 
+        verify(API.client).execute(captor.capture());
+
+        assertThat(params(captor.getValue()), is(Constants.FOOD_ID_PARAM + "=2222"));
+    }
+
+    @SmallTest
+    public void testReportWithError() throws Exception {
+        APITestHelper.mockAPIWithError();
+
+        try {
+            API.report("2222");
+            fail();
+        } catch (Exception e) {
+            assertThat(e.getMessage(), is("Internal Server Error"));
+        }
+    }
+
+    private String params(HttpPost request) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(request.getEntity().getContent()));
+        StringBuilder params = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            params.append(line);
+        }
+        return params.toString();
+    }
 
 }
