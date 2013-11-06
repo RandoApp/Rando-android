@@ -20,7 +20,7 @@ before_install:
 
   # Gradle
   - if [ ! -f gradle-1.8-bin.zip ]; then  wget http://services.gradle.org/distributions/gradle-1.8-bin.zip > /dev/null; fi
-  - unzip gradle-1.8-bin.zip -qq
+  - unzip gradle-1.8-bin.zip
   - export GRADLE_HOME=$PWD/gradle-1.8
   - export PATH=$GRADLE_HOME/bin:$PATH
 
@@ -33,7 +33,7 @@ before_install:
 
   # install android build tools
   - if [ ! -f build-tools_r18.1.1-linux.zip ]; then wget https://dl-ssl.google.com/android/repository/build-tools_r18.1.1-linux.zip > /dev/null; fi
-  - unzip build-tools_r18.1.1-linux.zip -d -qq $ANDROID_HOME
+  - unzip build-tools_r18.1.1-linux.zip -d $ANDROID_HOME
   - mkdir -p $ANDROID_HOME/build-tools/
   - mv $ANDROID_HOME/android-4.3.1 $ANDROID_HOME/build-tools/18.1.1
 
