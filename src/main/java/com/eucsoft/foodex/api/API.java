@@ -55,13 +55,12 @@ public class API {
             HttpPost request = new HttpPost(Constants.SIGNUP_URL);
             addParamsToRequest(request, Constants.SIGNUP_EMAIL_PARAM, email, Constants.SIGNUP_PASSWORD_PARAM, password);
             HttpResponse response = client.execute(request);
-            JSONObject jsonObject = readJSON(response);
 
-            if (response.getStatusLine().getStatusCode() != 200) {
-                throw processError(jsonObject);
+            if (response.getStatusLine().getStatusCode() == 200) {
+                storeSession(((DefaultHttpClient) client).getCookieStore());
+            } else {
+                throw processError(readJSON(response));
             }
-
-            storeSession(((DefaultHttpClient) client).getCookieStore());
         } catch (IOException e) {
             throw processError(e);
         }

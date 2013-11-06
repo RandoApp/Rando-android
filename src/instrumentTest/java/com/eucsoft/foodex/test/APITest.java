@@ -221,6 +221,36 @@ public class APITest extends AndroidTestCase {
         }
     }
 
+    @SmallTest
+    public void testSignup() throws Exception {
+        APITestHelper.mockAPI(200, "{}");
+
+        ArgumentCaptor<HttpPost> captor = ArgumentCaptor.forClass(HttpPost.class);
+
+        try {
+            API.signup("user@mail.com", "password");
+        } catch (Exception uglyException) {
+            //DefaultHttpClient cannot be mocked... Just ignore the line with storeSession
+        }
+
+        verify(API.client).execute(captor.capture());
+
+        assertThat(params(captor.getValue()), is(Constants.SIGNUP_EMAIL_PARAM + "=user%40mail.com&" + Constants.SIGNUP_PASSWORD_PARAM + "=password"));
+        assertThat(captor.getValue().getURI().toString(), is(Constants.SIGNUP_URL));
+    }
+
+    @SmallTest
+    public void testSignupWithError() throws Exception {
+        APITestHelper.mockAPIWithError();
+
+        try {
+            API.signup("user@mail.com", "password");
+            fail();
+        } catch (Exception e) {
+            assertThat(e.getMessage(), is("Internal Server Error"));
+        }
+    }
+
     private String params(HttpPost request) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(request.getEntity().getContent()));
         StringBuilder params = new StringBuilder();
