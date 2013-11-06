@@ -1,6 +1,7 @@
 package com.eucsoft.foodex.test;
 
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.suitebuilder.annotation.LargeTest;
 
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.TakePictureActivity;
@@ -10,7 +11,7 @@ import static com.google.android.apps.common.testing.ui.espresso.action.ViewActi
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.CoreMatchers.not;
 
 public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<TakePictureActivity>
 
@@ -29,6 +30,7 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
     protected void setUp() throws Exception {
         super.setUp();
         takePictureActivity = getActivity();
+        Thread.sleep(2000);
     }
 
     @Override
@@ -40,10 +42,11 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
             setActivity(null);
         }
         //Sleep is necessary because Camera Service is not always freed in time
-        Thread.sleep(500);
+        Thread.sleep(2000);
     }
 
     // Methods whose names are prefixed with test will automatically be run
+    @LargeTest
     public void testTakePictureOnStart() {
         onView(withId(R.id.cameraPreview)).check(matches(isDisplayed()));
         onView(withId(R.id.select_photo_button)).check(matches(isDisplayed()));
@@ -52,6 +55,7 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
         onView(withId(R.id.upload_photo_button)).check(matches(not(isDisplayed())));
     }
 
+    @LargeTest
     public void testTakePictureOnReStart() {
         assertNotNull(takePictureActivity);
         takePictureActivity.finish();
@@ -83,6 +87,7 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
         }*/
 
     // Methods whose names are prefixed with test will automatically be run
+    @LargeTest
     public void testTakePictureAfterPictureTaken() {
         onView(withId(R.id.take_picture_button)).perform(click());
         onView(withId(R.id.cameraPreview)).check(matches(isDisplayed()));
@@ -93,6 +98,7 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
     }
 
     // Methods whose names are prefixed with test will automatically be run
+    @LargeTest
     public void testTakePictureAndUpload() {
         onView(withId(R.id.take_picture_button)).check(matches(isDisplayed()));
         onView(withId(R.id.take_picture_button)).perform(click());

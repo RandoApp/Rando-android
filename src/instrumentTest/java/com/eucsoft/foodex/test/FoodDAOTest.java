@@ -1,6 +1,7 @@
 package com.eucsoft.foodex.test;
 
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.MediumTest;
 
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
@@ -27,6 +28,7 @@ public class FoodDAOTest extends AndroidTestCase {
         foodDAO = null;
     }
 
+    @MediumTest
     public void testCreateNotPairedFood() throws SQLException {
         FoodPair foodPair = new FoodPair();
 
@@ -41,6 +43,7 @@ public class FoodDAOTest extends AndroidTestCase {
         assertTrue(foodPair.equals(newFoodPair));
     }
 
+    @MediumTest
     public void testCreatePairedFood() throws SQLException {
         FoodPair foodPair = new FoodPair();
 
@@ -60,6 +63,7 @@ public class FoodDAOTest extends AndroidTestCase {
         assertTrue(foodPair.equals(newFoodPair));
     }
 
+    @MediumTest
     public void testCreateFreshFood() throws SQLException {
         FoodPair foodPair = new FoodPair();
 
@@ -74,6 +78,7 @@ public class FoodDAOTest extends AndroidTestCase {
         assertTrue(foodPair.equals(newFoodPair));
     }
 
+    @MediumTest
     public void testDeleteFood() throws SQLException {
         FoodPair foodPair = new FoodPair();
 
@@ -92,6 +97,7 @@ public class FoodDAOTest extends AndroidTestCase {
         assertNull(foodDAO.getFoodById(id));
     }
 
+    @MediumTest
     public void testUpdateFood() throws SQLException {
         FoodPair foodPair = new FoodPair();
 
@@ -115,6 +121,7 @@ public class FoodDAOTest extends AndroidTestCase {
         assertEquals(newMapValue, updatedFoodPair.user.mapURL);
     }
 
+    @MediumTest
     public void testSelectFood() throws SQLException {
         FoodPair foodPair = new FoodPair();
         foodPair.user.foodURL = "blaURL";
