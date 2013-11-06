@@ -200,6 +200,27 @@ public class APITest extends AndroidTestCase {
         }
     }
 
+    @SmallTest
+    public void testDownloadFood() throws Exception {
+        APITestHelper.mockAPIForDownloadFood();
+
+        byte[] image = API.downloadFood("http://api.foodex.com/foods/abcd/abcdeffweijfwe.jpg");
+
+        assertThat(image.length, is("jpg file".getBytes().length));
+    }
+
+    @SmallTest
+    public void testDownloadFoodWithError() throws Exception {
+        APITestHelper.mockAPIWithError();
+
+        try {
+            API.downloadFood("http://api.foodex.com/foods/abcd/abcdeffweijfwe.jpg");
+            fail();
+        } catch (Exception e) {
+            assertThat(e.getMessage(), is("Internal Server Error"));
+        }
+    }
+
     private String params(HttpPost request) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(request.getEntity().getContent()));
         StringBuilder params = new StringBuilder();

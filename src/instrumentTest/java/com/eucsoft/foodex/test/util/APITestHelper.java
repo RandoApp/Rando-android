@@ -12,6 +12,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.util.EntityUtils;
 import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
@@ -39,7 +40,8 @@ public class APITestHelper {
     }
 
     public static void mockAPIForDownloadFood() throws IOException {
-        throw new UnsupportedOperationException();
+        MainActivity.context = mockContext();
+        API.client = mockClient(200, "jpg file");
     }
 
     public static void mockAPIForFetchUser() throws IOException {
