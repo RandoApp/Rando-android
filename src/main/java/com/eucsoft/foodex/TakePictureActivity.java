@@ -127,6 +127,7 @@ public class TakePictureActivity extends Activity implements TaskCallback {
             }
         };
         locationUpdater.getLocation(getApplicationContext(), locationResult);
+
     }
 
     private void showUploadButton() {

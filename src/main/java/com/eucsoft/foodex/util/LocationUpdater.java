@@ -17,7 +17,7 @@ public class LocationUpdater {
     boolean network_enabled = false;
 
     public boolean getLocation(Context context, LocationResult result) {
-        //I use LocationResult callback class to pass location value from MyLocation to user code.
+        //I use LocationResult callback class to pass location value from this Class to user code.
         locationResult = result;
         if (lm == null)
             lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
