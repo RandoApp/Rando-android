@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import com.eucsoft.foodex.callback.TaskCallback;
 import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.CreateFoodAndUploadTask;
+import com.eucsoft.foodex.util.LocationUpdater;
 import com.eucsoft.foodex.view.FoodexSurfaceView;
 
 import java.util.HashMap;
@@ -29,6 +31,9 @@ public class TakePictureActivity extends Activity implements TaskCallback {
     private FoodexSurfaceView foodexSurfaceView;
 
     private static final int REQ_CODE_SELECT_PHOTO = 100;
+    private LocationUpdater locationUpdater = new LocationUpdater();
+
+    public static Location currentLocation;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -114,6 +119,14 @@ public class TakePictureActivity extends Activity implements TaskCallback {
                 uploadTask.execute(originalBmp);
             }
         });
+
+        LocationUpdater.LocationResult locationResult = new LocationUpdater.LocationResult() {
+            @Override
+            public void gotLocation(Location location) {
+                currentLocation = location;
+            }
+        };
+        locationUpdater.getLocation(getApplicationContext(), locationResult);
     }
 
     private void showUploadButton() {
@@ -149,6 +162,7 @@ public class TakePictureActivity extends Activity implements TaskCallback {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        locationUpdater.cancelTimer();
         foodexSurfaceView.setCurrentBitmap(null);
         foodexSurfaceView = null;
     }

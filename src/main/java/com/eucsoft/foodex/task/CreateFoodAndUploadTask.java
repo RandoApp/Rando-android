@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Environment;
 
 import com.eucsoft.foodex.Constants;
+import com.eucsoft.foodex.TakePictureActivity;
 import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.callback.TaskCallback;
 import com.eucsoft.foodex.db.FoodDAO;
@@ -62,8 +63,7 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
 
         FoodPair foodPair = null;
         try {
-            //TODO: set correct location
-            foodPair = API.uploadFood(file, null);
+            foodPair = API.uploadFood(file, TakePictureActivity.currentLocation);
         } catch (Exception e) {
             Log.w(CreateFoodAndUploadTask.class, "File failed to upload. File=", file.getAbsolutePath());
             return RESULT_ERROR;
