@@ -21,10 +21,6 @@ public class Constants {
     public static final int FOOD_MARGIN_LANDSCAPE_COLUMN_RIGHT = 10;
     public static final int FOOD_MARGIN_LANDSCAPE_COLUMN_TOP = 15;
 
-    public static final String UPLOAD_SERVICE_NOTIFICATION = "UPLOAD.SERVICE.NOTIFICATION";
-    public static final String RESULT = "RESULT";
-    public static final String FILENAME = "FILENAME";
-
     public static final String SERVER_URL = "http://10.0.2.2:8888";
 
     public static final String SEESSION_COOKIE_NAME = "connect.sid";
