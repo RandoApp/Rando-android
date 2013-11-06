@@ -164,8 +164,8 @@ public class API {
 
     public static void bonAppetit(String id) throws Exception {
         try {
-            HttpPost request = new HttpPost(Constants.REPORT_URL);
-            addParamsToRequest(request, Constants.BON_APPETIT_URL, id);
+            HttpPost request = new HttpPost(Constants.BON_APPETIT_URL);
+            addParamsToRequest(request, Constants.BON_APPETIT_PARAM, id);
             HttpResponse response = client.execute(request);
 
             if (response.getStatusLine().getStatusCode() != 200) {

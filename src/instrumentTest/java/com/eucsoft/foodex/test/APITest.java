@@ -155,6 +155,7 @@ public class APITest extends AndroidTestCase {
         verify(API.client).execute(captor.capture());
 
         assertThat(params(captor.getValue()), is(Constants.FOOD_ID_PARAM + "=2222"));
+        assertThat(captor.getValue().getURI().toString(), is(Constants.REPORT_URL));
     }
 
     @SmallTest
@@ -163,6 +164,36 @@ public class APITest extends AndroidTestCase {
 
         try {
             API.report("2222");
+            fail();
+        } catch (Exception e) {
+            assertThat(e.getMessage(), is("Internal Server Error"));
+        }
+    }
+
+    @SmallTest
+    public void testBonAppetit() throws Exception {
+        API.client = mock(HttpClient.class);
+        StatusLine statusLineMock = mock(StatusLine.class);
+        when(statusLineMock.getStatusCode()).thenReturn(200);
+        HttpResponse responseMock = mock(HttpResponse.class);
+        when(responseMock.getStatusLine()).thenReturn(statusLineMock);
+        when(API.client.execute(isA(HttpUriRequest.class))).thenReturn(responseMock);
+        ArgumentCaptor<HttpPost> captor = ArgumentCaptor.forClass(HttpPost.class);
+
+        API.bonAppetit("3333");
+
+        verify(API.client).execute(captor.capture());
+
+        assertThat(params(captor.getValue()), is(Constants.BON_APPETIT_PARAM + "=3333"));
+        assertThat(captor.getValue().getURI().toString(), is(Constants.BON_APPETIT_URL));
+    }
+
+    @SmallTest
+    public void testBonAppetitWithError() throws Exception {
+        APITestHelper.mockAPIWithError();
+
+        try {
+            API.bonAppetit("3333");
             fail();
         } catch (Exception e) {
             assertThat(e.getMessage(), is("Internal Server Error"));
