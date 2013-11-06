@@ -5,7 +5,6 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.TakePictureActivity;
-import com.eucsoft.foodex.log.Log;
 
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
@@ -31,6 +30,7 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
     protected void setUp() throws Exception {
         super.setUp();
         takePictureActivity = getActivity();
+        Thread.sleep(2000);
     }
 
     @Override
@@ -116,7 +116,7 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
         onView(withId(R.id.upload_photo_button)).perform(click());
     }
 
-    @Override
+    /*@Override
     protected void runTest() throws Throwable {
         try {
             Log.i(TakePictureActivity.class, "Checking........");
@@ -125,6 +125,6 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
         } catch (Exception e) {
             Log.e(TakePictureActivityTest.class, e.getMessage());
         }
-    }
+    }*/
 }
 
