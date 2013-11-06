@@ -58,7 +58,7 @@ public class APITest extends AndroidTestCase {
         when(locationMock.getLatitude()).thenReturn(123.45);
         when(locationMock.getLongitude()).thenReturn(567.89);
         try {
-            FoodPair foodPair = API.uploadFood(file, locationMock);
+            API.uploadFood(file, locationMock);
             fail();
         } catch (Exception e) {
             assertThat(e.getMessage(), is("Internal Server Error"));
@@ -74,7 +74,7 @@ public class APITest extends AndroidTestCase {
         when(locationMock.getLatitude()).thenReturn(123.45);
         when(locationMock.getLongitude()).thenReturn(567.89);
         try {
-            FoodPair foodPair = API.uploadFood(file, locationMock);
+            API.uploadFood(file, locationMock);
             fail();
         } catch (Exception e) {
             assertThat(e.getMessage(), is(MainActivity.context.getResources().getString(R.string.error_unknown_err)));
@@ -120,7 +120,7 @@ public class APITest extends AndroidTestCase {
         APITestHelper.mockAPIWithError();
 
         try {
-            List<FoodPair> foods = API.fetchUser();
+            API.fetchUser();
             fail();
         } catch (Exception e) {
             assertThat(e.getMessage(), is("Internal Server Error"));
