@@ -115,16 +115,5 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
         onView(withId(R.id.upload_photo_button)).check(matches(isDisplayed()));
         onView(withId(R.id.upload_photo_button)).perform(click());
     }
-
-    /*@Override
-    protected void runTest() throws Throwable {
-        try {
-            Log.i(TakePictureActivity.class, "Checking........");
-            onView(withId(R.id.take_picture_button)).check(matches(isDisplayed()));
-            super.runTest();
-        } catch (Exception e) {
-            Log.e(TakePictureActivityTest.class, e.getMessage());
-        }
-    }*/
 }
 

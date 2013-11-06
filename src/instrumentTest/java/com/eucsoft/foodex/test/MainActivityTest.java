@@ -39,22 +39,11 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 
     // Methods whose names are prefixed with test will automatically be run
     @LargeTest
-    public void te1stOnStartNotLoggedIn() {
+    public void testOnStartNotLoggedIn() {
         onView(withId(R.id.signupButton)).check(matches(isDisplayed()));
         onView(withId(R.id.signupButton)).check(matches(isDisplayed()));
         onView(withId(R.id.facebookButton)).check(matches(isDisplayed()));
         onView(withId(R.id.emailEditText)).check(matches(isDisplayed()));
         onView(withId(R.id.passwordEditText)).check(matches(isDisplayed()));
     }
-
-    /*@Override
-    protected void runTest() throws Throwable {
-        try {
-            Log.i(MainActivityTest.class, "Checking........");
-            onView(withId(R.id.signupButton)).check(matches(isDisplayed()));
-            super.runTest();
-        } catch (Exception e) {
-            Log.e(MainActivityTest.class, e.getMessage());
-        }
-    }*/
 }
