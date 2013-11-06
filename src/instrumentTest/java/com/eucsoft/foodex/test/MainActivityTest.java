@@ -1,15 +1,8 @@
 package com.eucsoft.foodex.test;
 
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.suitebuilder.annotation.LargeTest;
 
 import com.eucsoft.foodex.MainActivity;
-import com.eucsoft.foodex.R;
-
-import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
-import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
-import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
-import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 
 public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity> {
     //^Activity to test
@@ -37,11 +30,11 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
     }
 
     // Methods whose names are prefixed with test will automatically be run
-    @LargeTest
+    /*@LargeTest
     public void testOnStartNotLoggedIn() {
         onView(withId(R.id.signupButton)).check(matches(isDisplayed()));
         onView(withId(R.id.facebookButton)).check(matches(isDisplayed()));
         onView(withId(R.id.emailEditText)).check(matches(isDisplayed()));
         onView(withId(R.id.passwordEditText)).check(matches(isDisplayed()));
-    }
+    }*/
 }

@@ -1,17 +1,8 @@
 package com.eucsoft.foodex.test;
 
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.suitebuilder.annotation.LargeTest;
 
-import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.TakePictureActivity;
-
-import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
-import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
-import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
-import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
-import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
-import static org.hamcrest.Matchers.not;
 
 public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<TakePictureActivity>
 
@@ -45,7 +36,7 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
     }
 
     // Methods whose names are prefixed with test will automatically be run
-    @LargeTest
+   /* @LargeTest
     public void testTakePictureOnStart() {
         onView(withId(R.id.cameraPreview)).check(matches(isDisplayed()));
         onView(withId(R.id.select_photo_button)).check(matches(isDisplayed()));
@@ -86,7 +77,7 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
         }*/
 
     // Methods whose names are prefixed with test will automatically be run
-    @LargeTest
+    /*@LargeTest
     public void testTakePictureAfterPictureTaken() {
         onView(withId(R.id.take_picture_button)).perform(click());
         onView(withId(R.id.cameraPreview)).check(matches(isDisplayed()));
@@ -114,5 +105,6 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
         onView(withId(R.id.upload_photo_button)).check(matches(isDisplayed()));
         onView(withId(R.id.upload_photo_button)).perform(click());
     }
+    */
 }
 
