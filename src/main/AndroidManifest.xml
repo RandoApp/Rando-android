@@ -28,7 +28,6 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
-        <service android:name=".service.UploadService" />
     </application>
 
     <uses-feature android:name="android.hardware.camera" />
