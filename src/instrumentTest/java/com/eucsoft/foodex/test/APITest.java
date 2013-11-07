@@ -101,18 +101,22 @@ public class APITest extends AndroidTestCase {
 
         assertThat(foods.size(), is(2));
 
+        assertThat(foods.get(0).user.foodId, is("ddddcwef3242f32f"));
         assertThat(foods.get(0).user.foodURL, is("http://api.foodex.com/food/dddd/ddddcwef3242f32f.jpg"));
         assertThat(foods.get(0).user.mapURL, is("http://api.foodex.com/map/eeee/eeeewef3242f32f.jpg"));
         assertThat(foods.get(0).user.bonAppetit, is(0));
         assertThat(foods.get(0).user.foodDate.compareTo(new Date(1383690800877l)), is(0));
+        assertThat(foods.get(0).stranger.foodId, is("abcwef3242f32f"));
         assertThat(foods.get(0).stranger.foodURL, is("http://api.foodex.com/food/abc/abcwef3242f32f.jpg"));
         assertThat(foods.get(0).stranger.mapURL, is("http://api.foodex.com/map/azca/azcacwef3242f32f.jpg"));
         assertThat(foods.get(0).stranger.bonAppetit, is(1));
 
+        assertThat(foods.get(1).user.foodId, is("abcdw0ef3242f32f"));
         assertThat(foods.get(1).user.foodURL, is("http://api.foodex.com/food/abcd/abcdw0ef3242f32f.jpg"));
         assertThat(foods.get(1).user.mapURL, is("http://api.foodex.com/map/bcde/bcdecwef3242f32f.jpg"));
         assertThat(foods.get(1).user.bonAppetit, is(1));
         assertThat(foods.get(1).user.foodDate.compareTo(new Date(1383670400877l)), is(0));
+        assertThat(foods.get(1).stranger.foodId, is("abcd3cwef3242f32f"));
         assertThat(foods.get(1).stranger.foodURL, is("http://api.foodex.com/food/abcd/abcd3cwef3242f32f.jpg"));
         assertThat(foods.get(1).stranger.mapURL, is("http://api.foodex.com/map/abcd/abcd5wef3242f32f.jpg"));
         assertThat(foods.get(1).stranger.bonAppetit, is(0));

@@ -85,11 +85,13 @@ public class API {
                     JSONObject jsonFood = jsonFoods.getJSONObject(i);
                     JSONObject user = jsonFood.getJSONObject(Constants.USER_PARAM);
                     JSONObject stranger = jsonFood.getJSONObject(Constants.STRANGER_PARAM);
+                    food.user.foodId = user.getString(Constants.FOOD_ID_PARAM);
                     food.user.foodURL = user.getString(Constants.FOOD_URL_PARAM);
                     food.user.mapURL = user.getString(Constants.MAP_URL_PARAM);
                     food.user.bonAppetit = user.getInt(Constants.BON_APPETIT_PARAM);
                     food.user.foodDate = new Date(user.getLong(Constants.CREATION_PARAM));
 
+                    food.stranger.foodId = stranger.getString(Constants.FOOD_ID_PARAM);
                     food.stranger.foodURL = stranger.getString(Constants.FOOD_URL_PARAM);
                     food.stranger.mapURL = stranger.getString(Constants.MAP_URL_PARAM);
                     food.stranger.bonAppetit = stranger.getInt(Constants.BON_APPETIT_PARAM);
@@ -107,7 +109,7 @@ public class API {
 
     public static byte[] downloadFood(String url) throws Exception {
         try {
-            HttpGet request = new HttpGet(Constants.DOWNLOAD_FOOD_URL + url);
+            HttpGet request = new HttpGet(url);
             HttpResponse response = client.execute(request);
 
             if (response.getStatusLine().getStatusCode() == 200) {
