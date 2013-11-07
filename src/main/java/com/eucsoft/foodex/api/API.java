@@ -18,7 +18,9 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.FileEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
@@ -122,10 +124,13 @@ public class API {
     public static FoodPair uploadFood(File foodFile, Location location) throws Exception {
         try {
             HttpPost request = new HttpPost(Constants.ULOAD_FOOD_URL);
-            FileEntity fileEntity = new FileEntity(foodFile, Constants.IMAGE_MIME_TYPE);
-            request.setEntity(fileEntity);
-            addParamsToRequest(request, Constants.LATITUDE_PARAM, String.valueOf(location.getLatitude()));
-            addParamsToRequest(request, Constants.LONGITUDE_PARAM, String.valueOf(location.getLongitude()));
+
+            MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
+            multipartEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+            multipartEntity.addPart(Constants.IMAGE_PARAM, new FileBody(foodFile));
+            multipartEntity.addTextBody(Constants.LATITUDE_PARAM, String.valueOf(location.getLatitude()));
+            multipartEntity.addTextBody(Constants.LONGITUDE_PARAM, String.valueOf(location.getLongitude()));
+            request.setEntity(multipartEntity.build());
 
             HttpResponse response = client.execute(request);
 
