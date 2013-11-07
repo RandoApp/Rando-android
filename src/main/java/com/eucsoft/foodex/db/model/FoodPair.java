@@ -32,6 +32,7 @@ public class FoodPair {
     }
 
     public class User {
+        public String foodId;
         public String foodURL;
         public Date foodDate;
         public int bonAppetit;

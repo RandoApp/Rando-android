@@ -123,13 +123,20 @@ public class API {
 
     public static FoodPair uploadFood(File foodFile, Location location) throws Exception {
         try {
+            String latitude = "0.0";
+            String longitude = "0.0";
+            if (location != null) {
+                latitude = String.valueOf(location.getLatitude());
+                longitude = String.valueOf(location.getLongitude());
+            }
+
             HttpPost request = new HttpPost(Constants.ULOAD_FOOD_URL);
 
             MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
             multipartEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
             multipartEntity.addPart(Constants.IMAGE_PARAM, new FileBody(foodFile));
-            multipartEntity.addTextBody(Constants.LATITUDE_PARAM, String.valueOf(location.getLatitude()));
-            multipartEntity.addTextBody(Constants.LONGITUDE_PARAM, String.valueOf(location.getLongitude()));
+            multipartEntity.addTextBody(Constants.LATITUDE_PARAM, latitude);
+            multipartEntity.addTextBody(Constants.LONGITUDE_PARAM, longitude);
             request.setEntity(multipartEntity.build());
 
             HttpResponse response = client.execute(request);

@@ -51,6 +51,18 @@ public class APITest extends AndroidTestCase {
     }
 
     @SmallTest
+    public void testUploadFoodWithNullLocation() throws Exception {
+        APITestHelper.mockAPIForUploadFood();
+
+        FoodPair foodPair = API.uploadFood(file, null);
+
+        String actual = foodPair.user.foodURL;
+        assertThat(new Date(1383670800877l).compareTo(foodPair.user.foodDate), is(0));
+        assertThat(actual, is("http://api.foodex.com/food/abcd/abcdadfwefwef.jpg"));
+        //TODO: verify that lat and long is 0.0 in request
+    }
+
+    @SmallTest
     public void testUploadFoodWithError() throws Exception {
         APITestHelper.mockAPIWithError();
 
