@@ -157,8 +157,7 @@ public class API {
 
     public static void report(String id) throws Exception {
         try {
-            HttpPost request = new HttpPost(Constants.REPORT_URL);
-            addParamsToRequest(request, Constants.FOOD_ID_PARAM, id);
+            HttpPost request = new HttpPost(Constants.REPORT_URL + id);
 
             HttpResponse response = client.execute(request);
             if (response.getStatusLine().getStatusCode() != 200) {

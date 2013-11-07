@@ -47,8 +47,6 @@ public class Constants {
     public static final String FETCH_USER_URL = SERVER_URL + "/user";
     public static final String DOWNLOAD_FOOD_URL = SERVER_URL + "/food/";
     public static final String ULOAD_FOOD_URL = SERVER_URL + "/food";
-    public static final String REPORT_URL = SERVER_URL + "/report";
-
-
+    public static final String REPORT_URL = SERVER_URL + "/report/";
     public static final String BON_APPETIT_URL = SERVER_URL + "/bonappetit/";
 }
