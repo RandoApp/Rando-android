@@ -40,14 +40,13 @@ public class Constants {
 
     public static final String ERROR_MESSAGE_PARAM = "message";
 
-    public static final String IMAGE_MIME_TYPE = "image/jpeg";
+    public static final String IMAGE_PARAM = "image";
 
+    public static final String IMAGE_MIME_TYPE = "image/jpeg";
     public static final String SIGNUP_URL = SERVER_URL + "/user";
     public static final String FETCH_USER_URL = SERVER_URL + "/user";
     public static final String DOWNLOAD_FOOD_URL = SERVER_URL + "/food/";
     public static final String ULOAD_FOOD_URL = SERVER_URL + "/food";
-    public static final String REPORT_URL = SERVER_URL + "/report";
-    public static final String BON_APPETIT_URL = SERVER_URL + "/bonappetit";
-
-
+    public static final String REPORT_URL = SERVER_URL + "/report/";
+    public static final String BON_APPETIT_URL = SERVER_URL + "/bonappetit/";
 }

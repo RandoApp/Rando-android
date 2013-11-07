@@ -51,6 +51,18 @@ public class APITest extends AndroidTestCase {
     }
 
     @SmallTest
+    public void testUploadFoodWithNullLocation() throws Exception {
+        APITestHelper.mockAPIForUploadFood();
+
+        FoodPair foodPair = API.uploadFood(file, null);
+
+        String actual = foodPair.user.foodURL;
+        assertThat(new Date(1383670800877l).compareTo(foodPair.user.foodDate), is(0));
+        assertThat(actual, is("http://api.foodex.com/food/abcd/abcdadfwefwef.jpg"));
+        //TODO: verify that lat and long is 0.0 in request
+    }
+
+    @SmallTest
     public void testUploadFoodWithError() throws Exception {
         APITestHelper.mockAPIWithError();
 
@@ -154,8 +166,7 @@ public class APITest extends AndroidTestCase {
 
         verify(API.client).execute(captor.capture());
 
-        assertThat(params(captor.getValue()), is(Constants.FOOD_ID_PARAM + "=2222"));
-        assertThat(captor.getValue().getURI().toString(), is(Constants.REPORT_URL));
+        assertThat(captor.getValue().getURI().toString(), is(Constants.REPORT_URL + "2222"));
     }
 
     @SmallTest
@@ -184,8 +195,7 @@ public class APITest extends AndroidTestCase {
 
         verify(API.client).execute(captor.capture());
 
-        assertThat(params(captor.getValue()), is(Constants.BON_APPETIT_PARAM + "=3333"));
-        assertThat(captor.getValue().getURI().toString(), is(Constants.BON_APPETIT_URL));
+        assertThat(captor.getValue().getURI().toString(), is(Constants.BON_APPETIT_URL + "3333"));
     }
 
     @SmallTest

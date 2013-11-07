@@ -18,7 +18,9 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.FileEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
@@ -121,11 +123,21 @@ public class API {
 
     public static FoodPair uploadFood(File foodFile, Location location) throws Exception {
         try {
+            String latitude = "0.0";
+            String longitude = "0.0";
+            if (location != null) {
+                latitude = String.valueOf(location.getLatitude());
+                longitude = String.valueOf(location.getLongitude());
+            }
+
             HttpPost request = new HttpPost(Constants.ULOAD_FOOD_URL);
-            FileEntity fileEntity = new FileEntity(foodFile, Constants.IMAGE_MIME_TYPE);
-            request.setEntity(fileEntity);
-            addParamsToRequest(request, Constants.LATITUDE_PARAM, String.valueOf(location.getLatitude()));
-            addParamsToRequest(request, Constants.LONGITUDE_PARAM, String.valueOf(location.getLongitude()));
+
+            MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
+            multipartEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+            multipartEntity.addPart(Constants.IMAGE_PARAM, new FileBody(foodFile));
+            multipartEntity.addTextBody(Constants.LATITUDE_PARAM, latitude);
+            multipartEntity.addTextBody(Constants.LONGITUDE_PARAM, longitude);
+            request.setEntity(multipartEntity.build());
 
             HttpResponse response = client.execute(request);
 
@@ -145,8 +157,7 @@ public class API {
 
     public static void report(String id) throws Exception {
         try {
-            HttpPost request = new HttpPost(Constants.REPORT_URL);
-            addParamsToRequest(request, Constants.FOOD_ID_PARAM, id);
+            HttpPost request = new HttpPost(Constants.REPORT_URL + id);
 
             HttpResponse response = client.execute(request);
             if (response.getStatusLine().getStatusCode() != 200) {
@@ -163,8 +174,7 @@ public class API {
 
     public static void bonAppetit(String id) throws Exception {
         try {
-            HttpPost request = new HttpPost(Constants.BON_APPETIT_URL);
-            addParamsToRequest(request, Constants.BON_APPETIT_PARAM, id);
+            HttpPost request = new HttpPost(Constants.BON_APPETIT_URL + id);
             HttpResponse response = client.execute(request);
 
             if (response.getStatusLine().getStatusCode() != 200) {
