@@ -71,23 +71,31 @@ public class MainActivity extends ActionBarActivity {
             for (int i = 0; i < 5; i++) {
                 List<FoodPair> foods = new ArrayList<FoodPair>();
                 FoodPair foodPair = new FoodPair();
-                foodPair.stranger.foodURL = "http://cool-projects.com/foodex/abcd/abcd24jjf4f4f4f.jpg";
+                foodPair.user.foodURL = "http://cool-projects.com/foodex/abcd/abcd24jjf4f4f4f.jpg";
                 foodPair.user.foodDate = new Date();
-                foods.add(foodPair);
-
-                foodPair = new FoodPair();
                 foodPair.stranger.foodURL = "http://cool-projects.com/foodex/abcd/abcdfdsjofjo3.jpg";
-                foodPair.user.foodDate = new Date();
+                foodPair.stranger.foodDate = new Date();
                 foods.add(foodPair);
 
                 foodPair = new FoodPair();
-                foodPair.stranger.foodURL = "http://cool-projects.com/foodex/abcd/abcd3fiojdsijf03f.jpg";
+                foodPair.user.foodURL = "http://cool-projects.com/foodex/abcd/abcdfdsjofjo3.jpg";
                 foodPair.user.foodDate = new Date();
+                foodPair.stranger.foodURL = "http://cool-projects.com/foodex/abcd/abcd24jjf4f4f4f.jpg";
+                foodPair.stranger.foodDate = new Date();
                 foods.add(foodPair);
 
                 foodPair = new FoodPair();
+                foodPair.user.foodURL = "http://cool-projects.com/foodex/abcd/abcd3fiojdsijf03f.jpg";
+                foodPair.user.foodDate = new Date();
                 foodPair.stranger.foodURL = "http://cool-projects.com/foodex/abcd/abcdfjiowjf32.jpg";
+                foodPair.stranger.foodDate = new Date();
+                foods.add(foodPair);
+
+                foodPair = new FoodPair();
+                foodPair.user.foodURL = "http://cool-projects.com/foodex/abcd/abcdfjiowjf32.jpg";
                 foodPair.user.foodDate = new Date();
+                foodPair.stranger.foodURL = "http://cool-projects.com/foodex/abcd/abcd3fiojdsijf03f.jpg";
+                foodPair.stranger.foodDate = new Date();
                 foods.add(foodPair);
 
                 foodDAO.insertFoodPairs(foods);
