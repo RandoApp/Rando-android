@@ -28,6 +28,16 @@ abstract class FoodOrientedView implements TaskResultListener {
     protected int displayHeight;
     protected View rootView;
     protected ImageView foodImage;
+    private static BitmapFactory.Options decodeOptions;
+
+    static {
+        decodeOptions = new BitmapFactory.Options();
+        decodeOptions.inDither = false;
+        decodeOptions.inJustDecodeBounds = false;
+        decodeOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        decodeOptions.inSampleSize = 3;
+        decodeOptions.inPurgeable = true;
+    }
 
     public FoodOrientedView(FoodPair foodPair, View rootView) {
         this.foodPair = foodPair;
@@ -92,16 +102,6 @@ abstract class FoodOrientedView implements TaskResultListener {
     @Override
     public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
         String filename = (String) data.get(Constants.FILENAME);
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inDither = false;
-        options.inJustDecodeBounds = false;
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        options.inSampleSize = 3;
-        options.inPurgeable = true;
-
-        foodImage.setImageBitmap(BitmapFactory.decodeFile(filename, options));
-
-        //foodImage.setImageURI(Uri.parse(filename));
+        foodImage.setImageBitmap(BitmapFactory.decodeFile(filename, decodeOptions));
     }
 }
