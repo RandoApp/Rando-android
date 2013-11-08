@@ -8,9 +8,9 @@ import android.os.AsyncTask;
 
 import com.eucsoft.foodex.TakePictureActivity;
 import com.eucsoft.foodex.api.API;
-import com.eucsoft.foodex.callback.TaskCallback;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
+import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.util.FileUtil;
 
@@ -23,12 +23,12 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
 
     public static final int TASK_ID = 100;
 
-    private TaskCallback taskCallback;
+    private TaskResultListener taskResultListener;
     private HashMap<String, Object> data;
     private Context context;
 
-    public CreateFoodAndUploadTask(TaskCallback taskCallback, Context context) {
-        this.taskCallback = taskCallback;
+    public CreateFoodAndUploadTask(TaskResultListener taskResultListener, Context context) {
+        this.taskResultListener = taskResultListener;
         this.context = context;
     }
 
@@ -86,6 +86,6 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
     @Override
     protected void onPostExecute(Long aLong) {
         Log.d(CreateFoodAndUploadTask.class, "onPostExecute", aLong.toString());
-        taskCallback.onTaskResult(TASK_ID, aLong, data);
+        taskResultListener.onTaskResult(TASK_ID, aLong, data);
     }
 }

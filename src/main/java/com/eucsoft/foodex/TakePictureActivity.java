@@ -18,7 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.eucsoft.foodex.callback.TaskCallback;
+import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.CreateFoodAndUploadTask;
 import com.eucsoft.foodex.util.LocationUpdater;
@@ -26,7 +26,7 @@ import com.eucsoft.foodex.view.FoodexSurfaceView;
 
 import java.util.HashMap;
 
-public class TakePictureActivity extends Activity implements TaskCallback {
+public class TakePictureActivity extends Activity implements TaskResultListener {
 
     private FoodexSurfaceView foodexSurfaceView;
 

@@ -5,8 +5,8 @@ import android.os.AsyncTask;
 import android.os.PowerManager;
 
 import com.eucsoft.foodex.Constants;
-import com.eucsoft.foodex.callback.TaskCallback;
 import com.eucsoft.foodex.db.model.FoodPair;
+import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.util.FileUtil;
 
@@ -22,12 +22,12 @@ public class DownloadFoodPicsTask extends AsyncTask<FoodPair, Integer, Long> imp
 
     public static final int TASK_ID = 200;
 
-    private TaskCallback taskCallback;
+    private TaskResultListener taskResultListener;
     private HashMap<String, Object> data;
     private Context context;
 
-    public DownloadFoodPicsTask(TaskCallback taskCallback, Context context) {
-        this.taskCallback = taskCallback;
+    public DownloadFoodPicsTask(TaskResultListener taskResultListener, Context context) {
+        this.taskResultListener = taskResultListener;
         this.context = context;
     }
 
@@ -120,6 +120,6 @@ public class DownloadFoodPicsTask extends AsyncTask<FoodPair, Integer, Long> imp
     @Override
     protected void onPostExecute(Long aLong) {
         Log.d(DownloadFoodPicsTask.class, "onPostExecute", aLong.toString());
-        taskCallback.onTaskResult(TASK_ID, aLong, data);
+        taskResultListener.onTaskResult(TASK_ID, aLong, data);
     }
 }

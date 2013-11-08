@@ -12,11 +12,13 @@ import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.TakePictureActivity;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
+import com.eucsoft.foodex.listener.ScrollViewListener;
 import com.eucsoft.foodex.view.FoodView;
+import com.eucsoft.foodex.view.ObservableScrollView;
 
 import java.util.List;
 
-public class HomeWallFragment extends Fragment {
+public class HomeWallFragment extends Fragment implements ScrollViewListener {
 
     private int currentPage = 0;
 
@@ -39,7 +41,14 @@ public class HomeWallFragment extends Fragment {
                 startActivityForResult(intent, 100);
             }
         });
+
+
         return rootView;
     }
 
+
+    @Override
+    public void onScrollChanged(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
+
+    }
 }

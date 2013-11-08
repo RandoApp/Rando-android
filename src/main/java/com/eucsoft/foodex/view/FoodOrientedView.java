@@ -1,7 +1,8 @@
 package com.eucsoft.foodex.view;
 
 import android.content.Context;
-import android.net.Uri;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +14,13 @@ import android.widget.RelativeLayout;
 
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
-import com.eucsoft.foodex.callback.TaskCallback;
 import com.eucsoft.foodex.db.model.FoodPair;
+import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.task.DownloadFoodPicsTask;
 
 import java.util.HashMap;
 
-abstract class FoodOrientedView implements TaskCallback {
+abstract class FoodOrientedView implements TaskResultListener {
 
     protected Context context;
     protected FoodPair foodPair;
@@ -91,6 +92,16 @@ abstract class FoodOrientedView implements TaskCallback {
     @Override
     public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
         String filename = (String) data.get(Constants.FILENAME);
-        foodImage.setImageURI(Uri.parse(filename));
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inDither = false;
+        options.inJustDecodeBounds = false;
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        options.inSampleSize = 3;
+        options.inPurgeable = true;
+
+        foodImage.setImageBitmap(BitmapFactory.decodeFile(filename, options));
+
+        //foodImage.setImageURI(Uri.parse(filename));
     }
 }
