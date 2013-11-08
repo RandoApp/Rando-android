@@ -1,6 +1,7 @@
 # built application files
 *.apk
 *.ap_
+*.jar
 
 # files for the dex VM
 *.dex
@@ -26,6 +27,5 @@ proguard/
 # Intellij project files
 *.iml
 *.ipr
-*.jar
 *.iws
 .idea/
