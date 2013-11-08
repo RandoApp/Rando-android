@@ -10,6 +10,7 @@ import com.eucsoft.foodex.db.model.FoodPair;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -153,20 +154,7 @@ public class FoodDAOTest extends AndroidTestCase {
 
     @MediumTest
     public void testGetFirstPage() throws SQLException {
-        FoodPair foodPair;
-        for (int i = 0; i < 55; i++) {
-            foodPair = new FoodPair();
-            foodPair.user.foodURL = "blaURL";
-            foodPair.user.mapURL = "blaFile";
-            foodPair.user.bonAppetit = 0;
-            foodPair.user.foodDate = new Date();
-
-            foodPair.stranger.foodURL = "Bla2URL";
-            foodPair.stranger.mapURL = "LocalFileStranger";
-            foodPair.stranger.bonAppetit = 0;
-            foodPair.stranger.foodDate = new Date();
-            foodDAO.createFoodPair(foodPair);
-        }
+        insertNRandomFoodPairs(55);
 
         List<FoodPair> foodPairs = foodDAO.getAllFoodPairs();
 
@@ -175,6 +163,8 @@ public class FoodDAOTest extends AndroidTestCase {
         assertThat("Returned page size is 0 size", firstPage.size(), greaterThan(0));
         assertThat("Returned page size is greater PAGE_SIZE=" + Constants.PAGE_SIZE, firstPage.size(), lessThanOrEqualTo(Constants.PAGE_SIZE));
 
+        checkOrder(firstPage);
+
         for (int i = 0; i < firstPage.size(); i++) {
             assertThat(firstPage.get(i), is(foodPairs.get(i)));
         }
@@ -182,27 +172,15 @@ public class FoodDAOTest extends AndroidTestCase {
 
     @MediumTest
     public void testGetLastPage() throws SQLException {
-        FoodPair foodPair;
-        for (int i = 0; i < 55; i++) {
-            foodPair = new FoodPair();
-            foodPair.user.foodURL = "blaURL";
-            foodPair.user.mapURL = "blaFile";
-            foodPair.user.bonAppetit = 0;
-            foodPair.user.foodDate = new Date();
-
-            foodPair.stranger.foodURL = "Bla2URL";
-            foodPair.stranger.mapURL = "LocalFileStranger";
-            foodPair.stranger.bonAppetit = 0;
-            foodPair.stranger.foodDate = new Date();
-            foodDAO.createFoodPair(foodPair);
-        }
+        insertNRandomFoodPairs(55);
 
         List<FoodPair> foodPairs = foodDAO.getAllFoodPairs();
 
         List<FoodPair> lastPage = foodDAO.getFoodPairsForPage(foodDAO.getPagesNumber() - 1);
-
         assertThat("Returned page size is 0 size", lastPage.size(), greaterThan(0));
         assertThat("Returned page size is greater PAGE_SIZE=" + Constants.PAGE_SIZE, lastPage.size(), lessThanOrEqualTo(Constants.PAGE_SIZE));
+
+        checkOrder(foodPairs);
 
         int pagesNumber = foodDAO.getPagesNumber();
 
@@ -217,28 +195,55 @@ public class FoodDAOTest extends AndroidTestCase {
 
     @MediumTest
     public void testGetPagesNumber() throws SQLException {
-        FoodPair foodPair;
-        for (int i = 0; i < 55; i++) {
+        insertNRandomFoodPairs(55);
+        List<FoodPair> foodPairs = foodDAO.getAllFoodPairs();
+        int number = foodDAO.getPagesNumber();
+        int result = foodPairs.size() - (number - 1) * Constants.PAGE_SIZE;
+        assertThat(result, greaterThan(0));
+        assertThat(result, lessThan(Constants.PAGE_SIZE));
+    }
+
+    @MediumTest
+    public void testReturnOrder() throws SQLException {
+        insertNRandomFoodPairs(55);
+        List<FoodPair> foodPairs = foodDAO.getAllFoodPairs();
+        checkOrder(foodPairs);
+
+    }
+
+    private void checkOrder(List<FoodPair> foodPairs) {
+        FoodPair prevPair = null;
+        for (FoodPair foodPair : foodPairs) {
+            if (prevPair != null) {
+                assertThat("Order is broken: " + foodPair.user.foodDate.toString() + " is greater Than " + prevPair.user.foodDate.toString(), foodPair.user.foodDate, greaterThan(prevPair.user.foodDate));
+            } else {
+                prevPair = foodPair;
+            }
+        }
+    }
+
+    private void insertNRandomFoodPairs(int n) {
+        Date baseDate = new Date();
+        Random random = new Random();
+        for (int i = 0; i < n; i++) {
+            FoodPair foodPair;
+            Date userDate = new Date();
+            userDate.setTime(baseDate.getTime() + random.nextInt(1000000));
+
             foodPair = new FoodPair();
             foodPair.user.foodURL = "blaURL" + i;
             foodPair.user.mapURL = "blaFile" + i;
             foodPair.user.bonAppetit = 0;
-            foodPair.user.foodDate = new Date();
+            foodPair.user.foodDate = userDate;
 
+            Date strangerDate = new Date();
+            strangerDate.setTime(baseDate.getTime() + random.nextInt(1000000));
             foodPair.stranger.foodURL = "Bla2URL" + i;
             foodPair.stranger.mapURL = "LocalFileStranger" + i;
             foodPair.stranger.bonAppetit = 0;
-            foodPair.stranger.foodDate = new Date();
+            foodPair.stranger.foodDate = strangerDate;
             foodDAO.createFoodPair(foodPair);
         }
-
-        List<FoodPair> foodPairs = foodDAO.getAllFoodPairs();
-
-        int number = foodDAO.getPagesNumber();
-
-        int result = foodPairs.size() - (number - 1) * Constants.PAGE_SIZE;
-
-        assertThat(result, greaterThan(0));
-        assertThat(result, lessThan(Constants.PAGE_SIZE));
     }
+
 }
