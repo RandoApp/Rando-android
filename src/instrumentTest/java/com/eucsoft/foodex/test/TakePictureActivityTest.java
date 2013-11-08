@@ -6,8 +6,6 @@ import android.test.suitebuilder.annotation.LargeTest;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.TakePictureActivity;
 
-import java.net.URI;
-
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
@@ -18,8 +16,8 @@ import static org.hamcrest.CoreMatchers.not;
 public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<TakePictureActivity> {
 
     //TODO: find out how we can run tests on travis without ugly delays
-    private static final int UGLY_DELAY_FOR_TRAVIS = 7;
-    private static final int DEALY = 2000;
+    private static final int UGLY_DELAY_FOR_TRAVIS = 9;
+    private static final int DEALY = 1000;
 
     //Activity to test
     private TakePictureActivity takePictureActivity;
