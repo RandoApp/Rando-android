@@ -2,7 +2,7 @@ package com.eucsoft.foodex.view;
 
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.ImageSwitcher;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -30,7 +30,7 @@ class FoodLandscapeView extends FoodOrientedView {
                 Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_LEFT, Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_RIGHT);
 
         int foodImageSize = displayWidth / 2 - (Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_LEFT + Constants.FOOD_MARGIN_PORTRAIT_COLUMN_RIGHT);
-        ImageView foodImage = createFoodImage(foodImageSize, foodImageSize);
+        ImageSwitcher foodImage = createFoodImage(foodImageSize, foodImageSize);
 
         RelativeLayout relativeLayout = createRelativeLayout();
         ImageButton bonAppetitButton = createBonAppetitButton();

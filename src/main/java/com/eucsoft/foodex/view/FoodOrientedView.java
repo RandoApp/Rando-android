@@ -3,20 +3,26 @@ package com.eucsoft.foodex.view;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ViewSwitcher;
 
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.task.DownloadFoodPicsTask;
+import com.eucsoft.foodex.util.FileUtil;
 
 import java.util.HashMap;
 
@@ -27,8 +33,10 @@ abstract class FoodOrientedView implements TaskResultListener {
     protected int displayWidth;
     protected int displayHeight;
     protected View rootView;
-    protected ImageView foodImage;
+    protected ImageSwitcher foodImage;
     private static BitmapFactory.Options decodeOptions;
+
+    private boolean isUserFoodShown = false;
 
     static {
         decodeOptions = new BitmapFactory.Options();
@@ -59,9 +67,38 @@ abstract class FoodOrientedView implements TaskResultListener {
         displayHeight = display.getHeight();
     }
 
-    protected ImageView createFoodImage(int width, int height) {
-        foodImage = new ImageView(context);
-        foodImage.setImageURI(null);
+    protected ImageSwitcher createFoodImage(final int width, final int height) {
+        foodImage = new ImageSwitcher(context);
+
+        foodImage.setFactory(new ViewSwitcher.ViewFactory() {
+            public View makeView() {
+                // Create a new ImageView set it's properties
+                ImageView imageView = new ImageView(context);
+                imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                imageView.setLayoutParams(new ImageSwitcher.LayoutParams(width, height));
+                return imageView;
+            }
+        });
+
+        foodImage.setInAnimation(AnimationUtils.loadAnimation(context, R.anim.food_flip_in));
+        foodImage.setOutAnimation(AnimationUtils.loadAnimation(context, R.anim.food_flip_out));
+
+        foodImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String filepath;
+                if (isUserFoodShown) {
+                    filepath = FileUtil.getFoodPath(foodPair.stranger);
+                } else {
+                    filepath = FileUtil.getFoodPath(foodPair.user);
+                }
+                isUserFoodShown = !isUserFoodShown;
+                Bitmap bitmap = BitmapFactory.decodeFile(filepath, decodeOptions);
+                Drawable d = new BitmapDrawable(bitmap);
+                foodImage.setImageDrawable(d);
+            }
+        });
+
         DownloadFoodPicsTask downloadFoodPicsTask = new DownloadFoodPicsTask(this, context);
         downloadFoodPicsTask.execute(foodPair);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, height);
@@ -102,6 +139,8 @@ abstract class FoodOrientedView implements TaskResultListener {
     @Override
     public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
         String filename = (String) data.get(Constants.FILENAME);
-        foodImage.setImageBitmap(BitmapFactory.decodeFile(filename, decodeOptions));
+        Bitmap bitmap = BitmapFactory.decodeFile(filename, decodeOptions);
+        Drawable d = new BitmapDrawable(bitmap);
+        foodImage.setImageDrawable(d);
     }
 }
