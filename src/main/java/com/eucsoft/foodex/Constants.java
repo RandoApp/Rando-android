@@ -4,8 +4,7 @@ public class Constants {
 
     public static final String ALBUM_NAME = "Foodex";
 
-    public static final int ORIENTATION_PORTRAIT = 1;
-    public static final int ORIENTATION_LANDSCAPE = 2;
+    public static final String FILENAME = "FILENAME";
 
     public static final int BON_APPETIT_BUTTON_SIZE = 100;
 

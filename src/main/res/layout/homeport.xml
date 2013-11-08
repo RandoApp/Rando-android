@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent">
 
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -13,21 +13,19 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
 
-             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/foodContainer"
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
 
-
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
-                android:layout_height="100dp">
-            </View>
+                android:layout_height="100dp"></View>
         </LinearLayout>
     </ScrollView>
-
 
 
     <ImageButton

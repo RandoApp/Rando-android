@@ -18,12 +18,14 @@ import java.util.List;
 
 public class HomeWallFragment extends Fragment {
 
+    private int currentPage = 0;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(FoodView.getLayoutFragmentResource(container.getContext()), container, false);
 
-        List<FoodPair> foods = new FoodDAO(container.getContext()).getAllFoodPairs();
+        List<FoodPair> foods = new FoodDAO(container.getContext()).getFoodPairsForPage(currentPage);
 
         for (FoodPair foodPair : foods) {
             new FoodView(rootView, foodPair).display();
