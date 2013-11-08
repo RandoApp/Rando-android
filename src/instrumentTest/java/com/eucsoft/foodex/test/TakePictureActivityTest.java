@@ -6,6 +6,8 @@ import android.test.suitebuilder.annotation.LargeTest;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.TakePictureActivity;
 
+import java.net.URI;
+
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
@@ -13,9 +15,12 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.CoreMatchers.not;
 
-public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<TakePictureActivity>
+public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<TakePictureActivity> {
 
-{
+    //TODO: find out how we can run tests on travis without ugly delays
+    private static final int UGLY_DELAY_FOR_TRAVIS = 7;
+    private static final int DEALY = 2000;
+
     //Activity to test
     private TakePictureActivity takePictureActivity;
 
@@ -29,7 +34,7 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
     protected void setUp() throws Exception {
         super.setUp();
         takePictureActivity = getActivity();
-        Thread.sleep(2000);
+        Thread.sleep(DEALY * UGLY_DELAY_FOR_TRAVIS);
     }
 
     @Override
@@ -41,7 +46,7 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
             setActivity(null);
         }
         //Sleep is necessary because Camera Service is not always freed in time
-        Thread.sleep(2000);
+        Thread.sleep(DEALY * UGLY_DELAY_FOR_TRAVIS);
     }
 
     // Methods whose names are prefixed with test will automatically be run
@@ -62,7 +67,7 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
 
         //Sleep is necessary because Camera Service is not always freed in time and Activity not starts properly
         try {
-            Thread.sleep(1000);
+            Thread.sleep(DEALY * UGLY_DELAY_FOR_TRAVIS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -103,7 +108,7 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
         onView(withId(R.id.take_picture_button)).perform(click());
         //Sleep is necessary because Camera produces picture on callback
         try {
-            Thread.sleep(500);
+            Thread.sleep(DEALY * UGLY_DELAY_FOR_TRAVIS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
