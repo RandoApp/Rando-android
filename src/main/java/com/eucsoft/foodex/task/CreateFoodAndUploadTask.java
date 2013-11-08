@@ -67,7 +67,7 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
         }
 
         FoodDAO foodDAO = new FoodDAO(context);
-        foodDAO.createFood(foodPair);
+        foodDAO.createFoodPair(foodPair);
         foodDAO.close();
 
         file.renameTo(new File(FileUtil.getOutputMediaDir().getAbsolutePath() + foodPair.user.getFoodFileName()));
