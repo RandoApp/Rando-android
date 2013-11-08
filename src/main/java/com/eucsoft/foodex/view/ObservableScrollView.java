@@ -1,9 +1,14 @@
 package com.eucsoft.foodex.view;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.util.AttributeSet;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
+import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.listener.ScrollViewListener;
 
 public class ObservableScrollView extends ScrollView {
@@ -34,4 +39,17 @@ public class ObservableScrollView extends ScrollView {
         }
     }
 
+    public void addFinalBlock(int orientation) {
+        int delta;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            delta = 140;
+        } else {
+            delta = 60;
+        }
+        LinearLayout foodContainer = (LinearLayout) this.findViewById(R.id.foodContainer);
+        View finalBlock = new View(this.getContext());
+        ObservableScrollView.LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, delta);
+        finalBlock.setLayoutParams(layoutParams);
+        foodContainer.addView(finalBlock);
+    }
 }

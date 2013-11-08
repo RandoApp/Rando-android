@@ -29,6 +29,7 @@ public class FoodDAO {
     }
 
     public void close() {
+        database.close();
         foodDBHelper.close();
     }
 

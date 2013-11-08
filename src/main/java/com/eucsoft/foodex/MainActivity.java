@@ -66,7 +66,7 @@ public class MainActivity extends ActionBarActivity {
     //TODO: REMOVE
     private void initDBForTesting() {
         FoodDAO foodDAO = new FoodDAO(context);
-        if (foodDAO.getFoodPairsNumber() <= 60) {
+        if (foodDAO.getFoodPairsNumber() <= 10) {
 
             for (int i = 0; i < 5; i++) {
                 List<FoodPair> foods = new ArrayList<FoodPair>();
@@ -93,6 +93,7 @@ public class MainActivity extends ActionBarActivity {
                 foodDAO.insertFoodPairs(foods);
             }
         }
+        foodDAO.close();
     }
 
 }
