@@ -23,7 +23,7 @@ public class HomeWallFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(FoodView.getLayoutFragmentResource(container.getContext()), container, false);
 
-        List<FoodPair> foods = new FoodDAO(container.getContext()).getAllFoods();
+        List<FoodPair> foods = new FoodDAO(container.getContext()).getAllFoodPairs();
 
         for (FoodPair foodPair : foods) {
             new FoodView(rootView, foodPair).display();
