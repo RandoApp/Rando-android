@@ -51,6 +51,18 @@ public class APITest extends AndroidTestCase {
     }
 
     @SmallTest
+    public void testUploadFoodWithNullLocation() throws Exception {
+        APITestHelper.mockAPIForUploadFood();
+
+        FoodPair foodPair = API.uploadFood(file, null);
+
+        String actual = foodPair.user.foodURL;
+        assertThat(new Date(1383670800877l).compareTo(foodPair.user.foodDate), is(0));
+        assertThat(actual, is("http://api.foodex.com/food/abcd/abcdadfwefwef.jpg"));
+        //TODO: verify that lat and long is 0.0 in request
+    }
+
+    @SmallTest
     public void testUploadFoodWithError() throws Exception {
         APITestHelper.mockAPIWithError();
 
@@ -89,18 +101,22 @@ public class APITest extends AndroidTestCase {
 
         assertThat(foods.size(), is(2));
 
+        assertThat(foods.get(0).user.foodId, is("ddddcwef3242f32f"));
         assertThat(foods.get(0).user.foodURL, is("http://api.foodex.com/food/dddd/ddddcwef3242f32f.jpg"));
         assertThat(foods.get(0).user.mapURL, is("http://api.foodex.com/map/eeee/eeeewef3242f32f.jpg"));
         assertThat(foods.get(0).user.bonAppetit, is(0));
         assertThat(foods.get(0).user.foodDate.compareTo(new Date(1383690800877l)), is(0));
+        assertThat(foods.get(0).stranger.foodId, is("abcwef3242f32f"));
         assertThat(foods.get(0).stranger.foodURL, is("http://api.foodex.com/food/abc/abcwef3242f32f.jpg"));
         assertThat(foods.get(0).stranger.mapURL, is("http://api.foodex.com/map/azca/azcacwef3242f32f.jpg"));
         assertThat(foods.get(0).stranger.bonAppetit, is(1));
 
+        assertThat(foods.get(1).user.foodId, is("abcdw0ef3242f32f"));
         assertThat(foods.get(1).user.foodURL, is("http://api.foodex.com/food/abcd/abcdw0ef3242f32f.jpg"));
         assertThat(foods.get(1).user.mapURL, is("http://api.foodex.com/map/bcde/bcdecwef3242f32f.jpg"));
         assertThat(foods.get(1).user.bonAppetit, is(1));
         assertThat(foods.get(1).user.foodDate.compareTo(new Date(1383670400877l)), is(0));
+        assertThat(foods.get(1).stranger.foodId, is("abcd3cwef3242f32f"));
         assertThat(foods.get(1).stranger.foodURL, is("http://api.foodex.com/food/abcd/abcd3cwef3242f32f.jpg"));
         assertThat(foods.get(1).stranger.mapURL, is("http://api.foodex.com/map/abcd/abcd5wef3242f32f.jpg"));
         assertThat(foods.get(1).stranger.bonAppetit, is(0));
@@ -154,8 +170,7 @@ public class APITest extends AndroidTestCase {
 
         verify(API.client).execute(captor.capture());
 
-        assertThat(params(captor.getValue()), is(Constants.FOOD_ID_PARAM + "=2222"));
-        assertThat(captor.getValue().getURI().toString(), is(Constants.REPORT_URL));
+        assertThat(captor.getValue().getURI().toString(), is(Constants.REPORT_URL + "2222"));
     }
 
     @SmallTest
@@ -184,8 +199,7 @@ public class APITest extends AndroidTestCase {
 
         verify(API.client).execute(captor.capture());
 
-        assertThat(params(captor.getValue()), is(Constants.BON_APPETIT_PARAM + "=3333"));
-        assertThat(captor.getValue().getURI().toString(), is(Constants.BON_APPETIT_URL));
+        assertThat(captor.getValue().getURI().toString(), is(Constants.BON_APPETIT_URL + "3333"));
     }
 
     @SmallTest
