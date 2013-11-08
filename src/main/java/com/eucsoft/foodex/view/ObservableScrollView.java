@@ -5,7 +5,6 @@ import android.content.res.Configuration;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -45,7 +44,7 @@ public class ObservableScrollView extends ScrollView {
     public void addFinalBlock(int orientation) {
         int delta;
         RelativeLayout relativeLayout = (RelativeLayout) this.getParent();
-        int takePictureButtonHeight = ((ImageButton) relativeLayout.findViewById(R.id.cameraButton)).getHeight();
+        int takePictureButtonHeight = (relativeLayout.findViewById(R.id.cameraButton)).getHeight();
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             delta = takePictureButtonHeight;
         } else {
