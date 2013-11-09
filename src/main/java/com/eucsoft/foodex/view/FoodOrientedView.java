@@ -5,11 +5,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v4.view.MotionEventCompat;
 import android.view.Display;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
@@ -19,6 +20,7 @@ import android.widget.ViewSwitcher;
 
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
+import com.eucsoft.foodex.animation.AnimationFactory;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.task.DownloadFoodPicsTask;
@@ -80,22 +82,46 @@ abstract class FoodOrientedView implements TaskResultListener {
             }
         });
 
-        foodImage.setInAnimation(AnimationUtils.loadAnimation(context, R.anim.food_flip_in));
-        foodImage.setOutAnimation(AnimationUtils.loadAnimation(context, R.anim.food_flip_out));
+        AnimationFactory.flipTransition(foodImage, AnimationFactory.FlipDirection.RIGHT_LEFT);
+        foodImage.setAnimateFirstView(false);
 
         foodImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String filepath;
+                String filePath;
                 if (isUserFoodShown) {
-                    filepath = FileUtil.getFoodPath(foodPair.stranger);
+                    filePath = FileUtil.getFoodPath(foodPair.stranger);
                 } else {
-                    filepath = FileUtil.getFoodPath(foodPair.user);
+                    filePath = FileUtil.getFoodPath(foodPair.user);
                 }
                 isUserFoodShown = !isUserFoodShown;
-                Bitmap bitmap = BitmapFactory.decodeFile(filepath, decodeOptions);
+                Bitmap bitmap = BitmapFactory.decodeFile(filePath, decodeOptions);
                 Drawable d = new BitmapDrawable(bitmap);
                 foodImage.setImageDrawable(d);
+            }
+        });
+
+        foodImage.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                float y = MotionEventCompat.getY(event, 0);
+                if (y < -30) {
+                    //TODO: SHould be MAP
+                    String filePath;
+                    if (isUserFoodShown) {
+                        filePath = FileUtil.getFoodPath(foodPair.stranger);
+                    } else {
+                        filePath = FileUtil.getFoodPath(foodPair.user);
+                    }
+                    isUserFoodShown = !isUserFoodShown;
+                    Bitmap bitmap = BitmapFactory.decodeFile(filePath, decodeOptions);
+                    Drawable d = new BitmapDrawable(bitmap);
+                    foodImage.setImageDrawable(d);
+
+                }
+
+                return false;
             }
         });
 
