@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -18,20 +16,22 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
-import android.widget.ImageSwitcher;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.db.model.FoodPair;
+import com.eucsoft.foodex.listener.HorizontalScrollViewListener;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.util.FileUtil;
+import com.eucsoft.foodex.view.MyHorizontalLayout;
+import com.eucsoft.foodex.view.ObservableHorizontalScrollView;
 
 import java.util.HashMap;
 
-public class PortraitFoodFragment extends Fragment implements TaskResultListener {
+public class PortraitFoodFragment extends Fragment implements TaskResultListener, HorizontalScrollViewListener {
 
     private static BitmapFactory.Options decodeOptions;
 
@@ -48,16 +48,12 @@ public class PortraitFoodFragment extends Fragment implements TaskResultListener
     private boolean mapShown;
 
     private FoodPair foodPair;
-    private ImageSwitcher foodImage;
-    private View mOverscrollLeft;
-    private View mOverscrollRight;
+    private MyHorizontalLayout foodImage;
 
     private Animation mSlideInLeft;
     private Animation mSlideOutRight;
     private Animation mSlideInRight;
     private Animation mSlideOutLeft;
-    private Animation mOverscrollLeftFadeOut;
-    private Animation mOverscrollRightFadeOut;
 
 
     public static PortraitFoodFragment newInstance(FoodPair foodPair, boolean showStranger, boolean mapShown) {
@@ -102,11 +98,6 @@ public class PortraitFoodFragment extends Fragment implements TaskResultListener
             }
         });
 
-        foodImage = (ImageSwitcher) layout.findViewWithTag("image");
-
-        mOverscrollLeft = layout.findViewById(R.id.overscroll_left);
-        mOverscrollRight = layout.findViewById(R.id.overscroll_right);
-
         final int foodImageSize;
         if (layout.getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             foodImageSize = displayWidth / 2 - (Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_LEFT + Constants.FOOD_MARGIN_PORTRAIT_COLUMN_RIGHT);
@@ -119,10 +110,25 @@ public class PortraitFoodFragment extends Fragment implements TaskResultListener
         } else {
             foodImageSize = displayWidth - Constants.FOOD_MARGIN_PORTRAIT;
         }
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(foodImageSize, foodImageSize);
+        //LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(foodImageSize, foodImageSize);
+        HorizontalScrollView.LayoutParams layoutParams = new HorizontalScrollView.LayoutParams(foodImageSize, foodImageSize);
+        foodImage = (MyHorizontalLayout) layout.findViewWithTag("image");
         foodImage.setLayoutParams(layoutParams);
+        foodImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                PortraitFoodFragment portraitFoodFragment = PortraitFoodFragment.newInstance(foodPair, !showStranger, mapShown);
+                transaction.setCustomAnimations(R.anim.food_flip_out, R.anim.food_flip_in);
+                transaction.replace((int) foodPair.id, portraitFoodFragment);
+                transaction.commit();
+            }
+        });
 
-        foodImage.setFactory(new ImageSwitcher.ViewFactory() {
+        ObservableHorizontalScrollView scrollView = (ObservableHorizontalScrollView) layout.findViewWithTag("scroll");
+        scrollView.setScrollViewListener(this);
+
+        /*foodImage.setFactory(new ImageSwitcher.ViewFactory() {
             @Override
             public View makeView() {
                 // Create a new ImageView set it's properties
@@ -131,46 +137,44 @@ public class PortraitFoodFragment extends Fragment implements TaskResultListener
                 imageView.setLayoutParams(new ImageSwitcher.LayoutParams(foodImageSize, foodImageSize));
                 return imageView;
             }
-        });
+        });*/
 
 
-        final GestureDetector gestureDetector = new GestureDetector(container.getContext(), new SwipeListener());
+        /*final GestureDetector gestureDetector = new GestureDetector(container.getContext(), new SwipeListener());
         foodImage.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 gestureDetector.onTouchEvent(event);
                 return true;
             }
-        });
+        });*/
 
         String filename = getFileToShow(mapShown);
-        if (filename != null) {
-            Bitmap bitmap = BitmapFactory.decodeFile(filename, decodeOptions);
-            Drawable d = new BitmapDrawable(container.getResources(), bitmap);
-            foodImage.setImageDrawable(d);
+        if (showStranger) {
+            foodImage.add(FileUtil.getFoodPath(foodPair.stranger), foodImageSize);
+            foodImage.add(FileUtil.getMapPath(foodPair.stranger), foodImageSize);
+        } else {
+            foodImage.add(FileUtil.getFoodPath(foodPair.user), foodImageSize);
+            foodImage.add(FileUtil.getMapPath(foodPair.user), foodImageSize);
         }
         return layout;
     }
 
     private void showMap(boolean showMap) {
         if (showMap && mapShown) {
-            mOverscrollRight.setVisibility(View.VISIBLE);
-            mOverscrollLeft.startAnimation(mOverscrollRightFadeOut);
             return;
         }
 
         if (!showMap && !mapShown) {
-            mOverscrollLeft.setVisibility(View.VISIBLE);
-            mOverscrollLeft.startAnimation(mOverscrollLeftFadeOut);
             return;
         }
-        foodImage.setInAnimation(showMap ? mSlideInRight : mSlideInLeft);
+        /*foodImage.setInAnimation(showMap ? mSlideInRight : mSlideInLeft);
         foodImage.setOutAnimation(showMap ? mSlideOutLeft : mSlideOutRight);
 
         String filePath = getFileToShow(showMap);
         Bitmap bitmap = BitmapFactory.decodeFile(filePath, decodeOptions);
         Drawable d = new BitmapDrawable(bitmap);
-        foodImage.setImageDrawable(d);
+        foodImage.setImageDrawable(d);*/
     }
 
     private String getFileToShow(boolean showMap) {
@@ -241,10 +245,6 @@ public class PortraitFoodFragment extends Fragment implements TaskResultListener
                 android.R.anim.slide_out_right);
         mSlideInRight = AnimationUtils.loadAnimation(context, R.anim.slide_in_right);
         mSlideOutLeft = AnimationUtils.loadAnimation(context, R.anim.slide_out_left);
-        mOverscrollLeftFadeOut = AnimationUtils
-                .loadAnimation(context, R.anim.fade_out);
-        mOverscrollRightFadeOut = AnimationUtils.loadAnimation(context,
-                R.anim.fade_out);
     }
 
     @Override
@@ -257,9 +257,23 @@ public class PortraitFoodFragment extends Fragment implements TaskResultListener
 
     @Override
     public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
-        String filename = FileUtil.getFoodPath(((FoodPair) data.get(Constants.FOOD_PAIR)).stranger);
+        /*String filename = FileUtil.getFoodPath(((FoodPair) data.get(Constants.FOOD_PAIR)).stranger);
         Bitmap bitmap = BitmapFactory.decodeFile(filename, decodeOptions);
         Drawable d = new BitmapDrawable(getResources(), bitmap);
-        foodImage.setImageDrawable(d);
+        foodImage.setImageDrawable(d);*/
+    }
+
+    @Override
+    public void onScrollChanged(final ObservableHorizontalScrollView scrollView, int x, int y, int oldx, int oldy) {
+        /*int width = scrollView.getChildAt(0).getWidth();
+        if(x > width/4 && x < width*3/4){
+            //scrollView.scrollTo(scrollView.getRight(),y);
+            scrollView.post(new Runnable() {
+                public void run() {
+                    scrollView.fullScroll(View.FOCUS_RIGHT);
+                }
+            });
+        }*/
     }
 }
+
