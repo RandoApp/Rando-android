@@ -26,7 +26,7 @@ import com.eucsoft.foodex.view.ObservableHorizontalScrollView;
 
 import java.util.HashMap;
 
-public class PortraitFoodFragment extends Fragment implements TaskResultListener, HorizontalScrollViewListener {
+public class FoodPairFragment extends Fragment implements TaskResultListener, HorizontalScrollViewListener {
 
     private boolean showStranger = true;
     private boolean mapShown;
@@ -35,8 +35,8 @@ public class PortraitFoodFragment extends Fragment implements TaskResultListener
     private int foodImageSize;
     private FoodPicsLayout foodImage;
 
-    public static PortraitFoodFragment newInstance(FoodPair foodPair, boolean showStranger, boolean mapShown) {
-        PortraitFoodFragment fragment = new PortraitFoodFragment();
+    public static FoodPairFragment newInstance(FoodPair foodPair, boolean showStranger, boolean mapShown) {
+        FoodPairFragment fragment = new FoodPairFragment();
         Bundle args = new Bundle();
         args.putSerializable(Constants.FOOD_PAIR, foodPair);
         args.putBoolean(Constants.SHOW_STRANGER, showStranger);
@@ -94,9 +94,9 @@ public class PortraitFoodFragment extends Fragment implements TaskResultListener
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                PortraitFoodFragment portraitFoodFragment = PortraitFoodFragment.newInstance(foodPair, !showStranger, mapShown);
+                FoodPairFragment foodPairFragment = FoodPairFragment.newInstance(foodPair, !showStranger, mapShown);
                 transaction.setCustomAnimations(R.anim.food_flip_out, R.anim.food_flip_in);
-                transaction.replace((int) foodPair.id, portraitFoodFragment);
+                transaction.replace((int) foodPair.id, foodPairFragment);
                 transaction.commit();
             }
         });

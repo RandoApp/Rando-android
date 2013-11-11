@@ -107,8 +107,8 @@ public class HomeWallFragment extends Fragment implements ScrollViewListener {
         }
         foodContainer.addView(linearLayout);
 
-        PortraitFoodFragment portraitFoodFragment = PortraitFoodFragment.newInstance(foodPair, true, false);
-        transaction.add(linearLayout.getId(), portraitFoodFragment, "foodItem");
+        FoodPairFragment foodPairFragment = FoodPairFragment.newInstance(foodPair, true, false);
+        transaction.add(linearLayout.getId(), foodPairFragment, "foodItem");
     }
 
     private void resizeColumnsIfNeeded(View container) {
