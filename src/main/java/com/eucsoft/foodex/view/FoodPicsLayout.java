@@ -45,7 +45,7 @@ public class FoodPicsLayout extends LinearLayout {
     private ImageView getImageView(final int i, final int imgSize) {
         Bitmap bm = null;
         if (i < itemList.size()) {
-            bm = decodeSampledBitmapFromUri(itemList.get(i), imgSize, imgSize);
+            bm = BitmapFactory.decodeFile(itemList.get(i), decodeOptions);
         }
 
         ImageView imageView = new ImageView(myContext);
@@ -56,32 +56,6 @@ public class FoodPicsLayout extends LinearLayout {
         imageView.setOnClickListener(onClickListener);
 
         return imageView;
-    }
-
-    private Bitmap decodeSampledBitmapFromUri(String path, int reqWidth, int reqHeight) {
-        Bitmap bm = null;
-        // Calculate inSampleSize
-        decodeOptions.inSampleSize = calculateInSampleSize(decodeOptions, reqWidth, reqHeight);
-        bm = BitmapFactory.decodeFile(path, decodeOptions);
-
-        return bm;
-    }
-
-    private int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-            if (width > height) {
-                inSampleSize = Math.round((float) height / (float) reqHeight);
-            } else {
-                inSampleSize = Math.round((float) width / (float) reqWidth);
-            }
-        }
-        return inSampleSize;
     }
 
     public void setOnClickListener(OnClickListener onClickListener) {

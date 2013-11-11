@@ -19,6 +19,7 @@ import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.HorizontalScrollViewListener;
 import com.eucsoft.foodex.listener.TaskResultListener;
+import com.eucsoft.foodex.task.DownloadFoodPicsTask;
 import com.eucsoft.foodex.util.FileUtil;
 import com.eucsoft.foodex.view.FoodPicsLayout;
 import com.eucsoft.foodex.view.ObservableHorizontalScrollView;
@@ -78,6 +79,7 @@ public class PortraitFoodFragment extends Fragment implements TaskResultListener
             foodImageSize = displayWidth / 2 - (Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_LEFT + Constants.FOOD_MARGIN_PORTRAIT_COLUMN_RIGHT);
 
             LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
             linearParams.topMargin = Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_TOP;
             linearParams.leftMargin = Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_LEFT;
             linearParams.rightMargin = Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_RIGHT;
@@ -99,29 +101,11 @@ public class PortraitFoodFragment extends Fragment implements TaskResultListener
             }
         });
 
+        DownloadFoodPicsTask downloadFoodPicsTask = new DownloadFoodPicsTask(this, layout.getContext());
+        downloadFoodPicsTask.execute(foodPair);
+
         final ObservableHorizontalScrollView scrollView = (ObservableHorizontalScrollView) layout.findViewWithTag("scroll");
         scrollView.setScrollViewListener(this);
-
-        if (FileUtil.areFilesExist(foodPair)) {
-            if (showStranger) {
-                foodImage.add(FileUtil.getFoodPath(foodPair.stranger), foodImageSize);
-                foodImage.add(FileUtil.getMapPath(foodPair.stranger), foodImageSize);
-            } else {
-                foodImage.add(FileUtil.getFoodPath(foodPair.user), foodImageSize);
-                foodImage.add(FileUtil.getMapPath(foodPair.user), foodImageSize);
-            }
-        }
-        if (mapShown) {
-            scrollView.post(new Runnable() {
-                public void run() {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                    }
-                    scrollView.fullScroll(View.FOCUS_RIGHT);
-                }
-            });
-        }
         return layout;
     }
 
@@ -136,7 +120,6 @@ public class PortraitFoodFragment extends Fragment implements TaskResultListener
     @Override
     public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
 
-        FoodPair foodPair = (FoodPair) data.get(Constants.FOOD_PAIR);
         if (showStranger) {
             foodImage.add(FileUtil.getFoodPath(foodPair.stranger), foodImageSize);
             foodImage.add(FileUtil.getMapPath(foodPair.stranger), foodImageSize);
@@ -156,15 +139,6 @@ public class PortraitFoodFragment extends Fragment implements TaskResultListener
         } else {
             mapShown = false;
         }
-
-        /*if(x > width/4 && x < width*3/4){
-            //scrollView.scrollTo(scrollView.getRight(),y);
-            scrollView.post(new Runnable() {
-                public void run() {
-                    scrollView.fullScroll(View.FOCUS_RIGHT);
-                }
-            });
-        }*/
     }
 }
 

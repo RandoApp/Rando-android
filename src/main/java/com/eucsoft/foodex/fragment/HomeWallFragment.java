@@ -20,8 +20,6 @@ import com.eucsoft.foodex.TakePictureActivity;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.ScrollViewListener;
-import com.eucsoft.foodex.task.DownloadFoodPicsTask;
-import com.eucsoft.foodex.util.FileUtil;
 import com.eucsoft.foodex.view.FoodView;
 import com.eucsoft.foodex.view.ObservableScrollView;
 
@@ -45,12 +43,11 @@ public class HomeWallFragment extends Fragment implements ScrollViewListener {
         foodDAO.close();
 
         resizeColumnsIfNeeded(rootView);
-
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
         for (FoodPair foodPair : foods) {
-            insertFood(rootView, foodPair, fragmentTransaction);
+            insertFood(rootView, foodPair, transaction);
         }
-        fragmentTransaction.commit();
+        transaction.commit();
         ImageButton takePictureButton = (ImageButton) rootView.findViewById(R.id.cameraButton);
         takePictureButton.setOnClickListener(new View.OnClickListener() {
 
@@ -112,11 +109,6 @@ public class HomeWallFragment extends Fragment implements ScrollViewListener {
 
         PortraitFoodFragment portraitFoodFragment = PortraitFoodFragment.newInstance(foodPair, true, false);
         transaction.add(linearLayout.getId(), portraitFoodFragment, "foodItem");
-
-        if (!FileUtil.areFilesExist(foodPair)) {
-            DownloadFoodPicsTask downloadFoodPicsTask = new DownloadFoodPicsTask(portraitFoodFragment, rootView.getContext());
-            downloadFoodPicsTask.execute(foodPair);
-        }
     }
 
     private void resizeColumnsIfNeeded(View container) {
