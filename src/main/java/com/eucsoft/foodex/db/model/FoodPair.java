@@ -1,8 +1,9 @@
 package com.eucsoft.foodex.db.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class FoodPair {
+public class FoodPair implements Serializable {
 
     public long id;
     //user FoodPair props
@@ -13,7 +14,7 @@ public class FoodPair {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || (getClass() != o.getClass())) return false;
 
         FoodPair foodPair = (FoodPair) o;
 
@@ -31,7 +32,7 @@ public class FoodPair {
         return result;
     }
 
-    public class User {
+    public class User implements Serializable {
         public String foodId;
         public String foodURL;
         public Date foodDate;

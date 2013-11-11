@@ -3,4 +3,18 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    </resources>
+
+    <dimen name="bon_appetit_button_size">100dp</dimen>
+    <dimen name="food_margin_portrait_column_top">15dp</dimen>
+    <dimen name="food_margin_portrait_column_left">15dp</dimen>
+    <dimen name="food_margin_portrait_column_right">15dp</dimen>
+    <dimen name="relative_layout_margin_top">5dp</dimen>
+    <dimen name="food_margin_portrait">30dp</dimen>
+
+
+    <dimen name="padding_small">4dp</dimen>
+    <dimen name="padding_medium">8dp</dimen>
+    <dimen name="padding_large">16dp</dimen>
+
+</resources>
+

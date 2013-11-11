@@ -45,8 +45,24 @@ public class FileUtil {
         return FileUtil.getOutputMediaDir() + File.separator + user.getFoodFileName();
     }
 
+    public static String getMapPath(FoodPair.User user) {
+        return FileUtil.getOutputMediaDir() + File.separator + user.getMapFileName();
+    }
+
     public static boolean isFoodExists(FoodPair.User user) {
         File file = new File(getFoodPath(user));
         return file.exists();
+    }
+
+    public static boolean isMapExists(FoodPair.User user) {
+        File file = new File(getMapPath(user));
+        return file.exists();
+    }
+
+    public static boolean areFilesExist(FoodPair foodPair) {
+        return isFoodExists(foodPair.user)
+                && isMapExists(foodPair.user)
+                && isFoodExists(foodPair.stranger)
+                && isMapExists(foodPair.stranger);
     }
 }

@@ -5,6 +5,10 @@ public class Constants {
     public static final String ALBUM_NAME = "Foodex";
 
     public static final String FILENAME = "FILENAME";
+    public static final String FOOD_PAIR = "foodPair";
+    public static final String SHOW_STRANGER = "showStranger";
+    public static final String MAP_SHOWN = "mapShown";
+    public static final String FOOD_FRAGMENT = "food_fragment";
 
     public static final int PAGE_SIZE = 4;
 

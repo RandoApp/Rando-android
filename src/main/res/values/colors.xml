@@ -6,4 +6,6 @@
     <color name="auth_text">#FFFFFF</color>
     <color name="auth_input_text">#000000</color>
 
+
+    <color name="overscroll">#33b5e5</color>
 </resources>

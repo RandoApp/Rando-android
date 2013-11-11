@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginTop="@dimen/food_margin_portrait_column_top"
+    android:layout_marginLeft="@dimen/food_margin_portrait_column_left"
+    android:layout_marginRight="@dimen/food_margin_portrait_column_right"
+    android:tag="food_placeholder">
+
+    <ImageSwitcher
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:tag="image"></ImageSwitcher>
+
+    <View
+        android:id="@+id/overscroll_left"
+        android:layout_width="@dimen/padding_medium"
+        android:layout_height="match_parent"
+        android:layout_gravity="left"
+        android:background="@drawable/overscroll_left"
+        android:visibility="gone" />
+
+    <View
+        android:id="@+id/overscroll_right"
+        android:layout_width="@dimen/padding_medium"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:background="@drawable/overscroll_right"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="@dimen/relative_layout_margin_top">
+
+        <ImageButton
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/bonappetit2"
+            android:tag="bon_appetit_button"
+            android:background="@color/white"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
+
+</LinearLayout>
