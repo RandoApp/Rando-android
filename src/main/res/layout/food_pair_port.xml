@@ -21,7 +21,7 @@
         android:overScrollMode="never"
         android:tag="scroll">
 
-        <com.eucsoft.foodex.view.MyHorizontalLayout
+        <com.eucsoft.foodex.view.FoodPicsLayout
             android:tag="image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

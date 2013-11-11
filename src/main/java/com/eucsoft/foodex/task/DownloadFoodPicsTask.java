@@ -39,14 +39,13 @@ public class DownloadFoodPicsTask extends AsyncTask<FoodPair, Integer, Long> imp
             return RESULT_ERROR;
         }
         FoodPair foodPair = params[0];
+        data = new HashMap<String, Object>();
+        data.put(Constants.FOOD_PAIR, foodPair);
 
         if (FileUtil.isFoodExists(foodPair.stranger)
                 && FileUtil.isMapExists(foodPair.stranger)
                 && FileUtil.isFoodExists(foodPair.user)
                 && FileUtil.isMapExists(foodPair.user)) {
-            String filename = FileUtil.getFoodPath(foodPair.stranger);
-            data = new HashMap<String, Object>();
-            data.put(Constants.FOOD_PAIR, foodPair);
             return RESULT_OK;
         }
         // take CPU lock to prevent CPU from going off if the user
@@ -56,15 +55,24 @@ public class DownloadFoodPicsTask extends AsyncTask<FoodPair, Integer, Long> imp
                 DownloadFoodPicsTask.class.getName());
         wl.acquire();
 
+        boolean result;
         try {
-            downloadFile(foodPair.stranger.foodURL, FileUtil.getFoodPath(foodPair.stranger));
-            downloadFile(foodPair.stranger.mapURL, FileUtil.getMapPath(foodPair.stranger));
-            downloadFile(foodPair.user.foodURL, FileUtil.getFoodPath(foodPair.user));
-            downloadFile(foodPair.user.mapURL, FileUtil.getMapPath(foodPair.user));
+            result = downloadFile(foodPair.stranger.foodURL, FileUtil.getFoodPath(foodPair.stranger));
+            FileUtil.scanImage(context, FileUtil.getFoodPath(foodPair.stranger));
+            result = result && downloadFile(foodPair.stranger.mapURL, FileUtil.getMapPath(foodPair.stranger));
+            FileUtil.scanImage(context, FileUtil.getMapPath(foodPair.stranger));
+            result = result && downloadFile(foodPair.user.foodURL, FileUtil.getFoodPath(foodPair.user));
+            FileUtil.scanImage(context, FileUtil.getFoodPath(foodPair.user));
+            result = result && downloadFile(foodPair.user.mapURL, FileUtil.getMapPath(foodPair.user));
+            FileUtil.scanImage(context, FileUtil.getMapPath(foodPair.user));
         } finally {
             wl.release();
         }
-        return RESULT_OK;
+        if (result) {
+            return RESULT_OK;
+        } else {
+            return RESULT_ERROR;
+        }
     }
 
     @Override

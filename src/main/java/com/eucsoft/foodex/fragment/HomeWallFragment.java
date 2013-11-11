@@ -32,7 +32,7 @@ public class HomeWallFragment extends Fragment implements ScrollViewListener {
     private int currentPage = 0;
     private int totalPages;
     private int lastScrollPos = 0;
-    private boolean odd = true;
+    private boolean odd;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

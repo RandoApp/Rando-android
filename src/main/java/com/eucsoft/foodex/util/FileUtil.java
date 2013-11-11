@@ -1,5 +1,8 @@
 package com.eucsoft.foodex.util;
 
+import android.content.Context;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Environment;
 
 import com.eucsoft.foodex.Constants;
@@ -64,5 +67,15 @@ public class FileUtil {
                 && isMapExists(foodPair.user)
                 && isFoodExists(foodPair.stranger)
                 && isMapExists(foodPair.stranger);
+    }
+
+    public static void scanImage(Context context, String imagePath) {
+        MediaScannerConnection.scanFile(context,
+                new String[]{imagePath}, null,
+                new MediaScannerConnection.OnScanCompletedListener() {
+                    public void onScanCompleted(String path, Uri uri) {
+                    }
+                });
+
     }
 }

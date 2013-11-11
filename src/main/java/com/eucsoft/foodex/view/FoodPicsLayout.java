@@ -9,18 +9,29 @@ import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
-public class MyHorizontalLayout extends LinearLayout {
+public class FoodPicsLayout extends LinearLayout {
 
     private Context myContext;
     private ArrayList<String> itemList = new ArrayList<String>();
     private OnClickListener onClickListener;
 
-    public MyHorizontalLayout(Context context) {
+    private static BitmapFactory.Options decodeOptions;
+
+    static {
+        decodeOptions = new BitmapFactory.Options();
+        decodeOptions.inDither = false;
+        decodeOptions.inJustDecodeBounds = false;
+        decodeOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        decodeOptions.inSampleSize = 3;
+        decodeOptions.inPurgeable = true;
+    }
+
+    public FoodPicsLayout(Context context) {
         super(context);
         myContext = context;
     }
 
-    public MyHorizontalLayout(Context context, AttributeSet attrs) {
+    public FoodPicsLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         myContext = context;
     }
@@ -49,24 +60,14 @@ public class MyHorizontalLayout extends LinearLayout {
 
     private Bitmap decodeSampledBitmapFromUri(String path, int reqWidth, int reqHeight) {
         Bitmap bm = null;
-
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(path, options);
-
         // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        bm = BitmapFactory.decodeFile(path, options);
+        decodeOptions.inSampleSize = calculateInSampleSize(decodeOptions, reqWidth, reqHeight);
+        bm = BitmapFactory.decodeFile(path, decodeOptions);
 
         return bm;
     }
 
     private int calculateInSampleSize(
-
             BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
@@ -80,7 +81,6 @@ public class MyHorizontalLayout extends LinearLayout {
                 inSampleSize = Math.round((float) width / (float) reqWidth);
             }
         }
-
         return inSampleSize;
     }
 

@@ -2,8 +2,6 @@ package com.eucsoft.foodex.task;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
 import android.os.AsyncTask;
 
 import com.eucsoft.foodex.TakePictureActivity;
@@ -72,13 +70,8 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
 
         file.renameTo(new File(FileUtil.getOutputMediaDir().getAbsolutePath() + foodPair.user.getFoodFileName()));
 
-        //scan the image so show up in album
-        MediaScannerConnection.scanFile(context,
-                new String[]{imagePath}, null,
-                new MediaScannerConnection.OnScanCompletedListener() {
-                    public void onScanCompleted(String path, Uri uri) {
-                    }
-                });
+        //TODO: change imagePath to foodPair.user.getFoodFileName()
+        FileUtil.scanImage(context, imagePath);
 
         return RESULT_OK;
     }
