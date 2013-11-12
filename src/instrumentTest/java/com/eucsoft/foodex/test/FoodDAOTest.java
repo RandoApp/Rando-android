@@ -7,6 +7,8 @@ import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
 
+import org.hamcrest.Matchers;
+
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -120,8 +122,14 @@ public class FoodDAOTest extends AndroidTestCase {
 
         int count = foodDAO.getFoodPairsNumber();
         FoodPair newFoodPair = foodDAO.createFoodPair(foodPair);
-        assertEquals(count + 1, foodDAO.getFoodPairsNumber());
-        assertTrue(foodPair.equals(newFoodPair));
+
+        assertThat(foodDAO.getFoodPairsNumber(), is(count + 1));
+
+        //assertEquals(count + 1, foodDAO.getFoodPairsNumber());
+
+        assertThat(newFoodPair, is(foodPair));
+
+        //assertTrue(foodPair.equals(newFoodPair));
         long id = newFoodPair.id;
 
         String newMapValue = "MAP1";
@@ -209,6 +217,19 @@ public class FoodDAOTest extends AndroidTestCase {
         List<FoodPair> foodPairs = foodDAO.getAllFoodPairs();
         checkOrder(foodPairs);
 
+    }
+
+    @MediumTest
+    public void testGetNotExistingFoodPair() throws SQLException {
+        insertNRandomFoodPairs(55);
+        FoodPair foodPair = foodDAO.getFoodPairById(9999L);
+        assertThat(foodPair, Matchers.nullValue());
+    }
+
+    @MediumTest
+    public void testInsertNullFoodPair() throws SQLException {
+        FoodPair foodPair = foodDAO.createFoodPair(null);
+        assertThat(foodPair, Matchers.nullValue());
     }
 
     private void checkOrder(List<FoodPair> foodPairs) {
