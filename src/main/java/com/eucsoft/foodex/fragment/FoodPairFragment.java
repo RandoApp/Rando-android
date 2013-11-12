@@ -4,18 +4,20 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ViewSwitcher;
 
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
+import com.eucsoft.foodex.animation.AnimationFactory;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.HorizontalScrollViewListener;
 import com.eucsoft.foodex.listener.TaskResultListener;
@@ -33,7 +35,10 @@ public class FoodPairFragment extends Fragment implements TaskResultListener, Ho
 
     private FoodPair foodPair;
     private int foodImageSize;
-    private FoodPicsLayout foodImage;
+    private FoodPicsLayout strangerFoodImage;
+    private FoodPicsLayout userFoodImage;
+
+    private boolean animationInProgress = false;
 
     public static FoodPairFragment newInstance(FoodPair foodPair, boolean showStranger, boolean mapShown) {
         FoodPairFragment fragment = new FoodPairFragment();
@@ -50,6 +55,7 @@ public class FoodPairFragment extends Fragment implements TaskResultListener, Ho
         if (container == null) {
             return null;
         }
+        setRetainInstance(false);
         WindowManager windowManager = (WindowManager) container.getContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
         int displayWidth = display.getWidth();
@@ -64,7 +70,7 @@ public class FoodPairFragment extends Fragment implements TaskResultListener, Ho
         showStranger = bundle.getBoolean(Constants.SHOW_STRANGER);
         mapShown = bundle.getBoolean(Constants.MAP_SHOWN);
 
-        final ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.food_pair_port, container, false);
+        final ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.food_pair_item, container, false);
 
         ImageButton bonAppetitButton = (ImageButton) layout.findViewWithTag("bon_appetit_button");
 
@@ -76,7 +82,7 @@ public class FoodPairFragment extends Fragment implements TaskResultListener, Ho
         });
 
         if (layout.getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            foodImageSize = displayWidth / 2 - (Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_LEFT + Constants.FOOD_MARGIN_PORTRAIT_COLUMN_RIGHT);
+            foodImageSize = displayWidth / 2 - (Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_LEFT + Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_RIGHT);
 
             LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
@@ -88,24 +94,89 @@ public class FoodPairFragment extends Fragment implements TaskResultListener, Ho
             foodImageSize = displayWidth - Constants.FOOD_MARGIN_PORTRAIT;
         }
         HorizontalScrollView.LayoutParams layoutParams = new HorizontalScrollView.LayoutParams(foodImageSize, foodImageSize);
-        foodImage = (FoodPicsLayout) layout.findViewWithTag("image");
-        foodImage.setLayoutParams(layoutParams);
-        foodImage.setOnClickListener(new View.OnClickListener() {
+
+        final ViewSwitcher viewSwitcher = (ViewSwitcher) layout.findViewWithTag("viewSwitcher");
+
+        final Animation[] animations1 = AnimationFactory.flipAnimation(foodImageSize, AnimationFactory.FlipDirection.LEFT_RIGHT, 600, null);
+        final Animation[] animations2 = AnimationFactory.flipAnimation(foodImageSize, AnimationFactory.FlipDirection.RIGHT_LEFT, 600, null);
+        viewSwitcher.setOutAnimation(animations1[0]);
+        viewSwitcher.setInAnimation(animations1[1]);
+        View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                FoodPairFragment foodPairFragment = FoodPairFragment.newInstance(foodPair, !showStranger, mapShown);
-                transaction.setCustomAnimations(R.anim.food_flip_out, R.anim.food_flip_in);
-                transaction.replace((int) foodPair.id, foodPairFragment);
-                transaction.commit();
+                if (!animationInProgress) {
+                    ObservableHorizontalScrollView scrollView = (ObservableHorizontalScrollView) viewSwitcher.findViewWithTag("strangerFood");
+                    if (viewSwitcher.getCurrentView() != scrollView) {
+                        viewSwitcher.showPrevious();
+                    } else if (viewSwitcher.getCurrentView() == scrollView) {
+                        viewSwitcher.showNext();
+                    }
+                }
+            }
+        };
+
+        strangerFoodImage = (FoodPicsLayout) layout.findViewWithTag("strangerImage");
+        strangerFoodImage.setLayoutParams(layoutParams);
+        strangerFoodImage.setOnClickListener(onClickListener);
+        userFoodImage = (FoodPicsLayout) layout.findViewWithTag("image");
+        userFoodImage.setLayoutParams(layoutParams);
+        userFoodImage.setOnClickListener(onClickListener);
+
+        Animation.AnimationListener outAnimationListener = new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                animationInProgress = true;
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        };
+        animations1[0].setAnimationListener(outAnimationListener);
+        animations1[1].setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                viewSwitcher.setOutAnimation(animations2[0]);
+                viewSwitcher.setInAnimation(animations2[1]);
+                animationInProgress = false;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+
+        animations2[0].setAnimationListener(outAnimationListener);
+        animations2[1].setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                viewSwitcher.setOutAnimation(animations1[0]);
+                viewSwitcher.setInAnimation(animations1[1]);
+                animationInProgress = false;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
             }
         });
 
         DownloadFoodPicsTask downloadFoodPicsTask = new DownloadFoodPicsTask(this, layout.getContext());
         downloadFoodPicsTask.execute(foodPair);
 
-        final ObservableHorizontalScrollView scrollView = (ObservableHorizontalScrollView) layout.findViewWithTag("scroll");
-        scrollView.setScrollViewListener(this);
+        /*final ObservableHorizontalScrollView scrollView = (ObservableHorizontalScrollView) layout.findViewWithTag("scroll");
+        scrollView.setScrollViewListener(this);*/
         return layout;
     }
 
@@ -119,14 +190,10 @@ public class FoodPairFragment extends Fragment implements TaskResultListener, Ho
 
     @Override
     public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
-
-        if (showStranger) {
-            foodImage.add(FileUtil.getFoodPath(foodPair.stranger), foodImageSize);
-            foodImage.add(FileUtil.getMapPath(foodPair.stranger), foodImageSize);
-        } else {
-            foodImage.add(FileUtil.getFoodPath(foodPair.user), foodImageSize);
-            foodImage.add(FileUtil.getMapPath(foodPair.user), foodImageSize);
-        }
+        strangerFoodImage.add(FileUtil.getFoodPath(foodPair.stranger), foodImageSize);
+        strangerFoodImage.add(FileUtil.getMapPath(foodPair.stranger), foodImageSize);
+        userFoodImage.add(FileUtil.getFoodPath(foodPair.user), foodImageSize);
+        userFoodImage.add(FileUtil.getMapPath(foodPair.user), foodImageSize);
     }
 
     @Override
@@ -141,4 +208,3 @@ public class FoodPairFragment extends Fragment implements TaskResultListener, Ho
         }
     }
 }
-

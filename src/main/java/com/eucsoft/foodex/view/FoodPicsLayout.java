@@ -61,4 +61,9 @@ public class FoodPicsLayout extends LinearLayout {
     public void setOnClickListener(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
     }
+
+    public void setOnClickListener() {
+        this.onClickListener = null;
+
+    }
 }

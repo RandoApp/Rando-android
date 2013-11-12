@@ -120,6 +120,53 @@ public class AnimationFactory {
 
     }
 
+
+    /**
+     * Create a pair of {@link FlipAnimation} that can be used to flip 3D transition from {@code fromView} to {@code toView}. A typical use case is with {@link ViewAnimator} as an out and in transition.
+     * <p/>
+     * NOTE: Avoid using this method. Instead, use {@link #flipTransition}.
+     *
+     * @param width       the view transition to
+     * @param dir          the flip direction
+     * @param duration     the transition duration in milliseconds
+     * @param interpolator the interpolator to use (pass {@code null} to use the {@link AccelerateInterpolator} interpolator)
+     * @return
+     */
+    public static Animation[] flipAnimation(final int width, FlipDirection dir, long duration, Interpolator interpolator) {
+        Animation[] result = new Animation[2];
+        float centerX;
+        float centerY;
+
+        centerX = width / 2.0f;
+        centerY = width / 2.0f;
+
+        Animation outFlip = new FlipAnimation(dir.getStartDegreeForFirstView(), dir.getEndDegreeForFirstView(), centerX, centerY, FlipAnimation.SCALE_DEFAULT, FlipAnimation.ScaleUpDownEnum.SCALE_DOWN);
+        outFlip.setDuration(duration);
+        outFlip.setFillAfter(true);
+        outFlip.setInterpolator(interpolator == null ? new AccelerateInterpolator() : interpolator);
+
+        AnimationSet outAnimation = new AnimationSet(true);
+        outAnimation.addAnimation(outFlip);
+        result[0] = outAnimation;
+
+        // Uncomment the following if toView has its layout established (not the case if using ViewFlipper and on first show)
+        //centerX = toView.getWidth() / 2.0f;
+        //centerY = toView.getHeight() / 2.0f;
+
+        Animation inFlip = new FlipAnimation(dir.getStartDegreeForSecondView(), dir.getEndDegreeForSecondView(), centerX, centerY, FlipAnimation.SCALE_DEFAULT, FlipAnimation.ScaleUpDownEnum.SCALE_UP);
+        inFlip.setDuration(duration);
+        inFlip.setFillAfter(true);
+        inFlip.setInterpolator(interpolator == null ? new AccelerateInterpolator() : interpolator);
+        inFlip.setStartOffset(duration);
+
+        AnimationSet inAnimation = new AnimationSet(true);
+        inAnimation.addAnimation(inFlip);
+        result[1] = inAnimation;
+
+        return result;
+
+    }
+
     /**
      * Flip to the next view of the {@code ViewAnimator}'s subviews. A call to this method will initiate a {@link FlipAnimation} to show the next View.
      * If the currently visible view is the last view, flip direction will be reversed for this transition.
@@ -255,7 +302,7 @@ public class AnimationFactory {
      * @param duration the animation duration in milliseconds
      * @param delay    how long to wait before starting the animation, in milliseconds
      * @return a fade animation
-     * @see #fadeInAnimation(View, long)
+     * @see #fadeInAnimation(long, View)
      */
     public static Animation fadeInAnimation(long duration, long delay) {
 
@@ -273,7 +320,7 @@ public class AnimationFactory {
      * @param duration the animation duration in milliseconds
      * @param delay    how long to wait before starting the animation, in milliseconds
      * @return a fade animation
-     * @see #fadeOutAnimation(View, long)
+     * @see #fadeOutAnimation(long, View)
      */
     public static Animation fadeOutAnimation(long duration, long delay) {
 

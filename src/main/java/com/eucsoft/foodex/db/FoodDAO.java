@@ -25,7 +25,6 @@ public class FoodDAO {
     public FoodDAO(Context context) {
         foodDBHelper = new FoodDBHelper(context);
         database = foodDBHelper.getWritableDatabase();
-
     }
 
     public void close() {
@@ -129,6 +128,7 @@ public class FoodDAO {
 
     /**
      * First page is a 0 page!!
+     *
      * @return foods of current Page
      */
     public List<FoodPair> getFoodPairsForPage(int page) {
