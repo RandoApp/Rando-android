@@ -20,6 +20,8 @@ import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.animation.AnimationFactory;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.TaskResultListener;
+import com.eucsoft.foodex.task.BaseTask;
+import com.eucsoft.foodex.task.BonAppetitTask;
 import com.eucsoft.foodex.task.DownloadFoodPicsTask;
 import com.eucsoft.foodex.util.FileUtil;
 import com.eucsoft.foodex.view.FoodPicsLayout;
@@ -33,9 +35,10 @@ public class FoodPairFragment extends Fragment implements TaskResultListener {
     private int foodImageSize;
     private FoodPicsLayout strangerFoodImage;
     private FoodPicsLayout userFoodImage;
+    private ImageButton bonAppetitButton;
     private int displayWidth;
 
-
+    private boolean isStrangerShown = true;
     private boolean animationInProgress = false;
 
     public static FoodPairFragment newInstance(FoodPair foodPair) {
@@ -66,7 +69,7 @@ public class FoodPairFragment extends Fragment implements TaskResultListener {
 
         final ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.food_pair_item, container, false);
 
-        final ImageButton bonAppetitButton = (ImageButton) layout.findViewWithTag("bon_appetit_button");
+        bonAppetitButton = (ImageButton) layout.findViewWithTag("bon_appetit_button");
         if (foodPair.stranger.isBonAppetit()) {
             bonAppetitButton.setImageResource(R.drawable.bonappetit2);
         }
@@ -74,7 +77,12 @@ public class FoodPairFragment extends Fragment implements TaskResultListener {
         bonAppetitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (isStrangerShown && !foodPair.stranger.isBonAppetit()) {
+                    foodPair.stranger.bonAppetit = 1;
+                    bonAppetitButton.setImageResource(R.drawable.bonappetit2);
+                    BonAppetitTask bonAppetitTask = new BonAppetitTask(FoodPairFragment.this);
+                    bonAppetitTask.execute(foodPair);
+                }
             }
         });
 
@@ -94,6 +102,7 @@ public class FoodPairFragment extends Fragment implements TaskResultListener {
                     ObservableHorizontalScrollView scrollView = (ObservableHorizontalScrollView) viewSwitcher.findViewWithTag("strangerFood");
                     if (viewSwitcher.getCurrentView() != scrollView) {
                         viewSwitcher.showPrevious();
+                        isStrangerShown = true;
                         if (foodPair.stranger.isBonAppetit()) {
                             bonAppetitButton.setImageResource(R.drawable.bonappetit2);
                         } else {
@@ -101,6 +110,7 @@ public class FoodPairFragment extends Fragment implements TaskResultListener {
                         }
                     } else if (viewSwitcher.getCurrentView() == scrollView) {
                         viewSwitcher.showNext();
+                        isStrangerShown = false;
                         if (foodPair.user.isBonAppetit()) {
                             bonAppetitButton.setImageResource(R.drawable.bonappetit2);
                         } else {
@@ -182,10 +192,22 @@ public class FoodPairFragment extends Fragment implements TaskResultListener {
 
     @Override
     public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
-        strangerFoodImage.add(FileUtil.getFoodPath(foodPair.stranger), foodImageSize);
-        strangerFoodImage.add(FileUtil.getMapPath(foodPair.stranger), foodImageSize);
-        userFoodImage.add(FileUtil.getFoodPath(foodPair.user), foodImageSize);
-        userFoodImage.add(FileUtil.getMapPath(foodPair.user), foodImageSize);
+
+        switch (taskCode) {
+            case DownloadFoodPicsTask.TASK_ID:
+                strangerFoodImage.add(FileUtil.getFoodPath(foodPair.stranger), foodImageSize);
+                strangerFoodImage.add(FileUtil.getMapPath(foodPair.stranger), foodImageSize);
+                userFoodImage.add(FileUtil.getFoodPath(foodPair.user), foodImageSize);
+                userFoodImage.add(FileUtil.getMapPath(foodPair.user), foodImageSize);
+                break;
+            case BonAppetitTask.TASK_ID:
+                FoodPair foodPair = (FoodPair) data.get(Constants.FOOD_PAIR);
+                this.foodPair = foodPair;
+                if (resultCode != BaseTask.RESULT_OK && isStrangerShown) {
+                    bonAppetitButton.setImageResource(R.drawable.bonappetit);
+                }
+                break;
+        }
     }
 
     private int getFoodImageSize(int orientation) {
