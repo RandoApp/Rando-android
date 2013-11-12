@@ -6,6 +6,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import com.eucsoft.foodex.Constants;
+import com.eucsoft.foodex.log.Log;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,22 +20,21 @@ public class LocationUpdater {
     boolean network_enabled = false;
 
     public boolean getLocation(Context context, LocationResult result) {
-        //I use LocationResult callback class to pass location value from this Class to user code.
         locationResult = result;
         if (lm == null)
             lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
-        //exceptions will be thrown if provider is not permitted.
         try {
             gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
         } catch (Exception ex) {
+            Log.w(LocationUpdater.class, "Failed to check gps location provider: provider is not permitted.");
         }
         try {
             network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         } catch (Exception ex) {
+            Log.w(LocationUpdater.class, "Failed to check network location provider: provider is not permitted.");
         }
 
-        //don't start listeners if no provider is enabled
         if (!gps_enabled && !network_enabled)
             return false;
 
@@ -41,7 +43,7 @@ public class LocationUpdater {
         if (network_enabled)
             lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNetwork);
         timer = new Timer();
-        timer.schedule(new GetLastLocation(), 20000);
+        timer.schedule(new GetLastLocation(), Constants.LOCATION_PERIOD);
         return true;
     }
 

@@ -75,7 +75,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
 
         foodexSurfaceView = (FoodexSurfaceView) findViewById(R.id.cameraPreview);
 
-        int bottomToolbarHeight = display.getHeight() - display.getWidth() - 50;
+        int bottomToolbarHeight = display.getHeight() - display.getWidth() - Constants.TOP_PANEL_ON_TAKEPICSCREEN_HEIGHT;
 
         LinearLayout bottomPanel = (LinearLayout) findViewById(R.id.bottom_panel);
         RelativeLayout.LayoutParams bottomPanelParams = (RelativeLayout.LayoutParams) bottomPanel.getLayoutParams();
@@ -109,7 +109,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
             @Override
             public void onClick(View arg0) {
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                photoPickerIntent.setType("image/*");
+                photoPickerIntent.setType(Constants.IMAGE_FILTER);
                 startActivityForResult(photoPickerIntent, REQ_CODE_SELECT_PHOTO);
             }
         });

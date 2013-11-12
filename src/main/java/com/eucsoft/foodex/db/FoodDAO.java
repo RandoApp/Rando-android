@@ -36,13 +36,14 @@ public class FoodDAO {
      * Creates foodPair and returns instance of created foodPair.
      *
      * @param foodPair FoodPair to insert
-     * @return returns instance of created foodPair.
+     * @return returns instance of created foodPair or null
      */
 
     public FoodPair createFoodPair(FoodPair foodPair) {
-
+        if (foodPair == null) {
+            return null;
+        }
         ContentValues values = foodPairToContentValues(foodPair);
-
         long insertId = database.insert(FoodDBHelper.TABLE_FOOD, null,
                 values);
         return getFoodPairById(insertId);

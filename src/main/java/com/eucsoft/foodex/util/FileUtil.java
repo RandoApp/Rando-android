@@ -40,7 +40,7 @@ public class FileUtil {
                 .format(new Date());
         File mediaFile;
         mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                + "IMG_" + timeStamp + ".jpg");
+                + Constants.IMAGE_PREFIX + timeStamp + Constants.IMAGE_POSTFIX);
         return mediaFile;
     }
 
@@ -76,6 +76,5 @@ public class FileUtil {
                     public void onScanCompleted(String path, Uri uri) {
                     }
                 });
-
     }
 }
