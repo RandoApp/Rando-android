@@ -170,6 +170,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
         super.onDestroy();
         locationUpdater.cancelTimer();
         foodexSurfaceView.setCurrentBitmap(null);
+        foodexSurfaceView.releaseCamera();
         foodexSurfaceView = null;
     }
 }

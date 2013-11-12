@@ -63,6 +63,7 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
     @LargeTest
     public void testTakePictureOnReStart() {
         assertNotNull(takePictureActivity);
+        getInstrumentation().callActivityOnDestroy(takePictureActivity);
         takePictureActivity.finish();
         setActivity(null);
 
