@@ -37,10 +37,7 @@ public class DownloadFoodPicsTask extends AsyncTask<FoodPair, Integer, Long> imp
         }
         FoodPair foodPair = params[0];
 
-        if (FileUtil.isFoodExists(foodPair.stranger)
-                && FileUtil.isMapExists(foodPair.stranger)
-                && FileUtil.isFoodExists(foodPair.user)
-                && FileUtil.isMapExists(foodPair.user)) {
+        if (FileUtil.areFilesExist(foodPair)) {
             return RESULT_OK;
         }
         // take CPU lock to prevent CPU from going off if the user
