@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
-    Camera camera;
+    private Camera camera;
     boolean previewing = false;
     private Bitmap currentBitmap;
 
@@ -80,10 +80,6 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
             camera = null;
         }
         previewing = false;
-    }
-
-    public Camera getCamera() {
-        return camera;
     }
 
     public Bitmap getCurrentBitmap() {

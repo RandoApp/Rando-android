@@ -6,7 +6,7 @@
     <string name="password">Password:</string>
     <string name="facebook">Facebook</string>
     <string name="signup">Sign up</string>
-    <string name="skip">Skip...</string>
+    <string name="skip">Skip…</string>
     <string name="action_settings">Settings</string>
 
 
@@ -15,6 +15,6 @@
     <string name="photo_upload_ok">Upload Finished Successfully.</string>
     <string name="photo_upload_failed">"Upload Failed. Please check you connection and try again."</string>
 
-    <string name="error_unknown_err">Oops, Something wrong...</string>
+    <string name="error_unknown_err">Oops, Something wrong…</string>
 
 </resources>

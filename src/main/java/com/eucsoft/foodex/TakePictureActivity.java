@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.eucsoft.foodex.listener.TaskResultListener;
+import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.CreateFoodAndUploadTask;
 import com.eucsoft.foodex.util.LocationUpdater;
@@ -47,6 +48,10 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
                     String[] filePathColumn = {MediaStore.Images.Media.DATA};
                     Cursor cursor = getContentResolver().query(
                             selectedImage, filePathColumn, null, null, null);
+                    if (cursor == null) {
+                        Log.w(TakePictureActivity.class, "Selecting from Album failed.");
+                        break;
+                    }
                     cursor.moveToFirst();
                     int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                     String filePath = cursor.getString(columnIndex);
@@ -70,7 +75,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
 
         foodexSurfaceView = (FoodexSurfaceView) findViewById(R.id.cameraPreview);
 
-        int bottomToolbarHeight = display.getHeight() - display.getWidth() - 50;
+        int bottomToolbarHeight = display.getHeight() - display.getWidth() - Constants.TOP_PANEL_ON_TAKEPICSCREEN_HEIGHT;
 
         LinearLayout bottomPanel = (LinearLayout) findViewById(R.id.bottom_panel);
         RelativeLayout.LayoutParams bottomPanelParams = (RelativeLayout.LayoutParams) bottomPanel.getLayoutParams();
@@ -104,7 +109,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
             @Override
             public void onClick(View arg0) {
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                photoPickerIntent.setType("image/*");
+                photoPickerIntent.setType(Constants.IMAGE_FILTER);
                 startActivityForResult(photoPickerIntent, REQ_CODE_SELECT_PHOTO);
             }
         });
@@ -128,7 +133,6 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
             }
         };
         locationUpdater.getLocation(getApplicationContext(), locationResult);
-
     }
 
     private void showUploadButton() {
@@ -166,6 +170,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
         super.onDestroy();
         locationUpdater.cancelTimer();
         foodexSurfaceView.setCurrentBitmap(null);
+        foodexSurfaceView.releaseCamera();
         foodexSurfaceView = null;
     }
 }

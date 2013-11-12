@@ -15,14 +15,12 @@ import com.eucsoft.foodex.util.FileUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
 
 public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> implements BaseTask {
 
     public static final int TASK_ID = 100;
 
     private TaskResultListener taskResultListener;
-    private HashMap<String, Object> data;
     private Context context;
 
     public CreateFoodAndUploadTask(TaskResultListener taskResultListener, Context context) {
@@ -79,6 +77,6 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
     @Override
     protected void onPostExecute(Long aLong) {
         Log.d(CreateFoodAndUploadTask.class, "onPostExecute", aLong.toString());
-        taskResultListener.onTaskResult(TASK_ID, aLong, data);
+        taskResultListener.onTaskResult(TASK_ID, aLong, null);
     }
 }
