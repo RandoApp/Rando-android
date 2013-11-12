@@ -18,7 +18,6 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
 public class FoodDAOTest extends AndroidTestCase {
@@ -201,7 +200,7 @@ public class FoodDAOTest extends AndroidTestCase {
         int number = foodDAO.getPagesNumber();
         int result = foodPairs.size() - (number - 1) * Constants.PAGE_SIZE;
         assertThat(result, greaterThan(0));
-        assertThat(result, lessThan(Constants.PAGE_SIZE));
+        assertThat(result, lessThanOrEqualTo(Constants.PAGE_SIZE));
     }
 
     @MediumTest
