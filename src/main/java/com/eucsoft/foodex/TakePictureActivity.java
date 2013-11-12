@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.eucsoft.foodex.listener.TaskResultListener;
+import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.CreateFoodAndUploadTask;
 import com.eucsoft.foodex.util.LocationUpdater;
@@ -47,6 +48,10 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
                     String[] filePathColumn = {MediaStore.Images.Media.DATA};
                     Cursor cursor = getContentResolver().query(
                             selectedImage, filePathColumn, null, null, null);
+                    if (cursor == null) {
+                        Log.w(TakePictureActivity.class, "Selecting from Album failed.");
+                        break;
+                    }
                     cursor.moveToFirst();
                     int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                     String filePath = cursor.getString(columnIndex);
@@ -128,7 +133,6 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
             }
         };
         locationUpdater.getLocation(getApplicationContext(), locationResult);
-
     }
 
     private void showUploadButton() {

@@ -33,6 +33,8 @@ public class FoodPairFragment extends Fragment implements TaskResultListener {
     private int foodImageSize;
     private FoodPicsLayout strangerFoodImage;
     private FoodPicsLayout userFoodImage;
+    private int displayWidth;
+
 
     private boolean animationInProgress = false;
 
@@ -52,7 +54,7 @@ public class FoodPairFragment extends Fragment implements TaskResultListener {
         setRetainInstance(false);
         WindowManager windowManager = (WindowManager) container.getContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
-        int displayWidth = display.getWidth();
+        displayWidth = display.getWidth();
 
         Bundle bundle;
         if (savedInstanceState == null) {
@@ -76,23 +78,13 @@ public class FoodPairFragment extends Fragment implements TaskResultListener {
             }
         });
 
-        if (layout.getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            foodImageSize = displayWidth / 2 - (Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_LEFT + Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_RIGHT);
+        layout.setLayoutParams(getLayoutParams(layout.getContext().getResources().getConfiguration().orientation));
 
-            LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
-            linearParams.topMargin = Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_TOP;
-            linearParams.leftMargin = Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_LEFT;
-            linearParams.rightMargin = Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_RIGHT;
-            layout.setLayoutParams(linearParams);
-        } else {
-            foodImageSize = displayWidth - Constants.FOOD_MARGIN_PORTRAIT;
-        }
-
-        final ViewSwitcher viewSwitcher = (ViewSwitcher) layout.findViewWithTag("viewSwitcher");
-
+        foodImageSize = getFoodImageSize(layout.getContext().getResources().getConfiguration().orientation);
         final Animation[] rightToLeftAnimation = AnimationFactory.flipAnimation(foodImageSize, AnimationFactory.FlipDirection.RIGHT_LEFT, 600, null);
         final Animation[] leftToRightAnimation = AnimationFactory.flipAnimation(foodImageSize, AnimationFactory.FlipDirection.LEFT_RIGHT, 600, null);
+
+        final ViewSwitcher viewSwitcher = (ViewSwitcher) layout.findViewWithTag("viewSwitcher");
         viewSwitcher.setOutAnimation(rightToLeftAnimation[0]);
         viewSwitcher.setInAnimation(rightToLeftAnimation[1]);
         View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -195,4 +187,28 @@ public class FoodPairFragment extends Fragment implements TaskResultListener {
         userFoodImage.add(FileUtil.getFoodPath(foodPair.user), foodImageSize);
         userFoodImage.add(FileUtil.getMapPath(foodPair.user), foodImageSize);
     }
+
+    private int getFoodImageSize(int orientation) {
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            return displayWidth / 2 - (Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_LEFT + Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_RIGHT);
+        } else {
+            return foodImageSize = displayWidth - Constants.FOOD_MARGIN_PORTRAIT;
+        }
+    }
+
+    private LinearLayout.LayoutParams getLayoutParams(int orientation) {
+        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            linearParams.topMargin = Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_TOP;
+            linearParams.leftMargin = Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_LEFT;
+            linearParams.rightMargin = Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_RIGHT;
+        } else {
+            linearParams.topMargin = Constants.FOOD_MARGIN_PORTRAIT_COLUMN_TOP;
+            linearParams.leftMargin = Constants.FOOD_MARGIN_PORTRAIT_COLUMN_LEFT;
+            linearParams.rightMargin = Constants.FOOD_MARGIN_PORTRAIT_COLUMN_RIGHT;
+        }
+
+        return linearParams;
+    }
+
 }

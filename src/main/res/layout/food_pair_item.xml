@@ -4,9 +4,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginTop="@dimen/food_margin_portrait_column_top"
-    android:layout_marginLeft="@dimen/food_margin_portrait_column_left"
-    android:layout_marginRight="@dimen/food_margin_portrait_column_right"
     android:tag="food_placeholder">
 
     <ViewSwitcher

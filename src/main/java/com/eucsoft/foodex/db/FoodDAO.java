@@ -35,7 +35,7 @@ public class FoodDAO {
     /**
      * Creates foodPair and returns instance of created foodPair.
      *
-     * @param foodPair
+     * @param foodPair FoodPair to insert
      * @return returns instance of created foodPair.
      */
 
@@ -51,7 +51,7 @@ public class FoodDAO {
     /**
      * Finds food instance.
      *
-     * @param id
+     * @param id FoodPair id to get
      * @return FoodPair instance or null if food hasn't been found
      */
 
@@ -68,7 +68,7 @@ public class FoodDAO {
     /**
      * Deletes foodPair instance from DB.
      *
-     * @param foodPair
+     * @param foodPair FoodPair to delete
      */
     public void deleteFoodPair(FoodPair foodPair) {
         long id = foodPair.id;
@@ -81,7 +81,7 @@ public class FoodDAO {
     /**
      * Updates foodPair instance from DB.
      *
-     * @param foodPair
+     * @param foodPair FoodPair to update
      */
     public void updateFoodPair(FoodPair foodPair) {
         long id = foodPair.id;
@@ -153,8 +153,6 @@ public class FoodDAO {
      * @return foods of current Page
      */
     public int getPagesNumber() {
-        List<FoodPair> foodPairs = new ArrayList<FoodPair>();
-
         double foodPairsNumber = getFoodPairsNumber();
 
         return (int) Math.ceil(foodPairsNumber / Constants.PAGE_SIZE);
@@ -163,7 +161,7 @@ public class FoodDAO {
     /**
      * Inserts list of foodPairs into DB
      *
-     * @param foodPairs
+     * @param foodPairs FoodPair list to insert
      */
     public void insertFoodPairs(List<FoodPair> foodPairs) {
         database.beginTransaction();
@@ -196,7 +194,7 @@ public class FoodDAO {
     /**
      * Extracts FoodPair object from Cursor object
      *
-     * @param cursor
+     * @param cursor Cursor pointing to row
      * @return food object extracted from cursor
      */
 
@@ -226,7 +224,7 @@ public class FoodDAO {
     /**
      * Converts FoodPair object into ContentValues object
      *
-     * @param foodPair
+     * @param foodPair FoodPair to convert
      * @return ContentValues representing foodPair
      */
     private ContentValues foodPairToContentValues(FoodPair foodPair) {
