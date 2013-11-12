@@ -110,8 +110,7 @@ public class HomeWallFragment extends Fragment implements ScrollViewListener {
             }
         }
         foodContainer.addView(linearLayout);
-
-        FoodPairFragment foodPairFragment = FoodPairFragment.newInstance(foodPair, true, false);
+        FoodPairFragment foodPairFragment = FoodPairFragment.newInstance(foodPair);
         transaction.add(linearLayout.getId(), foodPairFragment, "foodItem");
     }
 

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.PowerManager;
 
-import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
@@ -16,14 +15,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
 
 public class DownloadFoodPicsTask extends AsyncTask<FoodPair, Integer, Long> implements BaseTask {
 
     public static final int TASK_ID = 200;
 
     private TaskResultListener taskResultListener;
-    private HashMap<String, Object> data;
     private Context context;
 
     public DownloadFoodPicsTask(TaskResultListener taskResultListener, Context context) {
@@ -39,8 +36,6 @@ public class DownloadFoodPicsTask extends AsyncTask<FoodPair, Integer, Long> imp
             return RESULT_ERROR;
         }
         FoodPair foodPair = params[0];
-        data = new HashMap<String, Object>();
-        data.put(Constants.FOOD_PAIR, foodPair);
 
         if (FileUtil.isFoodExists(foodPair.stranger)
                 && FileUtil.isMapExists(foodPair.stranger)
@@ -78,7 +73,7 @@ public class DownloadFoodPicsTask extends AsyncTask<FoodPair, Integer, Long> imp
     @Override
     protected void onPostExecute(Long aLong) {
         Log.d(DownloadFoodPicsTask.class, "onPostExecute", aLong.toString());
-        taskResultListener.onTaskResult(TASK_ID, aLong, data);
+        taskResultListener.onTaskResult(TASK_ID, aLong, null);
     }
 
     private boolean downloadFile(String url, String filename) {
@@ -102,9 +97,6 @@ public class DownloadFoodPicsTask extends AsyncTask<FoodPair, Integer, Long> imp
             // download the file
             input = connection.getInputStream();
             output = new FileOutputStream(filename);
-
-            data = new HashMap<String, Object>();
-            data.put(Constants.FILENAME, filename);
 
             byte data[] = new byte[4096];
             long total = 0;
