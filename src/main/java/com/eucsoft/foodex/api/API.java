@@ -193,8 +193,8 @@ public class API {
 
     private static void addParamsToRequest(HttpPost request, String... args) throws UnsupportedEncodingException {
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-        for (int i = 0; i < args.length; i+=2) {
-            nameValuePairs.add(new BasicNameValuePair(args[i], args[i+1]));
+        for (int i = 0; i < args.length; i += 2) {
+            nameValuePairs.add(new BasicNameValuePair(args[i], args[i + 1]));
         }
         request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
     }

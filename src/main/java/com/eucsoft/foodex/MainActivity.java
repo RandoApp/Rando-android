@@ -1,13 +1,19 @@
 package com.eucsoft.foodex;
 
 import android.content.Context;
-import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.eucsoft.foodex.db.FoodDAO;
+import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.fragment.AuthFragment;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -18,6 +24,9 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         context = getApplicationContext();
+
+        //TODO: REMOVE THIS METHOD
+        initDBForTesting();
 
         setContentView(R.layout.activity_main);
 
@@ -51,6 +60,56 @@ public class MainActivity extends ActionBarActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    //TODO: REMOVE
+    private void initDBForTesting() {
+        FoodDAO foodDAO = new FoodDAO(context);
+        if (foodDAO.getFoodPairsNumber() <= 30) {
+
+            for (int i = 0; i < 5; i++) {
+                List<FoodPair> foods = new ArrayList<FoodPair>();
+                FoodPair foodPair = new FoodPair();
+                foodPair.user.foodURL = "http://cool-projects.com/foodex/abcd/abcd24jjf4f4f4f.jpg";
+                foodPair.user.foodDate = new Date();
+                foodPair.user.mapURL = "http://cool-projects.com/foodex/map/cccc/cccciewf32wfa.png";
+                foodPair.stranger.foodURL = "http://cool-projects.com/foodex/abcd/abcdfdsjofjo3.jpg";
+                foodPair.stranger.foodDate = new Date();
+                foodPair.stranger.mapURL = "http://cool-projects.com/foodex/map/cccc/cccciewf32wfa.png";
+                foods.add(foodPair);
+
+                foodPair = new FoodPair();
+                foodPair.user.foodURL = "http://cool-projects.com/foodex/abcd/abcdfdsjofjo3.jpg";
+                foodPair.user.foodDate = new Date();
+                foodPair.user.mapURL = "http://cool-projects.com/foodex/map/cccc/cccciewf32wfa.png";
+                foodPair.stranger.foodURL = "http://cool-projects.com/foodex/abcd/abcd24jjf4f4f4f.jpg";
+                foodPair.stranger.foodDate = new Date();
+                foodPair.stranger.mapURL = "http://cool-projects.com/foodex/map/cccc/cccciewf32wfa.png";
+                foods.add(foodPair);
+
+                foodPair = new FoodPair();
+                foodPair.user.foodURL = "http://cool-projects.com/foodex/abcd/abcd3fiojdsijf03f.jpg";
+                foodPair.user.foodDate = new Date();
+                foodPair.user.mapURL = "http://cool-projects.com/foodex/map/cccc/cccciewf32wfa.png";
+                foodPair.stranger.foodURL = "http://cool-projects.com/foodex/abcd/abcdfjiowjf32.jpg";
+                foodPair.stranger.foodDate = new Date();
+                foodPair.stranger.mapURL = "http://cool-projects.com/foodex/map/cccc/cccciewf32wfa.png";
+                foods.add(foodPair);
+
+                foodPair = new FoodPair();
+                foodPair.user.foodURL = "http://cool-projects.com/foodex/abcd/abcdfjiowjf32.jpg";
+                foodPair.user.foodDate = new Date();
+                foodPair.user.mapURL = "http://cool-projects.com/foodex/map/cccc/cccciewf32wfa.png";
+                foodPair.stranger.foodURL = "http://cool-projects.com/foodex/abcd/abcd3fiojdsijf03f.jpg";
+                foodPair.stranger.foodDate = new Date();
+                foodPair.stranger.mapURL = "http://cool-projects.com/foodex/map/cccc/cccciewf32wfa.png";
+                foods.add(foodPair);
+
+                foodDAO.insertFoodPairs(foods);
+            }
+        }
+        foodDAO.close();
     }
 
 }

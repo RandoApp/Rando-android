@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.db.model.FoodPair;
 
 import java.util.ArrayList;
@@ -24,10 +25,10 @@ public class FoodDAO {
     public FoodDAO(Context context) {
         foodDBHelper = new FoodDBHelper(context);
         database = foodDBHelper.getWritableDatabase();
-
     }
 
     public void close() {
+        database.close();
         foodDBHelper.close();
     }
 
@@ -38,13 +39,13 @@ public class FoodDAO {
      * @return returns instance of created foodPair.
      */
 
-    public FoodPair createFood(FoodPair foodPair) {
+    public FoodPair createFoodPair(FoodPair foodPair) {
 
-        ContentValues values = foodToContentValues(foodPair);
+        ContentValues values = foodPairToContentValues(foodPair);
 
         long insertId = database.insert(FoodDBHelper.TABLE_FOOD, null,
                 values);
-        return getFoodById(insertId);
+        return getFoodPairById(insertId);
     }
 
     /**
@@ -54,12 +55,12 @@ public class FoodDAO {
      * @return FoodPair instance or null if food hasn't been found
      */
 
-    public FoodPair getFoodById(long id) {
+    public FoodPair getFoodPairById(long id) {
         Cursor cursor = database.query(FoodDBHelper.TABLE_FOOD,
                 allColumns, FoodDBHelper.COLUMN_ID + " = " + id, null,
                 null, null, null);
         cursor.moveToFirst();
-        FoodPair newFoodPair = cursorToFood(cursor);
+        FoodPair newFoodPair = cursorToFoodPair(cursor);
         cursor.close();
         return newFoodPair;
     }
@@ -69,7 +70,7 @@ public class FoodDAO {
      *
      * @param foodPair
      */
-    public void deleteFood(FoodPair foodPair) {
+    public void deleteFoodPair(FoodPair foodPair) {
         long id = foodPair.id;
         database.delete(FoodDBHelper.TABLE_FOOD, FoodDBHelper.COLUMN_ID
                 + " = " + id, null);
@@ -82,10 +83,10 @@ public class FoodDAO {
      *
      * @param foodPair
      */
-    public void updateFood(FoodPair foodPair) {
+    public void updateFoodPair(FoodPair foodPair) {
         long id = foodPair.id;
 
-        ContentValues values = foodToContentValues(foodPair);
+        ContentValues values = foodPairToContentValues(foodPair);
 
         database.update(FoodDBHelper.TABLE_FOOD, values, FoodDBHelper.COLUMN_ID
                 + " = " + id, null);
@@ -96,19 +97,18 @@ public class FoodDAO {
     /**
      * @return all food instances found in DB
      */
-    public List<FoodPair> getAllFoods() {
+    public List<FoodPair> getAllFoodPairs() {
         List<FoodPair> foodPairs = new ArrayList<FoodPair>();
 
         Cursor cursor = database.query(FoodDBHelper.TABLE_FOOD,
-                allColumns, null, null, null, null, null);
+                allColumns, null, null, null, null, FoodDBHelper.COLUMN_USER_FOOD_DATE + " ASC", null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            FoodPair foodPair = cursorToFood(cursor);
+            FoodPair foodPair = cursorToFoodPair(cursor);
             foodPairs.add(foodPair);
             cursor.moveToNext();
         }
-        // make sure to close the cursor
         cursor.close();
         return foodPairs;
     }
@@ -118,14 +118,46 @@ public class FoodDAO {
      *
      * @return foods amount in DB
      */
-    public int getAllFoodsCount() {
+    public int getFoodPairsNumber() {
         Cursor cursor = database.query(FoodDBHelper.TABLE_FOOD,
                 allColumns, null, null, null, null, null);
         int result = cursor.getCount();
-
-        // make sure to close the cursor
         cursor.close();
         return result;
+    }
+
+    /**
+     * First page is a 0 page!!
+     *
+     * @return foods of current Page
+     */
+    public List<FoodPair> getFoodPairsForPage(int page) {
+        List<FoodPair> foodPairs = new ArrayList<FoodPair>();
+
+        Cursor cursor = database.query(FoodDBHelper.TABLE_FOOD,
+                allColumns, null, null, null, null, FoodDBHelper.COLUMN_USER_FOOD_DATE + " ASC", Constants.PAGE_SIZE * page + ", " + Constants.PAGE_SIZE);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            FoodPair foodPair = cursorToFoodPair(cursor);
+            foodPairs.add(foodPair);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return foodPairs;
+    }
+
+    /**
+     * First page is a 0 page!!
+     *
+     * @return foods of current Page
+     */
+    public int getPagesNumber() {
+        List<FoodPair> foodPairs = new ArrayList<FoodPair>();
+
+        double foodPairsNumber = getFoodPairsNumber();
+
+        return (int) Math.ceil(foodPairsNumber / Constants.PAGE_SIZE);
     }
 
     /**
@@ -133,11 +165,11 @@ public class FoodDAO {
      *
      * @param foodPairs
      */
-    public void insertFoods(List<FoodPair> foodPairs) {
+    public void insertFoodPairs(List<FoodPair> foodPairs) {
         database.beginTransaction();
         try {
             for (FoodPair foodPair : foodPairs) {
-                createFood(foodPair);
+                createFoodPair(foodPair);
             }
             database.setTransactionSuccessful();
         } finally {
@@ -168,7 +200,7 @@ public class FoodDAO {
      * @return food object extracted from cursor
      */
 
-    private FoodPair cursorToFood(Cursor cursor) {
+    private FoodPair cursorToFoodPair(Cursor cursor) {
         if (cursor.getCount() == 0) {
             return null;
         } else {
@@ -197,7 +229,7 @@ public class FoodDAO {
      * @param foodPair
      * @return ContentValues representing foodPair
      */
-    private ContentValues foodToContentValues(FoodPair foodPair) {
+    private ContentValues foodPairToContentValues(FoodPair foodPair) {
         ContentValues values = new ContentValues();
 
         values.put(FoodDBHelper.COLUMN_USER_FOOD_URL, foodPair.user.foodURL);

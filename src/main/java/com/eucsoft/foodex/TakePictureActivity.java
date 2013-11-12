@@ -2,6 +2,7 @@ package com.eucsoft.foodex;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -13,12 +14,13 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.eucsoft.foodex.callback.TaskCallback;
+import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.CreateFoodAndUploadTask;
 import com.eucsoft.foodex.util.LocationUpdater;
@@ -26,7 +28,7 @@ import com.eucsoft.foodex.view.FoodexSurfaceView;
 
 import java.util.HashMap;
 
-public class TakePictureActivity extends Activity implements TaskCallback {
+public class TakePictureActivity extends Activity implements TaskResultListener {
 
     private FoodexSurfaceView foodexSurfaceView;
 
@@ -63,13 +65,12 @@ public class TakePictureActivity extends Activity implements TaskCallback {
 
         getWindow().setFormat(PixelFormat.UNKNOWN);
 
+        WindowManager windowManager = (WindowManager) MainActivity.context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+
         foodexSurfaceView = (FoodexSurfaceView) findViewById(R.id.cameraPreview);
 
-        Display display = getWindowManager().getDefaultDisplay();
-        int width = display.getWidth();
-        int height = display.getHeight();
-
-        int bottomToolbarHeight = height - width - 50;
+        int bottomToolbarHeight = display.getHeight() - display.getWidth() - 50;
 
         LinearLayout bottomPanel = (LinearLayout) findViewById(R.id.bottom_panel);
         RelativeLayout.LayoutParams bottomPanelParams = (RelativeLayout.LayoutParams) bottomPanel.getLayoutParams();
