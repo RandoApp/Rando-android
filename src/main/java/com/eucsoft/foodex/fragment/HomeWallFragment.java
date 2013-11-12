@@ -20,7 +20,6 @@ import com.eucsoft.foodex.TakePictureActivity;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.ScrollViewListener;
-import com.eucsoft.foodex.view.FoodView;
 import com.eucsoft.foodex.view.ObservableScrollView;
 
 import java.util.List;
@@ -35,7 +34,12 @@ public class HomeWallFragment extends Fragment implements ScrollViewListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(FoodView.getLayoutFragmentResource(container.getContext()), container, false);
+        final View rootView;
+        if (container.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            rootView = inflater.inflate(R.layout.homeland, container, false);
+        } else {
+            rootView = inflater.inflate(R.layout.homeport, container, false);
+        }
 
         FoodDAO foodDAO = new FoodDAO(container.getContext());
         List<FoodPair> foods = foodDAO.getFoodPairsForPage(currentPage);
