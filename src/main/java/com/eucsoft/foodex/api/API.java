@@ -11,6 +11,7 @@ import com.eucsoft.foodex.db.model.FoodPair;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
@@ -58,7 +59,7 @@ public class API {
             addParamsToRequest(request, Constants.SIGNUP_EMAIL_PARAM, email, Constants.SIGNUP_PASSWORD_PARAM, password);
             HttpResponse response = client.execute(request);
 
-            if (response.getStatusLine().getStatusCode() == 200) {
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 storeSession(((DefaultHttpClient) client).getCookieStore());
             } else {
                 throw processError(readJSON(response));
@@ -74,7 +75,7 @@ public class API {
             HttpResponse response = client.execute(request);
 
 
-            if (response.getStatusLine().getStatusCode() == 200) {
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 JSONObject json = readJSON(response);
                 JSONArray jsonFoods = json.getJSONArray(Constants.FOODS_PARAM);
 
@@ -112,7 +113,7 @@ public class API {
             HttpGet request = new HttpGet(url);
             HttpResponse response = client.execute(request);
 
-            if (response.getStatusLine().getStatusCode() == 200) {
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 HttpEntity entity = response.getEntity();
                 return EntityUtils.toByteArray(entity);
             } else {
@@ -143,7 +144,7 @@ public class API {
 
             HttpResponse response = client.execute(request);
 
-            if (response.getStatusLine().getStatusCode() == 200) {
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 JSONObject json = readJSON(response);
                 FoodPair foodPair = new FoodPair();
                 foodPair.user.foodURL = json.getString(Constants.FOOD_URL_PARAM);
@@ -162,7 +163,7 @@ public class API {
             HttpPost request = new HttpPost(Constants.REPORT_URL + id);
 
             HttpResponse response = client.execute(request);
-            if (response.getStatusLine().getStatusCode() != 200) {
+            if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 throw processError(readJSON(response));
             }
         } catch (UnsupportedEncodingException e) {
@@ -179,7 +180,7 @@ public class API {
             HttpPost request = new HttpPost(Constants.BON_APPETIT_URL + id);
             HttpResponse response = client.execute(request);
 
-            if (response.getStatusLine().getStatusCode() != 200) {
+            if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 throw processError(readJSON(response));
             }
         } catch (UnsupportedEncodingException e) {
