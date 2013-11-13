@@ -13,9 +13,11 @@ import android.view.animation.Animation;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.eucsoft.foodex.Constants;
+import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.animation.AnimationFactory;
 import com.eucsoft.foodex.db.model.FoodPair;
@@ -205,6 +207,7 @@ public class FoodPairFragment extends Fragment implements TaskResultListener {
                 this.foodPair = foodPair;
                 if (resultCode != BaseTask.RESULT_OK && isStrangerShown) {
                     bonAppetitButton.setImageResource(R.drawable.bonappetit);
+                    Toast.makeText(MainActivity.context, R.string.photo_upload_failed, Toast.LENGTH_LONG);
                 }
                 break;
         }
