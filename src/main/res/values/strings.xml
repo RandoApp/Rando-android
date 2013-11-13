@@ -14,6 +14,7 @@
     <string name="take_picture_screen_label">Take Picture</string>
     <string name="photo_upload_ok">Upload Finished Successfully.</string>
     <string name="photo_upload_failed">"Upload Failed. Please check you connection and try again."</string>
+    <string name="failed_to_set_bon_appetit_for_food">"Bon Appetit Failed. Please check you internet connection and try again."</string>
 
     <string name="error_unknown_err">Oops, Something wrong…</string>
 

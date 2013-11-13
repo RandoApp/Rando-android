@@ -16,11 +16,7 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.CoreMatchers.not;
 
-public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<TakePictureActivity> {
-
-    //TODO: find out how we can run tests on travis without ugly delays
-    private static final int UGLY_DELAY_FOR_TRAVIS = 9;
-    private static final int ONE_SECOND = 1000;
+public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<TakePictureActivity> implements ActivityTestI {
 
     //Activity to test
     private TakePictureActivity takePictureActivity;
@@ -60,7 +56,7 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
         onView(withId(R.id.upload_photo_button)).check(matches(not(isDisplayed())));
     }
 
-    @LargeTest
+/*    @LargeTest
     public void testTakePictureOnReStart() {
         assertNotNull(takePictureActivity);
         getInstrumentation().callActivityOnDestroy(takePictureActivity);
@@ -80,7 +76,7 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ta
         onView(withId(R.id.take_picture_button)).check(matches(isDisplayed()));
         onView(withId(R.id.back_button)).check(matches(isDisplayed()));
         onView(withId(R.id.upload_photo_button)).check(matches(not(isDisplayed())));
-    }
+    }*/
 
     //TODO: Findout how to work with external Activities in tests (looks like impossible)
     // Methods whose names are prefixed with test will automatically be run
