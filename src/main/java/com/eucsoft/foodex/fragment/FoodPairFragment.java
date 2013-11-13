@@ -78,9 +78,9 @@ public class FoodPairFragment extends Fragment implements TaskResultListener {
             @Override
             public void onClick(View v) {
                 if (isStrangerShown && !foodPair.stranger.isBonAppetit()) {
-                    foodPair.stranger.bonAppetit = 1;
                     bonAppetitButton.setImageResource(R.drawable.bonappetit2);
-                    BonAppetitTask bonAppetitTask = new BonAppetitTask(FoodPairFragment.this);
+                    BonAppetitTask bonAppetitTask = new BonAppetitTask();
+                    bonAppetitTask.setTaskResultListener(FoodPairFragment.this);
                     bonAppetitTask.execute(foodPair);
                 }
             }

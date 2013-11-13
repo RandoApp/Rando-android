@@ -18,10 +18,6 @@ public class BonAppetitTask extends AsyncTask<FoodPair, Integer, Long> implement
     private TaskResultListener taskResultListener;
     private HashMap<String, Object> data;
 
-    public BonAppetitTask(TaskResultListener taskResultListener) {
-        this.taskResultListener = taskResultListener;
-    }
-
     @Override
     protected Long doInBackground(FoodPair... params) {
 
@@ -30,7 +26,12 @@ public class BonAppetitTask extends AsyncTask<FoodPair, Integer, Long> implement
         if (params == null || params.length == 0) {
             return RESULT_ERROR;
         }
+        data = new HashMap<String, Object>();
         FoodPair foodPair = params[0];
+        if (foodPair == null) {
+            return RESULT_ERROR;
+        }
+        foodPair.stranger.bonAppetit = 1;
 
         data = new HashMap<String, Object>();
         data.put(Constants.FOOD_PAIR, foodPair);
@@ -54,5 +55,9 @@ public class BonAppetitTask extends AsyncTask<FoodPair, Integer, Long> implement
     protected void onPostExecute(Long result) {
         Log.d(BonAppetitTask.class, "onPostExecute", result.toString());
         taskResultListener.onTaskResult(TASK_ID, result, data);
+    }
+
+    public void setTaskResultListener(TaskResultListener taskResultListener) {
+        this.taskResultListener = taskResultListener;
     }
 }
