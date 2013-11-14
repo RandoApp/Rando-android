@@ -13,7 +13,7 @@
 
         <com.eucsoft.foodex.view.FoodPicsLayout
             android:tag="strangerImage"
-                android:layout_width="fill_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content" />
 
         <com.eucsoft.foodex.view.FoodPicsLayout
