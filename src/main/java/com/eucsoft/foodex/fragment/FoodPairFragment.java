@@ -24,7 +24,6 @@ import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.BonAppetitTask;
-import com.eucsoft.foodex.task.DownloadFoodPicsTask;
 import com.eucsoft.foodex.view.FoodPicsLayout;
 import com.eucsoft.foodex.view.ObservableHorizontalScrollView;
 
@@ -41,9 +40,6 @@ public class FoodPairFragment extends Fragment implements TaskResultListener {
 
     private boolean isStrangerShown = true;
     private boolean animationInProgress = false;
-    private boolean isMap = false;
-    private boolean isAutoScrolled = false;
-    private boolean isFingerScrolling = false;
 
     public static FoodPairFragment newInstance(FoodPair foodPair) {
         FoodPairFragment fragment = new FoodPairFragment();
@@ -129,11 +125,13 @@ public class FoodPairFragment extends Fragment implements TaskResultListener {
         strangerFoodImage = (FoodPicsLayout) layout.findViewWithTag("strangerImage");
         strangerFoodImage.setLayoutParams(foodImagesLayout);
         strangerFoodImage.setOnClickListener(onClickListener);
-        strangerFoodImage.setImgSize(foodImageSize);
         userFoodImage = (FoodPicsLayout) layout.findViewWithTag("userImage");
         userFoodImage.setLayoutParams(foodImagesLayout);
         userFoodImage.setOnClickListener(onClickListener);
-        userFoodImage.setImgSize(foodImageSize);
+
+        strangerFoodImage.setUser(foodPair.stranger);
+        userFoodImage.setUser(foodPair.user);
+
         Animation.AnimationListener outAnimationListener = new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -183,10 +181,6 @@ public class FoodPairFragment extends Fragment implements TaskResultListener {
             public void onAnimationRepeat(Animation animation) {
             }
         });
-
-        DownloadFoodPicsTask downloadFoodPicsTask = new DownloadFoodPicsTask(this, layout.getContext());
-        downloadFoodPicsTask.execute(foodPair);
-
         return layout;
     }
 
@@ -200,14 +194,6 @@ public class FoodPairFragment extends Fragment implements TaskResultListener {
     public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
 
         switch (taskCode) {
-            case DownloadFoodPicsTask.TASK_ID:
-                /*strangerFoodImage.add(FileUtil.getFoodPath(foodPair.stranger), foodImageSize);
-                strangerFoodImage.add(FileUtil.getMapPath(foodPair.stranger), foodImageSize);
-                userFoodImage.add(FileUtil.getFoodPath(foodPair.user), foodImageSize);
-                userFoodImage.add(FileUtil.getMapPath(foodPair.user), foodImageSize);*/
-                strangerFoodImage.setUser(foodPair.stranger);
-                userFoodImage.setUser(foodPair.user);
-                break;
             case BonAppetitTask.TASK_ID:
                 FoodPair foodPair = (FoodPair) data.get(Constants.FOOD_PAIR);
                 this.foodPair = foodPair;

@@ -4,7 +4,7 @@ public class Constants {
 
     public static final String ALBUM_NAME = "Foodex";
 
-    public static final String FILENAME = "FILENAME";
+    public static final String FILEPATH = "FILEPATH";
     public static final String FOOD_PAIR = "foodPair";
 
     public static final String IMAGE_FILTER = "image/*";

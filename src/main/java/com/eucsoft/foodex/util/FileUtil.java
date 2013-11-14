@@ -69,6 +69,11 @@ public class FileUtil {
                 && isMapExists(foodPair.stranger);
     }
 
+    public static boolean isFileExists(String filePath) {
+        File file = new File(filePath);
+        return file.exists();
+    }
+
     public static void scanImage(Context context, String imagePath) {
         MediaScannerConnection.scanFile(context,
                 new String[]{imagePath}, null,
@@ -76,5 +81,10 @@ public class FileUtil {
                     public void onScanCompleted(String path, Uri uri) {
                     }
                 });
+    }
+
+    public static String getFilePathByUrl(String url) {
+        String fileName = url == null ? null : url.substring(url.lastIndexOf('/') + 1);
+        return FileUtil.getOutputMediaDir() + File.separator + fileName;
     }
 }

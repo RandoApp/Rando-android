@@ -1,55 +1,37 @@
 package com.eucsoft.foodex.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.os.Parcelable;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.db.model.FoodPair;
+import com.eucsoft.foodex.task.DownloadImageTask;
 
-public class FoodPicsLayout extends TwoWayGridView {
+public class FoodPicsLayout extends ViewPager {
 
-    private Context context;
     private OnClickListener onClickListener;
     private int imgSize;
     private FoodPair.User user;
-    boolean isMap;
-
-    private static BitmapFactory.Options decodeOptions;
-
-    static {
-        decodeOptions = new BitmapFactory.Options();
-        decodeOptions.inDither = false;
-        decodeOptions.inJustDecodeBounds = false;
-        decodeOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        decodeOptions.inSampleSize = 3;
-        decodeOptions.inPurgeable = true;
-    }
+    boolean isMap = false;
+    boolean isFingerScrolling = false;
 
     public FoodPicsLayout(Context context) {
         this(context, null);
-        this.context = context;
     }
 
     public FoodPicsLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.context = context;
-    }
-
-    public FoodPicsLayout(Context context, AttributeSet attrs, int defStyle, Context context1) {
-        super(context, attrs, defStyle);
-        context = context1;
     }
 
     public void setImgSize(int imgSize) {
         this.imgSize = imgSize;
-        this.setColumnWidth(imgSize);
     }
 
     public void setUser(FoodPair.User user) {
@@ -61,30 +43,7 @@ public class FoodPicsLayout extends TwoWayGridView {
         this.onClickListener = onClickListener;
     }
 
-    class FoodOnScrollListener implements TwoWayAbsListView.OnScrollListener {
-        @Override
-        public void onScrollStateChanged(TwoWayAbsListView view, int scrollState) {
-            switch (scrollState) {
-                case OnScrollListener.SCROLL_STATE_IDLE:
-                    int x = view.getScrollX();
-
-                    /*if (){
-
-                    }*/
-                    break;
-
-            }
-
-        }
-
-        @Override
-        public void onScroll(TwoWayAbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-        }
-    }
-
-
-    class FoodPairAdapter extends BaseAdapter {
+    class FoodPairAdapter extends PagerAdapter {
         private final String[] values;
 
         public FoodPairAdapter(FoodPair.User user) {
@@ -94,19 +53,21 @@ public class FoodPicsLayout extends TwoWayGridView {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = (LayoutInflater) context
+        public Object instantiateItem(ViewGroup container, int position) {
+            LayoutInflater inflater = (LayoutInflater) container.getContext()
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            ImageView imageView = (ImageView) inflater.inflate(R.layout.imageview, parent, false);
-
-            Bitmap bm = BitmapFactory.decodeFile(values[position], decodeOptions);
-            imageView.setLayoutParams(new LayoutParams(imgSize, imgSize));
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            //imageView.setImageBitmap(bm);
+            CallableImageView imageView = new CallableImageView(container.getContext());
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setImageResource(R.drawable.f);
-
             imageView.setOnClickListener(onClickListener);
-        return imageView;
+            container.addView(imageView, 0);
+            DownloadImageTask downloadImageTask = new DownloadImageTask(imageView, container.getContext());
+            if (position == 0) {
+                downloadImageTask.execute(user.foodURL);
+            } else {
+                downloadImageTask.execute(user.mapURL);
+            }
+            return imageView;
         }
 
         @Override
@@ -115,14 +76,14 @@ public class FoodPicsLayout extends TwoWayGridView {
         }
 
         @Override
-        public Object getItem(int position) {
-            return null;
+        public boolean isViewFromObject(View arg0, Object arg1) {
+            return arg0 == ((View) arg1);
+
         }
 
         @Override
-        public long getItemId(int position) {
-            return 0;
+        public Parcelable saveState() {
+            return null;
         }
-
     }
 }

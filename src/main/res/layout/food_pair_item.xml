@@ -10,25 +10,16 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:tag="viewSwitcher">
-            <com.eucsoft.foodex.view.FoodPicsLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:tag="strangerImage"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:numColumns="2"
-                app:scrollDirectionPortrait="horizontal"
-                app:scrollDirectionLandscape="horizontal"
-                app:smoothScrollbar="true"
-                app:gravity="center" />
 
-        <com.eucsoft.foodex.view.FoodPicsLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.eucsoft.foodex.view.FoodPicsLayout
+            android:tag="strangerImage"
+                android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+
+        <com.eucsoft.foodex.view.FoodPicsLayout
             android:tag="userImage"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:numColumns="2"
-            app:scrollDirectionPortrait="horizontal"
-            app:scrollDirectionLandscape="horizontal"
-            app:smoothScrollbar="true"
-            app:gravity="center" />
+            android:layout_height="wrap_content" />
     </ViewSwitcher>
 
     <RelativeLayout
