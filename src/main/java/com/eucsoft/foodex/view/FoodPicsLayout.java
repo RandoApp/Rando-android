@@ -19,6 +19,7 @@ public class FoodPicsLayout extends TwoWayGridView {
     private OnClickListener onClickListener;
     private int imgSize;
     private FoodPair.User user;
+    boolean isMap;
 
     private static BitmapFactory.Options decodeOptions;
 
@@ -65,6 +66,12 @@ public class FoodPicsLayout extends TwoWayGridView {
         public void onScrollStateChanged(TwoWayAbsListView view, int scrollState) {
             switch (scrollState) {
                 case OnScrollListener.SCROLL_STATE_IDLE:
+                    int x = view.getScrollX();
+
+                    /*if (){
+
+                    }*/
+                    break;
 
             }
 
