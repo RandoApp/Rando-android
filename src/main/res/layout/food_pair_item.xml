@@ -10,37 +10,25 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:tag="viewSwitcher">
-
-        <com.eucsoft.foodex.view.ObservableHorizontalScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scrollbars="none"
-            android:overScrollMode="never"
-            android:tag="strangerFood"
-            android:fadingEdge="none">
-
-            <com.eucsoft.foodex.view.FoodPicsLayout
+            <com.eucsoft.foodex.view.FoodPicsLayout xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:tag="strangerImage"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" />
-        </com.eucsoft.foodex.view.ObservableHorizontalScrollView>
+                android:numColumns="2"
+                app:scrollDirectionPortrait="horizontal"
+                app:scrollDirectionLandscape="horizontal"
+                app:smoothScrollbar="true"
+                app:gravity="center" />
 
-        <com.eucsoft.foodex.view.ObservableHorizontalScrollView
-            android:layout_width="wrap_content"
+        <com.eucsoft.foodex.view.FoodPicsLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:tag="userImage"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="none"
-            android:overScrollMode="never"
-            android:tag="userFood"
-            android:fadingEdge="none">
-
-            <com.eucsoft.foodex.view.FoodPicsLayout
-                android:tag="userImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" />
-        </com.eucsoft.foodex.view.ObservableHorizontalScrollView>
-
+            android:numColumns="2"
+            app:scrollDirectionPortrait="horizontal"
+            app:scrollDirectionLandscape="horizontal"
+            app:smoothScrollbar="true"
+            app:gravity="center" />
     </ViewSwitcher>
 
     <RelativeLayout

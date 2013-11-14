@@ -27,6 +27,7 @@ public class ObservableScrollView extends ScrollView {
 
     public ObservableScrollView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
     }
 
     public void setScrollViewListener(ScrollViewListener scrollViewListener) {

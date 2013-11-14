@@ -31,7 +31,7 @@ public class Constants {
 
     public static final int TOP_PANEL_ON_TAKEPICSCREEN_HEIGHT = 50;
 
-    public static final String SERVER_URL = "http://10.0.2.2:8888";
+    public static final String SERVER_URL = "https://foodex-webtools.rhcloud.com";
 
     public static final String SEESSION_COOKIE_NAME = "connect.sid";
 

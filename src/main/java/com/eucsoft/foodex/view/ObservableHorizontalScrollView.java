@@ -10,16 +10,24 @@ public class ObservableHorizontalScrollView extends HorizontalScrollView {
 
     private HorizontalScrollViewListener scrollViewListener = null;
 
+    private Runnable scrollerTask;
+    private int initialPosition;
+
+    private int newCheck = 300;
+    private static final String TAG = "MyScrollView";
+
     public ObservableHorizontalScrollView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public ObservableHorizontalScrollView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        initScrollerTask();
     }
 
     public ObservableHorizontalScrollView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        initScrollerTask();
     }
 
     public void setScrollViewListener(HorizontalScrollViewListener scrollViewListener) {
@@ -33,4 +41,29 @@ public class ObservableHorizontalScrollView extends HorizontalScrollView {
             scrollViewListener.onScrollChanged(this, x, y, oldx, oldy);
         }
     }
+
+    private void initScrollerTask() {
+        scrollerTask = new Runnable() {
+            public void run() {
+
+                int newPosition = getScrollX();
+                if (initialPosition - newPosition == 0) {//has stopped
+
+                    if (scrollViewListener != null) {
+
+                        scrollViewListener.onScrollStopped(ObservableHorizontalScrollView.this);
+                    }
+                } else {
+                    initialPosition = getScrollY();
+                    ObservableHorizontalScrollView.this.postDelayed(scrollerTask, newCheck);
+                }
+            }
+        };
+    }
+
+    public void startScrollerTask() {
+        initialPosition = getScrollX();
+        postDelayed(scrollerTask, newCheck);
+    }
+
 }
