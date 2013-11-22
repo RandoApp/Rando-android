@@ -6,9 +6,12 @@ public class Constants {
 
     public static final String FILENAME = "FILENAME";
     public static final String FOOD_PAIR = "foodPair";
-    public static final String SHOW_STRANGER = "showStranger";
-    public static final String MAP_SHOWN = "mapShown";
-    public static final String FOOD_FRAGMENT = "food_fragment";
+
+    public static final String IMAGE_FILTER = "image/*";
+    public static final String IMAGE_PREFIX = "IMG_";
+    public static final String IMAGE_POSTFIX = ".jpg";
+
+    public static final int LOCATION_PERIOD = 20000;
 
     public static final String ERROR = "error";
 
@@ -29,6 +32,7 @@ public class Constants {
     public static final int FOOD_MARGIN_LANDSCAPE_COLUMN_TOP = 15;
 
     public static final String SERVER_URL = "https://foodex-webtools.rhcloud.com";
+    public static final int TOP_PANEL_ON_TAKEPICSCREEN_HEIGHT = 50;
 
     public static final String SEESSION_COOKIE_NAME = "connect.sid";
 

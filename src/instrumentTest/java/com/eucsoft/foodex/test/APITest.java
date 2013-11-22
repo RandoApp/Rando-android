@@ -12,6 +12,7 @@ import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.test.util.APITestHelper;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -80,7 +81,7 @@ public class APITest extends AndroidTestCase {
 
     @SmallTest
     public void testUploadFoodWithUnknownError() throws Exception {
-        APITestHelper.mockAPI(500, "not a json, that throw JSONException");
+        APITestHelper.mockAPI(HttpStatus.SC_INTERNAL_SERVER_ERROR, "not a json, that throw JSONException");
         MainActivity.context = this.getContext();
 
         Location locationMock = mock(Location.class);
@@ -125,7 +126,7 @@ public class APITest extends AndroidTestCase {
 
     @SmallTest
     public void testFetchUserWithEmptyFoods() throws Exception {
-        APITestHelper.mockAPI(200, "{'email': 'user@mail.com', 'foods': []}");
+        APITestHelper.mockAPI(HttpStatus.SC_OK, "{'email': 'user@mail.com', 'foods': []}");
 
         List<FoodPair> foods = API.fetchUser();
 
@@ -146,7 +147,7 @@ public class APITest extends AndroidTestCase {
 
     @SmallTest
     public void testFetchUserWithUnknownError() throws Exception {
-        APITestHelper.mockAPI(500, "not a json, that throw JSONException");
+        APITestHelper.mockAPI(HttpStatus.SC_INTERNAL_SERVER_ERROR, "not a json, that throw JSONException");
         MainActivity.context = this.getContext();
 
         try {
@@ -161,7 +162,7 @@ public class APITest extends AndroidTestCase {
     public void testReport() throws Exception {
         API.client = mock(HttpClient.class);
         StatusLine statusLineMock = mock(StatusLine.class);
-        when(statusLineMock.getStatusCode()).thenReturn(200);
+        when(statusLineMock.getStatusCode()).thenReturn(HttpStatus.SC_OK);
         HttpResponse responseMock = mock(HttpResponse.class);
         when(responseMock.getStatusLine()).thenReturn(statusLineMock);
         when(API.client.execute(isA(HttpUriRequest.class))).thenReturn(responseMock);
@@ -190,7 +191,7 @@ public class APITest extends AndroidTestCase {
     public void testBonAppetit() throws Exception {
         API.client = mock(HttpClient.class);
         StatusLine statusLineMock = mock(StatusLine.class);
-        when(statusLineMock.getStatusCode()).thenReturn(200);
+        when(statusLineMock.getStatusCode()).thenReturn(HttpStatus.SC_OK);
         HttpResponse responseMock = mock(HttpResponse.class);
         when(responseMock.getStatusLine()).thenReturn(statusLineMock);
         when(API.client.execute(isA(HttpUriRequest.class))).thenReturn(responseMock);
@@ -238,7 +239,7 @@ public class APITest extends AndroidTestCase {
 
     @SmallTest
     public void testSignup() throws Exception {
-        APITestHelper.mockAPI(200, "{}");
+        APITestHelper.mockAPI(HttpStatus.SC_OK, "{}");
 
         ArgumentCaptor<HttpPost> captor = ArgumentCaptor.forClass(HttpPost.class);
 

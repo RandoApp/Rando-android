@@ -6,7 +6,7 @@
     <string name="password">Password:</string>
     <string name="facebook">Facebook</string>
     <string name="signup">Sign up</string>
-    <string name="skip">Skip...</string>
+    <string name="skip">Skip…</string>
     <string name="action_settings">Settings</string>
 
 
@@ -14,12 +14,17 @@
     <string name="take_picture_screen_label">Take Picture</string>
     <string name="photo_upload_ok">Upload Finished Successfully.</string>
     <string name="photo_upload_failed">"Upload Failed. Please check you connection and try again."</string>
+    <string name="failed_to_set_bon_appetit_for_food">"Bon Appetit Failed. Please check you internet connection and try again."</string>
 
+<<<<<<< HEAD
     <string name="emailShouldBe">You have error in email</string>
     <string name="passwordShouldBe">Password can not be empty</string>
 
 
     <string name="error_unknown_err">Oops, Something wrong...</string>
+=======
+    <string name="error_unknown_err">Oops, Something wrong…</string>
+>>>>>>> master
 
     <string name="get_started">To get started, log in using Facebook</string>
 

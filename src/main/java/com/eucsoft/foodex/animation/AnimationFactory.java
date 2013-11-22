@@ -70,9 +70,6 @@ public class AnimationFactory {
         }
     }
 
-    ;
-
-
     /**
      * Create a pair of {@link FlipAnimation} that can be used to flip 3D transition from {@code fromView} to {@code toView}. A typical use case is with {@link ViewAnimator} as an out and in transition.
      * <p/>
@@ -83,7 +80,7 @@ public class AnimationFactory {
      * @param dir          the flip direction
      * @param duration     the transition duration in milliseconds
      * @param interpolator the interpolator to use (pass {@code null} to use the {@link AccelerateInterpolator} interpolator)
-     * @return
+     * @return animation pair to be used for IN and OUT animations
      */
     public static Animation[] flipAnimation(final View fromView, final View toView, FlipDirection dir, long duration, Interpolator interpolator) {
         Animation[] result = new Animation[2];
@@ -130,7 +127,7 @@ public class AnimationFactory {
      * @param dir          the flip direction
      * @param duration     the transition duration in milliseconds
      * @param interpolator the interpolator to use (pass {@code null} to use the {@link AccelerateInterpolator} interpolator)
-     * @return
+     * @return animation pair to be used for IN and OUT animations
      */
     public static Animation[] flipAnimation(final int width, FlipDirection dir, long duration, Interpolator interpolator) {
         Animation[] result = new Animation[2];

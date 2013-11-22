@@ -9,6 +9,7 @@ import com.eucsoft.foodex.api.API;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -25,14 +26,14 @@ public class APITestHelper {
 
     public static void mockAPIWithError() throws IOException {
         MainActivity.context = mockContext();
-        API.client = mockClient(500, "{'code': '501'," +
+        API.client = mockClient(HttpStatus.SC_INTERNAL_SERVER_ERROR, "{'code': '501'," +
                 "'message': 'Internal Server Error'," +
                 "'description': 'See https://github.com/dimhold/foodex/wiki/Errors/#system'}");
     }
 
     public static void mockAPIForUploadFood() throws IOException {
         MainActivity.context = mockContext();
-        API.client = mockClient(200, "{" +
+        API.client = mockClient(HttpStatus.SC_OK, "{" +
                 "'creation': '1383670800877'," +
                 "'foodUrl': 'http://api.foodex.com/food/abcd/abcdadfwefwef.jpg'," +
                 "'mapUrl': ''}");
@@ -40,12 +41,12 @@ public class APITestHelper {
 
     public static void mockAPIForDownloadFood() throws IOException {
         MainActivity.context = mockContext();
-        API.client = mockClient(200, "jpg file");
+        API.client = mockClient(HttpStatus.SC_OK, "jpg file");
     }
 
     public static void mockAPIForFetchUser() throws IOException {
         MainActivity.context = mockContext();
-        API.client = mockClient(200, "{'email': 'user@mail.com'," +
+        API.client = mockClient(HttpStatus.SC_OK, "{'email': 'user@mail.com'," +
                 "'foods': [" +
                 "{" +
                 "'user': {" +

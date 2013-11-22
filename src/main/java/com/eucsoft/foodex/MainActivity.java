@@ -84,36 +84,44 @@ public class MainActivity extends ActionBarActivity {
                 foodPair.user.foodURL = "http://cool-projects.com/foodex/abcd/abcd24jjf4f4f4f.jpg";
                 foodPair.user.foodDate = new Date();
                 foodPair.user.mapURL = "http://cool-projects.com/foodex/map/cccc/cccciewf32wfa.png";
+                foodPair.user.bonAppetit = 1;
                 foodPair.stranger.foodURL = "http://cool-projects.com/foodex/abcd/abcdfdsjofjo3.jpg";
                 foodPair.stranger.foodDate = new Date();
                 foodPair.stranger.mapURL = "http://cool-projects.com/foodex/map/cccc/cccciewf32wfa.png";
+                foodPair.stranger.bonAppetit = 0;
                 foods.add(foodPair);
 
                 foodPair = new FoodPair();
                 foodPair.user.foodURL = "http://cool-projects.com/foodex/abcd/abcdfdsjofjo3.jpg";
                 foodPair.user.foodDate = new Date();
                 foodPair.user.mapURL = "http://cool-projects.com/foodex/map/cccc/cccciewf32wfa.png";
+                foodPair.user.bonAppetit = 0;
                 foodPair.stranger.foodURL = "http://cool-projects.com/foodex/abcd/abcd24jjf4f4f4f.jpg";
                 foodPair.stranger.foodDate = new Date();
                 foodPair.stranger.mapURL = "http://cool-projects.com/foodex/map/cccc/cccciewf32wfa.png";
+                foodPair.stranger.bonAppetit = 1;
                 foods.add(foodPair);
 
                 foodPair = new FoodPair();
                 foodPair.user.foodURL = "http://cool-projects.com/foodex/abcd/abcd3fiojdsijf03f.jpg";
                 foodPair.user.foodDate = new Date();
                 foodPair.user.mapURL = "http://cool-projects.com/foodex/map/cccc/cccciewf32wfa.png";
+                foodPair.user.bonAppetit = 1;
                 foodPair.stranger.foodURL = "http://cool-projects.com/foodex/abcd/abcdfjiowjf32.jpg";
                 foodPair.stranger.foodDate = new Date();
                 foodPair.stranger.mapURL = "http://cool-projects.com/foodex/map/cccc/cccciewf32wfa.png";
+                foodPair.stranger.bonAppetit = 0;
                 foods.add(foodPair);
 
                 foodPair = new FoodPair();
                 foodPair.user.foodURL = "http://cool-projects.com/foodex/abcd/abcdfjiowjf32.jpg";
                 foodPair.user.foodDate = new Date();
                 foodPair.user.mapURL = "http://cool-projects.com/foodex/map/cccc/cccciewf32wfa.png";
+                foodPair.user.bonAppetit = 0;
                 foodPair.stranger.foodURL = "http://cool-projects.com/foodex/abcd/abcd3fiojdsijf03f.jpg";
                 foodPair.stranger.foodDate = new Date();
                 foodPair.stranger.mapURL = "http://cool-projects.com/foodex/map/cccc/cccciewf32wfa.png";
+                foodPair.stranger.bonAppetit = 1;
                 foods.add(foodPair);
 
                 foodDAO.insertFoodPairs(foods);
