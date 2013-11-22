@@ -1,15 +1,20 @@
 package com.eucsoft.foodex;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
+import android.content.SharedPreferences;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.fragment.AuthFragment;
+import com.eucsoft.foodex.fragment.HomeWallFragment;
+import com.eucsoft.foodex.menu.LogoutMenu;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,51 +22,56 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
+    public static Activity activity;
     public static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        activity = this;
         context = getApplicationContext();
 
-        //TODO: REMOVE THIS METHOD
+        //TODO: REMOVE THIS METHOD?
         initDBForTesting();
 
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.main_screen, new AuthFragment())
+                    .add(R.id.main_screen, getFragment())
                     .commit();
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                return true;
+        if (item.getItemId() == LogoutMenu.ID) {
+            new LogoutMenu().select();
         }
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
+    private Fragment getFragment() {
+        if (isNeedAuth()) {
+            return new AuthFragment();
+        }
+        return new HomeWallFragment();
+    }
+
+    private boolean isNeedAuth() {
+        SharedPreferences sharedPref = MainActivity.context.getSharedPreferences(Constants.SEESSION_COOKIE_NAME, Context.MODE_PRIVATE);
+        if (sharedPref.getString(Constants.SEESSION_COOKIE_NAME, null) == null) {
+            return true;
+        }
+        return false;
+    }
 
     //TODO: REMOVE
     private void initDBForTesting() {

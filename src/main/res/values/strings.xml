@@ -15,6 +15,17 @@
     <string name="photo_upload_ok">Upload Finished Successfully.</string>
     <string name="photo_upload_failed">"Upload Failed. Please check you connection and try again."</string>
 
+    <string name="emailShouldBe">You have error in email</string>
+    <string name="passwordShouldBe">Password can not be empty</string>
+
+
     <string name="error_unknown_err">Oops, Something wrong...</string>
+
+    <string name="get_started">To get started, log in using Facebook</string>
+
+    <string name="app_id">590251961033710</string>
+
+    <string name="logout">Logout</string>
+    <string name="loadig_progress">Loading...</string>
 
 </resources>
