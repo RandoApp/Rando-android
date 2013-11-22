@@ -25,9 +25,12 @@ android {
 }
 
 dependencies {
+    compile project(':Foodex:modules:facebook:facebook')
+
     compile 'com.android.support:appcompat-v7:+'
     compile 'org.apache.httpcomponents:httpcore:4.3'
     compile 'org.apache.httpcomponents:httpmime:4.3.1'
+
 
     instrumentTestCompile files('repo/espresso-1.0-SNAPSHOT.jar', 'repo/testrunner-1.0-SNAPSHOT.jar', 'repo/testrunner-runtime-1.0-SNAPSHOT.jar', 'repo/hamcrest-integration-1.1.jar', 'repo/hamcrest-library-1.1.jar')
     instrumentTestCompile 'com.squareup:javawriter:2.1.1'

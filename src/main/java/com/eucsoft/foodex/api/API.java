@@ -69,6 +69,51 @@ public class API {
         }
     }
 
+    public static void facebook(String id, String email, String token) throws Exception {
+        try {
+            HttpPost request = new HttpPost(Constants.FACEBOOK_URL);
+            addParamsToRequest(request, Constants.FACEBOOK_ID_PARAM, id, Constants.FACEBOOK_EMAIL_PARAM, email, Constants.FACEBOOK_TOKEN_PARAM, token);
+            HttpResponse response = client.execute(request);
+
+            if (response.getStatusLine().getStatusCode() == 200) {
+                storeSession(((DefaultHttpClient) client).getCookieStore());
+            } else {
+                throw processError(readJSON(response));
+            }
+        } catch (IOException e) {
+            throw processError(e);
+        }
+    }
+
+    public static void anonymous(String uuid) throws Exception {
+        try {
+            HttpPost request = new HttpPost(Constants.ANONYMOUS_URL);
+            addParamsToRequest(request, Constants.ANONYMOUS_ID_PARAM, uuid);
+
+            HttpResponse response = client.execute(request);
+
+            if (response.getStatusLine().getStatusCode() == 200) {
+                storeSession(((DefaultHttpClient) client).getCookieStore());
+            } else {
+                throw processError(readJSON(response));
+            }
+        } catch (IOException e) {
+            throw processError(e);
+        }
+    }
+
+    public static void logout() throws Exception {
+        try {
+            HttpPost request = new HttpPost(Constants.LOGOUT_URL);
+            HttpResponse response = client.execute(request);
+            if (response.getStatusLine().getStatusCode() != 200) {
+                throw processError(readJSON(response));
+            }
+        } catch (IOException e) {
+            throw processError(e);
+        }
+    }
+
     public static List<FoodPair> fetchUser() throws Exception {
         try {
             HttpGet request = new HttpGet(Constants.FETCH_USER_URL);
@@ -202,7 +247,7 @@ public class API {
 
     private static void storeSession(CookieStore cookieStore) {
         SharedPreferences sharedPref = MainActivity.context.getSharedPreferences(Constants.SEESSION_COOKIE_NAME, Context.MODE_PRIVATE);
-        sharedPref.edit().putString(Constants.SEESSION_COOKIE_NAME, cookieStore.getCookies().get(0).getValue());
+        sharedPref.edit().putString(Constants.SEESSION_COOKIE_NAME, cookieStore.getCookies().get(0).getValue()).commit();
     }
 
     private static JSONObject readJSON(HttpResponse response) throws Exception {
