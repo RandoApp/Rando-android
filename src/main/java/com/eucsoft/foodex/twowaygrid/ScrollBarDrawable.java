@@ -1,4 +1,4 @@
-package com.eucsoft.foodex.view;
+package com.eucsoft.foodex.twowaygrid;
 
 /*
  * A modified version of the Android ScrollBarDrawable

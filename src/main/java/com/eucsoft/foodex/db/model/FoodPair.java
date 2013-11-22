@@ -5,6 +5,11 @@ import java.util.Date;
 
 public class FoodPair implements Serializable {
 
+    public static final int STRANGER_FOOD = 0;
+    public static final int STRANGER_MAP = 1;
+    public static final int USER_FOOD = 2;
+    public static final int USER_MAP = 3;
+
     public long id;
     //user FoodPair props
     public User user = new User();

@@ -13,7 +13,7 @@ public class Constants {
 
     public static final int LOCATION_PERIOD = 20000;
 
-    public static final int PAGE_SIZE = 4;
+    public static final int PAGE_SIZE = 1;
 
     public static final int BON_APPETIT_BUTTON_SIZE = 100;
 
@@ -24,10 +24,12 @@ public class Constants {
     public static final int FOOD_MARGIN_PORTRAIT_COLUMN_LEFT = 15;
     public static final int FOOD_MARGIN_PORTRAIT_COLUMN_RIGHT = 15;
     public static final int FOOD_MARGIN_PORTRAIT_COLUMN_TOP = 15;
+    public static final int FOOD_MARGIN_PORTRAIT_COLUMN_BOTTOM = 5;
 
     public static final int FOOD_MARGIN_LANDSCAPE_COLUMN_LEFT = 10;
     public static final int FOOD_MARGIN_LANDSCAPE_COLUMN_RIGHT = 10;
     public static final int FOOD_MARGIN_LANDSCAPE_COLUMN_TOP = 15;
+    public static final int FOOD_MARGIN_LANDSCAPE_COLUMN_BOTTOM = 5;
 
     public static final int TOP_PANEL_ON_TAKEPICSCREEN_HEIGHT = 50;
 

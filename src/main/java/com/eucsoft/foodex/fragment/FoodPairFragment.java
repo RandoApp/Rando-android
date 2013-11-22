@@ -24,7 +24,7 @@ import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.BonAppetitTask;
-import com.eucsoft.foodex.view.FoodPicsLayout;
+import com.eucsoft.foodex.view.FoodMapPager;
 import com.eucsoft.foodex.view.ObservableHorizontalScrollView;
 
 import java.util.HashMap;
@@ -33,8 +33,8 @@ public class FoodPairFragment extends Fragment implements TaskResultListener {
 
     private FoodPair foodPair;
     private int foodImageSize;
-    private FoodPicsLayout strangerFoodImage;
-    private FoodPicsLayout userFoodImage;
+    private FoodMapPager strangerFoodImage;
+    private FoodMapPager userFoodImage;
     private ImageButton bonAppetitButton;
     private int displayWidth;
 
@@ -122,10 +122,10 @@ public class FoodPairFragment extends Fragment implements TaskResultListener {
         };
 
         HorizontalScrollView.LayoutParams foodImagesLayout = new HorizontalScrollView.LayoutParams(foodImageSize, foodImageSize);
-        strangerFoodImage = (FoodPicsLayout) layout.findViewWithTag("strangerImage");
+        strangerFoodImage = (FoodMapPager) layout.findViewWithTag("strangerImage");
         strangerFoodImage.setLayoutParams(foodImagesLayout);
         strangerFoodImage.setOnClickListener(onClickListener);
-        userFoodImage = (FoodPicsLayout) layout.findViewWithTag("userImage");
+        userFoodImage = (FoodMapPager) layout.findViewWithTag("userImage");
         userFoodImage.setLayoutParams(foodImagesLayout);
         userFoodImage.setOnClickListener(onClickListener);
 

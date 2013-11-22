@@ -1,4 +1,4 @@
-package com.eucsoft.foodex.view;
+package com.eucsoft.foodex.twowaygrid;
 
 /*
  * A modified version of the Android GridView that can be configured to
@@ -1922,10 +1922,10 @@ public class TwoWayGridView extends TwoWayAbsListView {
             }
 
             if (needToMeasure) {
-                int childHeightSpec = ViewGroup.getChildMeasureSpec(
+                int childHeightSpec = getChildMeasureSpec(
                         MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED), 0, p.height);
 
-                int childWidthSpec = ViewGroup.getChildMeasureSpec(
+                int childWidthSpec = getChildMeasureSpec(
                         MeasureSpec.makeMeasureSpec(mColumnWidth, MeasureSpec.EXACTLY), 0, p.width);
                 child.measure(childWidthSpec, childHeightSpec);
             } else {
@@ -2110,23 +2110,23 @@ public class TwoWayGridView extends TwoWayAbsListView {
             }
 
             switch (direction) {
-                case View.FOCUS_RIGHT:
+                case FOCUS_RIGHT:
                     // coming from left, selection is only valid if it is on left
                     // edge
                     return childIndex == rowStart;
-                case View.FOCUS_DOWN:
+                case FOCUS_DOWN:
                     // coming from top; only valid if in top row
                     return rowStart == 0;
-                case View.FOCUS_LEFT:
+                case FOCUS_LEFT:
                     // coming from right, must be on right edge
                     return childIndex == rowEnd;
-                case View.FOCUS_UP:
+                case FOCUS_UP:
                     // coming from bottom, need to be in last row
                     return rowEnd == count - 1;
-                case View.FOCUS_FORWARD:
+                case FOCUS_FORWARD:
                     // coming from top-left, need to be first in top row
                     return childIndex == rowStart && rowStart == 0;
-                case View.FOCUS_BACKWARD:
+                case FOCUS_BACKWARD:
                     // coming from bottom-right, need to be last in bottom row
                     return childIndex == rowEnd && rowEnd == count - 1;
                 default:
@@ -3249,10 +3249,10 @@ public class TwoWayGridView extends TwoWayAbsListView {
             }
 
             if (needToMeasure) {
-                int childWidthSpec = ViewGroup.getChildMeasureSpec(
+                int childWidthSpec = getChildMeasureSpec(
                         MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED), 0, p.width);
 
-                int childHeightSpec = ViewGroup.getChildMeasureSpec(
+                int childHeightSpec = getChildMeasureSpec(
                         MeasureSpec.makeMeasureSpec(mRowHeight, MeasureSpec.EXACTLY), 0, p.height);
                 child.measure(childWidthSpec, childHeightSpec);
             } else {
@@ -3437,23 +3437,23 @@ public class TwoWayGridView extends TwoWayAbsListView {
             }
 
             switch (direction) {
-                case View.FOCUS_RIGHT:
+                case FOCUS_RIGHT:
                     // coming from left, selection is only valid if it is on left
                     // edge
                     return childIndex == columnStart;
-                case View.FOCUS_DOWN:
+                case FOCUS_DOWN:
                     // coming from top; only valid if in top row
                     return columnStart == 0;
-                case View.FOCUS_LEFT:
+                case FOCUS_LEFT:
                     // coming from right, must be on right edge
                     return childIndex == columnStart;
-                case View.FOCUS_UP:
+                case FOCUS_UP:
                     // coming from bottom, need to be in last row
                     return columnStart == count - 1;
-                case View.FOCUS_FORWARD:
+                case FOCUS_FORWARD:
                     // coming from top-left, need to be first in top row
                     return childIndex == columnStart && columnStart == 0;
-                case View.FOCUS_BACKWARD:
+                case FOCUS_BACKWARD:
                     // coming from bottom-right, need to be last in bottom row
                     return childIndex == columnEnd && columnEnd == count - 1;
                 default:

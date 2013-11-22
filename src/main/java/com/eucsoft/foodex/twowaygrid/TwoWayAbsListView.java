@@ -1,4 +1,4 @@
-package com.eucsoft.foodex.view;
+package com.eucsoft.foodex.twowaygrid;
 
 /*
  * A modified version of the Android AbsListView
@@ -665,7 +665,7 @@ public abstract class TwoWayAbsListView extends TwoWayAdapterView<ListAdapter> i
      * @see #setFastScrollEnabled(boolean)
      * @return true if fast scroll is enabled, false otherwise
      */
-	/*
+    /*
     @ViewDebug.ExportedProperty
     public boolean isFastScrollEnabled() {
         return mFastScrollEnabled;
@@ -905,7 +905,7 @@ public abstract class TwoWayAbsListView extends TwoWayAdapterView<ListAdapter> i
 
     @Override
     public Parcelable onSaveInstanceState() {
-		/*
+        /*
 		 * This doesn't really make sense as the place to dismiss the
 		 * popups, but there don't seem to be any other useful hooks
 		 * that happen early enough to keep from getting complaints
@@ -3021,7 +3021,7 @@ public abstract class TwoWayAbsListView extends TwoWayAdapterView<ListAdapter> i
      * @param listener The recycler listener to be notified of views set aside
      *                 in the recycler.
      * @see TwoWayAbsListView.RecycleBin
-     * @see com.eucsoft.foodex.view.TwoWayAbsListView.RecyclerListener
+     * @see TwoWayAbsListView.RecyclerListener
      */
     public void setRecyclerListener(RecyclerListener listener) {
         mRecycler.mRecyclerListener = listener;
@@ -3085,7 +3085,7 @@ public abstract class TwoWayAbsListView extends TwoWayAdapterView<ListAdapter> i
      * associated to Views placed in the RecycleBin.
      *
      * @see TwoWayAbsListView.RecycleBin
-     * @see com.eucsoft.foodex.view.TwoWayAbsListView#setRecyclerListener(com.eucsoft.foodex.view.TwoWayAbsListView.RecyclerListener)
+     * @see TwoWayAbsListView#setRecyclerListener(TwoWayAbsListView.RecyclerListener)
      */
     public static interface RecyclerListener {
         /**
@@ -3105,8 +3105,8 @@ public abstract class TwoWayAbsListView extends TwoWayAdapterView<ListAdapter> i
      * layout, all views in ActiveViews are demoted to ScrapViews. ScrapViews are old views that
      * could potentially be used by the adapter to avoid allocating views unnecessarily.
      *
-     * @see com.eucsoft.foodex.view.TwoWayAbsListView#setRecyclerListener(com.eucsoft.foodex.view.TwoWayAbsListView.RecyclerListener)(com.eucsoft.foodex.view.TwoWayAbsListView.RecyclerListener)
-     * @see com.eucsoft.foodex.view.TwoWayAbsListView.RecyclerListener
+     * @see TwoWayAbsListView#setRecyclerListener(TwoWayAbsListView.RecyclerListener)( TwoWayAbsListView.RecyclerListener)
+     * @see TwoWayAbsListView.RecyclerListener
      */
     class RecycleBin {
         private RecyclerListener mRecyclerListener;

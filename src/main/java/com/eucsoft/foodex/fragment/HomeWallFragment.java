@@ -1,132 +1,65 @@
 package com.eucsoft.foodex.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 
-import com.eucsoft.foodex.MainActivity;
+import com.eucsoft.foodex.App;
+import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.TakePictureActivity;
-import com.eucsoft.foodex.db.FoodDAO;
-import com.eucsoft.foodex.db.model.FoodPair;
-import com.eucsoft.foodex.listener.ScrollViewListener;
-import com.eucsoft.foodex.view.ObservableScrollView;
+import com.eucsoft.foodex.adapter.FoodPairsAdapter;
+import com.eucsoft.foodex.twowaygrid.async.AsyncTwoWayGridView;
+import com.eucsoft.foodex.twowaygrid.async.ItemManager;
+import com.eucsoft.foodex.view.FoodItemLoader;
 
-import java.util.List;
+import uk.co.senab.bitmapcache.BitmapLruCache;
 
-public class HomeWallFragment extends Fragment implements ScrollViewListener {
 
-    private int currentPage = 0;
-    private int totalPages;
-    private int lastScrollPos = 0;
-    private boolean odd;
+public class HomeWallFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View rootView;
-        if (container.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            rootView = inflater.inflate(R.layout.homeland, container, false);
-        } else {
-            rootView = inflater.inflate(R.layout.homeport, container, false);
-        }
+        final View rootView = inflater.inflate(R.layout.homeport, container, false);
 
-        FoodDAO foodDAO = new FoodDAO(container.getContext());
-        List<FoodPair> foods = foodDAO.getFoodPairsForPage(currentPage);
-        totalPages = foodDAO.getPagesNumber();
-        foodDAO.close();
+        AsyncTwoWayGridView gridView = (AsyncTwoWayGridView) rootView.findViewById(R.id.main_grid);
 
-        resizeColumnsIfNeeded(rootView);
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        for (FoodPair foodPair : foods) {
-            insertFood(rootView, foodPair, transaction);
-        }
-        transaction.commit();
+        BitmapLruCache cache = App.getInstance(container.getContext()).getBitmapCache();
+        FoodItemLoader loader = new FoodItemLoader(cache);
+
+        ItemManager.Builder builder = new ItemManager.Builder(loader);
+        builder.setPreloadItemsEnabled(true).setPreloadItemsCount(5);
+        builder.setThreadPoolSize(4);
+        gridView.setItemManager(builder.build());
+        gridView.setAdapter(new FoodPairsAdapter(container.getContext()));
+
+        int delta;
         ImageButton takePictureButton = (ImageButton) rootView.findViewById(R.id.cameraButton);
-        takePictureButton.setOnClickListener(new View.OnClickListener() {
+        int takePictureButtonHeight = takePictureButton.getHeight();
 
+        if (container.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            gridView.setPadding(Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_LEFT, Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_TOP, Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_RIGHT, Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_BOTTOM);
+            delta = takePictureButtonHeight;
+            gridView.setNumColumns(2);
+        } else {
+            gridView.setNumColumns(1);
+            gridView.setPadding(Constants.FOOD_MARGIN_PORTRAIT_COLUMN_LEFT, Constants.FOOD_MARGIN_PORTRAIT_COLUMN_TOP, Constants.FOOD_MARGIN_PORTRAIT_COLUMN_RIGHT, Constants.FOOD_MARGIN_PORTRAIT_COLUMN_BOTTOM);
+            delta = takePictureButtonHeight - Constants.BON_APPETIT_BUTTON_SIZE;
+        }
+        //container.setPadding(0, 0, 0, delta);
+        takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(rootView.getContext(), TakePictureActivity.class);
                 startActivityForResult(intent, 100);
             }
         });
-        ((ObservableScrollView) rootView.findViewById(R.id.scroll_view)).setScrollViewListener(this);
         return rootView;
-    }
-
-    @Override
-    public void onScrollChanged(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
-
-        WindowManager windowManager = (WindowManager) MainActivity.context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
-        int displayHeight = display.getHeight();
-
-        int totalHeight = scrollView.getChildAt(0).getHeight();
-        if (totalHeight - y < displayHeight + 1
-                && currentPage < totalPages
-                && (lastScrollPos == 0 || y - lastScrollPos > displayHeight)) {
-            lastScrollPos = y;
-            currentPage++;
-            FoodDAO foodDAO = new FoodDAO(MainActivity.context);
-            List<FoodPair> foods = foodDAO.getFoodPairsForPage(currentPage);
-            foodDAO.close();
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            for (FoodPair foodPair : foods) {
-                insertFood(scrollView, foodPair, transaction);
-            }
-            transaction.commit();
-            if (currentPage + 1 == totalPages) {
-                scrollView.addFinalBlock(scrollView.getContext().getResources().getConfiguration().orientation);
-            }
-        }
-    }
-
-    private void insertFood(View rootView, FoodPair foodPair, FragmentTransaction transaction) {
-        LinearLayout linearLayout = new LinearLayout(rootView.getContext());
-        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        linearLayout.setId((int) foodPair.id);
-        LinearLayout foodContainer;
-
-        if (rootView.getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            foodContainer = (LinearLayout) rootView.findViewById(R.id.foodContainer);
-        } else {
-            if (odd) {
-                foodContainer = (LinearLayout) rootView.findViewById(R.id.column1);
-                odd = false;
-            } else {
-                foodContainer = (LinearLayout) rootView.findViewById(R.id.column2);
-                odd = true;
-            }
-        }
-        foodContainer.addView(linearLayout);
-        FoodPairFragment foodPairFragment = FoodPairFragment.newInstance(foodPair);
-        transaction.add(linearLayout.getId(), foodPairFragment, "foodItem");
-    }
-
-    private void resizeColumnsIfNeeded(View container) {
-
-        if (container.getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            WindowManager windowManager = (WindowManager) container.getContext().getSystemService(Context.WINDOW_SERVICE);
-            Display display = windowManager.getDefaultDisplay();
-            int displayWidth = display.getWidth();
-
-            LinearLayout column1 = (LinearLayout) container.findViewById(R.id.column1);
-            LinearLayout column2 = (LinearLayout) container.findViewById(R.id.column2);
-
-            LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(displayWidth / 2, LinearLayout.LayoutParams.MATCH_PARENT);
-            column1.setLayoutParams(linearParams);
-            column2.setLayoutParams(linearParams);
-        }
     }
 }
