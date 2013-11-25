@@ -31,16 +31,18 @@ before_install:
   - mv $ANDROID_HOME/android-4.3.1 $ANDROID_HOME/build-tools/18.1.1
 
   # Download necessary libs, that under of any repository:
-  echo "What happened with facebook submodule?"
-  cd modules
-  ls
-  cd facebook
-  ls
-  cd facebook
-  ls
-  cat build.gradle
-  echo "Facebook done"
-
+  - echo "What happened with facebook submodule?"
+  - cd modules
+  - ls
+  - cd facebook
+  - ls
+  - cd facebook
+  - ls
+  - cat build.gradle
+  - cd ..
+  - cd ..
+  - cd ..
+  - echo "Facebook done"
 
   - cd ..
   - wget http://cool-project.com/foodex/espresso-1.0-SNAPSHOT.jar -P libs/
