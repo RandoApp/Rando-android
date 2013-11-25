@@ -16,6 +16,13 @@ android {
     compileSdkVersion 18
     buildToolsVersion '18.1.1'
 
+/*    buildTypes {
+        release {
+            runProguard true
+            proguardFile getDefaultProguardFile('proguard-android.txt')
+        }
+    }*/
+
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 18
@@ -30,6 +37,9 @@ dependencies {
     compile 'com.android.support:appcompat-v7:+'
     compile 'org.apache.httpcomponents:httpcore:4.3'
     compile 'org.apache.httpcomponents:httpmime:4.3.1'
+    compile("com.github.chrisbanes.bitmapcache:library:2.3") {
+        exclude group: 'com.google.android', module: 'support-v4'
+    }
 
 
     instrumentTestCompile files('libs/espresso-1.0-SNAPSHOT.jar', 'libs/testrunner-1.0-SNAPSHOT.jar', 'libs/testrunner-runtime-1.0-SNAPSHOT.jar', 'libs/hamcrest-integration-1.1.jar', 'libs/hamcrest-library-1.1.jar')

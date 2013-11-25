@@ -8,39 +8,46 @@
 
     <ViewSwitcher
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:tag="viewSwitcher">
 
-        <com.eucsoft.foodex.view.ObservableHorizontalScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scrollbars="none"
-            android:overScrollMode="never"
-            android:tag="strangerFood"
-            android:fadingEdge="none">
+        <com.eucsoft.foodex.view.FoodPager
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal"
+            android:tag="stranger">
 
-            <com.eucsoft.foodex.view.FoodPicsLayout
-                android:tag="strangerImage"
+            <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" />
-        </com.eucsoft.foodex.view.ObservableHorizontalScrollView>
+                android:layout_height="fill_parent"
+                android:tag="food"
+                android:src="@drawable/f" />
 
-        <com.eucsoft.foodex.view.ObservableHorizontalScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scrollbars="none"
-            android:overScrollMode="never"
-            android:tag="userFood"
-            android:fadingEdge="none">
-
-            <com.eucsoft.foodex.view.FoodPicsLayout
-                android:tag="userImage"
+            <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" />
-        </com.eucsoft.foodex.view.ObservableHorizontalScrollView>
+                android:layout_height="fill_parent"
+                android:tag="map"
+                android:src="@drawable/bonappetit" />
+        </com.eucsoft.foodex.view.FoodPager>
 
+        <com.eucsoft.foodex.view.FoodPager
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal"
+            android:tag="user">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:tag="food"
+                android:src="@drawable/f" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:tag="map"
+                android:src="@drawable/f" />
+        </com.eucsoft.foodex.view.FoodPager>
     </ViewSwitcher>
 
     <RelativeLayout
@@ -54,7 +61,8 @@
             android:src="@drawable/bonappetit"
             android:tag="bon_appetit_button"
             android:background="@color/white"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/bon_appetit_button_margin_right" />
     </RelativeLayout>
 
 </LinearLayout>
