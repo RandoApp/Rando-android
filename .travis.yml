@@ -43,11 +43,12 @@ before_install:
   - cd ..
   - mkdir FoodexAndroid
   - ls
-  - mv foodex-android FoodexAnroid
+  - mv foodex-android FoodexAndroid
   - ls
-  - cd FoodexAnroid
+  - cd FoodexAndroid
   - ls
   - echo "include ':foodex-android:modules:facebook:facebook', ':foodex-android'" > settings.gradle
+  - cat settings.gradle
 
   # Install required components.
   # For a full list, run `android list sdk -a --extended`
