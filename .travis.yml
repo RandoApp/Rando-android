@@ -38,6 +38,17 @@ before_install:
   - wget http://cool-project.com/foodex/hamcrest-integration-1.1.jar -P libs/
   - wget http://cool-project.com/foodex/hamcrest-library-1.1.jar -P libs/
 
+  - pwd
+  - ls
+  - cd ..
+  - mkdir FoodexAndroid
+  - ls
+  - mv foodex-anroid FoodexAnroid/
+  - ls
+  - cd FoodexAnroid
+  - ls
+  - echo "include ':foodex-android:modules:facebook:facebook', ':foodex-android'" > settings.gradle
+
   # Install required components.
   # For a full list, run `android list sdk -a --extended`
   # Note that sysimg-18 downloads the ARM, x86 and MIPS images (we should optimize this).
