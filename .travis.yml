@@ -43,7 +43,7 @@ before_install:
   - cd ..
   - mkdir FoodexAndroid
   - ls
-  - mv foodex-android FoodexAndroid
+  - mv "foodex-android" FoodexAndroid
   - ls
   - cd FoodexAndroid
   - ls
