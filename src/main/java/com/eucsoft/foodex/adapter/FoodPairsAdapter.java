@@ -34,8 +34,6 @@ public class FoodPairsAdapter extends BaseAdapter {
     private List<FoodPair> foodPairs;
     private int foodImageSize;
 
-    private int orientation;
-
     private int size;
 
     @Override
@@ -61,14 +59,13 @@ public class FoodPairsAdapter extends BaseAdapter {
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
         int displayWidth = display.getWidth();
-        orientation = context.getResources().getConfiguration().orientation;
+        int orientation = context.getResources().getConfiguration().orientation;
         foodImageSize = getFoodImageSize(orientation, displayWidth);
         size = foodPairs.size();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup container) {
-        //Debug.startMethodTracing("hw");
         final ViewHolder holder;
 
         final FoodPair foodPair = foodPairs.get(position);
@@ -132,25 +129,39 @@ public class FoodPairsAdapter extends BaseAdapter {
             holder.strangerFoodImage.setOnClickListener(foodClickListener);
             holder.userMapImage.setOnClickListener(foodClickListener);
             holder.userFoodImage.setOnClickListener(foodClickListener);
-        }
 
-        /*holder.userFoodPager.getAdapter().notifyDataSetChanged();*/
+            holder.bonAppetitButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (holder.isStrangerShown && !foodPair.stranger.isBonAppetit()) {
+                        holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
+                        BonAppetitTask bonAppetitTask = new BonAppetitTask();
+                        bonAppetitTask.setTaskResultListener(new TaskResultListener() {
+                            @Override
+                            public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
+
+                                switch (taskCode) {
+                                    case BonAppetitTask.TASK_ID:
+                                        if (resultCode != BaseTask.RESULT_OK && holder.isStrangerShown) {
+                                            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
+                                            Toast.makeText(MainActivity.context, R.string.failed_to_set_bon_appetit_for_food, Toast.LENGTH_LONG);
+                                        }
+                                        break;
+                                }
+                            }
+                        });
+                        bonAppetitTask.execute(foodPair);
+                    }
+                }
+            });
+        }
 
         holder.isStrangerShown = true;
         holder.animationInProgress = false;
 
+
+        //TODO: replace with "Loading.." resource
         holder.strangerFoodImage.setImageResource(R.drawable.bonappetit);
-
-        /*holder.strangerFoodPager.removeAllViews();
-        holder.userFoodPager.removeAllViews();*/
-
-        // Log.i(FoodPairsAdapter.class,"size="+size,"pos="+position, "holder="+holder,"foodPairs="+foodPairs);
-
-       /* holder.strangerFoodPager.setUser(foodPair.stranger);
-        holder.userFoodPager.setUser(foodPair.user);*/
-
-        /*UpdateFoodPairViewTask updateFoodPairViewTask = new UpdateFoodPairViewTask(position,holder);
-        updateFoodPairViewTask.execute();*/
 
         if (foodPair.stranger.isBonAppetit()) {
             holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
@@ -158,41 +169,25 @@ public class FoodPairsAdapter extends BaseAdapter {
             holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
         }
 
-        holder.bonAppetitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (holder.isStrangerShown && !foodPair.stranger.isBonAppetit()) {
-                    holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
-                    BonAppetitTask bonAppetitTask = new BonAppetitTask();
-                    bonAppetitTask.setTaskResultListener(new TaskResultListener() {
-                        @Override
-                        public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
+        setAnimations(holder);
 
-                            switch (taskCode) {
-                                case BonAppetitTask.TASK_ID:
-                                    if (resultCode != BaseTask.RESULT_OK && holder.isStrangerShown) {
-                                        holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
-                                        Toast.makeText(MainActivity.context, R.string.failed_to_set_bon_appetit_for_food, Toast.LENGTH_LONG);
-                                    }
-                                    break;
-                            }
-                        }
-                    });
-                    bonAppetitTask.execute(foodPair);
-                }
-            }
-        });
+        return convertView;
+    }
 
+    private int getFoodImageSize(int orientation, int displayWidth) {
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            return displayWidth / 2 - (Constants.FOOD_PADDING_LANDSCAPE_COLUMN_LEFT + Constants.FOOD_PADDING_LANDSCAPE_COLUMN_RIGHT);
+        } else {
+            return displayWidth - Constants.FOOD_MARGIN_PORTRAIT;
+        }
+    }
+
+    private void setAnimations(final ViewHolder holder) {
         final Animation[] leftToRightAnimation = AnimationFactory.flipAnimation(foodImageSize, AnimationFactory.FlipDirection.LEFT_RIGHT, 600, null);
         final Animation[] rightToLeftAnimation = AnimationFactory.flipAnimation(foodImageSize, AnimationFactory.FlipDirection.RIGHT_LEFT, 600, null);
 
         holder.viewSwitcher.setOutAnimation(leftToRightAnimation[0]);
         holder.viewSwitcher.setInAnimation(leftToRightAnimation[1]);
-
-
-        /*holder.strangerFoodPager.setOnClickListener(foodClickListener);
-        holder.userFoodPager.setOnClickListener(foodClickListener);*/
-
 
         Animation.AnimationListener outAnimationListener = new Animation.AnimationListener() {
             @Override
@@ -243,15 +238,6 @@ public class FoodPairsAdapter extends BaseAdapter {
             public void onAnimationRepeat(Animation animation) {
             }
         });
-        return convertView;
-    }
-
-    private int getFoodImageSize(int orientation, int displayWidth) {
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            return displayWidth / 2 - (Constants.FOOD_PADDING_LANDSCAPE_COLUMN_LEFT + Constants.FOOD_PADDING_LANDSCAPE_COLUMN_RIGHT);
-        } else {
-            return displayWidth - Constants.FOOD_MARGIN_PORTRAIT;
-        }
     }
 
     public static class ViewHolder {

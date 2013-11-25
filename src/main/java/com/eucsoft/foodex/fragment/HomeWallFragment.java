@@ -26,7 +26,7 @@ public class HomeWallFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.homeport, container, false);
+        final View rootView = inflater.inflate(R.layout.home, container, false);
 
         AsyncTwoWayGridView gridView = (AsyncTwoWayGridView) rootView.findViewById(R.id.main_grid);
 
@@ -52,7 +52,8 @@ public class HomeWallFragment extends Fragment {
             gridView.setPadding(Constants.FOOD_PADDING_PORTRAIT_COLUMN_LEFT, Constants.FOOD_PADDING_PORTRAIT_COLUMN_TOP, Constants.FOOD_PADDING_PORTRAIT_COLUMN_RIGHT, Constants.FOOD_PADDING_PORTRAIT_COLUMN_BOTTOM);
             delta = takePictureButtonHeight - Constants.BON_APPETIT_BUTTON_SIZE;
         }
-        container.setPadding(0, 0, 0, delta);
+
+        /*container.setPadding(0, 0, 0, delta);*/
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
