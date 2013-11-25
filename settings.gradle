@@ -1,1 +1,1 @@
-include ':foodex-android:modules:facebook:facebook'
+include ':modules:facebook:facebook'
