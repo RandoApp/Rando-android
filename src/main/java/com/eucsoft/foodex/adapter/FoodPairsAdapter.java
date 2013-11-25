@@ -248,7 +248,7 @@ public class FoodPairsAdapter extends BaseAdapter {
 
     private int getFoodImageSize(int orientation, int displayWidth) {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            return displayWidth / 2 - (Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_LEFT + Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_RIGHT);
+            return displayWidth / 2 - (Constants.FOOD_PADDING_LANDSCAPE_COLUMN_LEFT + Constants.FOOD_PADDING_LANDSCAPE_COLUMN_RIGHT);
         } else {
             return displayWidth - Constants.FOOD_MARGIN_PORTRAIT;
         }

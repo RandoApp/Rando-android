@@ -21,15 +21,15 @@ public class Constants {
 
     public static final int FOOD_MARGIN_PORTRAIT = 30;
 
-    public static final int FOOD_MARGIN_PORTRAIT_COLUMN_LEFT = 15;
-    public static final int FOOD_MARGIN_PORTRAIT_COLUMN_RIGHT = 15;
-    public static final int FOOD_MARGIN_PORTRAIT_COLUMN_TOP = 15;
-    public static final int FOOD_MARGIN_PORTRAIT_COLUMN_BOTTOM = 5;
+    public static final int FOOD_PADDING_PORTRAIT_COLUMN_LEFT = 15;
+    public static final int FOOD_PADDING_PORTRAIT_COLUMN_RIGHT = 15;
+    public static final int FOOD_PADDING_PORTRAIT_COLUMN_TOP = 15;
+    public static final int FOOD_PADDING_PORTRAIT_COLUMN_BOTTOM = 5;
 
-    public static final int FOOD_MARGIN_LANDSCAPE_COLUMN_LEFT = 10;
-    public static final int FOOD_MARGIN_LANDSCAPE_COLUMN_RIGHT = 10;
-    public static final int FOOD_MARGIN_LANDSCAPE_COLUMN_TOP = 15;
-    public static final int FOOD_MARGIN_LANDSCAPE_COLUMN_BOTTOM = 5;
+    public static final int FOOD_PADDING_LANDSCAPE_COLUMN_LEFT = 10;
+    public static final int FOOD_PADDING_LANDSCAPE_COLUMN_RIGHT = 10;
+    public static final int FOOD_PADDING_LANDSCAPE_COLUMN_TOP = 15;
+    public static final int FOOD_PADDING_LANDSCAPE_COLUMN_BOTTOM = 5;
 
     public static final int TOP_PANEL_ON_TAKEPICSCREEN_HEIGHT = 50;
 

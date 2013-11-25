@@ -5,6 +5,7 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 
 import com.eucsoft.foodex.db.model.FoodPair;
+import com.eucsoft.foodex.twowaygrid.async.FoodItemLoader;
 
 public class FoodMapPager extends ViewPager {
 

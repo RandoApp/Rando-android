@@ -1,4 +1,4 @@
-package com.eucsoft.foodex.view;
+package com.eucsoft.foodex.twowaygrid.async;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,7 +12,6 @@ import android.widget.Adapter;
 import com.eucsoft.foodex.adapter.FoodPairsAdapter;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.log.Log;
-import com.eucsoft.foodex.twowaygrid.async.SimpleItemLoader;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

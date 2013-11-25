@@ -15,8 +15,8 @@ import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.TakePictureActivity;
 import com.eucsoft.foodex.adapter.FoodPairsAdapter;
 import com.eucsoft.foodex.twowaygrid.async.AsyncTwoWayGridView;
+import com.eucsoft.foodex.twowaygrid.async.FoodItemLoader;
 import com.eucsoft.foodex.twowaygrid.async.ItemManager;
-import com.eucsoft.foodex.view.FoodItemLoader;
 
 import uk.co.senab.bitmapcache.BitmapLruCache;
 
@@ -44,15 +44,15 @@ public class HomeWallFragment extends Fragment {
         int takePictureButtonHeight = takePictureButton.getHeight();
 
         if (container.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            gridView.setPadding(Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_LEFT, Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_TOP, Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_RIGHT, Constants.FOOD_MARGIN_LANDSCAPE_COLUMN_BOTTOM);
+            gridView.setPadding(Constants.FOOD_PADDING_LANDSCAPE_COLUMN_LEFT, Constants.FOOD_PADDING_LANDSCAPE_COLUMN_TOP, Constants.FOOD_PADDING_LANDSCAPE_COLUMN_RIGHT, Constants.FOOD_PADDING_LANDSCAPE_COLUMN_BOTTOM);
             delta = takePictureButtonHeight;
             gridView.setNumColumns(2);
         } else {
             gridView.setNumColumns(1);
-            gridView.setPadding(Constants.FOOD_MARGIN_PORTRAIT_COLUMN_LEFT, Constants.FOOD_MARGIN_PORTRAIT_COLUMN_TOP, Constants.FOOD_MARGIN_PORTRAIT_COLUMN_RIGHT, Constants.FOOD_MARGIN_PORTRAIT_COLUMN_BOTTOM);
+            gridView.setPadding(Constants.FOOD_PADDING_PORTRAIT_COLUMN_LEFT, Constants.FOOD_PADDING_PORTRAIT_COLUMN_TOP, Constants.FOOD_PADDING_PORTRAIT_COLUMN_RIGHT, Constants.FOOD_PADDING_PORTRAIT_COLUMN_BOTTOM);
             delta = takePictureButtonHeight - Constants.BON_APPETIT_BUTTON_SIZE;
         }
-        //container.setPadding(0, 0, 0, delta);
+        container.setPadding(0, 0, 0, delta);
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
