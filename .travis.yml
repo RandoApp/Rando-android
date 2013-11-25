@@ -8,8 +8,9 @@ env:
     - ANDROID_SDKS=android-18,sysimg-18 ANDROID_TARGET=android-18 ANDROID_ABI=armeabi-v7a
 before_install:
   # Install base Android SDK
+  - mkdir FoodexAndroid
   - sudo apt-get update -qq
-  - export DOWNLOADS_HOME=downloads
+  - export DOWNLOADS_HOME=FoodexAndroid/downloads
   - if [ ! -f $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
   - cd $DOWNLOADS_HOME
   - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch > /dev/null; fi
@@ -41,7 +42,6 @@ before_install:
   - pwd
   - ls
   - cd ..
-  - mkdir FoodexAndroid
   - ls
   - mv "foodex-android" FoodexAndroid
   - ls
