@@ -1,4 +1,4 @@
-Please, download jars below and put it in this ("libs") folder:
+Please, download jars below into the `libs` folder:
 
 ```
 wget http://cool-projects.com/foodex/espresso-1.0-SNAPSHOT.jar espresso-1.0-SNAPSHOT.jar
