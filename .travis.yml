@@ -34,7 +34,7 @@ before_install:
   - echo "What happened with facebook submodule?"
   - ls
   - pwd
-  - cd modules
+  - cd ../modules
   - ls
   - cd facebook
   - ls
