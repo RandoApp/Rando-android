@@ -52,8 +52,7 @@ public class HomeWallFragment extends Fragment {
             gridView.setPadding(Constants.FOOD_PADDING_PORTRAIT_COLUMN_LEFT, Constants.FOOD_PADDING_PORTRAIT_COLUMN_TOP, Constants.FOOD_PADDING_PORTRAIT_COLUMN_RIGHT, Constants.FOOD_PADDING_PORTRAIT_COLUMN_BOTTOM);
             delta = takePictureButtonHeight - Constants.BON_APPETIT_BUTTON_SIZE;
         }
-
-        /*container.setPadding(0, 0, 0, delta);*/
+        //TODO: delta is a height of space which should be added to the end of dataGrid to allow all buttons to be visible.
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
