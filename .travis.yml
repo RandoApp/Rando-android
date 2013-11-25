@@ -32,6 +32,8 @@ before_install:
 
   # Download necessary libs, that under of any repository:
   - echo "What happened with facebook submodule?"
+  - ls
+  - pwd
   - cd modules
   - ls
   - cd facebook
