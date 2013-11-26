@@ -32,9 +32,9 @@ before_install:
   - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
 
   # Gradle
-  - if [ ! -f gradle-1.9-bin.zip ]; then  wget http://services.gradle.org/distributions/gradle-1.9-bin.zip > /dev/null; fi
-  - unzip gradle-1.9-bin.zip
-  - export GRADLE_HOME=$PWD/gradle-1.9
+  - if [ ! -f gradle-1.-bin.zip ]; then  wget http://services.gradle.org/distributions/gradle-1.-bin.zip > /dev/null; fi
+  - unzip gradle-1.8-bin.zip
+  - export GRADLE_HOME=$PWD/gradle-1.8
   - export PATH=$GRADLE_HOME/bin:$PATH
 
   # install android build tools
