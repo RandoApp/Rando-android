@@ -7,9 +7,13 @@ env:
   matrix:
     - ANDROID_SDKS=android-18,sysimg-18 ANDROID_TARGET=android-18 ANDROID_ABI=armeabi-v7a
 before_install:
+  # Force pull submodules
+  - git submodule foreach git pull origin master
+
   # Install base Android SDK
+  - mkdir FoodexAndroid
   - sudo apt-get update -qq
-  - export DOWNLOADS_HOME=downloads
+  - export DOWNLOADS_HOME=FoodexAndroid/downloads
   - if [ ! -f $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
   - cd $DOWNLOADS_HOME
   - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch > /dev/null; fi
@@ -38,12 +42,24 @@ before_install:
   - wget http://cool-project.com/foodex/hamcrest-integration-1.1.jar -P libs/
   - wget http://cool-project.com/foodex/hamcrest-library-1.1.jar -P libs/
 
+  # Put foodex-android in FoodexAndroid, because settings.gradle need for modules
+  - cd ..
+  - mkdir FoodexAndroid/foodex-android
+  - mv ci FoodexAndroid/foodex-android/ci
+  - mv modules FoodexAndroid/foodex-android/modules
+  - mv src FoodexAndroid/foodex-android/src
+  - mv .gitignore FoodexAndroid/foodex-android/.gitignore
+  - mv .gitmodules FoodexAndroid/foodex-android/.gitmodules
+  - mv build.gradle FoodexAndroid/foodex-android/build.gradle
+  - cd FoodexAndroid
+  - cat foodex-android/modules/facebook/facebook/build.gradle
+  - echo "include ':foodex-android:modules:facebook:facebook', ':foodex-android'" > settings.gradle
+
   # Install required components.
   # For a full list, run `android list sdk -a --extended`
   # Note that sysimg-18 downloads the ARM, x86 and MIPS images (we should optimize this).
   # Other relevant API's
   - echo yes | android update sdk --filter platform-tools --no-ui --force > /dev/null
-  - echo yes | android update sdk --filter android-17 --no-ui --force > /dev/null
   - echo yes | android update sdk --filter android-18 --no-ui --force > /dev/null
   - echo yes | android update sdk --filter sysimg-18 --no-ui --force > /dev/null
   - echo yes | android update sdk --filter extra-android-support --no-ui --force > /dev/null
@@ -54,9 +70,9 @@ before_install:
   - emulator -avd test -no-skin -no-audio -no-window &
 
 before_script:
-  - chmod +x ci/wait_for_emulator.sh
-  - ci/wait_for_emulator.sh
+  - chmod +x foodex-android/ci/wait_for_emulator.sh
+  - foodex-android/ci/wait_for_emulator.sh
   - adb shell input keyevent 82 &
 
 script:
-    - gradle connectedInstrumentTest
+  - gradle connectedInstrumentTest
