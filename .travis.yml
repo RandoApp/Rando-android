@@ -5,13 +5,12 @@ cache:
   - $HOME/.m2
 env:
   matrix:
-    - ANDROID_SDKS=android-18,sysimg-18 ANDROID_TARGET=android-18 ANDROID_ABI=armeabi-v7a CI_HOME=`pwd`
+    - ANDROID_SDKS=android-18,sysimg-18 ANDROID_TARGET=android-18 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=`pwd`/$REPO
 
 before_install:
   # Force pull submodules
   - git submodule foreach git pull origin master
   - echo ${CI_HOME}
-  - pwd
 
   # Download necessary libs, that under of any repository:
   - ls -l
