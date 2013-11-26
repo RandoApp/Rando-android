@@ -48,6 +48,7 @@ before_install:
   - mv .gitmodules FoodexAndroid/foodex-android/.gitmodules
   - mv build.gradle FoodexAndroid/foodex-android/build.gradle
   - cd FoodexAndroid
+  - cat foodex-android/modules/facebook/facebook/build.gradle
   - echo "include ':foodex-android:modules:facebook:facebook', ':foodex-android'" > settings.gradle
 
   # Install required components.
@@ -55,7 +56,6 @@ before_install:
   # Note that sysimg-18 downloads the ARM, x86 and MIPS images (we should optimize this).
   # Other relevant API's
   - echo yes | android update sdk --filter platform-tools --no-ui --force > /dev/null
-  - echo yes | android update sdk --filter android-17 --no-ui --force > /dev/null
   - echo yes | android update sdk --filter android-18 --no-ui --force > /dev/null
   - echo yes | android update sdk --filter sysimg-18 --no-ui --force > /dev/null
   - echo yes | android update sdk --filter extra-android-support --no-ui --force > /dev/null
@@ -71,4 +71,4 @@ before_script:
   - adb shell input keyevent 82 &
 
 script:
-    - gradle connectedInstrumentTest --stacktrace
+  - gradle connectedInstrumentTest --stacktrace
