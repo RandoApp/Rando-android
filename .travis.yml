@@ -11,6 +11,7 @@ before_install:
   # Force pull submodules
   - git submodule foreach git pull origin master
   - echo ${CI_HOME}
+  - pwd
 
   # Download necessary libs, that under of any repository:
   - ls -l
