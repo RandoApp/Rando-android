@@ -13,6 +13,8 @@ public class Constants {
 
     public static final int LOCATION_PERIOD = 20000;
 
+    public static final String ERROR = "error";
+
     public static final int PAGE_SIZE = 1;
 
     public static final int BON_APPETIT_BUTTON_SIZE = 100;
@@ -31,14 +33,17 @@ public class Constants {
     public static final int FOOD_PADDING_LANDSCAPE_COLUMN_TOP = 15;
     public static final int FOOD_PADDING_LANDSCAPE_COLUMN_BOTTOM = 5;
 
-    public static final int TOP_PANEL_ON_TAKEPICSCREEN_HEIGHT = 50;
-
     public static final String SERVER_URL = "https://foodex-webtools.rhcloud.com";
+    public static final int TOP_PANEL_ON_TAKEPICSCREEN_HEIGHT = 50;
 
     public static final String SEESSION_COOKIE_NAME = "connect.sid";
 
     public static final String SIGNUP_EMAIL_PARAM = "username";
     public static final String SIGNUP_PASSWORD_PARAM = "password";
+    public static final String FACEBOOK_EMAIL_PARAM = "email";
+    public static final String FACEBOOK_ID_PARAM = "id";
+    public static final String FACEBOOK_TOKEN_PARAM = "token";
+    public static final String ANONYMOUS_ID_PARAM = "id";
     public static final String BON_APPETIT_PARAM = "bonAppetit";
     public static final String FOOD_URL_PARAM = "foodUrl";
     public static final String FOOD_ID_PARAM = "foodId";
@@ -56,6 +61,9 @@ public class Constants {
 
     public static final String IMAGE_MIME_TYPE = "image/jpeg";
     public static final String SIGNUP_URL = SERVER_URL + "/user";
+    public static final String FACEBOOK_URL = SERVER_URL + "/facebook";
+    public static final String ANONYMOUS_URL = SERVER_URL + "/anonymous";
+    public static final String LOGOUT_URL = SERVER_URL + "/logout";
     public static final String FETCH_USER_URL = SERVER_URL + "/user";
     public static final String DOWNLOAD_FOOD_URL = SERVER_URL + "/food/";
     public static final String ULOAD_FOOD_URL = SERVER_URL + "/food";
