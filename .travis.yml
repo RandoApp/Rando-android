@@ -35,6 +35,7 @@ before_install:
   - mv $ANDROID_HOME/android-4.3.1 $ANDROID_HOME/build-tools/18.1.1
 
   # Download necessary libs, that under of any repository:
+  - ls -l
   - cd ..
   - wget http://cool-project.com/foodex/espresso-1.0-SNAPSHOT.jar -P libs/
   - wget http://cool-project.com/foodex/testrunner-1.0-SNAPSHOT.jar -P libs/
@@ -43,7 +44,9 @@ before_install:
   - wget http://cool-project.com/foodex/hamcrest-library-1.1.jar -P libs/
 
   # Put foodex-android in FoodexAndroid, because settings.gradle need for modules
+  - ls -l
   - cd ..
+  - ls -l
   - mkdir FoodexAndroid/foodex-android
   - mv ci FoodexAndroid/foodex-android/ci
   - mv modules FoodexAndroid/foodex-android/modules
