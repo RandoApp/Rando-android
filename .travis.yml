@@ -42,6 +42,7 @@ before_install:
   - wget http://cool-project.com/foodex/hamcrest-integration-1.1.jar -P libs/
   - wget http://cool-project.com/foodex/hamcrest-library-1.1.jar -P libs/
 
+  # Put foodex-android in FoodexAndroid, because settings.gradle need for modules
   - cd ..
   - mkdir FoodexAndroid/foodex-android
   - mv ci FoodexAndroid/foodex-android/ci
@@ -74,4 +75,4 @@ before_script:
   - adb shell input keyevent 82 &
 
 script:
-  - gradle connectedInstrumentTest --stacktrace
+  - gradle connectedInstrumentTest
