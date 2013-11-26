@@ -10,13 +10,13 @@ before_install:
   # Force pull submodules
   - git submodule foreach git pull origin master
 
-    # Download necessary libs, that under of any repository:
-    - ls -l
-    - wget http://cool-project.com/foodex/espresso-1.0-SNAPSHOT.jar -P libs/
-    - wget http://cool-project.com/foodex/testrunner-1.0-SNAPSHOT.jar -P libs/
-    - wget http://cool-project.com/foodex/testrunner-runtime-1.0-SNAPSHOT.jar -P libs/
-    - wget http://cool-project.com/foodex/hamcrest-integration-1.1.jar -P libs/
-    - wget http://cool-project.com/foodex/hamcrest-library-1.1.jar -P libs/
+  # Download necessary libs, that under of any repository:
+  - ls -l
+  - wget http://cool-project.com/foodex/espresso-1.0-SNAPSHOT.jar -P libs/
+  - wget http://cool-project.com/foodex/testrunner-1.0-SNAPSHOT.jar -P libs/
+  - wget http://cool-project.com/foodex/testrunner-runtime-1.0-SNAPSHOT.jar -P libs/
+  - wget http://cool-project.com/foodex/hamcrest-integration-1.1.jar -P libs/
+  - wget http://cool-project.com/foodex/hamcrest-library-1.1.jar -P libs/
 
   # Install base Android SDK
   - mkdir FoodexAndroid
