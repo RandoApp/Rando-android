@@ -1,3 +1,4 @@
 [submodule "modules/facebook"]
 	path = modules/facebook
 	url = https://github.com/dimhold/facebook-android-sdk.git
+

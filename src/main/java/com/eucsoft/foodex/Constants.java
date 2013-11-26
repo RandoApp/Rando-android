@@ -4,7 +4,7 @@ public class Constants {
 
     public static final String ALBUM_NAME = "Foodex";
 
-    public static final String FILENAME = "FILENAME";
+    public static final String FILEPATH = "FILEPATH";
     public static final String FOOD_PAIR = "foodPair";
 
     public static final String IMAGE_FILTER = "image/*";
@@ -15,7 +15,7 @@ public class Constants {
 
     public static final String ERROR = "error";
 
-    public static final int PAGE_SIZE = 4;
+    public static final int PAGE_SIZE = 1;
 
     public static final int BON_APPETIT_BUTTON_SIZE = 100;
 
@@ -23,13 +23,15 @@ public class Constants {
 
     public static final int FOOD_MARGIN_PORTRAIT = 30;
 
-    public static final int FOOD_MARGIN_PORTRAIT_COLUMN_LEFT = 15;
-    public static final int FOOD_MARGIN_PORTRAIT_COLUMN_RIGHT = 15;
-    public static final int FOOD_MARGIN_PORTRAIT_COLUMN_TOP = 15;
+    public static final int FOOD_PADDING_PORTRAIT_COLUMN_LEFT = 15;
+    public static final int FOOD_PADDING_PORTRAIT_COLUMN_RIGHT = 15;
+    public static final int FOOD_PADDING_PORTRAIT_COLUMN_TOP = 15;
+    public static final int FOOD_PADDING_PORTRAIT_COLUMN_BOTTOM = 5;
 
-    public static final int FOOD_MARGIN_LANDSCAPE_COLUMN_LEFT = 10;
-    public static final int FOOD_MARGIN_LANDSCAPE_COLUMN_RIGHT = 10;
-    public static final int FOOD_MARGIN_LANDSCAPE_COLUMN_TOP = 15;
+    public static final int FOOD_PADDING_LANDSCAPE_COLUMN_LEFT = 10;
+    public static final int FOOD_PADDING_LANDSCAPE_COLUMN_RIGHT = 10;
+    public static final int FOOD_PADDING_LANDSCAPE_COLUMN_TOP = 15;
+    public static final int FOOD_PADDING_LANDSCAPE_COLUMN_BOTTOM = 5;
 
     public static final String SERVER_URL = "https://foodex-webtools.rhcloud.com";
     public static final int TOP_PANEL_ON_TAKEPICSCREEN_HEIGHT = 50;
