@@ -5,7 +5,7 @@ cache:
   - $HOME/.m2
 env:
   matrix:
-    - ANDROID_SDKS=android-18,sysimg-18 ANDROID_TARGET=android-18 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=`pwd`/$REPO
+    - ANDROID_SDKS=android-18,sysimg-18 ANDROID_TARGET=android-18 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
 
 before_install:
   # Force pull submodules
@@ -13,7 +13,6 @@ before_install:
   - echo ${CI_HOME}
 
   # Download necessary libs, that under of any repository:
-  - ls -l
   - wget http://cool-project.com/foodex/espresso-1.0-SNAPSHOT.jar -P libs/
   - wget http://cool-project.com/foodex/testrunner-1.0-SNAPSHOT.jar -P libs/
   - wget http://cool-project.com/foodex/testrunner-runtime-1.0-SNAPSHOT.jar -P libs/
@@ -21,11 +20,10 @@ before_install:
   - wget http://cool-project.com/foodex/hamcrest-library-1.1.jar -P libs/
 
   # Install base Android SDK
-  - cd ..
-  - mkdir FoodexAndroid
-  - sudo apt-get update -qq
-  - export DOWNLOADS_HOME=FoodexAndroid/downloads
+  - cd ${HOME}
+  - mkdir ${DOWNLOADS_HOME}
   - if [ ! -f $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
+  - sudo apt-get update -qq
   - cd $DOWNLOADS_HOME
   - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch > /dev/null; fi
   - if [ ! -f android-sdk_r22.2.1-linux.tgz ]; then wget http://dl.google.com/android/android-sdk_r22.2.1-linux.tgz > /dev/null; fi
@@ -46,19 +44,19 @@ before_install:
   - mv $ANDROID_HOME/android-4.3.1 $ANDROID_HOME/build-tools/18.1.1
 
   # Put foodex-android in FoodexAndroid, because settings.gradle need for modules
-  - ls -l
+  #- cd ..
+  #- ls -l
+  #- mkdir FoodexAndroid/foodex-android
+  #- mv ci FoodexAndroid/foodex-android/ci
+  #- mv modules FoodexAndroid/foodex-android/modules
+  #- mv src FoodexAndroid/foodex-android/src
+  #- mv libs FoodexAndroid/foodex-android/libs
+  #- mv .gitignore FoodexAndroid/foodex-android/.gitignore
+  #- mv .gitmodules FoodexAndroid/foodex-android/.gitmodules
+  #- mv build.gradle FoodexAndroid/foodex-android/build.gradle
+  - cd ${CI_HOME}
   - cd ..
-  - ls -l
-  - mkdir FoodexAndroid/foodex-android
-  - mv ci FoodexAndroid/foodex-android/ci
-  - mv modules FoodexAndroid/foodex-android/modules
-  - mv src FoodexAndroid/foodex-android/src
-  - mv libs FoodexAndroid/foodex-android/libs
-  - mv .gitignore FoodexAndroid/foodex-android/.gitignore
-  - mv .gitmodules FoodexAndroid/foodex-android/.gitmodules
-  - mv build.gradle FoodexAndroid/foodex-android/build.gradle
-  - cd FoodexAndroid
-  - cat foodex-android/modules/facebook/facebook/build.gradle
+  #- cat foodex-android/modules/facebook/facebook/build.gradle
   - echo "include ':foodex-android:modules:facebook:facebook', ':foodex-android'" > settings.gradle
 
   # Install required components.
