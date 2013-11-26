@@ -48,6 +48,7 @@ before_install:
   - mv ci FoodexAndroid/foodex-android/ci
   - mv modules FoodexAndroid/foodex-android/modules
   - mv src FoodexAndroid/foodex-android/src
+  - mv libs FoodexAndroid/foodex-android/libs
   - mv .gitignore FoodexAndroid/foodex-android/.gitignore
   - mv .gitmodules FoodexAndroid/foodex-android/.gitmodules
   - mv build.gradle FoodexAndroid/foodex-android/build.gradle
