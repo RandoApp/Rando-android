@@ -6,9 +6,12 @@ cache:
 env:
   matrix:
     - ANDROID_SDKS=android-18,sysimg-18 ANDROID_TARGET=android-18 ANDROID_ABI=armeabi-v7a
+  global:
+      - CI_HOME=`pwd`
 before_install:
   # Force pull submodules
   - git submodule foreach git pull origin master
+  - echo ${CI_HOME}
 
   # Download necessary libs, that under of any repository:
   - ls -l
@@ -19,6 +22,7 @@ before_install:
   - wget http://cool-project.com/foodex/hamcrest-library-1.1.jar -P libs/
 
   # Install base Android SDK
+  - cd ..
   - mkdir FoodexAndroid
   - sudo apt-get update -qq
   - export DOWNLOADS_HOME=FoodexAndroid/downloads
@@ -41,15 +45,6 @@ before_install:
   - unzip build-tools_r18.1.1-linux.zip -d $ANDROID_HOME
   - mkdir -p $ANDROID_HOME/build-tools/
   - mv $ANDROID_HOME/android-4.3.1 $ANDROID_HOME/build-tools/18.1.1
-
-  # Download necessary libs, that under of any repository:
-  #- ls -l
-  - cd ..
-  #- wget http://cool-project.com/foodex/espresso-1.0-SNAPSHOT.jar -P libs/
-  #- wget http://cool-project.com/foodex/testrunner-1.0-SNAPSHOT.jar -P libs/
-  #- wget http://cool-project.com/foodex/testrunner-runtime-1.0-SNAPSHOT.jar -P libs/
-  #- wget http://cool-project.com/foodex/hamcrest-integration-1.1.jar -P libs/
-  #- wget http://cool-project.com/foodex/hamcrest-library-1.1.jar -P libs/
 
   # Put foodex-android in FoodexAndroid, because settings.gradle need for modules
   - ls -l
