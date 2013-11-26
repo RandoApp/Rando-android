@@ -43,7 +43,13 @@ before_install:
   - ls
   - cd ..
   - ls
-  - mv foodex-android FoodexAndroid
+  - mkdir FoodexAndroid/foodex-android
+  - mv foodex-android/ci FoodexAndroid/foodex-android/ci
+  - mv foodex-android/modules FoodexAndroid/foodex-android/modules
+  - mv foodex-android/src FoodexAndroid/foodex-android/src
+  - mv foodex-android/.gitignore FoodexAndroid/foodex-android/.gitignore
+  - mv foodex-android/.gitmodules FoodexAndroid/foodex-android/.gitmodules
+  - mv foodex-android/build.gradle FoodexAndroid/foodex-android/build.gradle
   - ls
   - cd FoodexAndroid
   - ls
