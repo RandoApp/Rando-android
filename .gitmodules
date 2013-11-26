@@ -1,3 +1,11 @@
 [submodule "modules/facebook"]
 	path = modules/facebook
 	url = https://github.com/dimhold/facebook-android-sdk.git
+
+[submodule "modules/bitmapcache"]
+	path = modules/bitmapcache
+	url = https://github.com/dimhold/facebook-android-sdk.git
+
+[submodule "modules/smoothie"]
+	path = modules/smoothie
+	url = https://github.com/dimhold/facebook-android-sdk.git
