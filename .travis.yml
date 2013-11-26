@@ -10,6 +10,14 @@ before_install:
   # Force pull submodules
   - git submodule foreach git pull origin master
 
+    # Download necessary libs, that under of any repository:
+    - ls -l
+    - wget http://cool-project.com/foodex/espresso-1.0-SNAPSHOT.jar -P libs/
+    - wget http://cool-project.com/foodex/testrunner-1.0-SNAPSHOT.jar -P libs/
+    - wget http://cool-project.com/foodex/testrunner-runtime-1.0-SNAPSHOT.jar -P libs/
+    - wget http://cool-project.com/foodex/hamcrest-integration-1.1.jar -P libs/
+    - wget http://cool-project.com/foodex/hamcrest-library-1.1.jar -P libs/
+
   # Install base Android SDK
   - mkdir FoodexAndroid
   - sudo apt-get update -qq
@@ -35,13 +43,13 @@ before_install:
   - mv $ANDROID_HOME/android-4.3.1 $ANDROID_HOME/build-tools/18.1.1
 
   # Download necessary libs, that under of any repository:
-  - ls -l
+  #- ls -l
   - cd ..
-  - wget http://cool-project.com/foodex/espresso-1.0-SNAPSHOT.jar -P libs/
-  - wget http://cool-project.com/foodex/testrunner-1.0-SNAPSHOT.jar -P libs/
-  - wget http://cool-project.com/foodex/testrunner-runtime-1.0-SNAPSHOT.jar -P libs/
-  - wget http://cool-project.com/foodex/hamcrest-integration-1.1.jar -P libs/
-  - wget http://cool-project.com/foodex/hamcrest-library-1.1.jar -P libs/
+  #- wget http://cool-project.com/foodex/espresso-1.0-SNAPSHOT.jar -P libs/
+  #- wget http://cool-project.com/foodex/testrunner-1.0-SNAPSHOT.jar -P libs/
+  #- wget http://cool-project.com/foodex/testrunner-runtime-1.0-SNAPSHOT.jar -P libs/
+  #- wget http://cool-project.com/foodex/hamcrest-integration-1.1.jar -P libs/
+  #- wget http://cool-project.com/foodex/hamcrest-library-1.1.jar -P libs/
 
   # Put foodex-android in FoodexAndroid, because settings.gradle need for modules
   - ls -l
