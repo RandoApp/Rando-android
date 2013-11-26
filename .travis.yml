@@ -39,10 +39,6 @@ before_install:
   - wget http://cool-project.com/foodex/hamcrest-integration-1.1.jar -P libs/
   - wget http://cool-project.com/foodex/hamcrest-library-1.1.jar -P libs/
 
-  - pwd
-  - ls
-  - cd ..
-  - ls
   - mkdir FoodexAndroid/foodex-android
   - mv ci FoodexAndroid/foodex-android/ci
   - mv modules FoodexAndroid/foodex-android/modules
@@ -50,11 +46,8 @@ before_install:
   - mv .gitignore FoodexAndroid/foodex-android/.gitignore
   - mv .gitmodules FoodexAndroid/foodex-android/.gitmodules
   - mv build.gradle FoodexAndroid/foodex-android/build.gradle
-  - ls
   - cd FoodexAndroid
-  - ls
   - echo "include ':foodex-android:modules:facebook:facebook', ':foodex-android'" > settings.gradle
-  - cat settings.gradle
 
   # Install required components.
   # For a full list, run `android list sdk -a --extended`
