@@ -24,6 +24,8 @@ before_install:
   - if [ ! -f $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
   - sudo apt-get update -qq
   - cd $DOWNLOADS_HOME
+  #check what do we have in downloads folder
+  - ls -l
   - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch > /dev/null; fi
   - if [ ! -f android-sdk_r22.3-linux.tgz ]; then wget http://dl.google.com/android/android-sdk_r22.3-linux.tgz > /dev/null; fi
   - tar xzf android-sdk_r22.3-linux.tgz >/dev/null 2>&1
