@@ -1,5 +1,5 @@
 language: java
-jdk:oraclejdk7
+jdk: oraclejdk7
 # Not working for public repositories :(
 cache:
   - apt
