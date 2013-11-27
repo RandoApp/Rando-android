@@ -31,4 +31,5 @@ public class App extends Application {
     public static App getInstance(Context context) {
         return (App) context.getApplicationContext();
     }
+
 }
