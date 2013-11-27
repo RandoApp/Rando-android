@@ -10,8 +10,7 @@ env:
 
 before_install:
   # Force pull submodules
-  - git submodule foreach git pull origin master
-  - echo ${CI_HOME}
+  #- git submodule foreach git pull origin master
 
   # Download necessary libs, that under of any repository:
   - wget http://cool-project.com/foodex/espresso-1.0-SNAPSHOT.jar -P libs/
