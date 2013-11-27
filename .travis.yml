@@ -6,7 +6,7 @@ cache:
   - $HOME/downloads
 env:
   matrix:
-    - ANDROID_SDKS=android-18,sysimg-18 ANDROID_TARGET=android-18 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
+    - ANDROID_SDKS=android-19,sysimg-19 ANDROID_TARGET=android-19 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
 
 before_install:
   # Force pull submodules
@@ -41,7 +41,7 @@ before_install:
   - if [ ! -f build-tools_r19-linux.zip ]; then wget https://dl-ssl.google.com/android/repository/build-tools_r19-linux.zip > /dev/null; fi
   - unzip build-tools_r19-linux.zip -d $ANDROID_HOME
   - mkdir -p $ANDROID_HOME/build-tools/
-  - mv $ANDROID_HOME/android-4.4 $ANDROID_HOME/build-tools/18.1.1
+  - mv $ANDROID_HOME/android-4.4 $ANDROID_HOME/build-tools/19.0.0
 
   # Create settings.gradle. Need for modules correct build
   - cd ${CI_HOME}
@@ -68,4 +68,4 @@ before_script:
   - adb shell input keyevent 82 &
 
 script:
-  - gradle connectedInstrumentTest
+  - gradle connectedInstrumentTest --debug
