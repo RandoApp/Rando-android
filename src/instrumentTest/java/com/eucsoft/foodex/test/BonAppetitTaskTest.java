@@ -96,7 +96,6 @@ public class BonAppetitTaskTest extends AndroidTestCase {
         foodPair.stranger.foodDate = new Date();
 
         try {
-            //APITestHelper.mockAPI(HttpStatus.SC_REQUEST_TIMEOUT, "Bad luck!");
             APITestHelper.mockAPIWithError();
         } catch (IOException e) {
             fail("Error while mocking API.client.");
