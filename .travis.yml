@@ -10,7 +10,7 @@ env:
   matrix:
     - ANDROID_SDKS=android-19,sysimg-19 ANDROID_TARGET=android-19 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
   matrix:
-    - ANDROID_SDKS=android-19,sysimg-19 ANDROID_TARGET=android-19 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=$PWD/$R
+    - ANDROID_SDKS=android-18,sysimg-18 ANDROID_TARGET=android-18 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=$PWD/$R
 
 before_install:
   # Force pull submodules - Looks like works without it, we just need to commit submodule update
@@ -50,6 +50,7 @@ before_install:
 
   # Create settings.gradle. Need for modules correct build
   - cd ${CI_HOME}
+  - ls -l
   - cd ..
   - echo "include ':foodex-android:modules:facebook:facebook', ':foodex-android'" > settings.gradle
 
