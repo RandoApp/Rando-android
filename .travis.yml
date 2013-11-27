@@ -1,15 +1,16 @@
 language: java
 jdk: oraclejdk7
-cache: apt
-  #directories:
-  #- $HOME/.m2
-  #- $HOME/downloads
+cache:
+  - apt
+  - directories:
+    - $HOME/.m2
+    - $HOME/downloads
 env:
   matrix:
     - ANDROID_SDKS=android-19,sysimg-19 ANDROID_TARGET=android-19 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
 
 before_install:
-  # Force pull submodules
+  # Force pull submodules - Looks like works without it, we just need to commit submodule update
   #- git submodule foreach git pull origin master
 
   # Download necessary libs, that under of any repository:
