@@ -7,9 +7,9 @@ cache:
     - $HOME/.m2
     - $HOME/downloads
 env:
-  - ANDROID_SYSIMG=sysimg-19 ANDROID_TARGET=android-19 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
-  - ANDROID_SYSIMG=sysimg-17 ANDROID_TARGET=android-17 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
-  - ANDROID_SYSIMG=sysimg-11 ANDROID_TARGET=android-11 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
+  - ANDROID_SDKS=android-19,sysimg-19 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
+  - ANDROID_SDKS=sysimg-17,sysimg-17 ANDROID_TARGET=android-17 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
+  - ANDROID_SDKS=android-11 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
 
 before_install:
   # Force pull submodules - Looks like works without it, we just need to commit submodule update
@@ -58,8 +58,7 @@ before_install:
   - echo yes | android update sdk --filter platform-tools --no-ui --force > /dev/null
   #needed for build
   - echo yes | android update sdk --filter android-19 --no-ui --force > /dev/null
-  - echo yes | android update sdk --filter $ANDROID_TARGET --no-ui --force > /dev/null
-  - echo yes | android update sdk --filter $ANDROID_SYSIMG --no-ui --force > /dev/null
+  - echo yes | android update sdk --filter $ANDROID_SDKS --no-ui --force > /dev/null
   - echo yes | android update sdk --filter extra-android-support --no-ui --force > /dev/null
   - echo yes | android update sdk --filter extra-android-m2repository --no-ui --force > /dev/null
 
