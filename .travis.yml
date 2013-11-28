@@ -27,7 +27,6 @@ before_install:
   - sudo apt-get update -qq
   - cd $DOWNLOADS_HOME
   #check what do we have in downloads folder
-  - ls -l
   - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch > /dev/null; fi
   - if [ ! -f android-sdk_r22.3-linux.tgz ]; then wget http://dl.google.com/android/android-sdk_r22.3-linux.tgz > /dev/null; fi
   - tar xzf android-sdk_r22.3-linux.tgz >/dev/null 2>&1
@@ -48,7 +47,6 @@ before_install:
 
   # Create settings.gradle. Need for modules correct build
   - cd ${CI_HOME}
-  - ls -l
   - cd ..
   - echo "include ':foodex-android:modules:facebook:facebook', ':foodex-android'" > settings.gradle
 
