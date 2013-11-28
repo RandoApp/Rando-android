@@ -11,7 +11,7 @@ public class FoodMapSwitcherAdapter extends PagerAdapter {
 
     FoodPairsAdapter.ViewHolder holder;
 
-    public FoodMapSwithcherAdapter(FoodPairsAdapter.ViewHolder holder) {
+    public FoodMapSwitcherAdapter(FoodPairsAdapter.ViewHolder holder) {
         this.holder = holder;
     }
 

@@ -9,6 +9,7 @@ import android.graphics.drawable.TransitionDrawable;
 import android.view.View;
 import android.widget.Adapter;
 
+import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.adapter.FoodPairsAdapter;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.log.Log;
@@ -101,8 +102,12 @@ public class FoodItemLoader extends SimpleItemLoader<FoodPair, CacheableBitmapDr
 
         result[0].setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
 
+        holder.foodImage.setImageResource(R.drawable.f1);
+        holder.mapImage.setImageResource(R.drawable.f1);
+
         if (fromMemory) {
-//            holder.strangerFoodImage.setImageDrawable(result[FoodPair.STRANGER_FOOD]);
+//            holder.foodImage.setImageResource(R.drawable.f1);
+//            holder.mapImage.setImageResource(R.drawable.f1);
         } else {
             BitmapDrawable emptyDrawable = new BitmapDrawable(itemView.getResources());
 

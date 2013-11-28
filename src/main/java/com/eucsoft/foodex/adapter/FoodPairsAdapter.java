@@ -110,8 +110,8 @@ public class FoodPairsAdapter extends BaseAdapter {
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(foodImageSize, foodImageSize);
 
-        holder.userFoodPager.setAdapter(new FoodMapSwithcherAdapter(holder));
-        holder.strangerFoodPager.setAdapter(new FoodMapSwithcherAdapter(holder));
+        holder.userFoodPager.setAdapter(new FoodMapSwitcherAdapter(holder));
+        holder.strangerFoodPager.setAdapter(new FoodMapSwitcherAdapter(holder));
 
         return holder;
     }
