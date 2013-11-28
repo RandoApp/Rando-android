@@ -2,6 +2,7 @@ package com.eucsoft.foodex.adapter;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.support.v4.view.ViewPager;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,6 @@ import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.BonAppetitTask;
-import com.eucsoft.foodex.view.FoodPager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -76,92 +76,12 @@ public class FoodPairsAdapter extends BaseAdapter {
             LayoutInflater inflater = (LayoutInflater) container.getContext()
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.food_pair_item, container, false);
-            holder = new ViewHolder();
-            convertView.setTag(holder);
-
-            holder.bonAppetitButton = (ImageButton) convertView.findViewWithTag("bon_appetit_button");
-            holder.strangerFoodPager = (FoodPager) convertView.findViewWithTag("stranger");
-            holder.userFoodPager = (FoodPager) convertView.findViewWithTag("user");
-            holder.viewSwitcher = (ViewSwitcher) convertView.findViewWithTag("viewSwitcher");
-
-            convertView.setTag(holder);
-            ViewSwitcher.LayoutParams foodImagesLayout = new ViewSwitcher.LayoutParams(foodImageSize, foodImageSize);
-            holder.strangerFoodPager.setLayoutParams(foodImagesLayout);
-            holder.userFoodPager.setLayoutParams(foodImagesLayout);
-
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(foodImageSize, foodImageSize);
-
-            holder.strangerFoodImage = (ImageView) holder.strangerFoodPager.findViewWithTag("food");
-            holder.strangerMapImage = (ImageView) holder.strangerFoodPager.findViewWithTag("map");
-            holder.userFoodImage = (ImageView) holder.userFoodPager.findViewWithTag("food");
-            holder.userMapImage = (ImageView) holder.userFoodPager.findViewWithTag("map");
-
-            holder.strangerMapImage.setLayoutParams(lp);
-            holder.strangerFoodImage.setLayoutParams(lp);
-            holder.userMapImage.setLayoutParams(lp);
-            holder.userFoodImage.setLayoutParams(lp);
-
-            View.OnClickListener foodClickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!holder.animationInProgress) {
-                        if (holder.viewSwitcher.getCurrentView() != holder.strangerFoodPager) {
-                            holder.viewSwitcher.showPrevious();
-                            holder.isStrangerShown = true;
-                            if (foodPair.stranger.isBonAppetit()) {
-                                holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
-                            } else {
-                                holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
-                            }
-                        } else if (holder.viewSwitcher.getCurrentView() == holder.strangerFoodPager) {
-                            holder.viewSwitcher.showNext();
-                            holder.isStrangerShown = false;
-                            if (foodPair.user.isBonAppetit()) {
-                                holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
-                            } else {
-                                holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
-                            }
-                        }
-                    }
-                }
-            };
-            holder.strangerMapImage.setOnClickListener(foodClickListener);
-            holder.strangerFoodImage.setOnClickListener(foodClickListener);
-            holder.userMapImage.setOnClickListener(foodClickListener);
-            holder.userFoodImage.setOnClickListener(foodClickListener);
-
-            holder.bonAppetitButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (holder.isStrangerShown && !foodPair.stranger.isBonAppetit()) {
-                        holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
-                        BonAppetitTask bonAppetitTask = new BonAppetitTask();
-                        bonAppetitTask.setTaskResultListener(new TaskResultListener() {
-                            @Override
-                            public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
-
-                                switch (taskCode) {
-                                    case BonAppetitTask.TASK_ID:
-                                        if (resultCode != BaseTask.RESULT_OK && holder.isStrangerShown) {
-                                            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
-                                            Toast.makeText(MainActivity.context, R.string.failed_to_set_bon_appetit_for_food, Toast.LENGTH_LONG);
-                                        }
-                                        break;
-                                }
-                            }
-                        });
-                        bonAppetitTask.execute(foodPair);
-                    }
-                }
-            });
+            holder = createHolder(convertView);
+            addListenersToHolder(holder, foodPair);
         }
 
         holder.isStrangerShown = true;
         holder.animationInProgress = false;
-
-
-        //TODO: replace with "Loading.." resource
-        holder.strangerFoodImage.setImageResource(R.drawable.bonappetit);
 
         if (foodPair.stranger.isBonAppetit()) {
             holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
@@ -172,6 +92,80 @@ public class FoodPairsAdapter extends BaseAdapter {
         setAnimations(holder);
 
         return convertView;
+    }
+
+    private ViewHolder createHolder(View convertView) {
+        ViewHolder holder = new ViewHolder();
+        convertView.setTag(holder);
+
+        holder.bonAppetitButton = (ImageButton) convertView.findViewWithTag("bon_appetit_button");
+        holder.strangerFoodPager = (ViewPager) convertView.findViewWithTag("stranger");
+        holder.userFoodPager = (ViewPager) convertView.findViewWithTag("user");
+        holder.viewSwitcher = (ViewSwitcher) convertView.findViewWithTag("viewSwitcher");
+
+        convertView.setTag(holder);
+        ViewSwitcher.LayoutParams foodImagesLayout = new ViewSwitcher.LayoutParams(foodImageSize, foodImageSize);
+        holder.strangerFoodPager.setLayoutParams(foodImagesLayout);
+        holder.userFoodPager.setLayoutParams(foodImagesLayout);
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(foodImageSize, foodImageSize);
+
+        holder.userFoodPager.setAdapter(new FoodMapSwithcherAdapter(holder));
+        holder.strangerFoodPager.setAdapter(new FoodMapSwithcherAdapter(holder));
+
+        return holder;
+    }
+
+    private void addListenersToHolder(final ViewHolder holder, final FoodPair foodPair) {
+        View.OnClickListener foodClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!holder.animationInProgress) {
+                    if (holder.viewSwitcher.getCurrentView() != holder.strangerFoodPager) {
+                        holder.viewSwitcher.showPrevious();
+                        holder.isStrangerShown = true;
+                        if (foodPair.stranger.isBonAppetit()) {
+                            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
+                        } else {
+                            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
+                        }
+                    } else if (holder.viewSwitcher.getCurrentView() == holder.strangerFoodPager) {
+                        holder.viewSwitcher.showNext();
+                        holder.isStrangerShown = false;
+                        if (foodPair.user.isBonAppetit()) {
+                            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
+                        } else {
+                            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
+                        }
+                    }
+                }
+            }
+        };
+
+        holder.bonAppetitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (holder.isStrangerShown && !foodPair.stranger.isBonAppetit()) {
+                    holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
+                    BonAppetitTask bonAppetitTask = new BonAppetitTask();
+                    bonAppetitTask.setTaskResultListener(new TaskResultListener() {
+                        @Override
+                        public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
+
+                            switch (taskCode) {
+                                case BonAppetitTask.TASK_ID:
+                                    if (resultCode != BaseTask.RESULT_OK && holder.isStrangerShown) {
+                                        holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
+                                        Toast.makeText(MainActivity.context, R.string.failed_to_set_bon_appetit_for_food, Toast.LENGTH_LONG);
+                                    }
+                                    break;
+                            }
+                        }
+                    });
+                    bonAppetitTask.execute(foodPair);
+                }
+            }
+        });
     }
 
     private int getFoodImageSize(int orientation, int displayWidth) {
@@ -246,16 +240,13 @@ public class FoodPairsAdapter extends BaseAdapter {
         public boolean animationInProgress = false;
 
         //views
-        public FoodPager strangerFoodPager;
-        public FoodPager userFoodPager;
+        public ViewPager strangerFoodPager;
+        public ViewPager userFoodPager;
         public ImageButton bonAppetitButton;
         public ViewSwitcher viewSwitcher;
 
-        public ImageView strangerFoodImage;
-        public ImageView strangerMapImage;
-        public ImageView userFoodImage;
-        public ImageView userMapImage;
+        public ImageView foodImage;
+        public ImageView mapImage;
     }
-
 
 }
