@@ -1,13 +1,12 @@
 package com.eucsoft.foodex.api;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.location.Location;
 
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.db.model.FoodPair;
+import com.eucsoft.foodex.preferences.Preferences;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -45,9 +44,7 @@ public class API {
 
     static {
         try {
-            SharedPreferences sharedPref = MainActivity.context.getSharedPreferences(Constants.SEESSION_COOKIE_NAME, Context.MODE_PRIVATE);
-            BasicClientCookie cookie = new BasicClientCookie(Constants.SEESSION_COOKIE_NAME, sharedPref.getString(Constants.SEESSION_COOKIE_NAME, ""));
-            ((DefaultHttpClient) client).getCookieStore().addCookie(cookie);
+            ((DefaultHttpClient) client).getCookieStore().addCookie(new BasicClientCookie(Constants.SEESSION_COOKIE_NAME, Preferences.getSessionCookie()));
         } catch (Exception e) {
             //Why is the world so cruel?
         }
@@ -246,8 +243,7 @@ public class API {
     }
 
     private static void storeSession(CookieStore cookieStore) {
-        SharedPreferences sharedPref = MainActivity.context.getSharedPreferences(Constants.SEESSION_COOKIE_NAME, Context.MODE_PRIVATE);
-        sharedPref.edit().putString(Constants.SEESSION_COOKIE_NAME, cookieStore.getCookies().get(0).getValue()).commit();
+        Preferences.setSessionCookie(cookieStore.getCookies().get(0).getValue());
     }
 
     private static JSONObject readJSON(HttpResponse response) throws Exception {

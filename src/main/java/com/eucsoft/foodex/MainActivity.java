@@ -2,10 +2,9 @@ package com.eucsoft.foodex;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,8 +12,11 @@ import android.view.MenuItem;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.fragment.AuthFragment;
+import com.eucsoft.foodex.fragment.EmptyHomeWallFragment;
 import com.eucsoft.foodex.fragment.HomeWallFragment;
+import com.eucsoft.foodex.fragment.TrainingHomeFragment;
 import com.eucsoft.foodex.menu.LogoutMenu;
+import com.eucsoft.foodex.preferences.Preferences;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,7 +34,7 @@ public class MainActivity extends ActionBarActivity {
         context = getApplicationContext();
 
         //TODO: REMOVE THIS METHOD?
-        initDBForTesting();
+        //initDBForTesting();
 
         setContentView(R.layout.activity_main);
 
@@ -59,21 +61,32 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private Fragment getFragment() {
-        if (isNeedAuth()) {
+        if (isNotAuthorized()) {
             return new AuthFragment();
         }
-        return new HomeWallFragment();
+
+        if (!Preferences.isTrainingFragmentShown()) {
+            return new TrainingHomeFragment();
+        }
+
+        FoodDAO foodDAO = new FoodDAO(getApplicationContext());
+        int foodCount = foodDAO.getFoodPairsNumber();
+        foodDAO.close();
+        if (foodCount == 0) {
+            return new EmptyHomeWallFragment();
+        } else {
+            return new HomeWallFragment();
+        }
     }
 
-    private boolean isNeedAuth() {
-        SharedPreferences sharedPref = MainActivity.context.getSharedPreferences(Constants.SEESSION_COOKIE_NAME, Context.MODE_PRIVATE);
-        if (sharedPref.getString(Constants.SEESSION_COOKIE_NAME, null) == null) {
+    private boolean isNotAuthorized() {
+        if (Preferences.getSessionCookie().isEmpty()) {
             return true;
         }
         return false;
     }
 
-    //TODO: REMOVE
+    //TODO: REMOVE when not needed
     private void initDBForTesting() {
         FoodDAO foodDAO = new FoodDAO(context);
         if (foodDAO.getFoodPairsNumber() <= 30) {

@@ -20,7 +20,7 @@ public class FoodDBHelper extends SQLiteOpenHelper {
     public static String COLUMN_STRANGER_BON_APPETIT = "STRANGER_BON_APPETIT";
     public static String COLUMN_STRANGER_MAP_URL = "STRANGER_MAP_URL";
 
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 3;
 
     public static final String TABLE_FOOD = "food";
     private static final String DATABASE_NAME = "foodex.db";

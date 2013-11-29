@@ -3,6 +3,15 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
+    <TextView
+        android:layout_width="111dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/empty_home_message"
+        android:id="@+id/textView"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
     <ImageButton
         android:id="@+id/cameraButton"
         android:layout_height="100dp"
@@ -10,4 +19,5 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:background="@drawable/camera27" />
+
 </RelativeLayout>
