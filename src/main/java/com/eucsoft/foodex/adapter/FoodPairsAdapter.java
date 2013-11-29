@@ -89,6 +89,9 @@ public class FoodPairsAdapter extends BaseAdapter {
             holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
         }
 
+
+        recycle(holder);
+
         setAnimations(holder);
 
         return convertView;
@@ -98,20 +101,27 @@ public class FoodPairsAdapter extends BaseAdapter {
         ViewHolder holder = new ViewHolder();
         convertView.setTag(holder);
 
+        holder.user = new ViewHolder.UserHolder();
+        holder.stranger = new ViewHolder.UserHolder();
+
         holder.bonAppetitButton = (ImageButton) convertView.findViewWithTag("bon_appetit_button");
-        holder.strangerFoodPager = (ViewPager) convertView.findViewWithTag("stranger");
-        holder.userFoodPager = (ViewPager) convertView.findViewWithTag("user");
         holder.viewSwitcher = (ViewSwitcher) convertView.findViewWithTag("viewSwitcher");
+
+        holder.stranger.foodPager = (ViewPager) convertView.findViewWithTag("stranger");
+        holder.user.foodPager = (ViewPager) convertView.findViewWithTag("user");
 
         convertView.setTag(holder);
         ViewSwitcher.LayoutParams foodImagesLayout = new ViewSwitcher.LayoutParams(foodImageSize, foodImageSize);
-        holder.strangerFoodPager.setLayoutParams(foodImagesLayout);
-        holder.userFoodPager.setLayoutParams(foodImagesLayout);
+        holder.stranger.foodPager.setLayoutParams(foodImagesLayout);
+        holder.user.foodPager.setLayoutParams(foodImagesLayout);
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(foodImageSize, foodImageSize);
 
-        holder.userFoodPager.setAdapter(new FoodMapSwitcherAdapter(holder));
-        holder.strangerFoodPager.setAdapter(new FoodMapSwitcherAdapter(holder));
+        holder.user.foodMapPagerAdatper = new FoodMapSwitcherAdapter(holder.user);
+        holder.user.foodPager.setAdapter(holder.user.foodMapPagerAdatper);
+
+        holder.stranger.foodMapPagerAdatper = new FoodMapSwitcherAdapter(holder.stranger);
+        holder.stranger.foodPager.setAdapter(holder.stranger.foodMapPagerAdatper);
 
         return holder;
     }
@@ -121,7 +131,7 @@ public class FoodPairsAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if (!holder.animationInProgress) {
-                    if (holder.viewSwitcher.getCurrentView() != holder.strangerFoodPager) {
+                    if (holder.viewSwitcher.getCurrentView() != holder.stranger.foodPager) {
                         holder.viewSwitcher.showPrevious();
                         holder.isStrangerShown = true;
                         if (foodPair.stranger.isBonAppetit()) {
@@ -129,7 +139,7 @@ public class FoodPairsAdapter extends BaseAdapter {
                         } else {
                             holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
                         }
-                    } else if (holder.viewSwitcher.getCurrentView() == holder.strangerFoodPager) {
+                    } else if (holder.viewSwitcher.getCurrentView() == holder.stranger.foodPager) {
                         holder.viewSwitcher.showNext();
                         holder.isStrangerShown = false;
                         if (foodPair.user.isBonAppetit()) {
@@ -166,6 +176,11 @@ public class FoodPairsAdapter extends BaseAdapter {
                 }
             }
         });
+    }
+
+    private void recycle(ViewHolder holder) {
+        holder.user.foodMapPagerAdatper.recycle(holder.user.foodImage, holder.user.mapImage);
+        holder.stranger.foodMapPagerAdatper.recycle(holder.stranger.foodImage, holder.stranger.mapImage);
     }
 
     private int getFoodImageSize(int orientation, int displayWidth) {
@@ -240,13 +255,21 @@ public class FoodPairsAdapter extends BaseAdapter {
         public boolean animationInProgress = false;
 
         //views
-        public ViewPager strangerFoodPager;
-        public ViewPager userFoodPager;
         public ImageButton bonAppetitButton;
         public ViewSwitcher viewSwitcher;
 
-        public ImageView foodImage;
-        public ImageView mapImage;
+        public UserHolder user;
+        public UserHolder stranger;
+
+        public static class UserHolder {
+            public ViewPager foodPager;
+            public FoodMapSwitcherAdapter foodMapPagerAdatper;
+
+            public ImageView foodImage;
+            public ImageView mapImage;
+        }
+
+
     }
 
 }

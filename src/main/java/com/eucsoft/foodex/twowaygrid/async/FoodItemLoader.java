@@ -102,24 +102,20 @@ public class FoodItemLoader extends SimpleItemLoader<FoodPair, CacheableBitmapDr
 
         result[0].setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
 
-        holder.foodImage.setImageResource(R.drawable.f1);
-        holder.mapImage.setImageResource(R.drawable.f1);
-
         if (fromMemory) {
-//            holder.foodImage.setImageResource(R.drawable.f1);
-//            holder.mapImage.setImageResource(R.drawable.f1);
+            holder.stranger.foodImage.setImageDrawable(result[FoodPair.STRANGER_FOOD]);
         } else {
             BitmapDrawable emptyDrawable = new BitmapDrawable(itemView.getResources());
 
             TransitionDrawable fadeInDrawable =
                     new TransitionDrawable(new Drawable[]{emptyDrawable, result[FoodPair.STRANGER_FOOD]});
 
-//            holder.strangerFoodImage.setImageDrawable(fadeInDrawable);
+            holder.stranger.foodImage.setImageDrawable(fadeInDrawable);
             fadeInDrawable.startTransition(200);
         }
-//        holder.strangerMapImage.setImageDrawable(result[FoodPair.STRANGER_MAP]);
-//        holder.userFoodImage.setImageDrawable(result[FoodPair.USER_FOOD]);
-//        holder.userMapImage.setImageDrawable(result[FoodPair.USER_MAP]);
+        holder.stranger.mapImage.setImageDrawable(result[FoodPair.STRANGER_MAP]);
+        holder.user.foodImage.setImageDrawable(result[FoodPair.USER_FOOD]);
+        holder.user.mapImage.setImageDrawable(result[FoodPair.USER_MAP]);
     }
 
     @Override
