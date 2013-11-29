@@ -9,7 +9,6 @@ import android.graphics.drawable.TransitionDrawable;
 import android.view.View;
 import android.widget.Adapter;
 
-import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.adapter.FoodPairsAdapter;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.log.Log;
@@ -103,19 +102,35 @@ public class FoodItemLoader extends SimpleItemLoader<FoodPair, CacheableBitmapDr
         result[0].setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
 
         if (fromMemory) {
-            holder.stranger.foodImage.setImageDrawable(result[FoodPair.STRANGER_FOOD]);
+            tryShowFoodImage(holder.stranger, result[FoodPair.STRANGER_MAP]);
         } else {
             BitmapDrawable emptyDrawable = new BitmapDrawable(itemView.getResources());
 
             TransitionDrawable fadeInDrawable =
                     new TransitionDrawable(new Drawable[]{emptyDrawable, result[FoodPair.STRANGER_FOOD]});
 
-            holder.stranger.foodImage.setImageDrawable(fadeInDrawable);
+            tryShowFoodImage(holder.stranger, fadeInDrawable);
             fadeInDrawable.startTransition(200);
         }
-        holder.stranger.mapImage.setImageDrawable(result[FoodPair.STRANGER_MAP]);
-        holder.user.foodImage.setImageDrawable(result[FoodPair.USER_FOOD]);
-        holder.user.mapImage.setImageDrawable(result[FoodPair.USER_MAP]);
+        tryShowFoodImage(holder.stranger, result[FoodPair.STRANGER_MAP]);
+        tryShowFoodImage(holder.user, result[FoodPair.USER_FOOD]);
+        tryShowMapImage(holder.user, result[FoodPair.USER_MAP]);
+    }
+
+    public void tryShowFoodImage(FoodPairsAdapter.ViewHolder.UserHolder holder, Drawable foodBitmap) {
+        if (holder.foodImage != null) {
+            holder.foodImage.setImageDrawable(foodBitmap);
+        } else {
+            holder.foodBitmap = foodBitmap;
+        }
+    }
+
+    public void tryShowMapImage(FoodPairsAdapter.ViewHolder.UserHolder holder, CacheableBitmapDrawable mapBitmap) {
+        if (holder.mapImage != null) {
+            holder.mapImage.setImageDrawable(mapBitmap);
+        } else {
+            holder.mapBitmap = mapBitmap;
+        }
     }
 
     @Override

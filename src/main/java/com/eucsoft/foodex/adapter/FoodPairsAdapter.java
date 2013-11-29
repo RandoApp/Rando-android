@@ -2,6 +2,7 @@ package com.eucsoft.foodex.adapter;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewPager;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -28,6 +29,8 @@ import com.eucsoft.foodex.task.BonAppetitTask;
 
 import java.util.HashMap;
 import java.util.List;
+
+import uk.co.senab.bitmapcache.CacheableBitmapDrawable;
 
 public class FoodPairsAdapter extends BaseAdapter {
 
@@ -80,20 +83,8 @@ public class FoodPairsAdapter extends BaseAdapter {
             addListenersToHolder(holder, foodPair);
         }
 
-        holder.isStrangerShown = true;
-        holder.animationInProgress = false;
-
-        if (foodPair.stranger.isBonAppetit()) {
-            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
-        } else {
-            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
-        }
-
-
-        recycle(holder);
-
+        recycle(holder, foodPair);
         setAnimations(holder);
-
         return convertView;
     }
 
@@ -178,9 +169,21 @@ public class FoodPairsAdapter extends BaseAdapter {
         });
     }
 
-    private void recycle(ViewHolder holder) {
-        holder.user.foodMapPagerAdatper.recycle(holder.user.foodImage, holder.user.mapImage);
-        holder.stranger.foodMapPagerAdatper.recycle(holder.stranger.foodImage, holder.stranger.mapImage);
+    private void recycle(ViewHolder holder, FoodPair foodPair) {
+        holder.isStrangerShown = true;
+        holder.animationInProgress = false;
+
+        if (foodPair.stranger.isBonAppetit()) {
+            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
+        } else {
+            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
+        }
+
+        if (holder.stranger.foodImage != null && holder.user.foodImage != null
+                && holder.stranger.mapImage != null && holder.user.mapImage != null) {
+            holder.user.foodMapPagerAdatper.recycle(holder.user.foodImage, holder.user.mapImage);
+            holder.stranger.foodMapPagerAdatper.recycle(holder.stranger.foodImage, holder.stranger.mapImage);
+        }
     }
 
     private int getFoodImageSize(int orientation, int displayWidth) {
@@ -267,6 +270,9 @@ public class FoodPairsAdapter extends BaseAdapter {
 
             public ImageView foodImage;
             public ImageView mapImage;
+
+            public Drawable foodBitmap;
+            public Drawable mapBitmap;
         }
 
 

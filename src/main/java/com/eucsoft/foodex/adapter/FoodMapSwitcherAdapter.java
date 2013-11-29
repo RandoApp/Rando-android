@@ -36,23 +36,39 @@ public class FoodMapSwitcherAdapter extends PagerAdapter {
             addMapToHolder(imageView);
         }
 
+        checkCache(position, imageView);
+
         container.addView(imageView, 0);
         return imageView;
     }
 
+    private void checkCache (int position, ImageView view) {
+        if (position == 0) {
+            if (holder.foodBitmap != null) {
+                view.setImageDrawable(holder.foodBitmap);
+                holder.foodBitmap = null;
+            }
+        } else {
+            if (holder.mapBitmap != null) {
+                view.setImageDrawable(holder.mapBitmap);
+                holder.mapBitmap = null;
+            }
+        }
+    }
+
     public void addFoodToHolder(ImageView imageView) {
-        imageView.setImageResource(R.drawable.f);
+        imageView.setImageResource(R.drawable.bonappetit2);
         holder.foodImage = imageView;
     }
 
     public void addMapToHolder(ImageView imageView) {
-        imageView.setImageResource(R.drawable.f);
+        imageView.setImageResource(R.drawable.bonappetit2);
         holder.mapImage = imageView;
     }
 
     public void recycle(ImageView foodImage, ImageView mapImage) {
-            foodImage.setImageResource(R.drawable.f);
-        mapImage.setImageResource(R.drawable.f);
+        foodImage.setImageResource(R.drawable.bonappetit2);
+        mapImage.setImageResource(R.drawable.bonappetit2);
     }
 
 }
