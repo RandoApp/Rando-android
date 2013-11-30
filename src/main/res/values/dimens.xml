@@ -6,6 +6,9 @@
 
     <dimen name="bon_appetit_button_size">100dp</dimen>
     <dimen name="bon_appetit_button_margin_right">5dp</dimen>
+    <dimen name="camera_button_height">100dp</dimen>
+    <dimen name="camera_button_width">126dp</dimen>
+    <dimen name="camera_button_margin_bottom">15dp</dimen>
     <dimen name="food_margin_portrait_column_top">15dp</dimen>
     <dimen name="food_margin_portrait_column_left">15dp</dimen>
     <dimen name="food_margin_portrait_column_right">15dp</dimen>

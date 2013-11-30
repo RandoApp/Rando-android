@@ -34,7 +34,7 @@ public class MainActivity extends ActionBarActivity {
         context = getApplicationContext();
 
         //TODO: REMOVE THIS METHOD?
-        //initDBForTesting();
+        initDBForTesting();
 
         setContentView(R.layout.activity_main);
 

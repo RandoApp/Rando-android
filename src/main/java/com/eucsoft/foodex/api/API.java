@@ -6,6 +6,7 @@ import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.db.model.FoodPair;
+import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.preferences.Preferences;
 
 import org.apache.http.HttpEntity;
@@ -272,6 +273,7 @@ public class API {
             } catch (JSONException e) {
             }
         }
+        Log.e(API.class, "error", ((Exception) json).getStackTrace().toString());
         return new Exception(MainActivity.context.getResources().getString(R.string.error_unknown_err));
     }
 

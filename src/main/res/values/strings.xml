@@ -10,7 +10,7 @@
     <string name="action_settings">Settings</string>
 
     <!-- Empty Home Wall -->
-    <string name="empty_home_message">Welcome. You haven\'t got any pictures taken yet. Start taking and gifting your food pictures.</string>
+    <string name="empty_home_message">No pictures yet.\n Take your first food picture and deliver it.</string>
 
 
     <!-- Take Picture Screen Strings -->
