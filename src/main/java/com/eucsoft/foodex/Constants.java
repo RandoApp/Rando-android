@@ -36,7 +36,10 @@ public class Constants {
     public static final String SERVER_URL = "https://foodex-webtools.rhcloud.com";
     public static final int TOP_PANEL_ON_TAKEPICSCREEN_HEIGHT = 50;
 
+    //Shared Preferences
+    public static final String PREFERENCES_FILE_NAME = "foodex.prefs";
     public static final String SEESSION_COOKIE_NAME = "connect.sid";
+    public static final String TRAINING_FRAGMENT_SHOWN = "training.fragment.shown";
 
     public static final String SIGNUP_EMAIL_PARAM = "username";
     public static final String SIGNUP_PASSWORD_PARAM = "password";

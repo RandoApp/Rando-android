@@ -1,13 +1,13 @@
 package com.eucsoft.foodex.api;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.location.Location;
 
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.db.model.FoodPair;
+import com.eucsoft.foodex.log.Log;
+import com.eucsoft.foodex.preferences.Preferences;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -19,6 +19,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
@@ -45,9 +46,15 @@ public class API {
 
     static {
         try {
-            SharedPreferences sharedPref = MainActivity.context.getSharedPreferences(Constants.SEESSION_COOKIE_NAME, Context.MODE_PRIVATE);
-            BasicClientCookie cookie = new BasicClientCookie(Constants.SEESSION_COOKIE_NAME, sharedPref.getString(Constants.SEESSION_COOKIE_NAME, ""));
-            ((DefaultHttpClient) client).getCookieStore().addCookie(cookie);
+
+            String cookieVal = Preferences.getSessionCookie();
+            if (!"".equals(cookieVal)) {
+                BasicClientCookie basicClientCookie = new BasicClientCookie(Constants.SEESSION_COOKIE_NAME, cookieVal);
+                //TODO: Do we need to send correct domain and Path for Cookie? I think Yes :-)
+                /*basicClientCookie.setDomain("foodex-webtools.rhcloud.com");
+                basicClientCookie.setPath("/");*/
+                ((DefaultHttpClient) client).getCookieStore().addCookie(basicClientCookie);
+            }
         } catch (Exception e) {
             //Why is the world so cruel?
         }
@@ -246,8 +253,16 @@ public class API {
     }
 
     private static void storeSession(CookieStore cookieStore) {
-        SharedPreferences sharedPref = MainActivity.context.getSharedPreferences(Constants.SEESSION_COOKIE_NAME, Context.MODE_PRIVATE);
-        sharedPref.edit().putString(Constants.SEESSION_COOKIE_NAME, cookieStore.getCookies().get(0).getValue()).commit();
+        Cookie cookieSession = null;
+        for (Cookie cookie : cookieStore.getCookies()) {
+            if (Constants.SEESSION_COOKIE_NAME.equals(cookie.getName())) {
+                cookieSession = cookie;
+                break;
+            }
+        }
+        if (cookieSession != null) {
+            Preferences.setSessionCookie(cookieSession.getValue());
+        }
     }
 
     private static JSONObject readJSON(HttpResponse response) throws Exception {
@@ -276,6 +291,7 @@ public class API {
             } catch (JSONException e) {
             }
         }
+        Log.e(API.class, "error", ((Exception) json).getStackTrace().toString());
         return new Exception(MainActivity.context.getResources().getString(R.string.error_unknown_err));
     }
 

@@ -1,10 +1,5 @@
 package com.eucsoft.foodex.test.util;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
-import com.eucsoft.foodex.Constants;
-import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.api.API;
 
 import org.apache.http.HttpEntity;
@@ -13,7 +8,6 @@ import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -25,14 +19,12 @@ import static org.mockito.Mockito.when;
 public class APITestHelper {
 
     public static void mockAPIWithError() throws IOException {
-        MainActivity.context = mockContext();
         API.client = mockClient(HttpStatus.SC_INTERNAL_SERVER_ERROR, "{'code': '501'," +
                 "'message': 'Internal Server Error'," +
                 "'description': 'See https://github.com/dimhold/foodex/wiki/Errors/#system'}");
     }
 
     public static void mockAPIForUploadFood() throws IOException {
-        MainActivity.context = mockContext();
         API.client = mockClient(HttpStatus.SC_OK, "{" +
                 "'creation': '1383670800877'," +
                 "'foodUrl': 'http://api.foodex.com/food/abcd/abcdadfwefwef.jpg'," +
@@ -40,12 +32,10 @@ public class APITestHelper {
     }
 
     public static void mockAPIForDownloadFood() throws IOException {
-        MainActivity.context = mockContext();
         API.client = mockClient(HttpStatus.SC_OK, "jpg file");
     }
 
     public static void mockAPIForFetchUser() throws IOException {
-        MainActivity.context = mockContext();
         API.client = mockClient(HttpStatus.SC_OK, "{'email': 'user@mail.com'," +
                 "'foods': [" +
                 "{" +
@@ -80,18 +70,7 @@ public class APITestHelper {
     }
 
     public static void mockAPI(int statusCode, String response) throws IOException {
-        MainActivity.context = mockContext();
         API.client = mockClient(statusCode, response);
-    }
-
-    private static Context mockContext() {
-        SharedPreferences sharedPreferencesMock = Mockito.mock(SharedPreferences.class);
-        when(sharedPreferencesMock.getString(Constants.SEESSION_COOKIE_NAME, "")).thenReturn("123456789");
-
-        Context contextMock = mock(Context.class);
-        when(contextMock.getSharedPreferences(Constants.SEESSION_COOKIE_NAME, Context.MODE_PRIVATE)).thenReturn(sharedPreferencesMock);
-
-        return contextMock;
     }
 
     private static HttpClient mockClient(int statusCode, String response) throws IOException {

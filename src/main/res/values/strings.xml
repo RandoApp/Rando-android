@@ -9,6 +9,9 @@
     <string name="skip">Skip…</string>
     <string name="action_settings">Settings</string>
 
+    <!-- Empty Home Wall -->
+    <string name="empty_home_message">No pictures yet.\n Take your first food picture and deliver it.</string>
+
 
     <!-- Take Picture Screen Strings -->
     <string name="take_picture_screen_label">Take Picture</string>

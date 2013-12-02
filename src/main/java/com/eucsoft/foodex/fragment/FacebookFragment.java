@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.eucsoft.foodex.R;
+import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.task.BaseTask;
@@ -106,7 +107,16 @@ public class FacebookFragment extends Fragment {
 
     public void done() {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
+        Fragment nextFragment;
+        FoodDAO foodDAO = new FoodDAO(getActivity().getApplicationContext());
+        int foodCount = foodDAO.getFoodPairsNumber();
+        foodDAO.close();
+        if (foodCount == 0) {
+            nextFragment = new EmptyHomeWallFragment();
+        } else {
+            nextFragment = new HomeWallFragment();
+        }
+        fragmentManager.beginTransaction().replace(R.id.main_screen, nextFragment).commit();
     }
 
 }
