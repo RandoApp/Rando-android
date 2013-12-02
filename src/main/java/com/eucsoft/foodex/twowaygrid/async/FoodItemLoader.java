@@ -102,7 +102,7 @@ public class FoodItemLoader extends SimpleItemLoader<FoodPair, CacheableBitmapDr
         result[0].setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
 
         if (fromMemory) {
-            tryShowFoodImage(holder.stranger, result[FoodPair.STRANGER_MAP]);
+            tryShowFoodImage(holder.stranger, result[FoodPair.STRANGER_FOOD]);
         } else {
             BitmapDrawable emptyDrawable = new BitmapDrawable(itemView.getResources());
 
@@ -120,7 +120,7 @@ public class FoodItemLoader extends SimpleItemLoader<FoodPair, CacheableBitmapDr
     public void tryShowFoodImage(FoodPairsAdapter.ViewHolder.UserHolder holder, Drawable foodBitmap) {
         if (holder.foodImage != null) {
             holder.foodImage.setImageDrawable(foodBitmap);
-            holder.foodImage = null;
+            holder.foodBitmap = null;
         } else {
             holder.foodBitmap = foodBitmap;
         }

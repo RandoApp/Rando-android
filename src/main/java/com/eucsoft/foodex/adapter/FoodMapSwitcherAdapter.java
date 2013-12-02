@@ -1,16 +1,11 @@
 package com.eucsoft.foodex.adapter;
 
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.eucsoft.foodex.R;
-
-import static android.support.v4.view.ViewPager.*;
 
 public class FoodMapSwitcherAdapter extends PagerAdapter {
 

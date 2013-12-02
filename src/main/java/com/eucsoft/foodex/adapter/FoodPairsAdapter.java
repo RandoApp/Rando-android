@@ -13,7 +13,6 @@ import android.view.animation.Animation;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
@@ -183,6 +182,9 @@ public class FoodPairsAdapter extends BaseAdapter {
             holder.user.foodMapPagerAdatper.recycle(holder.user.foodImage, holder.user.mapImage);
             holder.stranger.foodMapPagerAdatper.recycle(holder.stranger.foodImage, holder.stranger.mapImage);
         }
+
+        holder.user.foodPager.setCurrentItem(0);
+        holder.stranger.foodPager.setCurrentItem(0);
     }
 
     private int getFoodImageSize(int orientation, int displayWidth) {
