@@ -89,6 +89,10 @@ public class MainActivity extends ActionBarActivity {
     //TODO: REMOVE when not needed
     private void initDBForTesting() {
         FoodDAO foodDAO = new FoodDAO(context);
+        for(FoodPair pair: foodDAO.getAllFoodPairs()) {
+            foodDAO.deleteFoodPair(pair);
+        }
+
         if (foodDAO.getFoodPairsNumber() <= 30) {
 
             for (int i = 0; i < 5; i++) {
@@ -98,6 +102,7 @@ public class MainActivity extends ActionBarActivity {
                 foodPair.user.foodDate = new Date();
                 foodPair.user.mapURL = "http://cool-projects.com/foodex/map/cccc/cccciewf32wfa.png";
                 foodPair.user.bonAppetit = 1;
+
                 foodPair.stranger.foodURL = "http://cool-projects.com/foodex/abcd/abcdfdsjofjo3.jpg";
                 foodPair.stranger.foodDate = new Date();
                 foodPair.stranger.mapURL = "http://cool-projects.com/foodex/map/cccc/cccciewf32wfa.png";

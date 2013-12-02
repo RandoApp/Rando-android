@@ -102,19 +102,37 @@ public class FoodItemLoader extends SimpleItemLoader<FoodPair, CacheableBitmapDr
         result[0].setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
 
         if (fromMemory) {
-            holder.strangerFoodImage.setImageDrawable(result[FoodPair.STRANGER_FOOD]);
+            tryShowFoodImage(holder.stranger, result[FoodPair.STRANGER_FOOD]);
         } else {
             BitmapDrawable emptyDrawable = new BitmapDrawable(itemView.getResources());
 
             TransitionDrawable fadeInDrawable =
                     new TransitionDrawable(new Drawable[]{emptyDrawable, result[FoodPair.STRANGER_FOOD]});
 
-            holder.strangerFoodImage.setImageDrawable(fadeInDrawable);
+            tryShowFoodImage(holder.stranger, fadeInDrawable);
             fadeInDrawable.startTransition(200);
         }
-        holder.strangerMapImage.setImageDrawable(result[FoodPair.STRANGER_MAP]);
-        holder.userFoodImage.setImageDrawable(result[FoodPair.USER_FOOD]);
-        holder.userMapImage.setImageDrawable(result[FoodPair.USER_MAP]);
+        tryShowMapImage(holder.stranger, result[FoodPair.STRANGER_MAP]);
+        tryShowFoodImage(holder.user, result[FoodPair.USER_FOOD]);
+        tryShowMapImage(holder.user, result[FoodPair.USER_MAP]);
+    }
+
+    public void tryShowFoodImage(FoodPairsAdapter.ViewHolder.UserHolder holder, Drawable foodBitmap) {
+        if (holder.foodImage != null) {
+            holder.foodImage.setImageDrawable(foodBitmap);
+            holder.foodBitmap = null;
+        } else {
+            holder.foodBitmap = foodBitmap;
+        }
+    }
+
+    public void tryShowMapImage(FoodPairsAdapter.ViewHolder.UserHolder holder, Drawable mapBitmap) {
+        if (holder.mapImage != null) {
+            holder.mapImage.setImageDrawable(mapBitmap);
+            holder.mapBitmap = null;
+        } else {
+            holder.mapBitmap = mapBitmap;
+        }
     }
 
     @Override
