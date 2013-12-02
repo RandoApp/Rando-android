@@ -87,7 +87,6 @@ public class FoodPairsAdapter extends BaseAdapter {
 
     private ViewHolder createHolder(View convertView) {
         ViewHolder holder = new ViewHolder();
-        convertView.setTag(holder);
 
         holder.user = new ViewHolder.UserHolder();
         holder.stranger = new ViewHolder.UserHolder();
@@ -98,7 +97,6 @@ public class FoodPairsAdapter extends BaseAdapter {
         holder.stranger.foodPager = (ViewPager) convertView.findViewWithTag("stranger");
         holder.user.foodPager = (ViewPager) convertView.findViewWithTag("user");
 
-        convertView.setTag(holder);
         ViewSwitcher.LayoutParams foodImagesLayout = new ViewSwitcher.LayoutParams(foodImageSize, foodImageSize);
         holder.stranger.foodPager.setLayoutParams(foodImagesLayout);
         holder.user.foodPager.setLayoutParams(foodImagesLayout);
@@ -109,38 +107,15 @@ public class FoodPairsAdapter extends BaseAdapter {
         holder.stranger.foodMapPagerAdatper = new FoodMapSwitcherAdapter(holder.stranger);
         holder.stranger.foodPager.setAdapter(holder.stranger.foodMapPagerAdatper);
 
+        convertView.setTag(holder);
+
         return holder;
     }
 
     private void addListenersToHolder(final ViewHolder holder, final FoodPair foodPair) {
-        View.OnClickListener foodClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!holder.animationInProgress) {
-                    ViewPager oldFoodMapView = (ViewPager) holder.viewSwitcher.getCurrentView();
-                    holder.viewSwitcher.showNext();
-                    ViewPager newFoodMapView = (ViewPager) holder.viewSwitcher.getCurrentView();
-                    newFoodMapView.setCurrentItem(oldFoodMapView.getCurrentItem());
-
-                    if (holder.stranger.foodPager.getVisibility() == View.VISIBLE) {
-                        if (foodPair.stranger.isBonAppetit()) {
-                            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
-                        } else {
-                            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
-                        }
-                    } else {
-                        if (foodPair.user.isBonAppetit()) {
-                            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
-                        } else {
-                            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
-                        }
-                    }
-                }
-            }
-        };
-
-        holder.user.foodMapPagerAdatper.setOnClickListener(foodClickListener);
-        holder.stranger.foodMapPagerAdatper.setOnClickListener(foodClickListener);
+        View.OnClickListener foodOnClickListener = createFoodOnClickListener(holder, foodPair);
+        holder.user.foodMapPagerAdatper.setOnClickListener(foodOnClickListener);
+        holder.stranger.foodMapPagerAdatper.setOnClickListener(foodOnClickListener);
 
         holder.bonAppetitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,6 +143,34 @@ public class FoodPairsAdapter extends BaseAdapter {
         });
     }
 
+    private View.OnClickListener createFoodOnClickListener(final ViewHolder holder, final FoodPair foodPair) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!holder.animationInProgress) {
+                    ViewPager oldFoodMapView = (ViewPager) holder.viewSwitcher.getCurrentView();
+                    holder.viewSwitcher.showNext();
+                    ViewPager newFoodMapView = (ViewPager) holder.viewSwitcher.getCurrentView();
+                    newFoodMapView.setCurrentItem(oldFoodMapView.getCurrentItem());
+
+                    if (holder.stranger.foodPager.getVisibility() == View.VISIBLE) {
+                        if (foodPair.stranger.isBonAppetit()) {
+                            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
+                        } else {
+                            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
+                        }
+                    } else {
+                        if (foodPair.user.isBonAppetit()) {
+                            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
+                        } else {
+                            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
+                        }
+                    }
+                }
+            }
+        };
+    }
+
     private void recycle(ViewHolder holder, FoodPair foodPair) {
         holder.animationInProgress = false;
 
@@ -183,6 +186,10 @@ public class FoodPairsAdapter extends BaseAdapter {
             holder.stranger.foodMapPagerAdatper.recycle(holder.stranger.foodImage, holder.stranger.mapImage);
         }
 
+        setPagesToDefault(holder);
+    }
+
+    private void setPagesToDefault(ViewHolder holder) {
         holder.user.foodPager.setCurrentItem(0);
         holder.stranger.foodPager.setCurrentItem(0);
     }
@@ -272,8 +279,5 @@ public class FoodPairsAdapter extends BaseAdapter {
             public Drawable foodBitmap;
             public Drawable mapBitmap;
         }
-
-
     }
-
 }
