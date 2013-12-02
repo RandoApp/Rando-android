@@ -19,6 +19,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
@@ -45,7 +46,15 @@ public class API {
 
     static {
         try {
-            ((DefaultHttpClient) client).getCookieStore().addCookie(new BasicClientCookie(Constants.SEESSION_COOKIE_NAME, Preferences.getSessionCookie()));
+
+            String cookieVal = Preferences.getSessionCookie();
+            if (!"".equals(cookieVal)) {
+                BasicClientCookie basicClientCookie = new BasicClientCookie(Constants.SEESSION_COOKIE_NAME, cookieVal);
+                //TODO: Do we need to send correct domain and Path for Cookie? I think Yes :-)
+                /*basicClientCookie.setDomain("foodex-webtools.rhcloud.com");
+                basicClientCookie.setPath("/");*/
+                ((DefaultHttpClient) client).getCookieStore().addCookie(basicClientCookie);
+            }
         } catch (Exception e) {
             //Why is the world so cruel?
         }
@@ -244,7 +253,16 @@ public class API {
     }
 
     private static void storeSession(CookieStore cookieStore) {
-        Preferences.setSessionCookie(cookieStore.getCookies().get(0).getValue());
+        Cookie cookieSession = null;
+        for (Cookie cookie : cookieStore.getCookies()) {
+            if (Constants.SEESSION_COOKIE_NAME.equals(cookie.getName())) {
+                cookieSession = cookie;
+                break;
+            }
+        }
+        if (cookieSession != null) {
+            Preferences.setSessionCookie(cookieSession.getValue());
+        }
     }
 
     private static JSONObject readJSON(HttpResponse response) throws Exception {
