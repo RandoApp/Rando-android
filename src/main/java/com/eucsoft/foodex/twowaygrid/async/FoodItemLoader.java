@@ -112,7 +112,7 @@ public class FoodItemLoader extends SimpleItemLoader<FoodPair, CacheableBitmapDr
             tryShowFoodImage(holder.stranger, fadeInDrawable);
             fadeInDrawable.startTransition(200);
         }
-        tryShowFoodImage(holder.stranger, result[FoodPair.STRANGER_MAP]);
+        tryShowMapImage(holder.stranger, result[FoodPair.STRANGER_MAP]);
         tryShowFoodImage(holder.user, result[FoodPair.USER_FOOD]);
         tryShowMapImage(holder.user, result[FoodPair.USER_MAP]);
     }
@@ -120,14 +120,16 @@ public class FoodItemLoader extends SimpleItemLoader<FoodPair, CacheableBitmapDr
     public void tryShowFoodImage(FoodPairsAdapter.ViewHolder.UserHolder holder, Drawable foodBitmap) {
         if (holder.foodImage != null) {
             holder.foodImage.setImageDrawable(foodBitmap);
+            holder.foodImage = null;
         } else {
             holder.foodBitmap = foodBitmap;
         }
     }
 
-    public void tryShowMapImage(FoodPairsAdapter.ViewHolder.UserHolder holder, CacheableBitmapDrawable mapBitmap) {
+    public void tryShowMapImage(FoodPairsAdapter.ViewHolder.UserHolder holder, Drawable mapBitmap) {
         if (holder.mapImage != null) {
             holder.mapImage.setImageDrawable(mapBitmap);
+            holder.mapBitmap = null;
         } else {
             holder.mapBitmap = mapBitmap;
         }

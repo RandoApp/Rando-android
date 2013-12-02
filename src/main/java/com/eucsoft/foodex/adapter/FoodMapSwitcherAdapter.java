@@ -1,18 +1,28 @@
 package com.eucsoft.foodex.adapter;
 
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.eucsoft.foodex.R;
 
+import static android.support.v4.view.ViewPager.*;
+
 public class FoodMapSwitcherAdapter extends PagerAdapter {
 
-    FoodPairsAdapter.ViewHolder.UserHolder holder;
+    private FoodPairsAdapter.ViewHolder.UserHolder holder;
+    private View.OnClickListener imageListener;
 
     public FoodMapSwitcherAdapter(FoodPairsAdapter.ViewHolder.UserHolder holder) {
         this.holder = holder;
+    }
+
+    public void setOnClickListener(View.OnClickListener listener) {
+        imageListener = listener;
     }
 
     @Override
@@ -29,7 +39,7 @@ public class FoodMapSwitcherAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         ImageView imageView = new ImageView(container.getContext());
         imageView.setPadding(0, 0, 0, 0);
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        imageView.setOnClickListener(imageListener);
         if (position == 0){
             addFoodToHolder(imageView);
         } else {
@@ -70,5 +80,4 @@ public class FoodMapSwitcherAdapter extends PagerAdapter {
         foodImage.setImageResource(R.drawable.bonappetit2);
         mapImage.setImageResource(R.drawable.bonappetit2);
     }
-
 }

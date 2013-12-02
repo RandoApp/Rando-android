@@ -21,7 +21,7 @@ public class Constants {
 
     public static final int BON_APPETIT_MARGIN_RIGHT = 5;
 
-    public static final int FOOD_MARGIN_PORTRAIT = 30;
+    public static final int FOOD_MARGIN_PORTRAIT = 40;
 
     public static final int FOOD_PADDING_PORTRAIT_COLUMN_LEFT = 15;
     public static final int FOOD_PADDING_PORTRAIT_COLUMN_RIGHT = 15;
