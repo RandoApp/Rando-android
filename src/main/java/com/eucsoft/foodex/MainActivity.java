@@ -1,7 +1,6 @@
 package com.eucsoft.foodex;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -25,13 +24,11 @@ import java.util.List;
 public class MainActivity extends ActionBarActivity {
 
     public static Activity activity;
-    public static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = this;
-        context = getApplicationContext();
 
         //TODO: REMOVE THIS METHOD?
         initDBForTesting();
@@ -88,7 +85,7 @@ public class MainActivity extends ActionBarActivity {
 
     //TODO: REMOVE when not needed
     private void initDBForTesting() {
-        FoodDAO foodDAO = new FoodDAO(context);
+        FoodDAO foodDAO = new FoodDAO(App.context);
         for(FoodPair pair: foodDAO.getAllFoodPairs()) {
             foodDAO.deleteFoodPair(pair);
         }

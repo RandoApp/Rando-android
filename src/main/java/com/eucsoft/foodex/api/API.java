@@ -2,8 +2,8 @@ package com.eucsoft.foodex.api;
 
 import android.location.Location;
 
+import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
-import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.log.Log;
@@ -292,7 +292,7 @@ public class API {
             }
         }
         Log.e(API.class, "error", ((Exception) json).getStackTrace().toString());
-        return new Exception(MainActivity.context.getResources().getString(R.string.error_unknown_err));
+        return new Exception(App.context.getResources().getString(R.string.error_unknown_err));
     }
 
 }

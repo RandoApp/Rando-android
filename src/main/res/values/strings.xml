@@ -32,4 +32,6 @@
     <string name="logout">Logout</string>
     <string name="loadig_progress">Loading...</string>
 
+    <string name="sync_service_name">Foodex Sync Service</string>
+
 </resources>
