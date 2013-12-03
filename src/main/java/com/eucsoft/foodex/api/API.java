@@ -1,13 +1,20 @@
 package com.eucsoft.foodex.api;
 
 import android.location.Location;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBarActivity;
 
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.db.model.FoodPair;
+import com.eucsoft.foodex.fragment.AuthFragment;
+import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
+import com.eucsoft.foodex.menu.LogoutMenu;
 import com.eucsoft.foodex.preferences.Preferences;
+import com.eucsoft.foodex.task.LogoutTask;
+import com.eucsoft.foodex.view.Progress;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -38,6 +45,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class API {
@@ -46,14 +54,13 @@ public class API {
 
     static {
         try {
-
-            String cookieVal = Preferences.getSessionCookie();
-            if (!"".equals(cookieVal)) {
-                BasicClientCookie basicClientCookie = new BasicClientCookie(Constants.SEESSION_COOKIE_NAME, cookieVal);
-                //TODO: Do we need to send correct domain and Path for Cookie? I think Yes :-)
-                /*basicClientCookie.setDomain("foodex-webtools.rhcloud.com");
-                basicClientCookie.setPath("/");*/
-                ((DefaultHttpClient) client).getCookieStore().addCookie(basicClientCookie);
+            String cookieValue = Preferences.getSessionCookieValue();
+            if (!"".equals(cookieValue)) {
+                BasicClientCookie cookie = new BasicClientCookie(Constants.SEESSION_COOKIE_NAME, cookieValue);
+                cookie.setDomain(Preferences.getSessionCookieDomain());
+                cookie.setPath(Preferences.getSessionCookiePath());
+                cookie.setExpiryDate(Preferences.getSessionCookieExpire());
+                ((DefaultHttpClient) client).getCookieStore().addCookie(cookie);
             }
         } catch (Exception e) {
             //Why is the world so cruel?
@@ -69,7 +76,7 @@ public class API {
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 storeSession(((DefaultHttpClient) client).getCookieStore());
             } else {
-                throw processError(readJSON(response));
+                throw processServerError(readJSON(response));
             }
         } catch (IOException e) {
             throw processError(e);
@@ -85,7 +92,7 @@ public class API {
             if (response.getStatusLine().getStatusCode() == 200) {
                 storeSession(((DefaultHttpClient) client).getCookieStore());
             } else {
-                throw processError(readJSON(response));
+                throw processServerError(readJSON(response));
             }
         } catch (IOException e) {
             throw processError(e);
@@ -102,7 +109,7 @@ public class API {
             if (response.getStatusLine().getStatusCode() == 200) {
                 storeSession(((DefaultHttpClient) client).getCookieStore());
             } else {
-                throw processError(readJSON(response));
+                throw processServerError(readJSON(response));
             }
         } catch (IOException e) {
             throw processError(e);
@@ -114,7 +121,7 @@ public class API {
             HttpPost request = new HttpPost(Constants.LOGOUT_URL);
             HttpResponse response = client.execute(request);
             if (response.getStatusLine().getStatusCode() != 200) {
-                throw processError(readJSON(response));
+                throw processServerError(readJSON(response));
             }
         } catch (IOException e) {
             throw processError(e);
@@ -153,7 +160,7 @@ public class API {
                 }
                 return foods;
             } else {
-                throw processError(readJSON(response));
+                throw processServerError(readJSON(response));
             }
         } catch (IOException e) {
             throw processError(e);
@@ -169,7 +176,7 @@ public class API {
                 HttpEntity entity = response.getEntity();
                 return EntityUtils.toByteArray(entity);
             } else {
-                throw processError(readJSON(response));
+                throw processServerError(readJSON(response));
             }
         } catch (IOException e) {
             throw processError(e);
@@ -203,7 +210,7 @@ public class API {
                 foodPair.user.foodDate = new Date(json.getLong(Constants.CREATION_PARAM));
                 return foodPair;
             } else {
-                throw processError(readJSON(response));
+                throw processServerError(readJSON(response));
             }
         } catch (IOException e) {
             throw processError(e);
@@ -216,7 +223,7 @@ public class API {
 
             HttpResponse response = client.execute(request);
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                throw processError(readJSON(response));
+                throw processServerError(readJSON(response));
             }
         } catch (UnsupportedEncodingException e) {
             throw processError(e);
@@ -233,7 +240,7 @@ public class API {
             HttpResponse response = client.execute(request);
 
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                throw processError(readJSON(response));
+                throw processServerError(readJSON(response));
             }
         } catch (UnsupportedEncodingException e) {
             throw processError(e);
@@ -253,15 +260,11 @@ public class API {
     }
 
     private static void storeSession(CookieStore cookieStore) {
-        Cookie cookieSession = null;
         for (Cookie cookie : cookieStore.getCookies()) {
             if (Constants.SEESSION_COOKIE_NAME.equals(cookie.getName())) {
-                cookieSession = cookie;
-                break;
+                Preferences.setSessionCookie(cookie.getValue(), cookie.getDomain(), cookie.getPath(), cookie.getExpiryDate());
+                return;
             }
-        }
-        if (cookieSession != null) {
-            Preferences.setSessionCookie(cookieSession.getValue());
         }
     }
 
@@ -284,14 +287,22 @@ public class API {
         }
     }
 
-    private static Exception processError(Object json) {
-        if (json instanceof JSONObject) {
-            try {
-                return new Exception(((JSONObject) json).getString(Constants.ERROR_MESSAGE_PARAM));
-            } catch (JSONException e) {
+    private static Exception processServerError(JSONObject json) {
+        try {
+            switch (json.getInt(Constants.ERROR_CODE_PARAM)) {
+                case 400:
+                    new LogoutMenu().select();
+                    return new Exception(MainActivity.context.getResources().getString(R.string.error_400));
             }
+
+            return new Exception("SERVER ERROR.");
+        } catch (JSONException exc) {
+            return processError(exc);
         }
-        Log.e(API.class, "error", ((Exception) json).getStackTrace().toString());
+    }
+
+    private static Exception processError(Exception exc) {
+        Log.e(API.class, "error", exc.getStackTrace().toString());
         return new Exception(MainActivity.context.getResources().getString(R.string.error_unknown_err));
     }
 

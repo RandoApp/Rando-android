@@ -31,5 +31,6 @@
 
     <string name="logout">Logout</string>
     <string name="loadig_progress">Loading...</string>
+    <string name="error_400">You are not authorized. Please, signup.</string>
 
 </resources>

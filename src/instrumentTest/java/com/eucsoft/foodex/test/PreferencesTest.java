@@ -19,25 +19,25 @@ public class PreferencesTest extends AndroidTestCase {
 
     public void testSetGetSessionCookie() {
         String newSessionCookie = UUID.randomUUID().toString();
-        Preferences.setSessionCookie(newSessionCookie);
+        Preferences.setSessionCookie(cookie.getValue(), cookie.getDomain(), newSessionCookie, cookie.getExpiryDate());
         assertThat(Preferences.getSessionCookie(), is(newSessionCookie));
     }
 
     public void testSetGetSessionCookieEmpty() {
         String newSessionCookie = "";
-        Preferences.setSessionCookie(newSessionCookie);
+        Preferences.setSessionCookie(cookie.getValue(), cookie.getDomain(), newSessionCookie, cookie.getExpiryDate());
         assertThat(Preferences.getSessionCookie(), is(newSessionCookie));
     }
 
     public void testSetGetSessionCookieNull() {
         String newSessionCookie = null;
-        Preferences.setSessionCookie(newSessionCookie);
+        Preferences.setSessionCookie(cookie.getValue(), cookie.getDomain(), newSessionCookie, cookie.getExpiryDate());
         assertThat(Preferences.getSessionCookie(), is(Preferences.SEESSION_COOKIE_DEFAULT_VALUE));
     }
 
     public void testRemoveSessionCookie() {
         String newSessionCookie = UUID.randomUUID().toString();
-        Preferences.setSessionCookie(newSessionCookie);
+        Preferences.setSessionCookie(cookie.getValue(), cookie.getDomain(), newSessionCookie, cookie.getExpiryDate());
         assertThat(Preferences.getSessionCookie(), is(newSessionCookie));
         Preferences.removeSessionCookie();
         assertThat(Preferences.getSessionCookie(), is(Preferences.SEESSION_COOKIE_DEFAULT_VALUE));

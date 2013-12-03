@@ -120,7 +120,7 @@ public class FoodPairsAdapter extends BaseAdapter {
         holder.bonAppetitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (holder.stranger.foodPager.isShown() && !foodPair.stranger.isBonAppetit()) {
+                if (holder.stranger.foodPager.getVisibility() == View.VISIBLE && !foodPair.stranger.isBonAppetit()) {
                     holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
                     BonAppetitTask bonAppetitTask = new BonAppetitTask();
                     bonAppetitTask.setTaskResultListener(new TaskResultListener() {
