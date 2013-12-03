@@ -7,8 +7,6 @@ import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
 
-import org.hamcrest.Matchers;
-
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -221,13 +219,13 @@ public class FoodDAOTest extends AndroidTestCase {
     public void testGetNotExistingFoodPair() throws SQLException {
         insertNRandomFoodPairs(55);
         FoodPair foodPair = foodDAO.getFoodPairById(9999L);
-        assertThat(foodPair, Matchers.nullValue());
+        assertThat(foodPair, nullValue());
     }
 
     @MediumTest
     public void testInsertNullFoodPair() throws SQLException {
         FoodPair foodPair = foodDAO.createFoodPair(null);
-        assertThat(foodPair, Matchers.nullValue());
+        assertThat(foodPair, nullValue());
     }
 
     @MediumTest

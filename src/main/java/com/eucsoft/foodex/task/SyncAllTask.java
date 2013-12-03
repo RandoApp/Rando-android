@@ -41,7 +41,7 @@ public class SyncAllTask extends AsyncTask<Void, Integer, Long> implements BaseT
         List<FoodPair> dbFoodPairs = foodDAO.getAllFoodPairs();
         Collections.sort(dbFoodPairs);
 
-        return null;
+        return RESULT_OK;
     }
 
     @Override
