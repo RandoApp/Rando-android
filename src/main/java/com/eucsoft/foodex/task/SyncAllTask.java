@@ -32,6 +32,13 @@ public class SyncAllTask extends AsyncTask<Void, Integer, Long> implements BaseT
 
         FoodDAO foodDAO = new FoodDAO(App.context);
 
+        if (serverFoodPairs.size() != foodDAO.getFoodPairsNumber()) {
+            foodDAO.clearFoodPairs();
+            foodDAO.insertFoodPairs(serverFoodPairs);
+            return RESULT_OK;
+        }
+
+        List<FoodPair> dbFoodPairs = foodDAO.getAllFoodPairs();
 
         return null;
     }

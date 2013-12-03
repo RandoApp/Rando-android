@@ -2,7 +2,7 @@ package com.eucsoft.foodex.test;
 
 import android.test.AndroidTestCase;
 
-import com.eucsoft.foodex.MainActivity;
+import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.preferences.Preferences;
 
 import java.util.UUID;
@@ -14,7 +14,7 @@ public class PreferencesTest extends AndroidTestCase {
 
     @Override
     protected void setUp() throws Exception {
-        MainActivity.context = this.getContext();
+        App.context = this.getContext();
     }
 
     public void testSetGetSessionCookie() {

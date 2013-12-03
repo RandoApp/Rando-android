@@ -78,6 +78,14 @@ public class FoodDAO {
         Log.w(FoodDBHelper.TAG, "FoodPair deleted with id: " + id);
     }
 
+    /**
+     * clear foor pairs Table in DB.
+     */
+    public void clearFoodPairs() {
+        database.delete(FoodDBHelper.TABLE_FOOD, "", null);
+        Log.w(FoodDBHelper.TAG, "FoodPairs cleared");
+    }
+
 
     /**
      * Updates foodPair instance from DB.

@@ -232,6 +232,26 @@ public class FoodDAOTest extends AndroidTestCase {
         assertThat(foodPair, Matchers.nullValue());
     }
 
+    @MediumTest
+    public void testClearEmptyTable() throws SQLException {
+        foodDAO.clearFoodPairs();
+        assertThat(foodDAO.getFoodPairsNumber(), is(0));
+        assertThat(foodDAO.getAllFoodPairs().size(), is(0));
+        foodDAO.clearFoodPairs();
+        assertThat(foodDAO.getFoodPairsNumber(), is(0));
+        assertThat(foodDAO.getAllFoodPairs().size(), is(0));
+    }
+
+    @MediumTest
+    public void testClearNotEmptyDB() throws SQLException {
+        insertNRandomFoodPairs(10);
+        assertThat(foodDAO.getFoodPairsNumber(), greaterThan(0));
+        assertThat(foodDAO.getAllFoodPairs().size(), greaterThan(0));
+        foodDAO.clearFoodPairs();
+        assertThat(foodDAO.getFoodPairsNumber(), is(0));
+        assertThat(foodDAO.getAllFoodPairs().size(), is(0));
+    }
+
     private void checkOrder(List<FoodPair> foodPairs) {
         FoodPair prevPair = null;
         for (FoodPair foodPair : foodPairs) {
