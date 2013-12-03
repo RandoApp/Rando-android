@@ -1,4 +1,4 @@
-package com.eucsoft.foodex.test.util;
+package com.eucsoft.foodex.test.api;
 
 import com.eucsoft.foodex.api.API;
 

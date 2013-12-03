@@ -1,4 +1,4 @@
-package com.eucsoft.foodex.test;
+package com.eucsoft.foodex.test.preferences;
 
 import android.test.AndroidTestCase;
 

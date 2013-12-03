@@ -9,7 +9,7 @@ import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
 
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -39,6 +39,7 @@ public class SyncAllTask extends AsyncTask<Void, Integer, Long> implements BaseT
         }
 
         List<FoodPair> dbFoodPairs = foodDAO.getAllFoodPairs();
+        Collections.sort(dbFoodPairs);
 
         return null;
     }
@@ -51,12 +52,5 @@ public class SyncAllTask extends AsyncTask<Void, Integer, Long> implements BaseT
 
     public void setTaskResultListener(TaskResultListener taskResultListener) {
         this.taskResultListener = taskResultListener;
-    }
-
-    class FoodPairDateComparator implements Comparator<FoodPair> {
-        @Override
-        public int compare(FoodPair lhs, FoodPair rhs) {
-            return (int) (lhs.user.foodDate.getTime() - rhs.user.foodDate.getTime());
-        }
     }
 }

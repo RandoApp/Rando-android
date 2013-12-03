@@ -1,4 +1,4 @@
-package com.eucsoft.foodex.test;
+package com.eucsoft.foodex.test.task;
 
 import android.test.AndroidTestCase;
 import android.test.UiThreadTest;
@@ -9,7 +9,7 @@ import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.task.BonAppetitTask;
-import com.eucsoft.foodex.test.util.APITestHelper;
+import com.eucsoft.foodex.test.api.APITestHelper;
 
 import org.apache.http.HttpStatus;
 

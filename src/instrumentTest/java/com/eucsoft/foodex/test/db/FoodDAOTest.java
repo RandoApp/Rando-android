@@ -1,4 +1,4 @@
-package com.eucsoft.foodex.test;
+package com.eucsoft.foodex.test.db;
 
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
@@ -12,14 +12,12 @@ import org.hamcrest.Matchers;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
 public class FoodDAOTest extends AndroidTestCase {
@@ -171,7 +169,7 @@ public class FoodDAOTest extends AndroidTestCase {
         assertThat("Returned page size is 0 size", firstPage.size(), greaterThan(0));
         assertThat("Returned page size is greater PAGE_SIZE=" + Constants.PAGE_SIZE, firstPage.size(), lessThanOrEqualTo(Constants.PAGE_SIZE));
 
-        checkOrder(firstPage);
+        FoodPairTestHelper.checkListNaturalOrder(foodPairs);
 
         for (int i = 0; i < firstPage.size(); i++) {
             assertThat(firstPage.get(i), is(foodPairs.get(i)));
@@ -188,7 +186,7 @@ public class FoodDAOTest extends AndroidTestCase {
         assertThat("Returned page size is 0 size", lastPage.size(), greaterThan(0));
         assertThat("Returned page size is greater PAGE_SIZE=" + Constants.PAGE_SIZE, lastPage.size(), lessThanOrEqualTo(Constants.PAGE_SIZE));
 
-        checkOrder(foodPairs);
+        FoodPairTestHelper.checkListNaturalOrder(foodPairs);
 
         int pagesNumber = foodDAO.getPagesNumber();
 
@@ -215,7 +213,7 @@ public class FoodDAOTest extends AndroidTestCase {
     public void testReturnOrder() throws SQLException {
         insertNRandomFoodPairs(55);
         List<FoodPair> foodPairs = foodDAO.getAllFoodPairs();
-        checkOrder(foodPairs);
+        FoodPairTestHelper.checkListNaturalOrder(foodPairs);
 
     }
 
@@ -252,39 +250,10 @@ public class FoodDAOTest extends AndroidTestCase {
         assertThat(foodDAO.getAllFoodPairs().size(), is(0));
     }
 
-    private void checkOrder(List<FoodPair> foodPairs) {
-        FoodPair prevPair = null;
-        for (FoodPair foodPair : foodPairs) {
-            if (prevPair != null) {
-                assertThat("Order is broken: " + foodPair.user.foodDate.toString() + " is greater Than " + prevPair.user.foodDate.toString(), foodPair.user.foodDate, greaterThanOrEqualTo(prevPair.user.foodDate));
-            } else {
-                prevPair = foodPair;
-            }
-        }
-    }
 
     private void insertNRandomFoodPairs(int n) {
-        Date baseDate = new Date();
-        Random random = new Random();
-        for (int i = 0; i < n; i++) {
-            FoodPair foodPair;
-            Date userDate = new Date();
-            userDate.setTime(baseDate.getTime() + random.nextInt(1000000));
-
-            foodPair = new FoodPair();
-            foodPair.user.foodURL = "blaURL" + i;
-            foodPair.user.mapURL = "blaFile" + i;
-            foodPair.user.bonAppetit = 0;
-            foodPair.user.foodDate = userDate;
-
-            Date strangerDate = new Date();
-            strangerDate.setTime(baseDate.getTime() + random.nextInt(1000000));
-            foodPair.stranger.foodURL = "Bla2URL" + i;
-            foodPair.stranger.mapURL = "LocalFileStranger" + i;
-            foodPair.stranger.bonAppetit = 0;
-            foodPair.stranger.foodDate = strangerDate;
-            foodDAO.createFoodPair(foodPair);
-        }
+        foodDAO.insertFoodPairs(FoodPairTestHelper.getNRandomFoodPairs(n));
     }
+
 
 }

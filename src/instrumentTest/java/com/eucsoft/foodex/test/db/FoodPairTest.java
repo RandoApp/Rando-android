@@ -1,9 +1,15 @@
-package com.eucsoft.foodex.test;
+package com.eucsoft.foodex.test.db;
 
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.eucsoft.foodex.db.model.FoodPair;
+
+import org.hamcrest.Matchers;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -17,6 +23,47 @@ public class FoodPairTest extends AndroidTestCase {
         FoodPair foodPair = new FoodPair();
         assertThat(foodPair.user, notNullValue());
         assertThat(foodPair.stranger, notNullValue());
+    }
+
+    @SmallTest
+    public void testDateEqual() {
+        Date date = new Date();
+        FoodPair foodPair1 = FoodPairTestHelper.getRandomFoodPair();
+        FoodPair foodPair2 = FoodPairTestHelper.getRandomFoodPair();
+        foodPair1.user.foodDate = date;
+        foodPair2.user.foodDate = date;
+        assertThat("Equal FoodPair dates doesn't return 0 on compare.", foodPair1.compareTo(foodPair2), is(0));
+    }
+
+    @SmallTest
+    public void testDateLowerThan() {
+        Date date1 = new Date();
+        Date date2 = new Date();
+        date2.setTime(date1.getTime() - 100);
+        FoodPair foodPair1 = FoodPairTestHelper.getRandomFoodPair();
+        FoodPair foodPair2 = FoodPairTestHelper.getRandomFoodPair();
+        foodPair1.user.foodDate = date1;
+        foodPair2.user.foodDate = date2;
+        assertThat("FoodPairs comparation failed", foodPair1.compareTo(foodPair2), Matchers.greaterThan(0));
+    }
+
+    @SmallTest
+    public void testDateGreaterThan() {
+        Date date1 = new Date();
+        Date date2 = new Date();
+        date2.setTime(date1.getTime() + 100);
+        FoodPair foodPair1 = FoodPairTestHelper.getRandomFoodPair();
+        FoodPair foodPair2 = FoodPairTestHelper.getRandomFoodPair();
+        foodPair1.user.foodDate = date1;
+        foodPair2.user.foodDate = date2;
+        assertThat("FoodPairs comparation failed", foodPair1.compareTo(foodPair2), Matchers.lessThan(0));
+    }
+
+    @SmallTest
+    public void testDateSortability() {
+        List<FoodPair> foodPairs = FoodPairTestHelper.getNRandomFoodPairs(100);
+        Collections.sort(foodPairs);
+        FoodPairTestHelper.checkListNaturalOrder(foodPairs);
     }
 
     //isBonAppetit Tests

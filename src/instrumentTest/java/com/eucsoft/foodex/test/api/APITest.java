@@ -1,4 +1,4 @@
-package com.eucsoft.foodex.test;
+package com.eucsoft.foodex.test.api;
 
 import android.location.Location;
 import android.test.AndroidTestCase;
@@ -9,7 +9,6 @@ import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.db.model.FoodPair;
-import com.eucsoft.foodex.test.util.APITestHelper;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;

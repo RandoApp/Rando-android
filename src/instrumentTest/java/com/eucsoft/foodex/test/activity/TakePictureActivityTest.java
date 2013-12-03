@@ -1,11 +1,11 @@
-package com.eucsoft.foodex.test;
+package com.eucsoft.foodex.test.activity;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.TakePictureActivity;
-import com.eucsoft.foodex.test.util.APITestHelper;
+import com.eucsoft.foodex.test.api.APITestHelper;
 
 import java.io.IOException;
 
