@@ -3,8 +3,8 @@ package com.eucsoft.foodex.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
-import com.eucsoft.foodex.MainActivity;
 
 public class Preferences {
     private static final SharedPreferences sharedPref;
@@ -12,7 +12,7 @@ public class Preferences {
     public static final String SEESSION_COOKIE_DEFAULT_VALUE = "";
 
     static {
-        sharedPref = MainActivity.context.getSharedPreferences(Constants.PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        sharedPref = App.context.getSharedPreferences(Constants.PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
     }
 
     public static String getSessionCookie() {

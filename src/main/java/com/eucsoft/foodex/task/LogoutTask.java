@@ -2,8 +2,8 @@ package com.eucsoft.foodex.task;
 
 import android.os.AsyncTask;
 
+import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
-import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
@@ -14,7 +14,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.util.HashMap;
 
-public class LogoutTask extends AsyncTask<Void, Integer, Long> implements BaseTask   {
+public class LogoutTask extends AsyncTask<Void, Integer, Long> implements BaseTask {
 
     private TaskResultListener taskResultListener;
 
@@ -30,7 +30,7 @@ public class LogoutTask extends AsyncTask<Void, Integer, Long> implements BaseTa
             if (Session.getActiveSession() != null) {
                 Session.getActiveSession().closeAndClearTokenInformation();
             } else {
-                Session session = Session.openActiveSessionFromCache(MainActivity.context);
+                Session session = Session.openActiveSessionFromCache(App.context);
                 if (session != null) {
                     session.closeAndClearTokenInformation();
                 }
