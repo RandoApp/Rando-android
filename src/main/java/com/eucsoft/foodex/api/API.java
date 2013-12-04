@@ -296,7 +296,8 @@ public class API {
                         }}).execute();
                     return new Exception(MainActivity.context.getResources().getString(R.string.error_400));
             }
-            return new Exception("SERVER ERROR.");
+            //TODO: implement all code handling in switch and replace server "message" with default value.
+            return new Exception(json.getString("message"));
         } catch (JSONException exc) {
             return processError(exc);
         }
