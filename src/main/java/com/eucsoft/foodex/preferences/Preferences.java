@@ -10,8 +10,9 @@ import com.eucsoft.foodex.MainActivity;
 public class Preferences {
 
     private static final SharedPreferences sharedPref = MainActivity.context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
-    private static final String SESSION_COOKIE_DEFAULT_VALUE = "";
-    private static final String SESSION_COOKIE_PATH_DEFAULT_VALUE = "/";
+
+    public static final String SESSION_COOKIE_DEFAULT_VALUE = "";
+    public static final String SESSION_COOKIE_PATH_DEFAULT_VALUE = "/";
 
     public static String getSessionCookieValue() {
         return sharedPref.getString(SEESSION_COOKIE_VALUE, SESSION_COOKIE_DEFAULT_VALUE);
