@@ -14,6 +14,7 @@ public class Constants {
     public static final int LOCATION_PERIOD = 20000;
 
     public static final String ERROR = "error";
+    public static final int UNAUTHORIZED_CODE = 400;
 
     public static final int PAGE_SIZE = 1;
 

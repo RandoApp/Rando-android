@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.listener.TaskResultListener;
@@ -82,7 +83,7 @@ public class FacebookFragment extends Fragment {
 
     private void onSessionStateChange(final Session session, SessionState state) {
         if (state.isOpened()) {
-            Progress.show();
+            Progress.showLoading();
             new FacebookAuthTask(new TaskResultListener() {
                 @Override
                 public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
@@ -92,7 +93,7 @@ public class FacebookFragment extends Fragment {
                     }
                 }
             }).execute(session);
-            Progress.show();
+            Progress.showLoading();
         } else if (state.isClosed()) {
             Log.i(FacebookFragment.class, "Logged out...");
         }

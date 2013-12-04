@@ -4,17 +4,15 @@ import android.location.Location;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 
-import com.eucsoft.foodex.Constants;
+import static com.eucsoft.foodex.Constants.*;
 import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.fragment.AuthFragment;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
-import com.eucsoft.foodex.menu.LogoutMenu;
 import com.eucsoft.foodex.preferences.Preferences;
 import com.eucsoft.foodex.task.LogoutTask;
-import com.eucsoft.foodex.view.Progress;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -56,7 +54,7 @@ public class API {
         try {
             String cookieValue = Preferences.getSessionCookieValue();
             if (!"".equals(cookieValue)) {
-                BasicClientCookie cookie = new BasicClientCookie(Constants.SEESSION_COOKIE_NAME, cookieValue);
+                BasicClientCookie cookie = new BasicClientCookie(SEESSION_COOKIE_NAME, cookieValue);
                 cookie.setDomain(Preferences.getSessionCookieDomain());
                 cookie.setPath(Preferences.getSessionCookiePath());
                 cookie.setExpiryDate(Preferences.getSessionCookieExpire());
@@ -69,8 +67,8 @@ public class API {
 
     public static void signup(String email, String password) throws Exception {
         try {
-            HttpPost request = new HttpPost(Constants.SIGNUP_URL);
-            addParamsToRequest(request, Constants.SIGNUP_EMAIL_PARAM, email, Constants.SIGNUP_PASSWORD_PARAM, password);
+            HttpPost request = new HttpPost(SIGNUP_URL);
+            addParamsToRequest(request, SIGNUP_EMAIL_PARAM, email, SIGNUP_PASSWORD_PARAM, password);
             HttpResponse response = client.execute(request);
 
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
@@ -85,8 +83,8 @@ public class API {
 
     public static void facebook(String id, String email, String token) throws Exception {
         try {
-            HttpPost request = new HttpPost(Constants.FACEBOOK_URL);
-            addParamsToRequest(request, Constants.FACEBOOK_ID_PARAM, id, Constants.FACEBOOK_EMAIL_PARAM, email, Constants.FACEBOOK_TOKEN_PARAM, token);
+            HttpPost request = new HttpPost(FACEBOOK_URL);
+            addParamsToRequest(request, FACEBOOK_ID_PARAM, id, FACEBOOK_EMAIL_PARAM, email, FACEBOOK_TOKEN_PARAM, token);
             HttpResponse response = client.execute(request);
 
             if (response.getStatusLine().getStatusCode() == 200) {
@@ -101,8 +99,8 @@ public class API {
 
     public static void anonymous(String uuid) throws Exception {
         try {
-            HttpPost request = new HttpPost(Constants.ANONYMOUS_URL);
-            addParamsToRequest(request, Constants.ANONYMOUS_ID_PARAM, uuid);
+            HttpPost request = new HttpPost(ANONYMOUS_URL);
+            addParamsToRequest(request, ANONYMOUS_ID_PARAM, uuid);
 
             HttpResponse response = client.execute(request);
 
@@ -118,7 +116,7 @@ public class API {
 
     public static void logout() throws Exception {
         try {
-            HttpPost request = new HttpPost(Constants.LOGOUT_URL);
+            HttpPost request = new HttpPost(LOGOUT_URL);
             HttpResponse response = client.execute(request);
             if (response.getStatusLine().getStatusCode() != 200) {
                 throw processServerError(readJSON(response));
@@ -130,31 +128,31 @@ public class API {
 
     public static List<FoodPair> fetchUser() throws Exception {
         try {
-            HttpGet request = new HttpGet(Constants.FETCH_USER_URL);
+            HttpGet request = new HttpGet(FETCH_USER_URL);
             HttpResponse response = client.execute(request);
 
 
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 JSONObject json = readJSON(response);
-                JSONArray jsonFoods = json.getJSONArray(Constants.FOODS_PARAM);
+                JSONArray jsonFoods = json.getJSONArray(FOODS_PARAM);
 
                 List<FoodPair> foods = new ArrayList<FoodPair>(jsonFoods.length());
 
                 for (int i = 0; i < jsonFoods.length(); i++) {
                     FoodPair food = new FoodPair();
                     JSONObject jsonFood = jsonFoods.getJSONObject(i);
-                    JSONObject user = jsonFood.getJSONObject(Constants.USER_PARAM);
-                    JSONObject stranger = jsonFood.getJSONObject(Constants.STRANGER_PARAM);
-                    food.user.foodId = user.getString(Constants.FOOD_ID_PARAM);
-                    food.user.foodURL = user.getString(Constants.FOOD_URL_PARAM);
-                    food.user.mapURL = user.getString(Constants.MAP_URL_PARAM);
-                    food.user.bonAppetit = user.getInt(Constants.BON_APPETIT_PARAM);
-                    food.user.foodDate = new Date(user.getLong(Constants.CREATION_PARAM));
+                    JSONObject user = jsonFood.getJSONObject(USER_PARAM);
+                    JSONObject stranger = jsonFood.getJSONObject(STRANGER_PARAM);
+                    food.user.foodId = user.getString(FOOD_ID_PARAM);
+                    food.user.foodURL = user.getString(FOOD_URL_PARAM);
+                    food.user.mapURL = user.getString(MAP_URL_PARAM);
+                    food.user.bonAppetit = user.getInt(BON_APPETIT_PARAM);
+                    food.user.foodDate = new Date(user.getLong(CREATION_PARAM));
 
-                    food.stranger.foodId = stranger.getString(Constants.FOOD_ID_PARAM);
-                    food.stranger.foodURL = stranger.getString(Constants.FOOD_URL_PARAM);
-                    food.stranger.mapURL = stranger.getString(Constants.MAP_URL_PARAM);
-                    food.stranger.bonAppetit = stranger.getInt(Constants.BON_APPETIT_PARAM);
+                    food.stranger.foodId = stranger.getString(FOOD_ID_PARAM);
+                    food.stranger.foodURL = stranger.getString(FOOD_URL_PARAM);
+                    food.stranger.mapURL = stranger.getString(MAP_URL_PARAM);
+                    food.stranger.bonAppetit = stranger.getInt(BON_APPETIT_PARAM);
 
                     foods.add(food);
                 }
@@ -192,13 +190,13 @@ public class API {
                 longitude = String.valueOf(location.getLongitude());
             }
 
-            HttpPost request = new HttpPost(Constants.ULOAD_FOOD_URL);
+            HttpPost request = new HttpPost(ULOAD_FOOD_URL);
 
             MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
             multipartEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-            multipartEntity.addPart(Constants.IMAGE_PARAM, new FileBody(foodFile));
-            multipartEntity.addTextBody(Constants.LATITUDE_PARAM, latitude);
-            multipartEntity.addTextBody(Constants.LONGITUDE_PARAM, longitude);
+            multipartEntity.addPart(IMAGE_PARAM, new FileBody(foodFile));
+            multipartEntity.addTextBody(LATITUDE_PARAM, latitude);
+            multipartEntity.addTextBody(LONGITUDE_PARAM, longitude);
             request.setEntity(multipartEntity.build());
 
             HttpResponse response = client.execute(request);
@@ -206,8 +204,8 @@ public class API {
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 JSONObject json = readJSON(response);
                 FoodPair foodPair = new FoodPair();
-                foodPair.user.foodURL = json.getString(Constants.FOOD_URL_PARAM);
-                foodPair.user.foodDate = new Date(json.getLong(Constants.CREATION_PARAM));
+                foodPair.user.foodURL = json.getString(FOOD_URL_PARAM);
+                foodPair.user.foodDate = new Date(json.getLong(CREATION_PARAM));
                 return foodPair;
             } else {
                 throw processServerError(readJSON(response));
@@ -219,7 +217,7 @@ public class API {
 
     public static void report(String id) throws Exception {
         try {
-            HttpPost request = new HttpPost(Constants.REPORT_URL + id);
+            HttpPost request = new HttpPost(REPORT_URL + id);
 
             HttpResponse response = client.execute(request);
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
@@ -236,7 +234,7 @@ public class API {
 
     public static void bonAppetit(String id) throws Exception {
         try {
-            HttpPost request = new HttpPost(Constants.BON_APPETIT_URL + id);
+            HttpPost request = new HttpPost(BON_APPETIT_URL + id);
             HttpResponse response = client.execute(request);
 
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
@@ -261,7 +259,7 @@ public class API {
 
     private static void storeSession(CookieStore cookieStore) {
         for (Cookie cookie : cookieStore.getCookies()) {
-            if (Constants.SEESSION_COOKIE_NAME.equals(cookie.getName())) {
+            if (SEESSION_COOKIE_NAME.equals(cookie.getName())) {
                 Preferences.setSessionCookie(cookie.getValue(), cookie.getDomain(), cookie.getPath(), cookie.getExpiryDate());
                 return;
             }
@@ -289,12 +287,16 @@ public class API {
 
     private static Exception processServerError(JSONObject json) {
         try {
-            switch (json.getInt(Constants.ERROR_CODE_PARAM)) {
-                case 400:
-                    new LogoutMenu().select();
+            switch (json.getInt(ERROR_CODE_PARAM)) {
+                case UNAUTHORIZED_CODE:
+                    new LogoutTask(new TaskResultListener() {
+                        @Override
+                        public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
+                            FragmentManager fragmentManager = ((ActionBarActivity) MainActivity.activity).getSupportFragmentManager();
+                            fragmentManager.beginTransaction().replace(R.id.main_screen, new AuthFragment()).commit();
+                        }}).execute();
                     return new Exception(MainActivity.context.getResources().getString(R.string.error_400));
             }
-
             return new Exception("SERVER ERROR.");
         } catch (JSONException exc) {
             return processError(exc);

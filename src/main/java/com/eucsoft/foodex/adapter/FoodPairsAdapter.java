@@ -131,7 +131,11 @@ public class FoodPairsAdapter extends BaseAdapter {
                                 case BonAppetitTask.TASK_ID:
                                     if (resultCode != BaseTask.RESULT_OK && holder.stranger.foodPager.isShown()) {
                                         holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
-                                        Toast.makeText(MainActivity.context, R.string.failed_to_set_bon_appetit_for_food, Toast.LENGTH_LONG);
+                                        if (data.get(Constants.ERROR) != null) {
+                                            Toast.makeText(MainActivity.context, (CharSequence) data.get(Constants.ERROR), Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(MainActivity.context, R.string.failed_to_set_bon_appetit_for_food, Toast.LENGTH_LONG).show();
+                                        }
                                     }
                                     break;
                             }
