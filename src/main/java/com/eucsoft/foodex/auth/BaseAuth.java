@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.Toast;
 
+import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.fragment.AuthFragment;
@@ -29,7 +30,7 @@ public abstract class BaseAuth implements View.OnClickListener, TaskResultListen
     @Override
     public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
         if (resultCode == BaseTask.RESULT_ERROR) {
-            if (data.get("error") != null) {
+            if (data.get(Constants.ERROR) != null) {
                 Toast.makeText(authFragment.getActivity(), (CharSequence) data.get("error"), Toast.LENGTH_LONG).show();
             }
             return;

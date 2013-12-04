@@ -1,9 +1,11 @@
 package com.eucsoft.foodex.task;
 
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.MainActivity;
+import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
@@ -39,6 +41,7 @@ public class BonAppetitTask extends AsyncTask<FoodPair, Integer, Long> implement
         try {
             API.bonAppetit(String.valueOf(foodPair.stranger.foodId));
         } catch (Exception e) {
+            data.put(Constants.ERROR, e.getMessage());
             Log.w(BonAppetitTask.class, "Failed to say Bon Appetit.");
             foodPair.stranger.bonAppetit = 0;
             return RESULT_ERROR;

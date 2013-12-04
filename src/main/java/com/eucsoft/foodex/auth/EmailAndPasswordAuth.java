@@ -8,6 +8,7 @@ import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.fragment.AuthFragment;
 import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.SignupTask;
+import com.eucsoft.foodex.view.Progress;
 
 public class EmailAndPasswordAuth extends BaseAuth {
 
@@ -37,6 +38,8 @@ public class EmailAndPasswordAuth extends BaseAuth {
             onTaskResult(0, BaseTask.RESULT_ERROR, errors);
             return;
         }
+
+        Progress.showLoading();
 
         SignupTask signupTask = new SignupTask(this);
         signupTask.execute(email, password);

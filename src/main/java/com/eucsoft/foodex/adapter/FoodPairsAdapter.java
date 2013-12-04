@@ -120,7 +120,7 @@ public class FoodPairsAdapter extends BaseAdapter {
         holder.bonAppetitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (holder.stranger.foodPager.isShown() && !foodPair.stranger.isBonAppetit()) {
+                if (holder.stranger.foodPager.getVisibility() == View.VISIBLE && !foodPair.stranger.isBonAppetit()) {
                     holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
                     BonAppetitTask bonAppetitTask = new BonAppetitTask();
                     bonAppetitTask.setTaskResultListener(new TaskResultListener() {
@@ -131,7 +131,11 @@ public class FoodPairsAdapter extends BaseAdapter {
                                 case BonAppetitTask.TASK_ID:
                                     if (resultCode != BaseTask.RESULT_OK && holder.stranger.foodPager.isShown()) {
                                         holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
-                                        Toast.makeText(MainActivity.context, R.string.failed_to_set_bon_appetit_for_food, Toast.LENGTH_LONG);
+                                        if (data.get(Constants.ERROR) != null) {
+                                            Toast.makeText(MainActivity.context, (CharSequence) data.get(Constants.ERROR), Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(MainActivity.context, R.string.failed_to_set_bon_appetit_for_food, Toast.LENGTH_LONG).show();
+                                        }
                                     }
                                     break;
                             }

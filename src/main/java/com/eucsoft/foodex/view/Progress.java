@@ -10,12 +10,12 @@ public class Progress {
 
     private static ProgressDialog progress;
 
-    public static void show () {
+    public static void show(String message) {
         if (progress != null) {
             progress.hide();
         }
         progress = new ProgressDialog(MainActivity.activity, AlertDialog.THEME_HOLO_DARK);
-        progress.setMessage(MainActivity.activity.getResources().getString(R.string.loadig_progress));
+        progress.setMessage(message);
         progress.show();
     }
 
@@ -25,4 +25,7 @@ public class Progress {
         }
     }
 
+    public static void showLoading() {
+        show(MainActivity.context.getResources().getString(R.string.loadig_progress));
+    }
 }
