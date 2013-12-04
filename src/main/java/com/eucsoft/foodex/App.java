@@ -1,6 +1,8 @@
 package com.eucsoft.foodex;
 
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
@@ -42,8 +44,14 @@ public class App extends Application {
     }
 
     private void startSyncService() {
-        Intent syncService = new Intent(getApplicationContext(), SyncService.class);
-        getApplicationContext().startService(syncService);
+        /*Intent syncService = new Intent(getApplicationContext(), SyncService.class);
+        getApplicationContext().startService(syncService);*/
+
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(), SyncService.class);
+        PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
+        // Start every 30 seconds
+        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 10 * 1000, pintent);
     }
 
 }

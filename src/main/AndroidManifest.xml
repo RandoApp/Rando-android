@@ -37,6 +37,7 @@
             android:name=".service.SyncService"
             android:icon="@drawable/bonappetit"
             android:process=":sync_process"
+            android:enabled="true"
             android:label="@string/sync_service_name" />
     </application>
 

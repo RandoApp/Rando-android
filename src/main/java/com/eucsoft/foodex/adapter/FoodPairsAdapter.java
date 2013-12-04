@@ -52,15 +52,18 @@ public class FoodPairsAdapter extends BaseAdapter {
     }
 
     public FoodPairsAdapter(Context context) {
-        FoodDAO foodDAO = new FoodDAO(context);
-        foodPairs = foodDAO.getAllFoodPairs();
-        foodDAO.close();
-
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
         int displayWidth = display.getWidth();
         int orientation = context.getResources().getConfiguration().orientation;
         foodImageSize = getFoodImageSize(orientation, displayWidth);
+        initData();
+    }
+
+    private void initData() {
+        FoodDAO foodDAO = new FoodDAO(App.context);
+        foodPairs = foodDAO.getAllFoodPairs();
+        foodDAO.close();
         size = foodPairs.size();
     }
 
@@ -258,6 +261,12 @@ public class FoodPairsAdapter extends BaseAdapter {
             public void onAnimationRepeat(Animation animation) {
             }
         });
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        initData();
+        super.notifyDataSetChanged();
     }
 
     public static class ViewHolder {

@@ -31,6 +31,7 @@ public class SyncAllTask extends AsyncTask<Void, Integer, Long> implements BaseT
             serverFoodPairs = API.fetchUser();
         } catch (Exception e) {
             //TODO: Work on error.
+            Log.e(SyncAllTask.class, e);
             return RESULT_ERROR;
         }
 
