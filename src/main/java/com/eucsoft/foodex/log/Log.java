@@ -18,6 +18,10 @@ public class Log {
         android.util.Log.e(clazz.getName(), concatenate(msgs));
     }
 
+    public static void e(Class clazz, Throwable throwable) {
+        android.util.Log.e(clazz.getName(), "error:", throwable);
+    }
+
     public static void v(Class clazz, String... msgs) {
         android.util.Log.v(clazz.getName(), concatenate(msgs));
     }

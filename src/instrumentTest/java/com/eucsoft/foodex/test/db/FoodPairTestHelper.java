@@ -3,12 +3,15 @@ package com.eucsoft.foodex.test.db;
 import com.eucsoft.foodex.db.model.FoodPair;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class FoodPairTestHelper {
     private static Random random = new Random();
@@ -71,4 +74,16 @@ public class FoodPairTestHelper {
             }
         }
     }
+
+    public static void checkListsEqual(List<FoodPair> foodPairs1, List<FoodPair> foodPairs2) {
+        assertThat(foodPairs1, notNullValue());
+        assertThat(foodPairs2, notNullValue());
+        assertThat("Sizes not equal", foodPairs1.size(), is(foodPairs2.size()));
+        Collections.sort(foodPairs1);
+        Collections.sort(foodPairs2);
+        for (int i = 0; i < foodPairs1.size(); i++) {
+            assertThat("FoodPairs not equal: " + foodPairs1.get(i).toString() + " != " + foodPairs2.get(i).toString(), foodPairs1.get(i), is(foodPairs2.get(i)));
+        }
+    }
+
 }

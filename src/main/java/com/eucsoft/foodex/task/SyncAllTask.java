@@ -15,6 +15,9 @@ import java.util.List;
 
 public class SyncAllTask extends AsyncTask<Void, Integer, Long> implements BaseTask {
 
+    public static final long FOOD_PAIRS_UPDATED = 3;
+    public static final long NOT_UPDATED = 4;
+
     private TaskResultListener taskResultListener;
 
     private HashMap<String, Object> data = new HashMap<String, Object>();
@@ -27,6 +30,7 @@ public class SyncAllTask extends AsyncTask<Void, Integer, Long> implements BaseT
         try {
             serverFoodPairs = API.fetchUser();
         } catch (Exception e) {
+            //TODO: Work on error.
             return RESULT_ERROR;
         }
 
@@ -35,13 +39,20 @@ public class SyncAllTask extends AsyncTask<Void, Integer, Long> implements BaseT
         if (serverFoodPairs.size() != foodDAO.getFoodPairsNumber()) {
             foodDAO.clearFoodPairs();
             foodDAO.insertFoodPairs(serverFoodPairs);
-            return RESULT_OK;
+            return FOOD_PAIRS_UPDATED;
         }
 
         List<FoodPair> dbFoodPairs = foodDAO.getAllFoodPairs();
-        Collections.sort(dbFoodPairs);
+        Collections.sort(serverFoodPairs);
 
-        return RESULT_OK;
+        for (int i = 0; i < dbFoodPairs.size(); i++) {
+            if (!dbFoodPairs.get(i).equals(serverFoodPairs.get(i))) {
+                foodDAO.clearFoodPairs();
+                foodDAO.insertFoodPairs(serverFoodPairs);
+                return FOOD_PAIRS_UPDATED;
+            }
+        }
+        return NOT_UPDATED;
     }
 
     @Override

@@ -49,6 +49,15 @@ public class FoodPair implements Serializable, Comparable<FoodPair> {
         return (int) (this.user.foodDate.getTime() - another.user.foodDate.getTime());
     }
 
+    @Override
+    public String toString() {
+        return "FoodPair{" +
+                "id=" + id +
+                ", user=" + user +
+                ", stranger=" + stranger +
+                '}';
+    }
+
     public class User implements Serializable {
         public String foodId;
         public String foodURL;
@@ -92,6 +101,17 @@ public class FoodPair implements Serializable, Comparable<FoodPair> {
             result = 31 * result + bonAppetit;
             result = 31 * result + (mapURL != null ? mapURL.hashCode() : 0);
             return result;
+        }
+
+        @Override
+        public String toString() {
+            return "User{" +
+                    "foodId='" + foodId + '\'' +
+                    ", foodURL='" + foodURL + '\'' +
+                    ", foodDate=" + foodDate +
+                    ", bonAppetit=" + bonAppetit +
+                    ", mapURL='" + mapURL + '\'' +
+                    '}';
         }
     }
 }

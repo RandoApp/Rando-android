@@ -291,7 +291,7 @@ public class API {
             } catch (JSONException e) {
             }
         }
-        Log.e(API.class, "error", ((Exception) json).getStackTrace().toString());
+        Log.e(API.class, (Exception) json);
         return new Exception(App.context.getResources().getString(R.string.error_unknown_err));
     }
 
