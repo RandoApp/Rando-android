@@ -6,6 +6,7 @@ import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
+import com.eucsoft.foodex.view.Progress;
 
 import java.util.HashMap;
 
