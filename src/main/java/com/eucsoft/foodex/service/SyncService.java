@@ -23,7 +23,7 @@ public class SyncService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         SyncAllTask syncAllTask = new SyncAllTask();
-        removeAlarm();
+        //removeAlarm();
         syncAllTask.setTaskResultListener(new TaskResultListener() {
             @Override
             public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {

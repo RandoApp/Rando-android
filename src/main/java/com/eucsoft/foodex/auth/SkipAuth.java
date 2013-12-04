@@ -8,9 +8,9 @@ import com.eucsoft.foodex.fragment.AuthFragment;
 import com.eucsoft.foodex.task.AnonymousSignupTask;
 import com.eucsoft.foodex.view.Progress;
 
-public class SkipAuth extends BaseAuth  {
+public class SkipAuth extends BaseAuth {
 
-    public SkipAuth (AuthFragment authFragment) {
+    public SkipAuth(AuthFragment authFragment) {
         super(authFragment);
     }
 

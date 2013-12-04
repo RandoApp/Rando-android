@@ -6,7 +6,6 @@ import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
-import com.eucsoft.foodex.view.Progress;
 
 import java.util.HashMap;
 
@@ -21,7 +20,7 @@ public class AnonymousSignupTask extends AsyncTask<String, Integer, Long> implem
     }
 
     @Override
-    protected Long doInBackground(String ... params) {
+    protected Long doInBackground(String... params) {
         try {
             String uuid = params[0];
             API.anonymous(uuid);

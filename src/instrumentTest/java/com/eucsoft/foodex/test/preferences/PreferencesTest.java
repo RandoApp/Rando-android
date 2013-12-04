@@ -3,8 +3,6 @@ package com.eucsoft.foodex.test;
 import android.test.AndroidTestCase;
 
 import com.eucsoft.foodex.App;
-import static com.eucsoft.foodex.Constants.*;
-import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.preferences.Preferences;
 
 import java.util.UUID;

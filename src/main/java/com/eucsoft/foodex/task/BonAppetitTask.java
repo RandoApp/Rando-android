@@ -2,6 +2,7 @@ package com.eucsoft.foodex.task;
 
 import android.os.AsyncTask;
 
+import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.db.FoodDAO;
@@ -43,7 +44,7 @@ public class BonAppetitTask extends AsyncTask<FoodPair, Integer, Long> implement
             return RESULT_ERROR;
         }
 
-        FoodDAO foodDAO = new FoodDAO(MainActivity.context);
+        FoodDAO foodDAO = new FoodDAO(App.context);
         foodDAO.updateFoodPair(foodPair);
         foodDAO.close();
 

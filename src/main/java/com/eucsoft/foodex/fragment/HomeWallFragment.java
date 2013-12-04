@@ -18,6 +18,7 @@ import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.TakePictureActivity;
 import com.eucsoft.foodex.adapter.FoodPairsAdapter;
+import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.service.SyncService;
 import com.eucsoft.foodex.twowaygrid.async.AsyncTwoWayGridView;
 import com.eucsoft.foodex.twowaygrid.async.FoodItemLoader;
@@ -38,6 +39,7 @@ public class HomeWallFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             Toast.makeText(context, "Service Call!! " + calls,
                     Toast.LENGTH_LONG).show();
+            Log.i(BroadcastReceiver.class, "Recieved Update request.");
             foodPairsAdapter.notifyDataSetChanged();
             Bundle bundle = intent.getExtras();
             if (bundle != null) {

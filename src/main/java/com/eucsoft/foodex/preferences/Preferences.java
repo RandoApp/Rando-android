@@ -3,14 +3,18 @@ package com.eucsoft.foodex.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import static com.eucsoft.foodex.Constants.*;
+import com.eucsoft.foodex.App;
 
-import com.eucsoft.foodex.MainActivity;
+import static com.eucsoft.foodex.Constants.PREFERENCES_FILE_NAME;
+import static com.eucsoft.foodex.Constants.SEESSION_COOKIE_DOMAIN;
+import static com.eucsoft.foodex.Constants.SEESSION_COOKIE_PATH;
+import static com.eucsoft.foodex.Constants.SEESSION_COOKIE_VALUE;
+import static com.eucsoft.foodex.Constants.SERVER_HOST;
+import static com.eucsoft.foodex.Constants.TRAINING_FRAGMENT_SHOWN;
 
 public class Preferences {
-    private static final SharedPreferences sharedPref;
 
-    public static final String SEESSION_COOKIE_DEFAULT_VALUE = "";
+    private static final SharedPreferences sharedPref = App.context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
 
     public static final String SESSION_COOKIE_DEFAULT_VALUE = "";
     public static final String SESSION_COOKIE_PATH_DEFAULT_VALUE = "/";
@@ -19,16 +23,32 @@ public class Preferences {
         return sharedPref.getString(SEESSION_COOKIE_VALUE, SESSION_COOKIE_DEFAULT_VALUE);
     }
 
-    public static String getSessionCookie() {
-        return sharedPref.getString(Constants.SEESSION_COOKIE_NAME, SEESSION_COOKIE_DEFAULT_VALUE);
+    public static String getSessionCookieDomain() {
+        return sharedPref.getString(SEESSION_COOKIE_DOMAIN, SERVER_HOST);
     }
 
-    public static void setSessionCookie(String sessionCookie) {
-        sharedPref.edit().putString(Constants.SEESSION_COOKIE_NAME, sessionCookie).commit();
+    public static String getSessionCookiePath() {
+        return sharedPref.getString(SEESSION_COOKIE_PATH, SESSION_COOKIE_PATH_DEFAULT_VALUE);
+    }
+
+    public static void setSessionCookie(String value, String domain, String path) {
+        if (value == null) return;
+        if (domain == null) domain = SERVER_HOST;
+        if (path == null) path = SESSION_COOKIE_PATH_DEFAULT_VALUE;
+
+        sharedPref.edit()
+                .putString(SEESSION_COOKIE_VALUE, value)
+                .putString(SEESSION_COOKIE_DOMAIN, domain)
+                .putString(SEESSION_COOKIE_PATH, path)
+                .commit();
     }
 
     public static void removeSessionCookie() {
-        sharedPref.edit().remove(Constants.SEESSION_COOKIE_NAME).commit();
+        sharedPref.edit()
+                .remove(SEESSION_COOKIE_VALUE)
+                .remove(SEESSION_COOKIE_DOMAIN)
+                .remove(SEESSION_COOKIE_PATH)
+                .commit();
     }
 
     public static boolean isTrainingFragmentShown() {
@@ -38,10 +58,10 @@ public class Preferences {
     }
 
     public static void setTrainingFragmentShown(int i) {
-        sharedPref.edit().putInt(Constants.TRAINING_FRAGMENT_SHOWN, i).commit();
+        sharedPref.edit().putInt(TRAINING_FRAGMENT_SHOWN, i).commit();
     }
 
     public static void removeTrainingFragmentShown() {
-        sharedPref.edit().remove(Constants.TRAINING_FRAGMENT_SHOWN).commit();
+        sharedPref.edit().remove(TRAINING_FRAGMENT_SHOWN).commit();
     }
 }
