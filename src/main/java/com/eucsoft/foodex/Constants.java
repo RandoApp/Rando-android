@@ -20,8 +20,6 @@ public class Constants {
 
     public static final int BON_APPETIT_BUTTON_SIZE = 100;
 
-    public static final int BON_APPETIT_MARGIN_RIGHT = 5;
-
     public static final int FOOD_MARGIN_PORTRAIT = 40;
 
     public static final int FOOD_PADDING_PORTRAIT_COLUMN_LEFT = 15;
@@ -34,7 +32,8 @@ public class Constants {
     public static final int FOOD_PADDING_LANDSCAPE_COLUMN_TOP = 15;
     public static final int FOOD_PADDING_LANDSCAPE_COLUMN_BOTTOM = 5;
 
-    public static final String SERVER_URL = "https://foodex-webtools.rhcloud.com";
+    public static final String SERVER_HOST = "foodex-webtools.rhcloud.com";
+    public static final String SERVER_URL = "https://" + SERVER_HOST;
     public static final int TOP_PANEL_ON_TAKEPICSCREEN_HEIGHT = 50;
 
     //Shared Preferences
@@ -43,7 +42,6 @@ public class Constants {
     public static final String SEESSION_COOKIE_VALUE = "connect.sid.value";
     public static final String SEESSION_COOKIE_DOMAIN = "connect.sid.domain";
     public static final String SEESSION_COOKIE_PATH = "connect.sid.path";
-    public static final String SEESSION_COOKIE_EXPIRE = "connect.sid.expire";
     public static final String TRAINING_FRAGMENT_SHOWN = "training.fragment.shown";
 
     public static final String SIGNUP_EMAIL_PARAM = "username";

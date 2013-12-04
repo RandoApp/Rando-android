@@ -57,7 +57,6 @@ public class API {
                 BasicClientCookie cookie = new BasicClientCookie(SEESSION_COOKIE_NAME, cookieValue);
                 cookie.setDomain(Preferences.getSessionCookieDomain());
                 cookie.setPath(Preferences.getSessionCookiePath());
-                cookie.setExpiryDate(Preferences.getSessionCookieExpire());
                 ((DefaultHttpClient) client).getCookieStore().addCookie(cookie);
             }
         } catch (Exception e) {
@@ -260,7 +259,7 @@ public class API {
     private static void storeSession(CookieStore cookieStore) {
         for (Cookie cookie : cookieStore.getCookies()) {
             if (SEESSION_COOKIE_NAME.equals(cookie.getName())) {
-                Preferences.setSessionCookie(cookie.getValue(), cookie.getDomain(), cookie.getPath(), cookie.getExpiryDate());
+                Preferences.setSessionCookie(cookie.getValue(), cookie.getDomain(), cookie.getPath());
                 return;
             }
         }
