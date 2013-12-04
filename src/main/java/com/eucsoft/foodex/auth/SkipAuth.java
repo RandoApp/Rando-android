@@ -6,6 +6,7 @@ import android.view.View;
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.fragment.AuthFragment;
 import com.eucsoft.foodex.task.AnonymousSignupTask;
+import com.eucsoft.foodex.view.Progress;
 
 public class SkipAuth extends BaseAuth  {
 
@@ -15,6 +16,7 @@ public class SkipAuth extends BaseAuth  {
 
     @Override
     public void onClick(View v) {
+        Progress.showLoading();
         String uuid = createTemproryId();
         new AnonymousSignupTask(this).execute(uuid);
     }

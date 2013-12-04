@@ -18,6 +18,7 @@ import android.widget.ViewSwitcher;
 
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
+import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.animation.AnimationFactory;
 import com.eucsoft.foodex.db.FoodDAO;
@@ -52,18 +53,15 @@ public class FoodPairsAdapter extends BaseAdapter {
     }
 
     public FoodPairsAdapter(Context context) {
+        FoodDAO foodDAO = new FoodDAO(context);
+        foodPairs = foodDAO.getAllFoodPairs();
+        foodDAO.close();
+
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
         int displayWidth = display.getWidth();
         int orientation = context.getResources().getConfiguration().orientation;
         foodImageSize = getFoodImageSize(orientation, displayWidth);
-        initData();
-    }
-
-    private void initData() {
-        FoodDAO foodDAO = new FoodDAO(App.context);
-        foodPairs = foodDAO.getAllFoodPairs();
-        foodDAO.close();
         size = foodPairs.size();
     }
 
@@ -134,7 +132,11 @@ public class FoodPairsAdapter extends BaseAdapter {
                                 case BonAppetitTask.TASK_ID:
                                     if (resultCode != BaseTask.RESULT_OK && holder.stranger.foodPager.isShown()) {
                                         holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
-                                        Toast.makeText(App.context, R.string.failed_to_set_bon_appetit_for_food, Toast.LENGTH_LONG);
+                                        if (data.get(Constants.ERROR) != null) {
+                                            Toast.makeText(App.context, (CharSequence) data.get(Constants.ERROR), Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(App.context, R.string.failed_to_set_bon_appetit_for_food, Toast.LENGTH_LONG).show();
+                                        }
                                     }
                                     break;
                             }
@@ -261,12 +263,6 @@ public class FoodPairsAdapter extends BaseAdapter {
             public void onAnimationRepeat(Animation animation) {
             }
         });
-    }
-
-    @Override
-    public void notifyDataSetChanged() {
-        initData();
-        super.notifyDataSetChanged();
     }
 
     public static class ViewHolder {

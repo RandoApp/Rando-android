@@ -14,12 +14,11 @@ public class Constants {
     public static final int LOCATION_PERIOD = 20000;
 
     public static final String ERROR = "error";
+    public static final int UNAUTHORIZED_CODE = 400;
 
     public static final int PAGE_SIZE = 1;
 
     public static final int BON_APPETIT_BUTTON_SIZE = 100;
-
-    public static final int BON_APPETIT_MARGIN_RIGHT = 5;
 
     public static final int FOOD_MARGIN_PORTRAIT = 40;
 
@@ -33,12 +32,16 @@ public class Constants {
     public static final int FOOD_PADDING_LANDSCAPE_COLUMN_TOP = 15;
     public static final int FOOD_PADDING_LANDSCAPE_COLUMN_BOTTOM = 5;
 
-    public static final String SERVER_URL = "https://foodex-webtools.rhcloud.com";
+    public static final String SERVER_HOST = "foodex-webtools.rhcloud.com";
+    public static final String SERVER_URL = "https://" + SERVER_HOST;
     public static final int TOP_PANEL_ON_TAKEPICSCREEN_HEIGHT = 50;
 
     //Shared Preferences
     public static final String PREFERENCES_FILE_NAME = "foodex.prefs";
     public static final String SEESSION_COOKIE_NAME = "connect.sid";
+    public static final String SEESSION_COOKIE_VALUE = "connect.sid.value";
+    public static final String SEESSION_COOKIE_DOMAIN = "connect.sid.domain";
+    public static final String SEESSION_COOKIE_PATH = "connect.sid.path";
     public static final String TRAINING_FRAGMENT_SHOWN = "training.fragment.shown";
 
     public static final String SIGNUP_EMAIL_PARAM = "username";
@@ -59,6 +62,7 @@ public class Constants {
     public static final String LONGITUDE_PARAM = "longitude";
 
     public static final String ERROR_MESSAGE_PARAM = "message";
+    public static final String ERROR_CODE_PARAM = "code";
 
     public static final String IMAGE_PARAM = "image";
 

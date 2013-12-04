@@ -3,16 +3,20 @@ package com.eucsoft.foodex.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.eucsoft.foodex.App;
-import com.eucsoft.foodex.Constants;
+import static com.eucsoft.foodex.Constants.*;
+
+import com.eucsoft.foodex.MainActivity;
 
 public class Preferences {
     private static final SharedPreferences sharedPref;
 
     public static final String SEESSION_COOKIE_DEFAULT_VALUE = "";
 
-    static {
-        sharedPref = App.context.getSharedPreferences(Constants.PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+    public static final String SESSION_COOKIE_DEFAULT_VALUE = "";
+    public static final String SESSION_COOKIE_PATH_DEFAULT_VALUE = "/";
+
+    public static String getSessionCookieValue() {
+        return sharedPref.getString(SEESSION_COOKIE_VALUE, SESSION_COOKIE_DEFAULT_VALUE);
     }
 
     public static String getSessionCookie() {
