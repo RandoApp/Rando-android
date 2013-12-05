@@ -5,9 +5,9 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Binder;
 import android.os.IBinder;
 
+import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.task.SyncAllTask;
@@ -19,7 +19,6 @@ public class SyncService extends Service {
     public static final String NOTIFICATION = "SyncService";
     private static final long SHORT_PAUSE = 2 * 60 * 1000;
     private static final long LONG_PAUSE = 2 * 60 * 60 * 1000;
-
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -40,6 +39,12 @@ public class SyncService extends Service {
                         //sendUpdatedNotification();
                         break;
                 }
+                FoodDAO foodDAO = new FoodDAO(getApplicationContext());
+                if (foodDAO.getNotPairedFoodsNumber() > 0) {
+                    setAlarm(SHORT_PAUSE);
+                } else {
+                    setAlarm(LONG_PAUSE);
+                }
             }
         });
         syncAllTask.execute();
@@ -51,18 +56,11 @@ public class SyncService extends Service {
         return null;
     }
 
-    public class MyBinder extends Binder {
-        SyncService getService() {
-            return SyncService.this;
-        }
-    }
-
     private void sendUpdatedNotification() {
         Intent intent = new Intent(NOTIFICATION);
         PendingIntent startPIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), startPIntent);
-        /*sendBroadcast(intent);*/
     }
 
     private void removeAlarm() {
