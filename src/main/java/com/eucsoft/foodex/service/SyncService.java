@@ -17,13 +17,14 @@ import java.util.HashMap;
 public class SyncService extends Service {
 
     public static final String NOTIFICATION = "SyncService";
+    private static final long SHORT_PAUSE = 2 * 60 * 1000;
+    private static final long LONG_PAUSE = 2 * 60 * 60 * 1000;
 
-    private final IBinder mBinder = new MyBinder();
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         SyncAllTask syncAllTask = new SyncAllTask();
-        //removeAlarm();
+        removeAlarm();
         syncAllTask.setTaskResultListener(new TaskResultListener() {
             @Override
             public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
@@ -47,7 +48,7 @@ public class SyncService extends Service {
 
     @Override
     public IBinder onBind(Intent arg0) {
-        return mBinder;
+        return null;
     }
 
     public class MyBinder extends Binder {

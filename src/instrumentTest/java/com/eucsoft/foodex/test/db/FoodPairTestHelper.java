@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -26,6 +27,7 @@ public class FoodPairTestHelper {
             userDate.setTime(baseDate.getTime() + random.nextInt(1000000));
 
             foodPair = new FoodPair();
+            foodPair.user.foodId = UUID.randomUUID().toString();
             foodPair.user.foodURL = "blaURL" + i;
             foodPair.user.mapURL = "blaFile" + i;
             foodPair.user.bonAppetit = 0;
@@ -33,6 +35,7 @@ public class FoodPairTestHelper {
 
             Date strangerDate = new Date();
             strangerDate.setTime(baseDate.getTime() + random.nextInt(1000000));
+            foodPair.stranger.foodId = UUID.randomUUID().toString();
             foodPair.stranger.foodURL = "Bla2URL" + i;
             foodPair.stranger.mapURL = "LocalFileStranger" + i;
             foodPair.stranger.bonAppetit = 0;
@@ -50,6 +53,7 @@ public class FoodPairTestHelper {
         userDate.setTime(new Date().getTime() + random.nextInt(1000000));
 
         foodPair = new FoodPair();
+        foodPair.user.foodId = UUID.randomUUID().toString();
         foodPair.user.foodURL = "blaURL";
         foodPair.user.mapURL = "blaFile";
         foodPair.user.bonAppetit = 0;
@@ -57,10 +61,27 @@ public class FoodPairTestHelper {
 
         Date strangerDate = new Date();
         strangerDate.setTime(new Date().getTime() + random.nextInt(1000000));
+        foodPair.stranger.foodId = UUID.randomUUID().toString();
         foodPair.stranger.foodURL = "Bla2URL";
         foodPair.stranger.mapURL = "LocalFileStranger";
         foodPair.stranger.bonAppetit = 0;
         foodPair.stranger.foodDate = strangerDate;
+        return foodPair;
+    }
+
+    public static FoodPair getRandomFoodPairNotPaired() {
+
+        FoodPair foodPair;
+        Date userDate = new Date();
+        userDate.setTime(new Date().getTime() + random.nextInt(1000000));
+
+        foodPair = new FoodPair();
+        foodPair.user.foodId = UUID.randomUUID().toString();
+        foodPair.user.foodURL = "blaURL";
+        foodPair.user.mapURL = "blaFile";
+        foodPair.user.bonAppetit = 0;
+        foodPair.user.foodDate = userDate;
+
         return foodPair;
     }
 

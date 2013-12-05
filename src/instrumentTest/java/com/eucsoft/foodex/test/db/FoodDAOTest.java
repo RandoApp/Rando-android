@@ -39,12 +39,7 @@ public class FoodDAOTest extends AndroidTestCase {
 
     @MediumTest
     public void testCreateNotPairedFood() throws SQLException {
-        FoodPair foodPair = new FoodPair();
-
-        foodPair.user.foodURL = "blaURL";
-        foodPair.user.mapURL = "blaFile";
-        foodPair.user.bonAppetit = 0;
-        foodPair.user.foodDate = new Date();
+        FoodPair foodPair = FoodPairTestHelper.getRandomFoodPairNotPaired();
 
         int count = foodDAO.getFoodPairsNumber();
         FoodPair newFoodPair = foodDAO.createFoodPair(foodPair);
@@ -54,17 +49,7 @@ public class FoodDAOTest extends AndroidTestCase {
 
     @MediumTest
     public void testCreatePairedFood() throws SQLException {
-        FoodPair foodPair = new FoodPair();
-
-        foodPair.user.foodURL = "blaURL";
-        foodPair.user.mapURL = "blaFile";
-        foodPair.user.bonAppetit = 0;
-        foodPair.user.foodDate = new Date();
-
-        foodPair.stranger.foodURL = "Bla2URL";
-        foodPair.stranger.mapURL = "LocalFileStranger";
-        foodPair.stranger.bonAppetit = 0;
-        foodPair.stranger.foodDate = new Date();
+        FoodPair foodPair = FoodPairTestHelper.getRandomFoodPair();
 
         int count = foodDAO.getFoodPairsNumber();
         FoodPair newFoodPair = foodDAO.createFoodPair(foodPair);
@@ -90,12 +75,7 @@ public class FoodDAOTest extends AndroidTestCase {
 
     @MediumTest
     public void testDeleteFood() throws SQLException {
-        FoodPair foodPair = new FoodPair();
-
-        foodPair.user.foodURL = null;
-        foodPair.user.mapURL = "blaFile";
-        foodPair.user.bonAppetit = 0;
-        foodPair.user.foodDate = new Date();
+        FoodPair foodPair = FoodPairTestHelper.getRandomFoodPairNotPaired();
 
         int count = foodDAO.getFoodPairsNumber();
         FoodPair newFoodPair = foodDAO.createFoodPair(foodPair);
@@ -118,14 +98,8 @@ public class FoodDAOTest extends AndroidTestCase {
 
         int count = foodDAO.getFoodPairsNumber();
         FoodPair newFoodPair = foodDAO.createFoodPair(foodPair);
-
         assertThat(foodDAO.getFoodPairsNumber(), is(count + 1));
-
-        //assertEquals(count + 1, foodDAO.getFoodPairsNumber());
-
         assertThat(newFoodPair, is(foodPair));
-
-        //assertTrue(foodPair.equals(newFoodPair));
         long id = newFoodPair.id;
 
         String newMapValue = "MAP1";
@@ -246,6 +220,17 @@ public class FoodDAOTest extends AndroidTestCase {
         foodDAO.clearFoodPairs();
         assertThat(foodDAO.getFoodPairsNumber(), is(0));
         assertThat(foodDAO.getAllFoodPairs().size(), is(0));
+    }
+
+    public void testGetNotPairedFoodsNumber() {
+        foodDAO.clearFoodPairs();
+        for (int i = 0; i < 10; i++) {
+            foodDAO.createFoodPair(FoodPairTestHelper.getRandomFoodPair());
+        }
+        for (int i = 0; i < 5; i++) {
+            foodDAO.createFoodPair(FoodPairTestHelper.getRandomFoodPairNotPaired());
+        }
+        assertThat("count NOT paired foods failed", foodDAO.getNotPairedFoodsNumber(), is(5));
     }
 
 

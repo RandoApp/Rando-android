@@ -87,6 +87,7 @@ public class FoodPair implements Serializable, Comparable<FoodPair> {
             if (bonAppetit != user.bonAppetit) return false;
             if (foodDate != null ? !foodDate.equals(user.foodDate) : user.foodDate != null)
                 return false;
+            if (foodId != null ? !foodId.equals(user.foodId) : user.foodId != null) return false;
             if (foodURL != null ? !foodURL.equals(user.foodURL) : user.foodURL != null)
                 return false;
             if (mapURL != null ? !mapURL.equals(user.mapURL) : user.mapURL != null) return false;
@@ -96,7 +97,8 @@ public class FoodPair implements Serializable, Comparable<FoodPair> {
 
         @Override
         public int hashCode() {
-            int result = foodURL != null ? foodURL.hashCode() : 0;
+            int result = foodId != null ? foodId.hashCode() : 0;
+            result = 31 * result + (foodURL != null ? foodURL.hashCode() : 0);
             result = 31 * result + (foodDate != null ? foodDate.hashCode() : 0);
             result = 31 * result + bonAppetit;
             result = 31 * result + (mapURL != null ? mapURL.hashCode() : 0);
