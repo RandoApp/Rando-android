@@ -144,7 +144,7 @@ public class FoodDAO {
     public int getNotPairedFoodsNumber() {
         Cursor cursor = database.query(FoodDBHelper.TABLE_FOOD,
                 allColumns, FoodDBHelper.COLUMN_STRANGER_FOOD_ID
-                + " is null", null, null, null, null);
+                + " is null or " + FoodDBHelper.COLUMN_STRANGER_FOOD_ID + " = ''", null, null, null, null);
         int result = cursor.getCount();
         cursor.close();
         return result;

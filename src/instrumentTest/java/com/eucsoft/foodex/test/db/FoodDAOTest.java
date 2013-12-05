@@ -222,7 +222,7 @@ public class FoodDAOTest extends AndroidTestCase {
         assertThat(foodDAO.getAllFoodPairs().size(), is(0));
     }
 
-    public void testGetNotPairedFoodsNumber() {
+    public void testGetNotPairedFoodsNumberIdIsNull() {
         foodDAO.clearFoodPairs();
         for (int i = 0; i < 10; i++) {
             foodDAO.createFoodPair(FoodPairTestHelper.getRandomFoodPair());
@@ -231,6 +231,37 @@ public class FoodDAOTest extends AndroidTestCase {
             foodDAO.createFoodPair(FoodPairTestHelper.getRandomFoodPairNotPaired());
         }
         assertThat("count NOT paired foods failed", foodDAO.getNotPairedFoodsNumber(), is(5));
+    }
+
+    public void testGetNotPairedFoodsNumberIdIsEmptyString() {
+        foodDAO.clearFoodPairs();
+        for (int i = 0; i < 10; i++) {
+            foodDAO.createFoodPair(FoodPairTestHelper.getRandomFoodPair());
+        }
+        for (int i = 0; i < 5; i++) {
+            FoodPair foodPair = FoodPairTestHelper.getRandomFoodPairNotPaired();
+            foodPair.stranger.foodId = "";
+            foodDAO.createFoodPair(foodPair);
+        }
+        assertThat("count NOT paired foods failed", foodDAO.getNotPairedFoodsNumber(), is(5));
+    }
+
+    public void testGetNotPairedFoodsNumberIdIsMixed() {
+        foodDAO.clearFoodPairs();
+        for (int i = 0; i < 10; i++) {
+            foodDAO.createFoodPair(FoodPairTestHelper.getRandomFoodPair());
+        }
+        for (int i = 0; i < 3; i++) {
+            FoodPair foodPair = FoodPairTestHelper.getRandomFoodPairNotPaired();
+            foodPair.stranger.foodId = "";
+            foodDAO.createFoodPair(foodPair);
+        }
+        for (int i = 0; i < 3; i++) {
+            FoodPair foodPair = FoodPairTestHelper.getRandomFoodPairNotPaired();
+            foodPair.stranger.foodId = null;
+            foodDAO.createFoodPair(foodPair);
+        }
+        assertThat("count NOT paired foods failed", foodDAO.getNotPairedFoodsNumber(), is(6));
     }
 
 

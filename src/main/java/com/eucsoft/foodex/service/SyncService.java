@@ -18,13 +18,12 @@ public class SyncService extends Service {
 
     public static final String NOTIFICATION = "SyncService";
     private static final long SHORT_PAUSE = 2 * 60 * 1000;
-    private static final long LONG_PAUSE = 2 * 60 * 60 * 1000;
+    private static final long LONG_PAUSE = AlarmManager.INTERVAL_HALF_HOUR;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(SyncService.class, "onStartCommand");
         SyncAllTask syncAllTask = new SyncAllTask();
-        removeAlarm();
         syncAllTask.setTaskResultListener(new TaskResultListener() {
             @Override
             public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
@@ -42,11 +41,12 @@ public class SyncService extends Service {
                 }
                 FoodDAO foodDAO = new FoodDAO(getApplicationContext());
                 if (foodDAO.getNotPairedFoodsNumber() > 0) {
-                    setAlarm(SHORT_PAUSE);
+                    setAlarm(System.currentTimeMillis() + SHORT_PAUSE);
+                    Log.i(SyncService.class, "Server will start in " + SHORT_PAUSE / 1000 + " seconds");
                 } else {
-                    setAlarm(AlarmManager.INTERVAL_HALF_HOUR);
+                    setAlarm(System.currentTimeMillis() + LONG_PAUSE);
+                    Log.i(SyncService.class, "Server will start in " + LONG_PAUSE / 1000 + " seconds");
                 }
-                stopSelf();
             }
         });
         syncAllTask.execute();
@@ -63,14 +63,6 @@ public class SyncService extends Service {
         PendingIntent startPIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), startPIntent);
-    }
-
-    private void removeAlarm() {
-        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(getApplicationContext(), SyncService.class);
-        PendingIntent pintent = PendingIntent.getService(getApplicationContext(), 0, intent, 0);
-        am.cancel(pintent);
-        pintent.cancel();
     }
 
     private void setAlarm(long time) {
