@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.TakePictureActivity;
 import com.eucsoft.foodex.api.API;
-import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
@@ -63,9 +62,9 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
             return RESULT_ERROR;
         }
 
-        FoodDAO foodDAO = new FoodDAO(context);
+/*        FoodDAO foodDAO = new FoodDAO(context);
         foodDAO.createFoodPair(foodPair);
-        foodDAO.close();
+        foodDAO.close();*/
 
         App.getInstance(context).startSyncService();
 
