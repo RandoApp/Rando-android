@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.TakePictureActivity;
 import com.eucsoft.foodex.api.API;
-import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
@@ -62,10 +61,6 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
             Log.w(CreateFoodAndUploadTask.class, "File failed to upload. File=", file.getAbsolutePath());
             return RESULT_ERROR;
         }
-
-        FoodDAO foodDAO = new FoodDAO(context);
-        foodDAO.createFoodPair(foodPair);
-        foodDAO.close();
 
         App.getInstance(context).startSyncService();
 
