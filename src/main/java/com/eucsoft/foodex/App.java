@@ -41,7 +41,7 @@ public class App extends Application {
         mCache = builder.build();
     }
 
-    private void startSyncService() {
+    public void startSyncService() {
         Intent syncService = new Intent(getApplicationContext(), SyncService.class);
         getApplicationContext().startService(syncService);
     }

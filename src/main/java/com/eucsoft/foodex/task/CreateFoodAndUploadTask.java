@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 
+import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.TakePictureActivity;
 import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.db.FoodDAO;
@@ -65,6 +66,8 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
         FoodDAO foodDAO = new FoodDAO(context);
         foodDAO.createFoodPair(foodPair);
         foodDAO.close();
+
+        App.getInstance(context).startSyncService();
 
         file.renameTo(new File(FileUtil.getOutputMediaDir().getAbsolutePath() + foodPair.user.getFoodFileName()));
 
