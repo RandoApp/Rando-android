@@ -3,13 +3,18 @@ package com.eucsoft.foodex.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import static com.eucsoft.foodex.Constants.*;
+import com.eucsoft.foodex.App;
 
-import com.eucsoft.foodex.MainActivity;
+import static com.eucsoft.foodex.Constants.PREFERENCES_FILE_NAME;
+import static com.eucsoft.foodex.Constants.SEESSION_COOKIE_DOMAIN;
+import static com.eucsoft.foodex.Constants.SEESSION_COOKIE_PATH;
+import static com.eucsoft.foodex.Constants.SEESSION_COOKIE_VALUE;
+import static com.eucsoft.foodex.Constants.SERVER_HOST;
+import static com.eucsoft.foodex.Constants.TRAINING_FRAGMENT_SHOWN;
 
 public class Preferences {
 
-    private static final SharedPreferences sharedPref = MainActivity.context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+    private static final SharedPreferences sharedPref = App.context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
 
     public static final String SESSION_COOKIE_DEFAULT_VALUE = "";
     public static final String SESSION_COOKIE_PATH_DEFAULT_VALUE = "/";
@@ -32,18 +37,18 @@ public class Preferences {
         if (path == null) path = SESSION_COOKIE_PATH_DEFAULT_VALUE;
 
         sharedPref.edit()
-            .putString(SEESSION_COOKIE_VALUE, value)
-            .putString(SEESSION_COOKIE_DOMAIN, domain)
-            .putString(SEESSION_COOKIE_PATH, path)
-            .commit();
+                .putString(SEESSION_COOKIE_VALUE, value)
+                .putString(SEESSION_COOKIE_DOMAIN, domain)
+                .putString(SEESSION_COOKIE_PATH, path)
+                .commit();
     }
 
     public static void removeSessionCookie() {
         sharedPref.edit()
-            .remove(SEESSION_COOKIE_VALUE)
-            .remove(SEESSION_COOKIE_DOMAIN)
-            .remove(SEESSION_COOKIE_PATH)
-            .commit();
+                .remove(SEESSION_COOKIE_VALUE)
+                .remove(SEESSION_COOKIE_DOMAIN)
+                .remove(SEESSION_COOKIE_PATH)
+                .commit();
     }
 
     public static boolean isTrainingFragmentShown() {

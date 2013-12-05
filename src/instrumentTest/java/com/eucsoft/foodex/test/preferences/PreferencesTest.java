@@ -1,16 +1,17 @@
-package com.eucsoft.foodex.test;
+package com.eucsoft.foodex.test.preferences;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.test.AndroidTestCase;
 
-import static com.eucsoft.foodex.Constants.*;
-import com.eucsoft.foodex.MainActivity;
+import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.preferences.Preferences;
-import static com.eucsoft.foodex.preferences.Preferences.*;
 
 import java.util.UUID;
 
+import static com.eucsoft.foodex.Constants.PREFERENCES_FILE_NAME;
+import static com.eucsoft.foodex.Constants.SERVER_HOST;
+import static com.eucsoft.foodex.preferences.Preferences.SESSION_COOKIE_DEFAULT_VALUE;
+import static com.eucsoft.foodex.preferences.Preferences.SESSION_COOKIE_PATH_DEFAULT_VALUE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -18,8 +19,8 @@ public class PreferencesTest extends AndroidTestCase {
 
     @Override
     protected void setUp() throws Exception {
-        MainActivity.context = this.getContext();
-        MainActivity.context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE).edit().clear().commit();
+        App.context = this.getContext();
+        App.context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE).edit().clear().commit();
     }
 
     public void testGetSessionCookie() {

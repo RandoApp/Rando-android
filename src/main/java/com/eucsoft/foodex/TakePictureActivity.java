@@ -70,7 +70,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
 
         getWindow().setFormat(PixelFormat.UNKNOWN);
 
-        WindowManager windowManager = (WindowManager) MainActivity.context.getSystemService(Context.WINDOW_SERVICE);
+        WindowManager windowManager = (WindowManager) App.context.getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
 
         foodexSurfaceView = (FoodexSurfaceView) findViewById(R.id.cameraPreview);

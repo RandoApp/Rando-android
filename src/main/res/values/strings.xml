@@ -34,4 +34,6 @@
     <string name="logout_progress">Logout...</string>
     <string name="error_400">You are not authorized. Please, signup.</string>
 
+    <string name="sync_service_name">Foodex Sync Service</string>
+
 </resources>

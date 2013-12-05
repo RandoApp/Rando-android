@@ -1,15 +1,15 @@
-package com.eucsoft.foodex.test;
+package com.eucsoft.foodex.test.task;
 
 import android.test.AndroidTestCase;
 import android.test.UiThreadTest;
 import android.test.suitebuilder.annotation.MediumTest;
 
+import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
-import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.task.BonAppetitTask;
-import com.eucsoft.foodex.test.util.APITestHelper;
+import com.eucsoft.foodex.test.api.APITestHelper;
 
 import org.apache.http.HttpStatus;
 
@@ -61,7 +61,7 @@ public class BonAppetitTaskTest extends AndroidTestCase {
         } catch (IOException e) {
             fail("Error while mocking API.client.");
         }
-        MainActivity.context = getContext();
+        App.context = getContext();
         TaskResultListener listener = new TaskResultListener() {
             @Override
             public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
@@ -100,7 +100,7 @@ public class BonAppetitTaskTest extends AndroidTestCase {
         } catch (IOException e) {
             fail("Error while mocking API.client.");
         }
-        MainActivity.context = getContext();
+        App.context = getContext();
         TaskResultListener listener = new TaskResultListener() {
             @Override
             public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
@@ -127,7 +127,7 @@ public class BonAppetitTaskTest extends AndroidTestCase {
         } catch (IOException e) {
             fail("Error while mocking API.client.");
         }
-        MainActivity.context = getContext();
+        App.context = getContext();
         TaskResultListener listener = new TaskResultListener() {
             @Override
             public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {

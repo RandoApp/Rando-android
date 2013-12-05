@@ -1,4 +1,4 @@
-package com.eucsoft.foodex.test;
+package com.eucsoft.foodex.test.activity;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;

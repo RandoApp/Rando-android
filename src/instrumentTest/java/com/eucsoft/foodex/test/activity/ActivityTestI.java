@@ -1,4 +1,4 @@
-package com.eucsoft.foodex.test;
+package com.eucsoft.foodex.test.activity;
 
 public interface ActivityTestI {
 

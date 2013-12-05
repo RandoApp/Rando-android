@@ -19,8 +19,8 @@ public class FoodDAO {
     private SQLiteDatabase database;
     private FoodDBHelper foodDBHelper;
     private String[] allColumns = {FoodDBHelper.COLUMN_ID,
-            FoodDBHelper.COLUMN_USER_FOOD_URL, FoodDBHelper.COLUMN_USER_FOOD_DATE, FoodDBHelper.COLUMN_USER_BON_APPETIT, FoodDBHelper.COLUMN_USER_MAP_URL,
-            FoodDBHelper.COLUMN_STRANGER_FOOD_URL, FoodDBHelper.COLUMN_STRANGER_FOOD_DATE, FoodDBHelper.COLUMN_STRANGER_BON_APPETIT, FoodDBHelper.COLUMN_STRANGER_MAP_URL};
+            FoodDBHelper.COLUMN_USER_FOOD_ID, FoodDBHelper.COLUMN_USER_FOOD_URL, FoodDBHelper.COLUMN_USER_FOOD_DATE, FoodDBHelper.COLUMN_USER_BON_APPETIT, FoodDBHelper.COLUMN_USER_MAP_URL,
+            FoodDBHelper.COLUMN_STRANGER_FOOD_ID, FoodDBHelper.COLUMN_STRANGER_FOOD_URL, FoodDBHelper.COLUMN_STRANGER_FOOD_DATE, FoodDBHelper.COLUMN_STRANGER_BON_APPETIT, FoodDBHelper.COLUMN_STRANGER_MAP_URL};
 
     public FoodDAO(Context context) {
         foodDBHelper = new FoodDBHelper(context);
@@ -78,6 +78,14 @@ public class FoodDAO {
         Log.w(FoodDBHelper.TAG, "FoodPair deleted with id: " + id);
     }
 
+    /**
+     * clear foor pairs Table in DB.
+     */
+    public void clearFoodPairs() {
+        database.delete(FoodDBHelper.TABLE_FOOD, "", null);
+        Log.w(FoodDBHelper.TAG, "FoodPairs cleared");
+    }
+
 
     /**
      * Updates foodPair instance from DB.
@@ -122,6 +130,21 @@ public class FoodDAO {
     public int getFoodPairsNumber() {
         Cursor cursor = database.query(FoodDBHelper.TABLE_FOOD,
                 allColumns, null, null, null, null, null);
+        int result = cursor.getCount();
+        cursor.close();
+        return result;
+    }
+
+
+    /**
+     * Counts not paired foods amount in DB
+     *
+     * @return not paired foods amount in DB
+     */
+    public int getNotPairedFoodsNumber() {
+        Cursor cursor = database.query(FoodDBHelper.TABLE_FOOD,
+                allColumns, FoodDBHelper.COLUMN_STRANGER_FOOD_ID
+                + " is null", null, null, null, null);
         int result = cursor.getCount();
         cursor.close();
         return result;
@@ -206,12 +229,14 @@ public class FoodDAO {
             FoodPair foodPair = new FoodPair();
             foodPair.id = cursor.getInt(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_ID));
 
+            foodPair.user.foodId = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_ID));
             foodPair.user.foodURL = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_URL));
             long userDate = cursor.getLong(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_DATE));
             foodPair.user.foodDate = userDate != 0 ? new Date(userDate) : null;
             foodPair.user.bonAppetit = cursor.getInt(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_BON_APPETIT));
             foodPair.user.mapURL = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_MAP_URL));
 
+            foodPair.stranger.foodId = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_FOOD_ID));
             foodPair.stranger.foodURL = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_FOOD_URL));
             long strangerDate = cursor.getLong(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_FOOD_DATE));
             foodPair.stranger.foodDate = strangerDate != 0 ? new Date(strangerDate) : null;
@@ -231,11 +256,13 @@ public class FoodDAO {
     private ContentValues foodPairToContentValues(FoodPair foodPair) {
         ContentValues values = new ContentValues();
 
+        values.put(FoodDBHelper.COLUMN_USER_FOOD_ID, foodPair.user.foodId);
         values.put(FoodDBHelper.COLUMN_USER_FOOD_URL, foodPair.user.foodURL);
         values.put(FoodDBHelper.COLUMN_USER_FOOD_DATE, foodPair.user.foodDate.getTime());
         values.put(FoodDBHelper.COLUMN_USER_BON_APPETIT, foodPair.user.bonAppetit);
         values.put(FoodDBHelper.COLUMN_USER_MAP_URL, foodPair.user.mapURL);
 
+        values.put(FoodDBHelper.COLUMN_STRANGER_FOOD_ID, foodPair.stranger.foodId);
         values.put(FoodDBHelper.COLUMN_STRANGER_FOOD_URL, foodPair.stranger.foodURL);
         values.put(FoodDBHelper.COLUMN_STRANGER_FOOD_DATE, foodPair.stranger.foodDate != null ? foodPair.stranger.foodDate.getTime() : null);
         values.put(FoodDBHelper.COLUMN_STRANGER_BON_APPETIT, foodPair.stranger.bonAppetit);

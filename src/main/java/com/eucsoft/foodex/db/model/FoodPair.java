@@ -3,7 +3,7 @@ package com.eucsoft.foodex.db.model;
 import java.io.Serializable;
 import java.util.Date;
 
-public class FoodPair implements Serializable {
+public class FoodPair implements Serializable, Comparable<FoodPair> {
 
     public static final int STRANGER_FOOD = 0;
     public static final int STRANGER_MAP = 1;
@@ -37,6 +37,27 @@ public class FoodPair implements Serializable {
         return result;
     }
 
+
+    /**
+     * Compares user.foodDate, to provide ability to sort lists in natural ordes, based on creation date.
+     *
+     * @param another
+     * @return
+     */
+    @Override
+    public int compareTo(FoodPair another) {
+        return (int) (this.user.foodDate.getTime() - another.user.foodDate.getTime());
+    }
+
+    @Override
+    public String toString() {
+        return "FoodPair{" +
+                "id=" + id +
+                ", user=" + user +
+                ", stranger=" + stranger +
+                '}';
+    }
+
     public class User implements Serializable {
         public String foodId;
         public String foodURL;
@@ -66,6 +87,7 @@ public class FoodPair implements Serializable {
             if (bonAppetit != user.bonAppetit) return false;
             if (foodDate != null ? !foodDate.equals(user.foodDate) : user.foodDate != null)
                 return false;
+            if (foodId != null ? !foodId.equals(user.foodId) : user.foodId != null) return false;
             if (foodURL != null ? !foodURL.equals(user.foodURL) : user.foodURL != null)
                 return false;
             if (mapURL != null ? !mapURL.equals(user.mapURL) : user.mapURL != null) return false;
@@ -75,12 +97,23 @@ public class FoodPair implements Serializable {
 
         @Override
         public int hashCode() {
-            int result = foodURL != null ? foodURL.hashCode() : 0;
+            int result = foodId != null ? foodId.hashCode() : 0;
+            result = 31 * result + (foodURL != null ? foodURL.hashCode() : 0);
             result = 31 * result + (foodDate != null ? foodDate.hashCode() : 0);
             result = 31 * result + bonAppetit;
             result = 31 * result + (mapURL != null ? mapURL.hashCode() : 0);
             return result;
         }
-    }
 
+        @Override
+        public String toString() {
+            return "User{" +
+                    "foodId='" + foodId + '\'' +
+                    ", foodURL='" + foodURL + '\'' +
+                    ", foodDate=" + foodDate +
+                    ", bonAppetit=" + bonAppetit +
+                    ", mapURL='" + mapURL + '\'' +
+                    '}';
+        }
+    }
 }

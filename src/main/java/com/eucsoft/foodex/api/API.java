@@ -4,7 +4,7 @@ import android.location.Location;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 
-import static com.eucsoft.foodex.Constants.*;
+import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.db.model.FoodPair;
@@ -16,7 +16,6 @@ import com.eucsoft.foodex.task.LogoutTask;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import static org.apache.http.HttpStatus.*;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
@@ -45,6 +44,36 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
+import static com.eucsoft.foodex.Constants.ANONYMOUS_ID_PARAM;
+import static com.eucsoft.foodex.Constants.ANONYMOUS_URL;
+import static com.eucsoft.foodex.Constants.BON_APPETIT_PARAM;
+import static com.eucsoft.foodex.Constants.BON_APPETIT_URL;
+import static com.eucsoft.foodex.Constants.CREATION_PARAM;
+import static com.eucsoft.foodex.Constants.ERROR_CODE_PARAM;
+import static com.eucsoft.foodex.Constants.FACEBOOK_EMAIL_PARAM;
+import static com.eucsoft.foodex.Constants.FACEBOOK_ID_PARAM;
+import static com.eucsoft.foodex.Constants.FACEBOOK_TOKEN_PARAM;
+import static com.eucsoft.foodex.Constants.FACEBOOK_URL;
+import static com.eucsoft.foodex.Constants.FETCH_USER_URL;
+import static com.eucsoft.foodex.Constants.FOODS_PARAM;
+import static com.eucsoft.foodex.Constants.FOOD_ID_PARAM;
+import static com.eucsoft.foodex.Constants.FOOD_URL_PARAM;
+import static com.eucsoft.foodex.Constants.IMAGE_PARAM;
+import static com.eucsoft.foodex.Constants.LATITUDE_PARAM;
+import static com.eucsoft.foodex.Constants.LOGOUT_URL;
+import static com.eucsoft.foodex.Constants.LONGITUDE_PARAM;
+import static com.eucsoft.foodex.Constants.MAP_URL_PARAM;
+import static com.eucsoft.foodex.Constants.REPORT_URL;
+import static com.eucsoft.foodex.Constants.SEESSION_COOKIE_NAME;
+import static com.eucsoft.foodex.Constants.SIGNUP_EMAIL_PARAM;
+import static com.eucsoft.foodex.Constants.SIGNUP_PASSWORD_PARAM;
+import static com.eucsoft.foodex.Constants.SIGNUP_URL;
+import static com.eucsoft.foodex.Constants.STRANGER_PARAM;
+import static com.eucsoft.foodex.Constants.ULOAD_FOOD_URL;
+import static com.eucsoft.foodex.Constants.UNAUTHORIZED_CODE;
+import static com.eucsoft.foodex.Constants.USER_PARAM;
+import static org.apache.http.HttpStatus.SC_OK;
 
 public class API {
 
@@ -293,8 +322,9 @@ public class API {
                         public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
                             FragmentManager fragmentManager = ((ActionBarActivity) MainActivity.activity).getSupportFragmentManager();
                             fragmentManager.beginTransaction().replace(R.id.main_screen, new AuthFragment()).commit();
-                        }}).execute();
-                    return new Exception(MainActivity.context.getResources().getString(R.string.error_400));
+                        }
+                    }).execute();
+                    return new Exception(App.context.getResources().getString(R.string.error_400));
             }
             //TODO: implement all code handling in switch and replace server "message" with default value.
             return new Exception(json.getString("message"));
@@ -305,7 +335,7 @@ public class API {
 
     private static Exception processError(Exception exc) {
         Log.e(API.class, "error", exc.getStackTrace().toString());
-        return new Exception(MainActivity.context.getResources().getString(R.string.error_unknown_err));
+        return new Exception(App.context.getResources().getString(R.string.error_unknown_err));
     }
 
 }

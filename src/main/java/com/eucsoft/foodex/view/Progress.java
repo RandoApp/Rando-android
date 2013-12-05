@@ -3,6 +3,7 @@ package com.eucsoft.foodex.view;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 
+import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.R;
 
@@ -26,6 +27,6 @@ public class Progress {
     }
 
     public static void showLoading() {
-        show(MainActivity.context.getResources().getString(R.string.loadig_progress));
+        show(App.context.getResources().getString(R.string.loadig_progress));
     }
 }

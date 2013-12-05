@@ -1,6 +1,9 @@
 package com.eucsoft.foodex.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,12 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.TakePictureActivity;
 import com.eucsoft.foodex.adapter.FoodPairsAdapter;
+import com.eucsoft.foodex.log.Log;
+import com.eucsoft.foodex.service.SyncService;
 import com.eucsoft.foodex.twowaygrid.async.AsyncTwoWayGridView;
 import com.eucsoft.foodex.twowaygrid.async.FoodItemLoader;
 import com.eucsoft.foodex.twowaygrid.async.ItemManager;
@@ -22,6 +28,25 @@ import uk.co.senab.bitmapcache.BitmapLruCache;
 
 
 public class HomeWallFragment extends Fragment {
+
+
+    private FoodPairsAdapter foodPairsAdapter;
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        int calls = 0;
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context, "Service Call!! " + calls,
+                    Toast.LENGTH_LONG).show();
+            Log.i(BroadcastReceiver.class, "Recieved Update request.");
+            foodPairsAdapter.notifyDataSetChanged();
+            Bundle bundle = intent.getExtras();
+            if (bundle != null) {
+            }
+            calls++;
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,7 +62,8 @@ public class HomeWallFragment extends Fragment {
         builder.setPreloadItemsEnabled(true).setPreloadItemsCount(5);
         builder.setThreadPoolSize(4);
         gridView.setItemManager(builder.build());
-        gridView.setAdapter(new FoodPairsAdapter(container.getContext()));
+        foodPairsAdapter = new FoodPairsAdapter(container.getContext());
+        gridView.setAdapter(foodPairsAdapter);
 
         int delta;
         ImageButton takePictureButton = (ImageButton) rootView.findViewById(R.id.cameraButton);
@@ -61,5 +87,17 @@ public class HomeWallFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(receiver, new IntentFilter(SyncService.NOTIFICATION));
     }
 }

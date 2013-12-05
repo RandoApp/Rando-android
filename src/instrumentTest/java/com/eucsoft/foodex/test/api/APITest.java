@@ -1,15 +1,14 @@
-package com.eucsoft.foodex.test;
+package com.eucsoft.foodex.test.api;
 
 import android.location.Location;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
-import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.db.model.FoodPair;
-import com.eucsoft.foodex.test.util.APITestHelper;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -37,7 +36,7 @@ public class APITest extends AndroidTestCase {
 
     @Override
     protected void setUp() throws Exception {
-        MainActivity.context = this.getContext();
+        App.context = this.getContext();
     }
 
     private File file = new File(".");
@@ -86,7 +85,7 @@ public class APITest extends AndroidTestCase {
     @SmallTest
     public void testUploadFoodWithUnknownError() throws Exception {
         APITestHelper.mockAPI(HttpStatus.SC_INTERNAL_SERVER_ERROR, "not a json, that throw JSONException");
-        MainActivity.context = this.getContext();
+        App.context = this.getContext();
 
         Location locationMock = mock(Location.class);
         when(locationMock.getLatitude()).thenReturn(123.45);
@@ -95,7 +94,7 @@ public class APITest extends AndroidTestCase {
             API.uploadFood(file, locationMock);
             fail();
         } catch (Exception e) {
-            assertThat(e.getMessage(), is(MainActivity.context.getResources().getString(R.string.error_unknown_err)));
+            assertThat(e.getMessage(), is(App.context.getResources().getString(R.string.error_unknown_err)));
         }
     }
 
@@ -152,13 +151,13 @@ public class APITest extends AndroidTestCase {
     @SmallTest
     public void testFetchUserWithUnknownError() throws Exception {
         APITestHelper.mockAPI(HttpStatus.SC_INTERNAL_SERVER_ERROR, "not a json, that throw JSONException");
-        MainActivity.context = this.getContext();
+        App.context = this.getContext();
 
         try {
             API.fetchUser();
             fail();
         } catch (Exception e) {
-            assertThat(e.getMessage(), is(MainActivity.context.getResources().getString(R.string.error_unknown_err)));
+            assertThat(e.getMessage(), is(App.context.getResources().getString(R.string.error_unknown_err)));
         }
     }
 
