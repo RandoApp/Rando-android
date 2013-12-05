@@ -22,6 +22,7 @@ public class SyncService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i(SyncService.class, "onStartCommand");
         SyncAllTask syncAllTask = new SyncAllTask();
         removeAlarm();
         syncAllTask.setTaskResultListener(new TaskResultListener() {
@@ -43,7 +44,7 @@ public class SyncService extends Service {
                 if (foodDAO.getNotPairedFoodsNumber() > 0) {
                     setAlarm(SHORT_PAUSE);
                 } else {
-                    setAlarm(LONG_PAUSE);
+                    setAlarm(AlarmManager.INTERVAL_HALF_HOUR);
                 }
             }
         });
@@ -75,7 +76,7 @@ public class SyncService extends Service {
         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getApplicationContext(), SyncService.class);
         PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), time, pintent);
+        am.set(AlarmManager.RTC_WAKEUP, time, pintent);
     }
 
 
