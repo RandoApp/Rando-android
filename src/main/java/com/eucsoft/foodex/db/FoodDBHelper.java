@@ -10,26 +10,30 @@ public class FoodDBHelper extends SQLiteOpenHelper {
     public static final String TAG = "database";
 
     public static String COLUMN_ID = "_id";
+    public static String COLUMN_USER_FOOD_ID = "USER_FOOD_ID";
     public static String COLUMN_USER_FOOD_URL = "USER_FOOD_URL";
     public static String COLUMN_USER_FOOD_DATE = "USER_FOOD_DATE";
     public static String COLUMN_USER_BON_APPETIT = "USER_BON_APPETIT";
     public static String COLUMN_USER_MAP_URL = "USER_MAP_URL";
 
-    public static String COLUMN_STRANGER_FOOD_URL = "STRANGER_PHOTO_URL";
+    public static String COLUMN_STRANGER_FOOD_ID = "STRANGER_FOOD_ID";
+    public static String COLUMN_STRANGER_FOOD_URL = "STRANGER_FOOD_URL";
     public static String COLUMN_STRANGER_FOOD_DATE = "STRANGER_FOOD_DATE";
     public static String COLUMN_STRANGER_BON_APPETIT = "STRANGER_BON_APPETIT";
     public static String COLUMN_STRANGER_MAP_URL = "STRANGER_MAP_URL";
 
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 2;
 
     public static final String TABLE_FOOD = "food";
     private static final String DATABASE_NAME = "foodex.db";
     private static final String FOOD_TABLE_CREATE = "CREATE TABLE " + TABLE_FOOD +
             " (" + COLUMN_ID + " integer primary key autoincrement, " +
+            COLUMN_USER_FOOD_ID + " text," +
             COLUMN_USER_FOOD_URL + " text," +
             COLUMN_USER_FOOD_DATE + " integer," +
             COLUMN_USER_BON_APPETIT + " integer not null," +
             COLUMN_USER_MAP_URL + " text," +
+            COLUMN_STRANGER_FOOD_ID + " text," +
             COLUMN_STRANGER_FOOD_URL + " text," +
             COLUMN_STRANGER_FOOD_DATE + " integer," +
             COLUMN_STRANGER_BON_APPETIT + " integer not null," +
