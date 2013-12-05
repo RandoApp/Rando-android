@@ -24,7 +24,7 @@ public class SyncService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(SyncService.class, "onStartCommand");
         SyncAllTask syncAllTask = new SyncAllTask();
-        removeAlarm();
+        //removeAlarm();
         syncAllTask.setTaskResultListener(new TaskResultListener() {
             @Override
             public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
@@ -42,11 +42,12 @@ public class SyncService extends Service {
                 }
                 FoodDAO foodDAO = new FoodDAO(getApplicationContext());
                 if (foodDAO.getNotPairedFoodsNumber() > 0) {
-                    setAlarm(SHORT_PAUSE);
+                    setAlarm(System.currentTimeMillis() + SHORT_PAUSE);
+                    Log.i(SyncService.class, "Server will start in " + SHORT_PAUSE / 1000 + " seconds");
                 } else {
-                    setAlarm(AlarmManager.INTERVAL_HALF_HOUR);
+                    setAlarm(System.currentTimeMillis() + AlarmManager.INTERVAL_HALF_HOUR);
+                    Log.i(SyncService.class, "Server will start in " + AlarmManager.INTERVAL_HALF_HOUR / 1000 + " seconds");
                 }
-                stopSelf();
             }
         });
         syncAllTask.execute();
