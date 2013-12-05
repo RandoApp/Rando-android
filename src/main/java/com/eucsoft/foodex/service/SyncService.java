@@ -46,6 +46,7 @@ public class SyncService extends Service {
                 } else {
                     setAlarm(AlarmManager.INTERVAL_HALF_HOUR);
                 }
+                stopSelf();
             }
         });
         syncAllTask.execute();

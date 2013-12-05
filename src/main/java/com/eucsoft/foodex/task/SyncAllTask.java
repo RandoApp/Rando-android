@@ -53,6 +53,7 @@ public class SyncAllTask extends AsyncTask<Void, Integer, Long> implements BaseT
                 return FOOD_PAIRS_UPDATED;
             }
         }
+        foodDAO.close();
         return NOT_UPDATED;
     }
 
