@@ -1,7 +1,5 @@
 package com.eucsoft.foodex.twowaygrid.async;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Shader.TileMode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -26,16 +24,6 @@ public class FoodItemLoader extends SimpleItemLoader<FoodPair, CacheableBitmapDr
 
     final BitmapLruCache mCache;
 
-    private static BitmapFactory.Options decodeOptions = new BitmapFactory.Options();
-
-    static {
-        decodeOptions.inDither = false;
-        decodeOptions.inJustDecodeBounds = false;
-        decodeOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        decodeOptions.inSampleSize = 3;
-        decodeOptions.inPurgeable = true;
-    }
-
     public FoodItemLoader(BitmapLruCache mCache) {
         this.mCache = mCache;
     }
@@ -45,27 +33,27 @@ public class FoodItemLoader extends SimpleItemLoader<FoodPair, CacheableBitmapDr
 
         CacheableBitmapDrawable[] wrapper = new CacheableBitmapDrawable[4];
 
-        CacheableBitmapDrawable strangerFoodImage = mCache.get(foodPair.stranger.foodURL, decodeOptions);
+        CacheableBitmapDrawable strangerFoodImage = mCache.get(foodPair.stranger.foodURL);
         if (strangerFoodImage == null) {
-            strangerFoodImage = mCache.put(foodPair.stranger.foodURL, loadImage(foodPair.stranger.foodURL), decodeOptions);
+            strangerFoodImage = mCache.put(foodPair.stranger.foodURL, loadImage(foodPair.stranger.foodURL));
         }
         wrapper[FoodPair.STRANGER_FOOD] = strangerFoodImage;
 
-        CacheableBitmapDrawable strangerMapImage = mCache.get(foodPair.stranger.mapURL, decodeOptions);
+        CacheableBitmapDrawable strangerMapImage = mCache.get(foodPair.stranger.mapURL);
         if (strangerMapImage == null) {
-            strangerMapImage = mCache.put(foodPair.stranger.mapURL, loadImage(foodPair.stranger.mapURL), decodeOptions);
+            strangerMapImage = mCache.put(foodPair.stranger.mapURL, loadImage(foodPair.stranger.mapURL));
         }
         wrapper[FoodPair.STRANGER_MAP] = strangerMapImage;
 
-        CacheableBitmapDrawable userFoodImage = mCache.get(foodPair.user.foodURL, decodeOptions);
+        CacheableBitmapDrawable userFoodImage = mCache.get(foodPair.user.foodURL);
         if (userFoodImage == null) {
-            userFoodImage = mCache.put(foodPair.user.foodURL, loadImage(foodPair.user.foodURL), decodeOptions);
+            userFoodImage = mCache.put(foodPair.user.foodURL, loadImage(foodPair.user.foodURL));
         }
         wrapper[FoodPair.USER_FOOD] = userFoodImage;
 
-        CacheableBitmapDrawable userMapImage = mCache.get(foodPair.stranger.foodURL, decodeOptions);
+        CacheableBitmapDrawable userMapImage = mCache.get(foodPair.stranger.foodURL);
         if (userMapImage == null) {
-            userMapImage = mCache.put(foodPair.user.mapURL, loadImage(foodPair.user.mapURL), decodeOptions);
+            userMapImage = mCache.put(foodPair.user.mapURL, loadImage(foodPair.user.mapURL));
         }
         wrapper[FoodPair.USER_MAP] = userMapImage;
 
@@ -139,7 +127,6 @@ public class FoodItemLoader extends SimpleItemLoader<FoodPair, CacheableBitmapDr
     public FoodPair getItemParams(Adapter adapter, int position) {
         return (FoodPair) adapter.getItem(position);
     }
-
 
     static private InputStream loadImage(String url) {
         HttpURLConnection connection;
