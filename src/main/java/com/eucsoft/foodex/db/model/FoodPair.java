@@ -39,14 +39,14 @@ public class FoodPair implements Serializable, Comparable<FoodPair> {
 
 
     /**
-     * Compares user.foodDate, to provide ability to sort lists in natural ordes, based on creation date.
+     * Compares user.foodDate, to provide ability to sort lists in backward natural orders, based on creation date.
      *
      * @param another
      * @return
      */
     @Override
     public int compareTo(FoodPair another) {
-        return (int) (this.user.foodDate.getTime() - another.user.foodDate.getTime());
+        return (int) (another.user.foodDate.getTime() - this.user.foodDate.getTime());
     }
 
     @Override
