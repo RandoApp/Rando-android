@@ -8,18 +8,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/white"
         android:id="@+id/top_toolbar"
-        android:paddingTop="5dp">
+        android:paddingTop="5dp"
+        android:background="@color/back_button_background">
 
-        <Button
-            android:id="@+id/back_button"
-            android:layout_width="100dp"
-            android:layout_height="35dp"
-            android:background="@drawable/back_button"
-            android:text=" * Back "
-            android:layout_marginLeft="20dp"
-            android:layout_gravity="center_vertical" />
+    <ImageButton
+        android:id="@+id/back_button"
+        android:layout_height="50dp"
+        android:layout_width="150dp"
+        android:layout_gravity="center"
+        android:background="@drawable/back" />
+
     </LinearLayout>
 
     <com.eucsoft.foodex.view.FoodexSurfaceView
@@ -37,49 +36,53 @@
         android:layout_alignParentBottom="true"
         android:layout_alignBottom="@+id/cameraPreview"
         android:layout_alignParentLeft="true"
-        android:background="@color/white"></LinearLayout>
+        android:background="@color/white">
 
-    <Button
-        android:id="@+id/take_picture_button"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:background="@drawable/take_picture_button_background"
-        android:layout_alignParentBottom="false"
-        android:layout_alignBottom="@+id/bottom_panel"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="30dp"
-        android:text="TAKE"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentRight="false"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentEnd="false" />
+        <LinearLayout
+            android:id="@+id/select_photo_button_container"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:background="@color/album_background">
 
-    <Button
-        android:id="@+id/select_photo_button"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:text="SELECT"
-        android:layout_alignParentBottom="true"
-        android:layout_alignBottom="@+id/bottom_panel"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="30dp"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentLeft="true" />
+            <ImageButton
+                android:id="@+id/select_photo_button"
+                android:layout_height="80dp"
+                android:layout_width="80dp"
+                android:layout_marginBottom="@dimen/camera_button_margin_bottom"
+                android:layout_gravity="center"
+                android:background="@drawable/gallery" />
 
-    <Button
-        android:id="@+id/upload_photo_button"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:text="Upload"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone"
-        android:layout_alignBottom="@+id/bottom_panel"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="30dp"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentRight="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp" />
+            </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:background="@color/auth_button">
+
+            <ImageButton
+                android:id="@+id/upload_photo_button"
+                android:layout_height="200dp"
+                android:layout_width="200dp"
+                android:visibility="gone"
+                android:layout_gravity="center"
+                android:background="@drawable/upload" />
+
+            <ImageButton
+                android:id="@+id/take_picture_button"
+                android:layout_height="150dp"
+                android:layout_width="200dp"
+                android:layout_gravity="center"
+                android:background="@drawable/camera28" />
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+
+
+
 
 </RelativeLayout>

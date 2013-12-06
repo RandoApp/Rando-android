@@ -15,7 +15,7 @@ import android.provider.MediaStore;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -83,8 +83,8 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
         bottomPanelParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
         bottomPanelParams.height = bottomToolbarHeight;
 
-        Button takePictureButton = (Button) findViewById(R.id.take_picture_button);
-        takePictureButton.setOnClickListener(new Button.OnClickListener() {
+        ImageButton takePictureButton = (ImageButton) findViewById(R.id.take_picture_button);
+        takePictureButton.setOnClickListener(new ImageButton.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -93,8 +93,8 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
             }
         });
 
-        Button backButton = (Button) findViewById(R.id.back_button);
-        backButton.setOnClickListener(new Button.OnClickListener() {
+        ImageButton backButton = (ImageButton) findViewById(R.id.back_button);
+        backButton.setOnClickListener(new ImageButton.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -103,8 +103,8 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
             }
         });
 
-        Button openPictureButton = (Button) findViewById(R.id.select_photo_button);
-        openPictureButton.setOnClickListener(new Button.OnClickListener() {
+        ImageButton openPictureButton = (ImageButton) findViewById(R.id.select_photo_button);
+        openPictureButton.setOnClickListener(new ImageButton.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -114,8 +114,8 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
             }
         });
 
-        Button uploadPictureButton = (Button) findViewById(R.id.upload_photo_button);
-        uploadPictureButton.setOnClickListener(new Button.OnClickListener() {
+        ImageButton uploadPictureButton = (ImageButton) findViewById(R.id.upload_photo_button);
+        uploadPictureButton.setOnClickListener(new ImageButton.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -136,13 +136,15 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
     }
 
     private void showUploadButton() {
-        Button takePictureButton = (Button) findViewById(R.id.take_picture_button);
+        ImageButton takePictureButton = (ImageButton) findViewById(R.id.take_picture_button);
         takePictureButton.setVisibility(View.GONE);
 
-        Button selectPhotoButton = (Button) findViewById(R.id.select_photo_button);
+        ImageButton selectPhotoButton = (ImageButton) findViewById(R.id.select_photo_button);
+        LinearLayout selectPhotoContainer = (LinearLayout) findViewById(R.id.select_photo_button_container);
         selectPhotoButton.setVisibility(View.GONE);
+        selectPhotoContainer.setVisibility(View.GONE);
 
-        Button uploadPhotoButton = (Button) findViewById(R.id.upload_photo_button);
+        ImageButton uploadPhotoButton = (ImageButton) findViewById(R.id.upload_photo_button);
         uploadPhotoButton.setVisibility(View.VISIBLE);
     }
 
