@@ -4,6 +4,7 @@ import android.graphics.Shader.TileMode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Adapter;
 
@@ -33,26 +34,27 @@ public class FoodItemLoader extends SimpleItemLoader<FoodPair, CacheableBitmapDr
 
         CacheableBitmapDrawable[] wrapper = new CacheableBitmapDrawable[4];
 
+
         CacheableBitmapDrawable strangerFoodImage = mCache.get(foodPair.stranger.foodURL);
-        if (strangerFoodImage == null) {
+        if (strangerFoodImage == null && !TextUtils.isEmpty(foodPair.stranger.foodURL)) {
             strangerFoodImage = mCache.put(foodPair.stranger.foodURL, loadImage(foodPair.stranger.foodURL));
         }
         wrapper[FoodPair.STRANGER_FOOD] = strangerFoodImage;
 
         CacheableBitmapDrawable strangerMapImage = mCache.get(foodPair.stranger.mapURL);
-        if (strangerMapImage == null) {
+        if (strangerMapImage == null && !TextUtils.isEmpty(foodPair.stranger.mapURL)) {
             strangerMapImage = mCache.put(foodPair.stranger.mapURL, loadImage(foodPair.stranger.mapURL));
         }
         wrapper[FoodPair.STRANGER_MAP] = strangerMapImage;
 
         CacheableBitmapDrawable userFoodImage = mCache.get(foodPair.user.foodURL);
-        if (userFoodImage == null) {
+        if (userFoodImage == null && !TextUtils.isEmpty(foodPair.user.foodURL)) {
             userFoodImage = mCache.put(foodPair.user.foodURL, loadImage(foodPair.user.foodURL));
         }
         wrapper[FoodPair.USER_FOOD] = userFoodImage;
 
-        CacheableBitmapDrawable userMapImage = mCache.get(foodPair.stranger.foodURL);
-        if (userMapImage == null) {
+        CacheableBitmapDrawable userMapImage = mCache.get(foodPair.user.mapURL);
+        if (userMapImage == null && !TextUtils.isEmpty(foodPair.user.mapURL)) {
             userMapImage = mCache.put(foodPair.user.mapURL, loadImage(foodPair.user.mapURL));
         }
         wrapper[FoodPair.USER_MAP] = userMapImage;
@@ -87,11 +89,13 @@ public class FoodItemLoader extends SimpleItemLoader<FoodPair, CacheableBitmapDr
             return;
         }
 
-        result[0].setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
+        if (result[0] != null) {
+            result[0].setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
+        }
 
         if (fromMemory) {
             tryShowFoodImage(holder.stranger, result[FoodPair.STRANGER_FOOD]);
-        } else {
+        } else if (result[FoodPair.STRANGER_FOOD] != null) {
             BitmapDrawable emptyDrawable = new BitmapDrawable(itemView.getResources());
 
             TransitionDrawable fadeInDrawable =
@@ -106,6 +110,10 @@ public class FoodItemLoader extends SimpleItemLoader<FoodPair, CacheableBitmapDr
     }
 
     public void tryShowFoodImage(FoodPairsAdapter.ViewHolder.UserHolder holder, Drawable foodBitmap) {
+        if (holder == null || foodBitmap == null) {
+            return;
+        }
+
         if (holder.foodImage != null) {
             holder.foodImage.setImageDrawable(foodBitmap);
             holder.foodBitmap = null;
@@ -115,6 +123,10 @@ public class FoodItemLoader extends SimpleItemLoader<FoodPair, CacheableBitmapDr
     }
 
     public void tryShowMapImage(FoodPairsAdapter.ViewHolder.UserHolder holder, Drawable mapBitmap) {
+        if (holder == null || mapBitmap == null) {
+            return;
+        }
+
         if (holder.mapImage != null) {
             holder.mapImage.setImageDrawable(mapBitmap);
             holder.mapBitmap = null;
