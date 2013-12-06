@@ -10,8 +10,8 @@ import java.util.Random;
 import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.hamcrest.Matchers.notNullValue;
 
 public class FoodPairTestHelper {
@@ -89,7 +89,7 @@ public class FoodPairTestHelper {
         FoodPair prevPair = null;
         for (FoodPair foodPair : foodPairs) {
             if (prevPair != null) {
-                assertThat("Order is broken: " + foodPair.user.foodDate.toString() + " is greater Than " + prevPair.user.foodDate.toString(), foodPair.user.foodDate, greaterThanOrEqualTo(prevPair.user.foodDate));
+                assertThat("Order is broken: " + foodPair.user.foodDate.toString() + " is less than " + prevPair.user.foodDate.toString(), foodPair.user.foodDate, lessThanOrEqualTo(prevPair.user.foodDate));
             } else {
                 prevPair = foodPair;
             }

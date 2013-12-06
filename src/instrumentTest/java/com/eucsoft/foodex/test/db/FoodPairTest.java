@@ -44,7 +44,7 @@ public class FoodPairTest extends AndroidTestCase {
         FoodPair foodPair2 = FoodPairTestHelper.getRandomFoodPair();
         foodPair1.user.foodDate = date1;
         foodPair2.user.foodDate = date2;
-        assertThat("FoodPairs comparation failed", foodPair1.compareTo(foodPair2), Matchers.greaterThan(0));
+        assertThat("FoodPairs comparation failed", foodPair2.compareTo(foodPair1), Matchers.greaterThan(0));
     }
 
     @SmallTest
@@ -56,7 +56,7 @@ public class FoodPairTest extends AndroidTestCase {
         FoodPair foodPair2 = FoodPairTestHelper.getRandomFoodPair();
         foodPair1.user.foodDate = date1;
         foodPair2.user.foodDate = date2;
-        assertThat("FoodPairs comparation failed", foodPair1.compareTo(foodPair2), Matchers.lessThan(0));
+        assertThat("FoodPairs comparation failed", foodPair2.compareTo(foodPair1), Matchers.lessThan(0));
     }
 
     @SmallTest
