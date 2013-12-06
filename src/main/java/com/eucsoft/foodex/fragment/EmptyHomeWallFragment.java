@@ -1,17 +1,44 @@
 package com.eucsoft.foodex.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
+import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.TakePictureActivity;
+import com.eucsoft.foodex.db.FoodDAO;
+import com.eucsoft.foodex.log.Log;
+import com.eucsoft.foodex.service.SyncService;
 
 public class EmptyHomeWallFragment extends Fragment {
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        int calls = 0;
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context, "Service Call!! " + calls,
+                    Toast.LENGTH_LONG).show();
+            Log.i(android.content.BroadcastReceiver.class, "Recieved Update request.");
+            FoodDAO foodDAO = new FoodDAO(App.context);
+            if (foodDAO.getFoodPairsNumber() > 0) {
+                FragmentManager fragmentManager = ((ActionBarActivity) getActivity()).getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
+            }
+            calls++;
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -26,5 +53,17 @@ public class EmptyHomeWallFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(receiver, new IntentFilter(SyncService.NOTIFICATION));
     }
 }

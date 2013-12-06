@@ -17,7 +17,7 @@ import java.util.HashMap;
 public class SyncService extends Service {
 
     public static final String NOTIFICATION = "SyncService";
-    private static final long SHORT_PAUSE = 2 * 60 * 1000;
+    private static final long SHORT_PAUSE = 30 * 1000;
     private static final long LONG_PAUSE = AlarmManager.INTERVAL_HALF_HOUR;
 
     @Override
@@ -42,11 +42,12 @@ public class SyncService extends Service {
                 FoodDAO foodDAO = new FoodDAO(getApplicationContext());
                 if (foodDAO.getNotPairedFoodsNumber() > 0) {
                     setAlarm(System.currentTimeMillis() + SHORT_PAUSE);
-                    Log.i(SyncService.class, "Server will start in " + SHORT_PAUSE / 1000 + " seconds");
+                    Log.i(SyncService.class, "Service will start in " + SHORT_PAUSE / 1000 + " seconds");
                 } else {
                     setAlarm(System.currentTimeMillis() + LONG_PAUSE);
-                    Log.i(SyncService.class, "Server will start in " + LONG_PAUSE / 1000 + " seconds");
+                    Log.i(SyncService.class, "Service will start in " + LONG_PAUSE / 1000 + " seconds");
                 }
+                foodDAO.close();
             }
         });
         syncAllTask.execute();
