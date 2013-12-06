@@ -2,6 +2,7 @@ package com.eucsoft.foodex.task;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.os.AsyncTask;
 
 import com.eucsoft.foodex.App;
@@ -38,7 +39,11 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
         Bitmap originalBmp = params[0];
 
         int size = Math.min(originalBmp.getWidth(), originalBmp.getHeight());
-        Bitmap croppedBmp = Bitmap.createBitmap(originalBmp, 0, 0, size, size);
+        Bitmap scaledBitmap = Bitmap.createBitmap(originalBmp, 0, 0, size, size);
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+        Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+
 
         File file = FileUtil.getOutputMediaFile();
         if (file == null) {
@@ -47,7 +52,7 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
         String imagePath = file.getAbsolutePath();
         try {
             FileOutputStream out = new FileOutputStream(file);
-            croppedBmp.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.close();
         } catch (IOException ex) {
             Log.e(CreateFoodAndUploadTask.class, "doInBackground", ex.getMessage());
