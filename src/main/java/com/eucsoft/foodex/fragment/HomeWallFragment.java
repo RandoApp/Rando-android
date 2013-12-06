@@ -1,12 +1,17 @@
 package com.eucsoft.foodex.fragment;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +20,7 @@ import android.widget.Toast;
 
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
+import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.TakePictureActivity;
 import com.eucsoft.foodex.adapter.FoodPairsAdapter;
@@ -44,6 +50,30 @@ public class HomeWallFragment extends Fragment {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
             }
+
+            NotificationCompat.Builder builder =
+                    new NotificationCompat.Builder(HomeWallFragment.this.getView().getContext())
+                            .setSmallIcon(R.drawable.ic_launcher)
+                            .setContentTitle("Foodex")
+                            .setContentText("Your Foodex pictures got updated.")
+                            .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                            .setSmallIcon(R.drawable.bonappetit2);
+
+
+            Intent notificationIntent = new Intent(HomeWallFragment.this.getView().getContext(), MainActivity.class);
+
+            PendingIntent contentIntent = PendingIntent.getActivity(HomeWallFragment.this.getView().getContext(), 0, notificationIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+
+            builder.setContentIntent(contentIntent);
+            builder.setAutoCancel(true);
+            builder.setLights(Color.BLUE, 500, 500);
+            long[] pattern = {500, 500, 500, 500, 500, 500, 500, 500, 500};
+            builder.setVibrate(pattern);
+            builder.setStyle(new NotificationCompat.InboxStyle());
+
+            NotificationManager manager = (NotificationManager) HomeWallFragment.this.getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.notify(1, builder.build());
             calls++;
         }
     };

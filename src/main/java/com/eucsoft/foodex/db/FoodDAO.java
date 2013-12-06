@@ -110,7 +110,7 @@ public class FoodDAO {
         List<FoodPair> foodPairs = new ArrayList<FoodPair>();
 
         Cursor cursor = database.query(FoodDBHelper.TABLE_FOOD,
-                allColumns, null, null, null, null, FoodDBHelper.COLUMN_USER_FOOD_DATE + " ASC", null);
+                allColumns, null, null, null, null, FoodDBHelper.COLUMN_USER_FOOD_DATE + " DESC", null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -159,7 +159,7 @@ public class FoodDAO {
         List<FoodPair> foodPairs = new ArrayList<FoodPair>();
 
         Cursor cursor = database.query(FoodDBHelper.TABLE_FOOD,
-                allColumns, null, null, null, null, FoodDBHelper.COLUMN_USER_FOOD_DATE + " ASC", Constants.PAGE_SIZE * page + ", " + Constants.PAGE_SIZE);
+                allColumns, null, null, null, null, FoodDBHelper.COLUMN_USER_FOOD_DATE + " DESC", Constants.PAGE_SIZE * page + ", " + Constants.PAGE_SIZE);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
