@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
@@ -91,6 +93,72 @@ public class FoodPairsAdapter extends BaseAdapter {
 
         recycle(holder, foodPair);
         setAnimations(holder);
+
+        holder.stranger.foodContainer = App.getInstance(container.getContext()).getmImageLoader(). get(foodPair.stranger.foodURL, new ImageLoader.ImageListener() {
+            @Override
+            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                if (holder.stranger.foodImage != null) {
+                    holder.stranger.foodImage.setImageBitmap(response.getBitmap());
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+
+        holder.stranger.mapContainer = App.getInstance(container.getContext()).getmImageLoader().get(foodPair.stranger.mapURL, new ImageLoader.ImageListener() {
+            @Override
+            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                if (holder.stranger.mapImage !=null){
+                    holder.stranger.mapImage.setImageBitmap(response.getBitmap());
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        holder.user.foodContainer = App.getInstance(container.getContext()).getmImageLoader().get(foodPair.user.foodURL, new ImageLoader.ImageListener() {
+            @Override
+            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                if (holder.user.foodImage !=null){
+                    holder.user.foodImage.setImageBitmap(response.getBitmap());
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        holder.user.mapContainer = App.getInstance(container.getContext()).getmImageLoader().get(foodPair.user.mapURL, new ImageLoader.ImageListener() {
+            @Override
+            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                if (holder.user.mapImage !=null){
+                    holder.user.mapImage.setImageBitmap(response.getBitmap());
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
         return convertView;
     }
 
@@ -199,6 +267,23 @@ public class FoodPairsAdapter extends BaseAdapter {
             holder.stranger.foodMapPagerAdatper.recycle(holder.stranger.foodImage, holder.stranger.mapImage);
         }
 
+        if(holder.stranger.foodContainer != null){
+            holder.stranger.foodContainer.cancelRequest();
+            holder.stranger.foodContainer = null;
+        }
+        if(holder.stranger.mapContainer!= null){
+            holder.stranger.mapContainer.cancelRequest();
+            holder.stranger.mapContainer = null;
+        }
+        if(holder.user.foodContainer != null){
+            holder.user.foodContainer.cancelRequest();
+            holder.user.foodContainer = null;
+        }
+        if(holder.user.mapContainer!= null){
+            holder.user.mapContainer.cancelRequest();
+            holder.user.mapContainer = null;
+        }
+
         setPagesToDefault(holder);
     }
 
@@ -288,6 +373,9 @@ public class FoodPairsAdapter extends BaseAdapter {
 
             public ImageView foodImage;
             public ImageView mapImage;
+
+            public ImageLoader.ImageContainer foodContainer;
+            public ImageLoader.ImageContainer mapContainer;
 
             public Drawable foodBitmap;
             public Drawable mapBitmap;

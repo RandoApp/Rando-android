@@ -26,6 +26,7 @@ import com.eucsoft.foodex.TakePictureActivity;
 import com.eucsoft.foodex.adapter.FoodPairsAdapter;
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.service.SyncService;
+import com.eucsoft.foodex.twowaygrid.TwoWayGridView;
 import com.eucsoft.foodex.twowaygrid.async.AsyncTwoWayGridView;
 import com.eucsoft.foodex.twowaygrid.async.FoodItemLoader;
 import com.eucsoft.foodex.twowaygrid.async.ItemManager;
@@ -83,15 +84,15 @@ public class HomeWallFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.home, container, false);
 
-        AsyncTwoWayGridView gridView = (AsyncTwoWayGridView) rootView.findViewById(R.id.main_grid);
+        TwoWayGridView gridView = (TwoWayGridView) rootView.findViewById(R.id.main_grid);
 
         BitmapLruCache cache = App.getInstance(container.getContext()).getBitmapCache();
-        FoodItemLoader loader = new FoodItemLoader(cache);
+        /*FoodItemLoader loader = new FoodItemLoader(cache);
 
         ItemManager.Builder builder = new ItemManager.Builder(loader);
         builder.setPreloadItemsEnabled(true).setPreloadItemsCount(5);
         builder.setThreadPoolSize(4);
-        gridView.setItemManager(builder.build());
+        gridView.setItemManager(builder.build());*/
         foodPairsAdapter = new FoodPairsAdapter(container.getContext());
         gridView.setAdapter(foodPairsAdapter);
 

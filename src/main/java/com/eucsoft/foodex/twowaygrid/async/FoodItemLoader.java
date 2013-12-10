@@ -75,6 +75,11 @@ public class FoodItemLoader extends SimpleItemLoader<FoodPair, CacheableBitmapDr
                 || wrapper[FoodPair.USER_FOOD] == null || wrapper[FoodPair.USER_MAP] == null)
             return null;
 
+        wrapper[FoodPair.STRANGER_FOOD].setBeingUsed(true);
+        wrapper[FoodPair.STRANGER_MAP].setBeingUsed(true);
+        wrapper[FoodPair.USER_FOOD].setBeingUsed(true);
+        wrapper[FoodPair.USER_MAP].setBeingUsed(true);
+
         return wrapper;
     }
 
