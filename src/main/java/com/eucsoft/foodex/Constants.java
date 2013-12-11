@@ -32,8 +32,8 @@ public class Constants {
     public static final int FOOD_PADDING_LANDSCAPE_COLUMN_TOP = 15;
     public static final int FOOD_PADDING_LANDSCAPE_COLUMN_BOTTOM = 5;
 
-    public static final String SERVER_HOST = "foodex-webtools.rhcloud.com";
-    public static final String SERVER_URL = "https://" + SERVER_HOST;
+    public static final String SERVER_HOST = "95.85.19.94";
+    public static final String SERVER_URL = "http://" + SERVER_HOST;
     public static final int TOP_PANEL_ON_TAKEPICSCREEN_HEIGHT = 50;
 
     //Shared Preferences
