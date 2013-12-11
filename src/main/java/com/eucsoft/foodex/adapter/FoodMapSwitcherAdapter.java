@@ -54,12 +54,12 @@ public class FoodMapSwitcherAdapter extends PagerAdapter {
     private void checkCache (int position, ImageView view) {
         if (position == 0) {
             if (holder.foodBitmap != null) {
-                view.setImageDrawable(holder.foodBitmap);
+                view.setImageBitmap(holder.foodBitmap);
                 holder.foodBitmap = null;
             }
         } else {
             if (holder.mapBitmap != null) {
-                view.setImageDrawable(holder.mapBitmap);
+                view.setImageBitmap(holder.mapBitmap);
                 holder.mapBitmap = null;
             }
         }

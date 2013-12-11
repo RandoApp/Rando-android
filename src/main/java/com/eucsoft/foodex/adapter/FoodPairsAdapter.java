@@ -2,6 +2,7 @@ package com.eucsoft.foodex.adapter;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -95,7 +96,7 @@ public class FoodPairsAdapter extends BaseAdapter {
         recycle(holder, foodPair);
         setAnimations(holder);
 
-        if (TextUtils.isEmpty(foodPair.stranger.foodURL))
+        if (!TextUtils.isEmpty(foodPair.stranger.foodURL))
         {
             holder.stranger.foodContainer = App.getInstance(container.getContext()).getmImageLoader(). get(foodPair.stranger.foodURL, new ImageLoader.ImageListener() {
                 @Override
@@ -103,7 +104,7 @@ public class FoodPairsAdapter extends BaseAdapter {
                     if (holder.stranger.foodImage != null) {
                         holder.stranger.foodImage.setImageBitmap(response.getBitmap());
                     } else {
-
+                        holder.stranger.foodBitmap = response.getBitmap();
                     }
                 }
 
@@ -120,7 +121,7 @@ public class FoodPairsAdapter extends BaseAdapter {
                 if (holder.stranger.mapImage !=null){
                     holder.stranger.mapImage.setImageBitmap(response.getBitmap());
                 } else {
-
+                    holder.stranger.mapBitmap = response.getBitmap();
                 }
             }
 
@@ -136,7 +137,7 @@ public class FoodPairsAdapter extends BaseAdapter {
                 if (holder.user.foodImage !=null){
                     holder.user.foodImage.setImageBitmap(response.getBitmap());
                 } else {
-
+                    holder.user.foodBitmap = response.getBitmap();
                 }
             }
 
@@ -152,7 +153,7 @@ public class FoodPairsAdapter extends BaseAdapter {
                 if (holder.user.mapImage !=null){
                     holder.user.mapImage.setImageBitmap(response.getBitmap());
                 } else {
-
+                    holder.user.mapBitmap = response.getBitmap();
                 }
             }
 
@@ -380,8 +381,8 @@ public class FoodPairsAdapter extends BaseAdapter {
             public ImageLoader.ImageContainer foodContainer;
             public ImageLoader.ImageContainer mapContainer;
 
-            public Drawable foodBitmap;
-            public Drawable mapBitmap;
+            public Bitmap foodBitmap;
+            public Bitmap mapBitmap;
         }
     }
 }

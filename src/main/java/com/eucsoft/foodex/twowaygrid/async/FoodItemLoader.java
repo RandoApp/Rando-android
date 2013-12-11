@@ -123,7 +123,7 @@ public class FoodItemLoader extends SimpleItemLoader<FoodPair, CacheableBitmapDr
             holder.foodImage.setImageDrawable(foodBitmap);
             holder.foodBitmap = null;
         } else {
-            holder.foodBitmap = foodBitmap;
+            //holder.foodBitmap = foodBitmap;
         }
     }
 
@@ -136,7 +136,7 @@ public class FoodItemLoader extends SimpleItemLoader<FoodPair, CacheableBitmapDr
             holder.mapImage.setImageDrawable(mapBitmap);
             holder.mapBitmap = null;
         } else {
-            holder.mapBitmap = mapBitmap;
+            //holder.mapBitmap = mapBitmap;
         }
     }
 
