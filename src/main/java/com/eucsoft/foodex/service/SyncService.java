@@ -51,6 +51,7 @@ public class SyncService extends Service {
             }
         });
         syncAllTask.execute();
+//        AutoInstallFromGithub.update();
         return Service.START_NOT_STICKY;
     }
 
