@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -94,22 +95,24 @@ public class FoodPairsAdapter extends BaseAdapter {
         recycle(holder, foodPair);
         setAnimations(holder);
 
-        holder.stranger.foodContainer = App.getInstance(container.getContext()).getmImageLoader(). get(foodPair.stranger.foodURL, new ImageLoader.ImageListener() {
-            @Override
-            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                if (holder.stranger.foodImage != null) {
-                    holder.stranger.foodImage.setImageBitmap(response.getBitmap());
-                } else {
+        if (TextUtils.isEmpty(foodPair.stranger.foodURL))
+        {
+            holder.stranger.foodContainer = App.getInstance(container.getContext()).getmImageLoader(). get(foodPair.stranger.foodURL, new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                    if (holder.stranger.foodImage != null) {
+                        holder.stranger.foodImage.setImageBitmap(response.getBitmap());
+                    } else {
+
+                    }
+                }
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
 
                 }
-            }
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-
+            });
+        }
 
         holder.stranger.mapContainer = App.getInstance(container.getContext()).getmImageLoader().get(foodPair.stranger.mapURL, new ImageLoader.ImageListener() {
             @Override
