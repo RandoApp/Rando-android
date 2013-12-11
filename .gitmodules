@@ -2,3 +2,6 @@
 	path = modules/facebook
 	url = https://github.com/dimhold/facebook-android-sdk.git
 
+[submodule "modules/volley"]
+	path = modules/volley
+	url = https://android.googlesource.com/platform/frameworks/volley

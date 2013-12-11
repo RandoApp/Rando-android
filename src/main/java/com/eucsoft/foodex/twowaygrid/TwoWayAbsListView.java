@@ -1560,14 +1560,7 @@ public abstract class TwoWayAbsListView extends TwoWayAdapterView<ListAdapter> i
         if (!drawSelectorOnTop) {
             drawSelector(canvas);
         }
-
-        //TODO: REMOVE TRY CATCH!
-        try {
-            super.dispatchDraw(canvas);
-        } catch (RuntimeException e) {
-
-        }
-
+        super.dispatchDraw(canvas);
         if (drawSelectorOnTop) {
             drawSelector(canvas);
         }
