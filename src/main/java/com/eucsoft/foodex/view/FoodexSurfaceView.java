@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.hardware.Camera;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -29,7 +30,11 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
     public FoodexSurfaceView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         getHolder().addCallback(this);
-        getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentapiVersion < Build.VERSION_CODES.HONEYCOMB)
+        {
+            getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        }
         getHolder().setKeepScreenOn(true);
     }
 
