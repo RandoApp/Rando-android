@@ -15,9 +15,10 @@ env:
   - ANDROID_SDKS=android-9 ANDROID_TARGET=android-9 ANDROID_ABI=armeabi REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
 
 before_install:
-  #lftp
-  sudo apt-get update -qq
-  sudo apt-get install -qq lftp
+  #install lftp for apk upload:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq lftp
+
   # Force pull submodules - Looks like works without it, we just need to commit submodule update
   #- git submodule foreach git pull origin master
 
