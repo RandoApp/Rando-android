@@ -30,6 +30,9 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,9 +80,15 @@ import static org.apache.http.HttpStatus.SC_OK;
 
 public class API {
 
-    public static HttpClient client = new DefaultHttpClient();
+    private  static HttpParams httpParameters = new BasicHttpParams();
+    public static HttpClient client = new DefaultHttpClient(httpParameters);
 
     static {
+        int timeoutConnection = 6000;
+        HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+        int timeoutSocket = 6000;
+        HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+
         try {
             String cookieValue = Preferences.getSessionCookieValue();
             if (!"".equals(cookieValue)) {
@@ -334,7 +343,7 @@ public class API {
     }
 
     private static Exception processError(Exception exc) {
-        Log.e(API.class, "error", exc.getStackTrace().toString());
+        Log.e(API.class, exc);
         return new Exception(App.context.getResources().getString(R.string.error_unknown_err));
     }
 

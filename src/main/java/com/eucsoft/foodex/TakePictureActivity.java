@@ -10,9 +10,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Display;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -57,7 +59,14 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
                     String filePath = cursor.getString(columnIndex);
                     cursor.close();
 
+                    foodexSurfaceView.releaseCamera();
+                    int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+                    if (currentapiVersion < Build.VERSION_CODES.HONEYCOMB)
+                    {
+                        foodexSurfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_NORMAL);
+                    }
                     foodexSurfaceView.setCurrentBitmap(BitmapFactory.decodeFile(filePath));
+                    showUploadButton();
                 }
                 break;
         }
