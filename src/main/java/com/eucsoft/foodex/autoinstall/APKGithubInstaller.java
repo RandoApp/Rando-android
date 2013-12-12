@@ -96,7 +96,6 @@ public class APKGithubInstaller extends AsyncTask<Void, Void, Void> {
         File apkFile = downloadApk(apk);
         updateVersion(apk);
         installApk(apkFile);
-        closeApp();
     }
 
     private Long getCurrentVersion () {
@@ -166,12 +165,6 @@ public class APKGithubInstaller extends AsyncTask<Void, Void, Void> {
         intent.setDataAndType(Uri.fromFile(apk), APK.CONTENT_TYPE);
         App.context.startActivity(intent);
 
-    }
-
-    private void closeApp() {
-        if (MainActivity.activity != null) {
-            MainActivity.activity.finish();
-        }
     }
 
     class APK implements Comparable {
