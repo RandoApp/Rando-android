@@ -81,6 +81,7 @@ before_script:
 script:
   - gradle connectedInstrumentTest --stacktrace
   - ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
+  - ls -la /home/travis/build/xp-vit/foodex-android/build/apk 
 
 after_script:
-  - lftp "sftp://travis:$APK_UPLOAD_PASS@95.85.19.94" -e "put foodex-android/build/apk/foodex-android.apk; bye"
+  - lftp "sftp://travis:$APK_UPLOAD_PASS@95.85.19.94" -e "put foodex-android/build/apk/foodex-android-unaligned.apk; bye"
