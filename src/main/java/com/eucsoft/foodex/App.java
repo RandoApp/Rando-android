@@ -11,10 +11,7 @@ import com.eucsoft.foodex.service.SyncService;
 
 import java.io.File;
 
-import uk.co.senab.bitmapcache.BitmapLruCache;
-
 public class App extends Application {
-    private BitmapLruCache mCache;
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
     public static Context context;
@@ -22,7 +19,6 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        initBitmapCache();
         startSyncService();
         mRequestQueue = Volley.newRequestQueue(this);
         mImageLoader = new ImageLoader(mRequestQueue, new LruBitmapCache());
@@ -37,23 +33,8 @@ public class App extends Application {
         return mImageLoader;
     }
 
-    public BitmapLruCache getBitmapCache() {
-        return mCache;
-    }
-
     public static App getInstance(Context context) {
         return (App) context.getApplicationContext();
-    }
-
-    private void initBitmapCache() {
-        File cacheDir = new File(getCacheDir(), "foodex");
-        cacheDir.mkdirs();
-
-        BitmapLruCache.Builder builder = new BitmapLruCache.Builder(getApplicationContext());
-        builder.setMemoryCacheEnabled(true).setMemoryCacheMaxSizeUsingHeapSize();
-        builder.setDiskCacheEnabled(true).setDiskCacheLocation(cacheDir);
-
-        mCache = builder.build();
     }
 
     public void startSyncService() {
