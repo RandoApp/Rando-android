@@ -2,8 +2,10 @@ package com.eucsoft.foodex.adapter;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
@@ -90,6 +94,7 @@ public class FoodPairsAdapter extends BaseAdapter {
         }
 
         recycle(holder, foodPair);
+        loadImages(holder, foodPair);
         setAnimations(holder);
         return convertView;
     }
@@ -199,6 +204,23 @@ public class FoodPairsAdapter extends BaseAdapter {
             holder.stranger.foodMapPagerAdatper.recycle(holder.stranger.foodImage, holder.stranger.mapImage);
         }
 
+        if(holder.stranger.foodContainer != null){
+            holder.stranger.foodContainer.cancelRequest();
+            holder.stranger.foodContainer = null;
+        }
+        if(holder.stranger.mapContainer!= null){
+            holder.stranger.mapContainer.cancelRequest();
+            holder.stranger.mapContainer = null;
+        }
+        if(holder.user.foodContainer != null){
+            holder.user.foodContainer.cancelRequest();
+            holder.user.foodContainer = null;
+        }
+        if(holder.user.mapContainer!= null){
+            holder.user.mapContainer.cancelRequest();
+            holder.user.mapContainer = null;
+        }
+
         setPagesToDefault(holder);
     }
 
@@ -273,6 +295,84 @@ public class FoodPairsAdapter extends BaseAdapter {
         });
     }
 
+    private void loadImages(final ViewHolder holder, FoodPair foodPair){
+        if (!TextUtils.isEmpty(foodPair.stranger.foodURL))
+        {
+            holder.stranger.foodContainer = App.getInstance(App.context).getmImageLoader(). get(foodPair.stranger.foodURL, new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                    if (holder.stranger.foodImage != null) {
+                        holder.stranger.foodImage.setImageBitmap(response.getBitmap());
+                    } else {
+                        holder.stranger.foodBitmap = response.getBitmap();
+                    }
+                }
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+        }
+
+        if (!TextUtils.isEmpty(foodPair.stranger.mapURL))
+        {
+            holder.stranger.mapContainer = App.getInstance(App.context).getmImageLoader().get(foodPair.stranger.mapURL, new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                    if (holder.stranger.mapImage !=null){
+                        holder.stranger.mapImage.setImageBitmap(response.getBitmap());
+                    } else {
+                        holder.stranger.mapBitmap = response.getBitmap();
+                    }
+                }
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+        }
+
+        if (!TextUtils.isEmpty(foodPair.user.foodURL))
+        {
+            holder.user.foodContainer = App.getInstance(App.context).getmImageLoader().get(foodPair.user.foodURL, new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                    if (holder.user.foodImage !=null){
+                        holder.user.foodImage.setImageBitmap(response.getBitmap());
+                    } else {
+                        holder.user.foodBitmap = response.getBitmap();
+                    }
+                }
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+        }
+
+        if (!TextUtils.isEmpty(foodPair.user.mapURL))
+        {
+            holder.user.mapContainer = App.getInstance(App.context).getmImageLoader().get(foodPair.user.mapURL, new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                    if (holder.user.mapImage !=null){
+                        holder.user.mapImage.setImageBitmap(response.getBitmap());
+                    } else {
+                        holder.user.mapBitmap = response.getBitmap();
+                    }
+                }
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+        }
+    }
+
     public static class ViewHolder {
         public boolean animationInProgress = false;
 
@@ -289,8 +389,11 @@ public class FoodPairsAdapter extends BaseAdapter {
             public ImageView foodImage;
             public ImageView mapImage;
 
-            public Drawable foodBitmap;
-            public Drawable mapBitmap;
+            public ImageLoader.ImageContainer foodContainer;
+            public ImageLoader.ImageContainer mapContainer;
+
+            public Bitmap foodBitmap;
+            public Bitmap mapBitmap;
         }
     }
 }

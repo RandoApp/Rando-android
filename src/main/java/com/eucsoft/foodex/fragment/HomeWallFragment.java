@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.R;
@@ -26,11 +25,7 @@ import com.eucsoft.foodex.TakePictureActivity;
 import com.eucsoft.foodex.adapter.FoodPairsAdapter;
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.service.SyncService;
-import com.eucsoft.foodex.twowaygrid.async.AsyncTwoWayGridView;
-import com.eucsoft.foodex.twowaygrid.async.FoodItemLoader;
-import com.eucsoft.foodex.twowaygrid.async.ItemManager;
-
-import uk.co.senab.bitmapcache.BitmapLruCache;
+import com.eucsoft.foodex.twowaygrid.TwoWayGridView;
 
 
 public class HomeWallFragment extends Fragment {
@@ -59,7 +54,6 @@ public class HomeWallFragment extends Fragment {
                             .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                             .setSmallIcon(R.drawable.bonappetit2);
 
-
             Intent notificationIntent = new Intent(HomeWallFragment.this.getView().getContext(), MainActivity.class);
 
             PendingIntent contentIntent = PendingIntent.getActivity(HomeWallFragment.this.getView().getContext(), 0, notificationIntent,
@@ -83,15 +77,8 @@ public class HomeWallFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.home, container, false);
 
-        AsyncTwoWayGridView gridView = (AsyncTwoWayGridView) rootView.findViewById(R.id.main_grid);
+        TwoWayGridView gridView = (TwoWayGridView) rootView.findViewById(R.id.main_grid);
 
-        BitmapLruCache cache = App.getInstance(container.getContext()).getBitmapCache();
-        FoodItemLoader loader = new FoodItemLoader(cache);
-
-        ItemManager.Builder builder = new ItemManager.Builder(loader);
-        builder.setPreloadItemsEnabled(true).setPreloadItemsCount(5);
-        builder.setThreadPoolSize(4);
-        gridView.setItemManager(builder.build());
         foodPairsAdapter = new FoodPairsAdapter(container.getContext());
         gridView.setAdapter(foodPairsAdapter);
 

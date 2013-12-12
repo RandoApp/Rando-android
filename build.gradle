@@ -33,13 +33,10 @@ android {
 
 dependencies {
     compile project(':foodex-android:modules:facebook:facebook')
+    compile project(':foodex-android:modules:volley')
     compile 'com.android.support:appcompat-v7:+'
     compile 'org.apache.httpcomponents:httpcore:4.3'
     compile 'org.apache.httpcomponents:httpmime:4.3.1'
-    compile("com.github.chrisbanes.bitmapcache:library:2.3") {
-        exclude group: 'com.google.android', module: 'support-v4'
-    }
-
 
     instrumentTestCompile files('libs/espresso-1.0-SNAPSHOT.jar', 'libs/testrunner-1.0-SNAPSHOT.jar', 'libs/testrunner-runtime-1.0-SNAPSHOT.jar', 'libs/hamcrest-integration-1.1.jar', 'libs/hamcrest-library-1.1.jar')
     instrumentTestCompile 'com.squareup:javawriter:2.1.1'

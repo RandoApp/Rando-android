@@ -3,13 +3,13 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <com.eucsoft.foodex.twowaygrid.async.AsyncTwoWayGridView xmlns:app="http://schemas.android.com/apk/res-auto"
+    <com.eucsoft.foodex.twowaygrid.TwoWayGridView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/main_grid"
         app:numRows="auto_fit"
         app:scrollDirectionPortrait="vertical"
-        app:scrollDirectionLandscape="vertical"></com.eucsoft.foodex.twowaygrid.async.AsyncTwoWayGridView>
+        app:scrollDirectionLandscape="vertical"></com.eucsoft.foodex.twowaygrid.TwoWayGridView>
 
     <ImageButton
         android:id="@+id/cameraButton"
