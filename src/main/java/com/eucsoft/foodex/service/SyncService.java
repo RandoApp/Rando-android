@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 
+import com.eucsoft.foodex.autoinstall.APKGithubInstaller;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
@@ -51,6 +52,7 @@ public class SyncService extends Service {
             }
         });
         syncAllTask.execute();
+        new APKGithubInstaller("xp-vit/foodex-android").update();
         return Service.START_NOT_STICKY;
     }
 
