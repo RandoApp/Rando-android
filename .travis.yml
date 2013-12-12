@@ -7,7 +7,7 @@ cache:
     - $HOME/.m2
     - $HOME/downloads
 global:
-  secure: lI6DP3PIs7r6a+oN3owasQ2kYaaKwO3LE7FZuF8b2N4kbhtNsM2KgHGhOCIra14UoBIRfR+ImEoD2CvjKkPr+hZPo30YydOZ/Ayo8TjYEykN6HbfveeD7u9BeClgMOx6o6Ty9uHX1nSwm/tnNXTNHJCue+LDhhAFDqBX4XFPnfQ=
+  secure: UaRR/tIVPpokd6Z9nPXx+MdkxXDQOXLPK5Lv+rl52UMwhf/HOpak9DOjWQVqy4ahzRrXyVDmaW90VPQMVCxXBJ78o/Vv8rncas8WVyIi4yUxkJJBjRCLMDsu2VOisE3SeD93SsYDiT+7a4Sk+pDp/if4FcjNU/l1AFBZNhe2lD4=
 env:
   - ANDROID_SDKS=android-19,sysimg-19 ANDROID_TARGET=android-19 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads NEED_UPLOAD_APK=true
   - ANDROID_SDKS=android-18,sysimg-18 ANDROID_TARGET=android-18 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
