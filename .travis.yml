@@ -46,11 +46,15 @@ before_install:
   - unzip build-tools_r19-linux.zip -d $ANDROID_HOME
   - mkdir -p $ANDROID_HOME/build-tools/
   - mv $ANDROID_HOME/android-4.4 $ANDROID_HOME/build-tools/19.0.0
+  - if [ ! -f build-tools_r17-linux.zip ]; then wget https://dl-ssl.google.com/android/repository/build-tools_r17-linux.zip > /dev/null; fi
+  - unzip build-tools_r17-linux.zip -d $ANDROID_HOME
+  - mkdir -p $ANDROID_HOME/build-tools/
+  - mv $ANDROID_HOME/android-4.2.2 $ANDROID_HOME/build-tools/17.0.0
 
   # Create settings.gradle. Need for modules correct build
   - cd ${CI_HOME}
   - cd ..
-  - echo "include ':foodex-android:modules:facebook:facebook', ':foodex-android'" > settings.gradle
+  - echo "include ':foodex-android:modules:facebook:facebook', ':foodex-android:modules:volley', ':foodex-android'" > settings.gradle
 
   # Install required components.
   # For a full list, run `android list sdk -a --extended`
@@ -59,6 +63,7 @@ before_install:
   - echo yes | android update sdk --filter platform-tools --no-ui --force > /dev/null
   #needed for build
   - echo yes | android update sdk --filter android-19 --no-ui --force > /dev/null
+  - echo yes | android update sdk --filter android-17 --no-ui --force > /dev/null
   - echo yes | android update sdk --filter $ANDROID_SDKS --all --no-ui --force > /dev/null
   - echo yes | android update sdk --filter extra-android-support --no-ui --force > /dev/null
   - echo yes | android update sdk --filter extra-android-m2repository --no-ui --force > /dev/null
