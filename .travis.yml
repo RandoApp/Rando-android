@@ -9,7 +9,7 @@ cache:
 global:
   secure: lI6DP3PIs7r6a+oN3owasQ2kYaaKwO3LE7FZuF8b2N4kbhtNsM2KgHGhOCIra14UoBIRfR+ImEoD2CvjKkPr+hZPo30YydOZ/Ayo8TjYEykN6HbfveeD7u9BeClgMOx6o6Ty9uHX1nSwm/tnNXTNHJCue+LDhhAFDqBX4XFPnfQ=
 env:
-  - ANDROID_SDKS=android-19,sysimg-19 ANDROID_TARGET=android-19 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
+  - ANDROID_SDKS=android-19,sysimg-19 ANDROID_TARGET=android-19 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads NEED_UPLOAD_APK=true
   - ANDROID_SDKS=android-18,sysimg-18 ANDROID_TARGET=android-18 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
   - ANDROID_SDKS=android-10 ANDROID_TARGET=android-10 ANDROID_ABI=armeabi REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
   - ANDROID_SDKS=android-9 ANDROID_TARGET=android-9 ANDROID_ABI=armeabi REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
@@ -85,4 +85,5 @@ script:
   - ls -la /home/travis/build/xp-vit/foodex-android/build/apk 
 
 after_script:
-  - lftp "sftp://travis:$APK_UPLOAD_PASS@95.85.19.94" -e "put foodex-android/build/apk/foodex-android-release-unaligned.apk; bye"
+  - [ "$NEED_UPLOAD_APK" ] && lftp "sftp://travis:$APK_UPLOAD_PASS@95.85.19.94" -e "put foodex-android/build/apk/foodex-android-release-unsigned.apk; bye"
+
