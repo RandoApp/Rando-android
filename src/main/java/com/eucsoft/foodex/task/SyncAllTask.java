@@ -8,6 +8,7 @@ import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
+import com.eucsoft.foodex.preferences.Preferences;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,8 +26,11 @@ public class SyncAllTask extends AsyncTask<Void, Integer, Long> implements BaseT
     @Override
     protected Long doInBackground(Void... params) {
 
-        List<FoodPair> serverFoodPairs;
+        if (Preferences.getSessionCookieValue().isEmpty()) {
+            return RESULT_ERROR;
+        }
 
+        List<FoodPair> serverFoodPairs;
         try {
             serverFoodPairs = API.fetchUser();
         } catch (Exception e) {
