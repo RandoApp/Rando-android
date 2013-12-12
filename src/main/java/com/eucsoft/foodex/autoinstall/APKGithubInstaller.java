@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.eucsoft.foodex.App;
-import com.eucsoft.foodex.MainActivity;
 
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -40,7 +39,7 @@ public class APKGithubInstaller extends AsyncTask<Void, Void, Void> {
 
     private static final String CURRENT_CREATION_KEY = "install-creation";
 
-    private Long lastCheckUpdate = 0l;
+    private static Long lastCheckUpdate = 0l;
     private static final long UPDATE_TIMER = 10 * 60 * 1000;
 
     private String userRepository;

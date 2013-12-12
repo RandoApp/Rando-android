@@ -33,8 +33,6 @@ public class MainActivity extends ActionBarActivity {
                     .add(R.id.main_screen, getFragment())
                     .commit();
         }
-
-        new APKGithubInstaller("xp-vit/foodex-android").update();
     }
 
     @Override

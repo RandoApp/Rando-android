@@ -13,7 +13,7 @@ env:
     - ANDROID_SDKS=android-10 ANDROID_TARGET=android-10 ANDROID_ABI=armeabi REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
     - ANDROID_SDKS=android-9 ANDROID_TARGET=android-9 ANDROID_ABI=armeabi REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
   global:
-    secure: UaRR/tIVPpokd6Z9nPXx+MdkxXDQOXLPK5Lv+rl52UMwhf/HOpak9DOjWQVqy4ahzRrXyVDmaW90VPQMVCxXBJ78o/Vv8rncas8WVyIi4yUxkJJBjRCLMDsu2VOisE3SeD93SsYDiT+7a4Sk+pDp/if4FcjNU/l1AFBZNhe2lD4=
+    secure: PITT+C0Whfpah9ot4quUfU+xO20wKRqTDkwR4OrDUktQ80S54Pi/GWiuCi731XqS4rUd0bBMI+cReudETwnvjSKD0tDtmWT3dsXx7/2qlVx7ljaas7YQhFCuVTAi5RuMg4tL7mi748WC29OgwchlASmQ4L2JwnimhsIRT8SKuUo=
 
 before_install:
   #install lftp for apk upload:
