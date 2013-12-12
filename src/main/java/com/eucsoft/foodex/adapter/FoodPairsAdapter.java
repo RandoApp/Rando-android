@@ -94,75 +94,8 @@ public class FoodPairsAdapter extends BaseAdapter {
         }
 
         recycle(holder, foodPair);
+        loadImages(holder, foodPair);
         setAnimations(holder);
-
-        if (!TextUtils.isEmpty(foodPair.stranger.foodURL))
-        {
-            holder.stranger.foodContainer = App.getInstance(container.getContext()).getmImageLoader(). get(foodPair.stranger.foodURL, new ImageLoader.ImageListener() {
-                @Override
-                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                    if (holder.stranger.foodImage != null) {
-                        holder.stranger.foodImage.setImageBitmap(response.getBitmap());
-                    } else {
-                        holder.stranger.foodBitmap = response.getBitmap();
-                    }
-                }
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                }
-            });
-        }
-
-        holder.stranger.mapContainer = App.getInstance(container.getContext()).getmImageLoader().get(foodPair.stranger.mapURL, new ImageLoader.ImageListener() {
-            @Override
-            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                if (holder.stranger.mapImage !=null){
-                    holder.stranger.mapImage.setImageBitmap(response.getBitmap());
-                } else {
-                    holder.stranger.mapBitmap = response.getBitmap();
-                }
-            }
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-
-        holder.user.foodContainer = App.getInstance(container.getContext()).getmImageLoader().get(foodPair.user.foodURL, new ImageLoader.ImageListener() {
-            @Override
-            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                if (holder.user.foodImage !=null){
-                    holder.user.foodImage.setImageBitmap(response.getBitmap());
-                } else {
-                    holder.user.foodBitmap = response.getBitmap();
-                }
-            }
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-
-        holder.user.mapContainer = App.getInstance(container.getContext()).getmImageLoader().get(foodPair.user.mapURL, new ImageLoader.ImageListener() {
-            @Override
-            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                if (holder.user.mapImage !=null){
-                    holder.user.mapImage.setImageBitmap(response.getBitmap());
-                } else {
-                    holder.user.mapBitmap = response.getBitmap();
-                }
-            }
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-
         return convertView;
     }
 
@@ -360,6 +293,84 @@ public class FoodPairsAdapter extends BaseAdapter {
             public void onAnimationRepeat(Animation animation) {
             }
         });
+    }
+
+    private void loadImages(final ViewHolder holder, FoodPair foodPair){
+        if (!TextUtils.isEmpty(foodPair.stranger.foodURL))
+        {
+            holder.stranger.foodContainer = App.getInstance(App.context).getmImageLoader(). get(foodPair.stranger.foodURL, new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                    if (holder.stranger.foodImage != null) {
+                        holder.stranger.foodImage.setImageBitmap(response.getBitmap());
+                    } else {
+                        holder.stranger.foodBitmap = response.getBitmap();
+                    }
+                }
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+        }
+
+        if (!TextUtils.isEmpty(foodPair.stranger.mapURL))
+        {
+            holder.stranger.mapContainer = App.getInstance(App.context).getmImageLoader().get(foodPair.stranger.mapURL, new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                    if (holder.stranger.mapImage !=null){
+                        holder.stranger.mapImage.setImageBitmap(response.getBitmap());
+                    } else {
+                        holder.stranger.mapBitmap = response.getBitmap();
+                    }
+                }
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+        }
+
+        if (!TextUtils.isEmpty(foodPair.user.foodURL))
+        {
+            holder.user.foodContainer = App.getInstance(App.context).getmImageLoader().get(foodPair.user.foodURL, new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                    if (holder.user.foodImage !=null){
+                        holder.user.foodImage.setImageBitmap(response.getBitmap());
+                    } else {
+                        holder.user.foodBitmap = response.getBitmap();
+                    }
+                }
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+        }
+
+        if (!TextUtils.isEmpty(foodPair.user.mapURL))
+        {
+            holder.user.mapContainer = App.getInstance(App.context).getmImageLoader().get(foodPair.user.mapURL, new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                    if (holder.user.mapImage !=null){
+                        holder.user.mapImage.setImageBitmap(response.getBitmap());
+                    } else {
+                        holder.user.mapBitmap = response.getBitmap();
+                    }
+                }
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+        }
     }
 
     public static class ViewHolder {
