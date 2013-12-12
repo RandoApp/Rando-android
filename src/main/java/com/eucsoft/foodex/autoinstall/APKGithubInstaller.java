@@ -147,7 +147,7 @@ public class APKGithubInstaller extends AsyncTask<Void, Void, Void> {
 
     private void updateVersion(APK apk) {
         SharedPreferences pref = App.context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
-        pref.edit().putLong(SEESSION_COOKIE_VALUE, apk.creation.getTime()).commit();
+        pref.edit().putLong(CURRENT_CREATION_KEY, apk.creation.getTime()).commit();
     }
 
     private File downloadApk(APK apk) throws IOException {
