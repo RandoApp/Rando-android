@@ -47,9 +47,9 @@ before_install:
   - mkdir -p $ANDROID_HOME/build-tools/
   - mv $ANDROID_HOME/android-4.4 $ANDROID_HOME/build-tools/19.0.0
   - if [ ! -f build-tools_r17-linux.zip ]; then wget https://dl-ssl.google.com/android/repository/build-tools_r17-linux.zip > /dev/null; fi
-    - unzip build-tools_r17-linux.zip -d $ANDROID_HOME
-    - mkdir -p $ANDROID_HOME/build-tools/
-    - mv $ANDROID_HOME/android-4.2.2 $ANDROID_HOME/build-tools/17
+  - unzip build-tools_r17-linux.zip -d $ANDROID_HOME
+  - mkdir -p $ANDROID_HOME/build-tools/
+  - mv $ANDROID_HOME/android-4.2.2 $ANDROID_HOME/build-tools/17
 
   # Create settings.gradle. Need for modules correct build
   - cd ${CI_HOME}
