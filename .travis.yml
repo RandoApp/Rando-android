@@ -49,7 +49,7 @@ before_install:
   - if [ ! -f build-tools_r17-linux.zip ]; then wget https://dl-ssl.google.com/android/repository/build-tools_r17-linux.zip > /dev/null; fi
   - unzip build-tools_r17-linux.zip -d $ANDROID_HOME
   - mkdir -p $ANDROID_HOME/build-tools/
-  - mv $ANDROID_HOME/android-4.2.2 $ANDROID_HOME/build-tools/17
+  - mv $ANDROID_HOME/android-4.2.2 $ANDROID_HOME/build-tools/17.0.0
 
   # Create settings.gradle. Need for modules correct build
   - cd ${CI_HOME}
