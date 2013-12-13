@@ -10,6 +10,7 @@
     <color name="error_font">#FF0000</color>
     <color name="album_background">#AA0045</color>
     <color name="back_button_background">#393939</color>
+    <color name="button_disabled_background">#595959</color>
 
     <color name="overscroll">#33b5e5</color>
 </resources>
