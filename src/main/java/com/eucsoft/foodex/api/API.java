@@ -4,7 +4,15 @@ import android.location.Location;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpClientStack;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.eucsoft.foodex.App;
+import static com.eucsoft.foodex.Constants.*;
 import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.db.model.FoodPair;
@@ -30,6 +38,9 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,7 +88,9 @@ import static org.apache.http.HttpStatus.SC_OK;
 
 public class API {
 
-    public static HttpClient client = new DefaultHttpClient();
+    private static HttpParams httpParams = new BasicHttpParams();
+    public static HttpClient client = new DefaultHttpClient(httpParams);
+    private static RequestQueue requestQueue;
 
     static {
         try {
@@ -88,6 +101,10 @@ public class API {
                 cookie.setPath(Preferences.getSessionCookiePath());
                 ((DefaultHttpClient) client).getCookieStore().addCookie(cookie);
             }
+
+            HttpConnectionParams.setConnectionTimeout(httpParams, CONNECTION_TIMEOUT);
+            HttpConnectionParams.setSoTimeout(httpParams, CONNECTION_TIMEOUT);
+            requestQueue = Volley.newRequestQueue(App.context, new HttpClientStack(client));
         } catch (Exception e) {
             //Why is the world so cruel?
         }
@@ -154,6 +171,49 @@ public class API {
         }
     }
 
+    public static void fetchUserAsync(final onFetchUser listener) {
+        Log.i(API.class, "API.fetchUser");
+
+        requestQueue.add(new JsonObjectRequest(Request.Method.GET, FETCH_USER_URL, null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray jsonFoods = response.getJSONArray(FOODS_PARAM);
+                    List<FoodPair> foods = new ArrayList<FoodPair>(jsonFoods.length());
+
+                    for (int i = 0; i < jsonFoods.length(); i++) {
+                        FoodPair food = new FoodPair();
+                        JSONObject jsonFood = jsonFoods.getJSONObject(i);
+                        JSONObject user = jsonFood.getJSONObject(USER_PARAM);
+                        JSONObject stranger = jsonFood.getJSONObject(STRANGER_PARAM);
+                        food.user.foodId = user.getString(FOOD_ID_PARAM);
+                        food.user.foodURL = user.getString(FOOD_URL_PARAM);
+                        food.user.mapURL = user.getString(MAP_URL_PARAM);
+                        food.user.bonAppetit = user.getInt(BON_APPETIT_PARAM);
+                        food.user.foodDate = new Date(user.getLong(CREATION_PARAM));
+
+                        food.stranger.foodId = stranger.getString(FOOD_ID_PARAM);
+                        food.stranger.foodURL = stranger.getString(FOOD_URL_PARAM);
+                        food.stranger.mapURL = stranger.getString(MAP_URL_PARAM);
+                        food.stranger.bonAppetit = stranger.getInt(BON_APPETIT_PARAM);
+
+                        foods.add(food);
+                    }
+                    listener.onFetchUser(foods);
+                } catch (JSONException e) {
+                    Log.e(API.class, "Cannot parse JSON from server", e.getMessage());
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError e) {
+                Log.e(API.class, "Volley error reposnse: ", e.getMessage());
+            }
+        }));
+    }
+
     public static List<FoodPair> fetchUser() throws Exception {
         try {
             HttpGet request = new HttpGet(FETCH_USER_URL);
@@ -210,6 +270,7 @@ public class API {
     }
 
     public static FoodPair uploadFood(File foodFile, Location location) throws Exception {
+        Log.i(API.class, "uploadFood");
         try {
             String latitude = "0.0";
             String longitude = "0.0";
@@ -334,7 +395,7 @@ public class API {
     }
 
     private static Exception processError(Exception exc) {
-        Log.e(API.class, "error", exc.getStackTrace().toString());
+        Log.e(API.class, exc);
         return new Exception(App.context.getResources().getString(R.string.error_unknown_err));
     }
 
