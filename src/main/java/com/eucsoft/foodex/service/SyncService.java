@@ -9,7 +9,7 @@ import android.os.IBinder;
 
 import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.log.Log;
-import com.eucsoft.foodex.service.listener.SyncAllListener;
+import com.eucsoft.foodex.service.listener.FetchUserListener;
 
 public class SyncService extends Service {
 
@@ -18,7 +18,7 @@ public class SyncService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(SyncService.class, "onStartCommand");
-        API.fetchUserAsync(new SyncAllListener(this));
+        API.fetchUserAsync(new FetchUserListener(this));
         return Service.START_NOT_STICKY;
     }
 

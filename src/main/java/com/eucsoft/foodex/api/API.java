@@ -171,7 +171,7 @@ public class API {
         }
     }
 
-    public static void fetchUserAsync(final FetchUserListener listener) {
+    public static void fetchUserAsync(final onFetchUser listener) {
         Log.i(API.class, "API.fetchUser");
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, FETCH_USER_URL, null, new Response.Listener<JSONObject>() {
@@ -200,7 +200,7 @@ public class API {
 
                         foods.add(food);
                     }
-                    listener.userFetched(foods);
+                    listener.onFetchUser(foods);
                 } catch (JSONException e) {
                     Log.e(API.class, "Cannot parse JSON from server", e.getMessage());
                 }
