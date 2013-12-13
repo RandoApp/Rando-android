@@ -98,7 +98,7 @@ public class APITest extends AndroidTestCase {
         }
     }
 
-/*    @SmallTest
+    @SmallTest
     public void testFetchUser() throws Exception {
         APITestHelper.mockAPIForFetchUser();
 
@@ -159,7 +159,7 @@ public class APITest extends AndroidTestCase {
         } catch (Exception e) {
             assertThat(e.getMessage(), is(App.context.getResources().getString(R.string.error_unknown_err)));
         }
-    }*/
+    }
 
     @SmallTest
     public void testReport() throws Exception {

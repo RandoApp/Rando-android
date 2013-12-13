@@ -12,6 +12,7 @@ import com.android.volley.toolbox.HttpClientStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.eucsoft.foodex.App;
+import static com.eucsoft.foodex.Constants.*;
 import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.db.model.FoodPair;
@@ -87,18 +88,12 @@ import static org.apache.http.HttpStatus.SC_OK;
 
 public class API {
 
-    private  static HttpParams httpParameters = new BasicHttpParams();
-    public static HttpClient client = new DefaultHttpClient(httpParameters);
-    private  static RequestQueue mQueue;
+    private static HttpParams httpParams = new BasicHttpParams();
+    public static HttpClient client = new DefaultHttpClient(httpParams);
+    private static RequestQueue requestQueue;
 
     static {
-        int timeoutConnection = 6000;
-        HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
-        int timeoutSocket = 6000;
-        HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
-
         try {
-            mQueue = Volley.newRequestQueue(App.context, new HttpClientStack(client));
             String cookieValue = Preferences.getSessionCookieValue();
             if (!"".equals(cookieValue)) {
                 BasicClientCookie cookie = new BasicClientCookie(SEESSION_COOKIE_NAME, cookieValue);
@@ -106,6 +101,10 @@ public class API {
                 cookie.setPath(Preferences.getSessionCookiePath());
                 ((DefaultHttpClient) client).getCookieStore().addCookie(cookie);
             }
+
+            HttpConnectionParams.setConnectionTimeout(httpParams, CONNECTION_TIMEOUT);
+            HttpConnectionParams.setSoTimeout(httpParams, CONNECTION_TIMEOUT);
+            requestQueue = Volley.newRequestQueue(App.context, new HttpClientStack(client));
         } catch (Exception e) {
             //Why is the world so cruel?
         }
@@ -172,23 +171,64 @@ public class API {
         }
     }
 
-    public static void fetchUser(final FetchUserListener listener) throws Exception {
+    public static void fetchUserAsync(final FetchUserListener listener) {
         Log.i(API.class, "API.fetchUser");
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, FETCH_USER_URL, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
-                //Response
-
-                JSONArray jsonFoods = null;
-                List<FoodPair> foods = null;
                 try {
-                    jsonFoods = response.getJSONArray(FOODS_PARAM);
-
-                    foods = new ArrayList<FoodPair>(jsonFoods.length());
+                    JSONArray jsonFoods = response.getJSONArray(FOODS_PARAM);
+                    List<FoodPair> foods = new ArrayList<FoodPair>(jsonFoods.length());
 
                     for (int i = 0; i < jsonFoods.length(); i++) {
+                        FoodPair food = new FoodPair();
+                        JSONObject jsonFood = jsonFoods.getJSONObject(i);
+                        JSONObject user = jsonFood.getJSONObject(USER_PARAM);
+                        JSONObject stranger = jsonFood.getJSONObject(STRANGER_PARAM);
+                        food.user.foodId = user.getString(FOOD_ID_PARAM);
+                        food.user.foodURL = user.getString(FOOD_URL_PARAM);
+                        food.user.mapURL = user.getString(MAP_URL_PARAM);
+                        food.user.bonAppetit = user.getInt(BON_APPETIT_PARAM);
+                        food.user.foodDate = new Date(user.getLong(CREATION_PARAM));
+
+                        food.stranger.foodId = stranger.getString(FOOD_ID_PARAM);
+                        food.stranger.foodURL = stranger.getString(FOOD_URL_PARAM);
+                        food.stranger.mapURL = stranger.getString(MAP_URL_PARAM);
+                        food.stranger.bonAppetit = stranger.getInt(BON_APPETIT_PARAM);
+
+                        foods.add(food);
+                    }
+                    listener.userFetched(foods);
+                } catch (JSONException e) {
+                    Log.e(API.class, "Cannot parse JSON from server", e.getMessage());
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError e) {
+                Log.e(API.class, "Volley error reposnse: ", e.getMessage());
+            }
+        });
+
+        requestQueue.add(jsObjRequest);
+    }
+
+    public static List<FoodPair> fetchUser() throws Exception {
+        try {
+            HttpGet request = new HttpGet(FETCH_USER_URL);
+            HttpResponse response = client.execute(request);
+
+
+            if (response.getStatusLine().getStatusCode() == SC_OK) {
+                JSONObject json = readJSON(response);
+                JSONArray jsonFoods = json.getJSONArray(FOODS_PARAM);
+
+                List<FoodPair> foods = new ArrayList<FoodPair>(jsonFoods.length());
+
+                for (int i = 0; i < jsonFoods.length(); i++) {
                     FoodPair food = new FoodPair();
                     JSONObject jsonFood = jsonFoods.getJSONObject(i);
                     JSONObject user = jsonFood.getJSONObject(USER_PARAM);
@@ -206,22 +246,13 @@ public class API {
 
                     foods.add(food);
                 }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if (listener !=null)
-                listener.userFetched(foods);
-
+                return foods;
+            } else {
+                throw processServerError(readJSON(response));
             }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(JsonObjectRequest.class, error);
-            }
-        });
-
-        mQueue.add(jsObjRequest);
+        } catch (IOException e) {
+            throw processError(e);
+        }
     }
 
     public static byte[] downloadFood(String url) throws Exception {
