@@ -40,6 +40,8 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
 
     public static Location currentLocation;
 
+    private ImageButton uploadPictureButton;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -123,17 +125,23 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
             }
         });
 
-        ImageButton uploadPictureButton = (ImageButton) findViewById(R.id.upload_photo_button);
+        uploadPictureButton = (ImageButton) findViewById(R.id.upload_photo_button);
         uploadPictureButton.setOnClickListener(new ImageButton.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
+                uploadPictureButton.setEnabled(false);
+                ((LinearLayout) uploadPictureButton.getParent()).setBackgroundColor(getResources().getColor(R.color.button_disabled_background));
+
+
                 Bitmap originalBmp = foodexSurfaceView.getCurrentBitmap();
 
                 CreateFoodAndUploadTask uploadTask = new CreateFoodAndUploadTask(TakePictureActivity.this, getApplicationContext());
                 uploadTask.execute(originalBmp);
             }
         });
+
+
 
         LocationUpdater.LocationResult locationResult = new LocationUpdater.LocationResult() {
             @Override
@@ -171,6 +179,11 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
                 } else {
                     Toast.makeText(TakePictureActivity.this, R.string.photo_upload_failed,
                             Toast.LENGTH_LONG).show();
+                }
+
+                if (uploadPictureButton != null) {
+                    uploadPictureButton.setEnabled(true);
+                    ((LinearLayout) uploadPictureButton.getParent()).setBackgroundColor(getResources().getColor(R.color.auth_button));
                 }
                 break;
         }
