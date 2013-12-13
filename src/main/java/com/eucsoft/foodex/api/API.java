@@ -174,7 +174,7 @@ public class API {
     public static void fetchUserAsync(final onFetchUser listener) {
         Log.i(API.class, "API.fetchUser");
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, FETCH_USER_URL, null, new Response.Listener<JSONObject>() {
+        requestQueue.add(new JsonObjectRequest(Request.Method.GET, FETCH_USER_URL, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
@@ -211,9 +211,7 @@ public class API {
             public void onErrorResponse(VolleyError e) {
                 Log.e(API.class, "Volley error reposnse: ", e.getMessage());
             }
-        });
-
-        requestQueue.add(jsObjRequest);
+        }));
     }
 
     public static List<FoodPair> fetchUser() throws Exception {
