@@ -12,6 +12,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+
 public class FetchUserListenerTest extends AndroidTestCase {
 
     private FoodDAO foodDAO;
@@ -34,7 +42,7 @@ public class FetchUserListenerTest extends AndroidTestCase {
 
         foodDAO.insertFoodPairs(foodPairs);
 
-        FetchUserListener fetchUserListener = new FetchUserListener(new SyncService());
+        FetchUserListener fetchUserListener = new FetchUserListener(mock(SyncService.class));
         fetchUserListener.onFetchUser(foodPairs);
 
         FoodPairTestHelper.checkListsEqual(foodDAO.getAllFoodPairs(), foodPairs);
@@ -49,7 +57,7 @@ public class FetchUserListenerTest extends AndroidTestCase {
 
         foodDAO.insertFoodPairs(foodPairsInDB);
 
-        FetchUserListener fetchUserListener = new FetchUserListener(new SyncService());
+        FetchUserListener fetchUserListener = new FetchUserListener(mock(SyncService.class));
         fetchUserListener.onFetchUser(foodPairs);
 
         FoodPairTestHelper.checkListsEqual(foodDAO.getAllFoodPairs(), foodPairs);
@@ -62,7 +70,7 @@ public class FetchUserListenerTest extends AndroidTestCase {
 
         foodDAO.insertFoodPairs(forDBList);
 
-        FetchUserListener fetchUserListener = new FetchUserListener(new SyncService());
+        FetchUserListener fetchUserListener = new FetchUserListener(mock(SyncService.class));
         fetchUserListener.onFetchUser(foodPairs);
 
         FoodPairTestHelper.checkListsEqual(foodDAO.getAllFoodPairs(), foodPairs);
@@ -75,7 +83,7 @@ public class FetchUserListenerTest extends AndroidTestCase {
         forDBList.add(FoodPairTestHelper.getRandomFoodPair());
         foodDAO.insertFoodPairs(forDBList);
 
-        FetchUserListener fetchUserListener = new FetchUserListener(new SyncService());
+        FetchUserListener fetchUserListener = new FetchUserListener(mock(SyncService.class));
         fetchUserListener.onFetchUser(foodPairs);
 
         FoodPairTestHelper.checkListsEqual(foodDAO.getAllFoodPairs(), foodPairs);
