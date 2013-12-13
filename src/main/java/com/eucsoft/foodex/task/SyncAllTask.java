@@ -30,9 +30,9 @@ public class SyncAllTask extends AsyncTask<Void, Integer, Long> implements BaseT
             return RESULT_ERROR;
         }
 
-        List<FoodPair> serverFoodPairs;
+        List<FoodPair> serverFoodPairs = null;
         try {
-            serverFoodPairs = API.fetchUser();
+           // serverFoodPairs = API.fetchUser();
         } catch (Exception e) {
             //TODO: Work on error.
             Log.e(SyncAllTask.class, e);

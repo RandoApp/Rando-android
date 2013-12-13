@@ -4,6 +4,13 @@ import android.location.Location;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpClientStack;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.R;
@@ -82,6 +89,7 @@ public class API {
 
     private  static HttpParams httpParameters = new BasicHttpParams();
     public static HttpClient client = new DefaultHttpClient(httpParameters);
+    private  static RequestQueue mQueue;
 
     static {
         int timeoutConnection = 6000;
@@ -90,6 +98,7 @@ public class API {
         HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 
         try {
+            mQueue = Volley.newRequestQueue(App.context, new HttpClientStack(client));
             String cookieValue = Preferences.getSessionCookieValue();
             if (!"".equals(cookieValue)) {
                 BasicClientCookie cookie = new BasicClientCookie(SEESSION_COOKIE_NAME, cookieValue);
@@ -163,19 +172,23 @@ public class API {
         }
     }
 
-    public static List<FoodPair> fetchUser() throws Exception {
-        try {
-            HttpGet request = new HttpGet(FETCH_USER_URL);
-            HttpResponse response = client.execute(request);
+    public static void fetchUser(final FetchUserListener listener) throws Exception {
+        Log.i(API.class, "API.fetchUser");
 
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, FETCH_USER_URL, null, new Response.Listener<JSONObject>() {
 
-            if (response.getStatusLine().getStatusCode() == SC_OK) {
-                JSONObject json = readJSON(response);
-                JSONArray jsonFoods = json.getJSONArray(FOODS_PARAM);
+            @Override
+            public void onResponse(JSONObject response) {
+                //Response
 
-                List<FoodPair> foods = new ArrayList<FoodPair>(jsonFoods.length());
+                JSONArray jsonFoods = null;
+                List<FoodPair> foods = null;
+                try {
+                    jsonFoods = response.getJSONArray(FOODS_PARAM);
 
-                for (int i = 0; i < jsonFoods.length(); i++) {
+                    foods = new ArrayList<FoodPair>(jsonFoods.length());
+
+                    for (int i = 0; i < jsonFoods.length(); i++) {
                     FoodPair food = new FoodPair();
                     JSONObject jsonFood = jsonFoods.getJSONObject(i);
                     JSONObject user = jsonFood.getJSONObject(USER_PARAM);
@@ -193,13 +206,22 @@ public class API {
 
                     foods.add(food);
                 }
-                return foods;
-            } else {
-                throw processServerError(readJSON(response));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if (listener !=null)
+                listener.userFetched(foods);
+
             }
-        } catch (IOException e) {
-            throw processError(e);
-        }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(JsonObjectRequest.class, error);
+            }
+        });
+
+        mQueue.add(jsObjRequest);
     }
 
     public static byte[] downloadFood(String url) throws Exception {
@@ -219,6 +241,7 @@ public class API {
     }
 
     public static FoodPair uploadFood(File foodFile, Location location) throws Exception {
+        Log.i(API.class, "uploadFood");
         try {
             String latitude = "0.0";
             String longitude = "0.0";
