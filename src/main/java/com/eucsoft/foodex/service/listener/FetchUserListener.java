@@ -22,7 +22,7 @@ public class FetchUserListener implements onFetchUser {
 
     @Override
     public void onFetchUser(List<FoodPair> foodPairs) {
-        Log.v(onFetchUser.class, "foosPairsRecieved");
+        Log.v(FetchUserListener.class, "foosPairsRecieved");
         FoodDAO foodDAO = new FoodDAO(App.context);
 
         if (foodPairs.size() != foodDAO.getFoodPairsNumber()) {

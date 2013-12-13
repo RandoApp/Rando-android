@@ -1,8 +1,6 @@
 package com.eucsoft.foodex.api;
 
 import android.location.Location;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -13,18 +11,15 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.eucsoft.foodex.App;
 import static com.eucsoft.foodex.Constants.*;
-import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.db.model.FoodPair;
-import com.eucsoft.foodex.fragment.AuthFragment;
-import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.preferences.Preferences;
-import com.eucsoft.foodex.task.LogoutTask;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
@@ -53,7 +48,6 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import static com.eucsoft.foodex.Constants.ANONYMOUS_ID_PARAM;
@@ -159,7 +153,7 @@ public class API {
         }
     }
 
-    public static void logout() throws Exception {
+    public static void logout() throws AuthenticationException, Exception {
         try {
             HttpPost request = new HttpPost(LOGOUT_URL);
             HttpResponse response = client.execute(request);
@@ -214,7 +208,7 @@ public class API {
         }));
     }
 
-    public static List<FoodPair> fetchUser() throws Exception {
+    public static List<FoodPair> fetchUser() throws AuthenticationException, Exception {
         try {
             HttpGet request = new HttpGet(FETCH_USER_URL);
             HttpResponse response = client.execute(request);
@@ -253,7 +247,7 @@ public class API {
         }
     }
 
-    public static byte[] downloadFood(String url) throws Exception {
+    public static byte[] downloadFood(String url) throws AuthenticationException, Exception {
         try {
             HttpGet request = new HttpGet(url);
             HttpResponse response = client.execute(request);
@@ -269,7 +263,7 @@ public class API {
         }
     }
 
-    public static FoodPair uploadFood(File foodFile, Location location) throws Exception {
+    public static FoodPair uploadFood(File foodFile, Location location) throws AuthenticationException, Exception {
         Log.i(API.class, "uploadFood");
         try {
             String latitude = "0.0";
@@ -304,7 +298,7 @@ public class API {
         }
     }
 
-    public static void report(String id) throws Exception {
+    public static void report(String id) throws AuthenticationException, Exception {
         try {
             HttpPost request = new HttpPost(REPORT_URL + id);
 
@@ -321,7 +315,7 @@ public class API {
         }
     }
 
-    public static void bonAppetit(String id) throws Exception {
+    public static void bonAppetit(String id) throws AuthenticationException, Exception {
         try {
             HttpPost request = new HttpPost(BON_APPETIT_URL + id);
             HttpResponse response = client.execute(request);
@@ -378,14 +372,8 @@ public class API {
         try {
             switch (json.getInt(ERROR_CODE_PARAM)) {
                 case UNAUTHORIZED_CODE:
-                    new LogoutTask(new TaskResultListener() {
-                        @Override
-                        public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
-                            FragmentManager fragmentManager = ((ActionBarActivity) MainActivity.activity).getSupportFragmentManager();
-                            fragmentManager.beginTransaction().replace(R.id.main_screen, new AuthFragment()).commit();
-                        }
-                    }).execute();
-                    return new Exception(App.context.getResources().getString(R.string.error_400));
+                    return new AuthenticationException(App.context.getResources().getString(R.string.error_400));
+
             }
             //TODO: implement all code handling in switch and replace server "message" with default value.
             return new Exception(json.getString("message"));

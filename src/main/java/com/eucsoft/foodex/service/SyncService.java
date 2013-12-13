@@ -31,8 +31,8 @@ public class SyncService extends Service {
     public void setAlarm(long time) {
         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getApplicationContext(), SyncService.class);
-        PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
-        am.set(AlarmManager.RTC_WAKEUP, time, pintent);
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
+        am.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
     }
 
 }
