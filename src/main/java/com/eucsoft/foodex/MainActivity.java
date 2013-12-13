@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.eucsoft.foodex.autoinstall.APKGithubInstaller;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.fragment.AuthFragment;
 import com.eucsoft.foodex.fragment.EmptyHomeWallFragment;
