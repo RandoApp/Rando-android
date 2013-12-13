@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import com.eucsoft.foodex.api.API;
+
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.service.listener.FetchUserListener;
 
