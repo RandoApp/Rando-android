@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
+import android.hardware.Camera;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
@@ -17,6 +18,7 @@ import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -29,11 +31,14 @@ import com.eucsoft.foodex.task.CreateFoodAndUploadTask;
 import com.eucsoft.foodex.util.LocationUpdater;
 import com.eucsoft.foodex.view.FoodexSurfaceView;
 
+import java.io.File;
 import java.util.HashMap;
 
 public class TakePictureActivity extends Activity implements TaskResultListener {
 
     private FoodexSurfaceView foodexSurfaceView;
+    private Camera camera;
+    private FrameLayout preview;
 
     private static final int REQ_CODE_SELECT_PHOTO = 100;
     private LocationUpdater locationUpdater = new LocationUpdater();
@@ -41,6 +46,31 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
     public static Location currentLocation;
 
     private ImageButton uploadPictureButton;
+
+
+    private Camera.PictureCallback pictureCallback = new Camera.PictureCallback() {
+
+        @Override
+        public void onPictureTaken(byte[] data, Camera camera) {
+
+            /*File pictureFile = getOutputMediaFile(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
+            if (pictureFile == null){
+                Log.d(TAG, "Error creating media file, check storage permissions: " +
+                        e.getMessage());
+                return;
+            }
+
+            try {
+                FileOutputStream fos = new FileOutputStream(pictureFile);
+                fos.write(data);
+                fos.close();
+            } catch (FileNotFoundException e) {
+                Log.d(TAG, "File not found: " + e.getMessage());
+            } catch (IOException e) {
+                Log.d(TAG, "Error accessing file: " + e.getMessage());
+            }*/
+        }
+    };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -61,7 +91,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
                     String filePath = cursor.getString(columnIndex);
                     cursor.close();
 
-                    foodexSurfaceView.releaseCamera();
+                    /*foodexSurfaceView.releaseCamera();*/
                     int currentapiVersion = android.os.Build.VERSION.SDK_INT;
                     if (currentapiVersion < Build.VERSION_CODES.HONEYCOMB)
                     {
@@ -79,31 +109,16 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_takepicture);
 
-        getWindow().setFormat(PixelFormat.UNKNOWN);
+        updateLocation();
+        /*createCameraPreview();*/
+        setBackButtonListener();
+        setTakePictureButtonListener();
+        setImageSelectButtonListener();
+        setUploadButtonListener();
 
-        WindowManager windowManager = (WindowManager) App.context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
+    }
 
-        foodexSurfaceView = (FoodexSurfaceView) findViewById(R.id.cameraPreview);
-
-        int bottomToolbarHeight = display.getHeight() - display.getWidth() - Constants.TOP_PANEL_ON_TAKEPICSCREEN_HEIGHT;
-
-        LinearLayout bottomPanel = (LinearLayout) findViewById(R.id.bottom_panel);
-        RelativeLayout.LayoutParams bottomPanelParams = (RelativeLayout.LayoutParams) bottomPanel.getLayoutParams();
-
-        bottomPanelParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
-        bottomPanelParams.height = bottomToolbarHeight;
-
-        ImageButton takePictureButton = (ImageButton) findViewById(R.id.take_picture_button);
-        takePictureButton.setOnClickListener(new ImageButton.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                foodexSurfaceView.takePicture();
-                showUploadButton();
-            }
-        });
-
+    private void setBackButtonListener(){
         ImageButton backButton = (ImageButton) findViewById(R.id.back_button);
         backButton.setOnClickListener(new ImageButton.OnClickListener() {
 
@@ -113,7 +128,21 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
                 finish();
             }
         });
+    }
 
+    private void setTakePictureButtonListener(){
+        ImageButton takePictureButton = (ImageButton) findViewById(R.id.take_picture_button);
+        takePictureButton.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                /*foodexSurfaceView.takePicture();
+                showUploadButton();*/
+                camera.takePicture(null, null, pictureCallback);
+            }
+        });
+    }
+
+    private void setImageSelectButtonListener(){
         ImageButton openPictureButton = (ImageButton) findViewById(R.id.select_photo_button);
         openPictureButton.setOnClickListener(new ImageButton.OnClickListener() {
 
@@ -124,7 +153,9 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
                 startActivityForResult(photoPickerIntent, REQ_CODE_SELECT_PHOTO);
             }
         });
+    }
 
+    private void setUploadButtonListener(){
         uploadPictureButton = (ImageButton) findViewById(R.id.upload_photo_button);
         uploadPictureButton.setOnClickListener(new ImageButton.OnClickListener() {
 
@@ -141,8 +172,39 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
             }
         });
 
+    }
+
+    private void createCameraPreview(){
+        camera = getCameraInstance();
+
+        if (camera != null){
+            foodexSurfaceView = new FoodexSurfaceView(getApplicationContext(), camera);
+
+            preview = (FrameLayout) findViewById(R.id.cameraPreview);
+            preview.addView(foodexSurfaceView);
+
+        } else {
+            //TODO: Handle camera not available.
+        }
 
 
+        /*getWindow().setFormat(PixelFormat.UNKNOWN);
+
+        WindowManager windowManager = (WindowManager) App.context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+
+        foodexSurfaceView = (FoodexSurfaceView) findViewById(R.id.cameraPreview);
+
+        int bottomToolbarHeight = display.getHeight() - display.getWidth() - Constants.TOP_PANEL_ON_TAKEPICSCREEN_HEIGHT;
+
+        LinearLayout bottomPanel = (LinearLayout) findViewById(R.id.bottom_panel);
+        RelativeLayout.LayoutParams bottomPanelParams = (RelativeLayout.LayoutParams) bottomPanel.getLayoutParams();
+
+        bottomPanelParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+        bottomPanelParams.height = bottomToolbarHeight;*/
+    }
+
+    private void updateLocation(){
         LocationUpdater.LocationResult locationResult = new LocationUpdater.LocationResult() {
             @Override
             public void gotLocation(Location location) {
@@ -163,6 +225,18 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
 
         ImageButton uploadPhotoButton = (ImageButton) findViewById(R.id.upload_photo_button);
         uploadPhotoButton.setVisibility(View.VISIBLE);
+    }
+
+    /** A safe way to get an instance of the Camera object. */
+    private Camera getCameraInstance(){
+        Camera c = null;
+        try {
+            c = Camera.open(); // attempt to get a Camera instance
+        }
+        catch (Exception e){
+            // Camera is not available (in use or does not exist)
+        }
+        return c; // returns null if camera is unavailable
     }
 
     @Override
@@ -189,13 +263,35 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
         }
     }
 
+    private void releaseCamera(){
+        preview.removeAllViews();
+        if (camera != null){
+            camera.release();        // release the camera for other applications
+            camera = null;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        createCameraPreview();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        releaseCamera();
+
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        locationUpdater.cancelTimer();
+        releaseCamera();
+        /*locationUpdater.cancelTimer();
         foodexSurfaceView.setCurrentBitmap(null);
         foodexSurfaceView.releaseCamera();
-        foodexSurfaceView = null;
+        foodexSurfaceView = null;*/
     }
 }
 

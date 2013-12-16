@@ -10,6 +10,8 @@ import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.eucsoft.foodex.log.Log;
+
 import java.io.IOException;
 
 public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
@@ -17,19 +19,26 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
     private Camera camera;
     boolean previewing = false;
     private Bitmap currentBitmap;
+    private SurfaceHolder holder;
 
 
-    public FoodexSurfaceView(Context context) {
+   /* public FoodexSurfaceView(Context context) {
         this(context, null);
     }
 
     public FoodexSurfaceView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
-    }
+    }*/
 
-    public FoodexSurfaceView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        getHolder().addCallback(this);
+    public FoodexSurfaceView(Context context, Camera camera) {
+        super(context);
+
+        this.camera = camera;
+
+        holder = getHolder();
+        holder.addCallback(this);
+
+        // deprecated setting, but required on Android versions prior to 3.0
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         if (currentapiVersion < Build.VERSION_CODES.HONEYCOMB)
         {
@@ -40,7 +49,7 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        if (currentBitmap != null) {
+        /*if (currentBitmap != null) {
             Canvas canvas = getHolder().lockCanvas();
             Bitmap scaledBitmap = Bitmap.createScaledBitmap(currentBitmap, canvas.getWidth(), canvas.getWidth(), true);
             canvas.drawBitmap(scaledBitmap, 0, 0, null);
@@ -50,17 +59,55 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
                 camera = Camera.open();
             }
             camera.setDisplayOrientation(90);
+        }*/
+
+        // The Surface has been created, now tell the camera where to draw the preview.
+        try {
+            camera.setDisplayOrientation(90);
+            camera.setPreviewDisplay(holder);
+            camera.startPreview();
+        } catch (IOException e) {
+            Log.d(FoodexSurfaceView.class, "Error setting camera preview: ",e.getMessage());
         }
+
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        releaseCamera();
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        if (previewing) {
+
+        // If your preview can change or rotate, take care of those events here.
+        // Make sure to stop the preview before resizing or reformatting it.
+
+        if (holder.getSurface() == null){
+            // preview surface does not exist
+            return;
+        }
+
+        // stop preview before making changes
+        try {
+            camera.stopPreview();
+        } catch (Exception e){
+            // ignore: tried to stop a non-existent preview
+        }
+
+        // set preview size and make any resize, rotate or
+        // reformatting changes here
+
+        // start preview with new settings
+        try {
+            camera.setPreviewDisplay(holder);
+            camera.startPreview();
+
+        } catch (Exception e){
+            Log.d(FoodexSurfaceView.class, "Error starting camera preview: ", e.getMessage());
+        }
+
+
+       /* if (previewing) {
             camera.stopPreview();
             previewing = false;
         }
@@ -74,9 +121,9 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-        }
+        }*/
     }
-
+/*
     public void releaseCamera() {
         if (camera != null) {
             camera.stopPreview();
@@ -85,6 +132,10 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
             camera = null;
         }
         previewing = false;
+    }*/
+
+    public void setCamera(Camera camera) {
+        this.camera = camera;
     }
 
     public Bitmap getCurrentBitmap() {
