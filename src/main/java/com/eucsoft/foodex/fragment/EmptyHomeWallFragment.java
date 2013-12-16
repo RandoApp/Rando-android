@@ -24,11 +24,11 @@ import com.eucsoft.foodex.service.SyncService;
 public class EmptyHomeWallFragment extends Fragment {
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
-        int calls = 0;
+        int calls = 1;
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Toast.makeText(context, "Service Call!! " + calls,
+            Toast.makeText(context, "Synchronization with server... Shot #" + calls++,
                     Toast.LENGTH_LONG).show();
             Log.i(android.content.BroadcastReceiver.class, "Recieved Update request.");
             FoodDAO foodDAO = new FoodDAO(App.context);
@@ -36,7 +36,7 @@ public class EmptyHomeWallFragment extends Fragment {
                 FragmentManager fragmentManager = ((ActionBarActivity) getActivity()).getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
             }
-            calls++;
+            foodDAO.close();
         }
     };
 

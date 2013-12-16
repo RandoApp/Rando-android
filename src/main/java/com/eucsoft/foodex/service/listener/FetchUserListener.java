@@ -6,7 +6,7 @@ import com.eucsoft.foodex.api.onFetchUser;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.log.Log;
-import com.eucsoft.foodex.notification.Notification;
+import com.eucsoft.foodex.broadcast.Broadcast;
 import com.eucsoft.foodex.service.SyncService;
 
 import java.util.Collections;
@@ -22,13 +22,13 @@ public class FetchUserListener implements onFetchUser {
 
     @Override
     public void onFetchUser(List<FoodPair> foodPairs) {
-        Log.v(FetchUserListener.class, "foosPairsRecieved");
+        Log.v(FetchUserListener.class, "onFetchUser");
         FoodDAO foodDAO = new FoodDAO(App.context);
 
         if (foodPairs.size() != foodDAO.getFoodPairsNumber()) {
             foodDAO.clearFoodPairs();
             foodDAO.insertFoodPairs(foodPairs);
-            Notification.show();
+            Broadcast.send(SyncService.NOTIFICATION);
         }
 
         List<FoodPair> dbFoodPairs = foodDAO.getAllFoodPairs();
@@ -38,7 +38,7 @@ public class FetchUserListener implements onFetchUser {
             if (!dbFoodPairs.get(i).equals(foodPairs.get(i))) {
                 foodDAO.clearFoodPairs();
                 foodDAO.insertFoodPairs(foodPairs);
-                Notification.show();
+                Broadcast.send(SyncService.NOTIFICATION);
             }
         }
 
