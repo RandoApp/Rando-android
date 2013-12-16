@@ -9,28 +9,29 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.eucsoft.foodex.service.SyncService;
 
-import java.io.File;
-
 public class App extends Application {
-    private RequestQueue mRequestQueue;
-    private ImageLoader mImageLoader;
+    private RequestQueue requestQueue;
+    private ImageLoader imageLoader;
     public static Context context;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        startSyncService();
-        mRequestQueue = Volley.newRequestQueue(this);
-        mImageLoader = new ImageLoader(mRequestQueue, new LruBitmapCache());
+
         context = getApplicationContext();
+
+        startSyncService();
+
+        requestQueue = Volley.newRequestQueue(this);
+        imageLoader = new ImageLoader(requestQueue, new LruBitmapCache());
     }
 
     public RequestQueue getRequestQueue() {
-        return mRequestQueue;
+        return requestQueue;
     }
 
-    public ImageLoader getmImageLoader() {
-        return mImageLoader;
+    public ImageLoader getImageLoader() {
+        return imageLoader;
     }
 
     public static App getInstance(Context context) {
@@ -38,8 +39,8 @@ public class App extends Application {
     }
 
     public void startSyncService() {
-        Intent syncService = new Intent(getApplicationContext(), SyncService.class);
-        getApplicationContext().startService(syncService);
+        Intent syncService = new Intent(context, SyncService.class);
+        context.startService(syncService);
     }
 
 }
