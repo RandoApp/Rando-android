@@ -203,24 +203,33 @@ public class FoodPairsAdapter extends BaseAdapter {
             holder.stranger.foodMapPagerAdatper.recycle(holder.stranger.foodImage, holder.stranger.mapImage);
         }
 
-        if(holder.stranger.foodContainer != null){
+        if (holder.stranger.foodContainer != null){
             holder.stranger.foodContainer.cancelRequest();
             holder.stranger.foodContainer = null;
         }
-        if(holder.stranger.mapContainer!= null){
+        if (holder.stranger.mapContainer != null){
             holder.stranger.mapContainer.cancelRequest();
             holder.stranger.mapContainer = null;
         }
-        if(holder.user.foodContainer != null){
+        if (holder.user.foodContainer != null){
             holder.user.foodContainer.cancelRequest();
             holder.user.foodContainer = null;
         }
-        if(holder.user.mapContainer!= null){
+        if (holder.user.mapContainer != null){
             holder.user.mapContainer.cancelRequest();
             holder.user.mapContainer = null;
         }
 
+
+        setViewSwitcherToDefault(holder);
         setPagesToDefault(holder);
+    }
+
+    private void setViewSwitcherToDefault(ViewHolder holder) {
+        //disable animation for immediately and undetectable switching to zero child:
+        holder.viewSwitcher.setInAnimation(null);
+        holder.viewSwitcher.setOutAnimation(null);
+        holder.viewSwitcher.setDisplayedChild(0);
     }
 
     private void setPagesToDefault(ViewHolder holder) {
