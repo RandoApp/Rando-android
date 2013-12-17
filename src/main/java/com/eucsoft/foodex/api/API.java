@@ -165,7 +165,7 @@ public class API {
         }
     }
 
-    public static void fetchUserAsync(final onFetchUser listener) {
+    public static void fetchUserAsync(final OnFetchUser listener) {
         Log.i(API.class, "API.fetchUser");
 
         requestQueue.add(new JsonObjectRequest(Request.Method.GET, FETCH_USER_URL, null, new Response.Listener<JSONObject>() {
@@ -386,5 +386,6 @@ public class API {
         Log.e(API.class, exc);
         return new Exception(App.context.getResources().getString(R.string.error_unknown_err));
     }
+
 
 }

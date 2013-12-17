@@ -3,7 +3,6 @@ package com.eucsoft.foodex.adapter;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.Display;
@@ -204,24 +203,33 @@ public class FoodPairsAdapter extends BaseAdapter {
             holder.stranger.foodMapPagerAdatper.recycle(holder.stranger.foodImage, holder.stranger.mapImage);
         }
 
-        if(holder.stranger.foodContainer != null){
+        if (holder.stranger.foodContainer != null){
             holder.stranger.foodContainer.cancelRequest();
             holder.stranger.foodContainer = null;
         }
-        if(holder.stranger.mapContainer!= null){
+        if (holder.stranger.mapContainer != null){
             holder.stranger.mapContainer.cancelRequest();
             holder.stranger.mapContainer = null;
         }
-        if(holder.user.foodContainer != null){
+        if (holder.user.foodContainer != null){
             holder.user.foodContainer.cancelRequest();
             holder.user.foodContainer = null;
         }
-        if(holder.user.mapContainer!= null){
+        if (holder.user.mapContainer != null){
             holder.user.mapContainer.cancelRequest();
             holder.user.mapContainer = null;
         }
 
+
+        setViewSwitcherToDefault(holder);
         setPagesToDefault(holder);
+    }
+
+    private void setViewSwitcherToDefault(ViewHolder holder) {
+        //disable animation for immediately and undetectable switching to zero child:
+        holder.viewSwitcher.setInAnimation(null);
+        holder.viewSwitcher.setOutAnimation(null);
+        holder.viewSwitcher.setDisplayedChild(0);
     }
 
     private void setPagesToDefault(ViewHolder holder) {
@@ -298,7 +306,7 @@ public class FoodPairsAdapter extends BaseAdapter {
     private void loadImages(final ViewHolder holder, FoodPair foodPair){
         if (!TextUtils.isEmpty(foodPair.stranger.foodURL))
         {
-            holder.stranger.foodContainer = App.getInstance(App.context).getmImageLoader(). get(foodPair.stranger.foodURL, new ImageLoader.ImageListener() {
+            holder.stranger.foodContainer = App.getInstance(App.context).getImageLoader(). get(foodPair.stranger.foodURL, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                     if (holder.stranger.foodImage != null) {
@@ -317,7 +325,7 @@ public class FoodPairsAdapter extends BaseAdapter {
 
         if (!TextUtils.isEmpty(foodPair.stranger.mapURL))
         {
-            holder.stranger.mapContainer = App.getInstance(App.context).getmImageLoader().get(foodPair.stranger.mapURL, new ImageLoader.ImageListener() {
+            holder.stranger.mapContainer = App.getInstance(App.context).getImageLoader().get(foodPair.stranger.mapURL, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                     if (holder.stranger.mapImage !=null){
@@ -336,7 +344,7 @@ public class FoodPairsAdapter extends BaseAdapter {
 
         if (!TextUtils.isEmpty(foodPair.user.foodURL))
         {
-            holder.user.foodContainer = App.getInstance(App.context).getmImageLoader().get(foodPair.user.foodURL, new ImageLoader.ImageListener() {
+            holder.user.foodContainer = App.getInstance(App.context).getImageLoader().get(foodPair.user.foodURL, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                     if (holder.user.foodImage !=null){
@@ -355,7 +363,7 @@ public class FoodPairsAdapter extends BaseAdapter {
 
         if (!TextUtils.isEmpty(foodPair.user.mapURL))
         {
-            holder.user.mapContainer = App.getInstance(App.context).getmImageLoader().get(foodPair.user.mapURL, new ImageLoader.ImageListener() {
+            holder.user.mapContainer = App.getInstance(App.context).getImageLoader().get(foodPair.user.mapURL, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                     if (holder.user.mapImage !=null){

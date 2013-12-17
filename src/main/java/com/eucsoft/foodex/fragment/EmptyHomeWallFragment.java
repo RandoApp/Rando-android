@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.R;
@@ -24,19 +23,16 @@ import com.eucsoft.foodex.service.SyncService;
 public class EmptyHomeWallFragment extends Fragment {
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
-        int calls = 0;
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Toast.makeText(context, "Service Call!! " + calls,
-                    Toast.LENGTH_LONG).show();
             Log.i(android.content.BroadcastReceiver.class, "Recieved Update request.");
             FoodDAO foodDAO = new FoodDAO(App.context);
             if (foodDAO.getFoodPairsNumber() > 0) {
                 FragmentManager fragmentManager = ((ActionBarActivity) getActivity()).getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
             }
-            calls++;
+            foodDAO.close();
         }
     };
 

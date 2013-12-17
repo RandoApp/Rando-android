@@ -14,6 +14,7 @@ import com.eucsoft.foodex.fragment.EmptyHomeWallFragment;
 import com.eucsoft.foodex.fragment.HomeWallFragment;
 import com.eucsoft.foodex.fragment.TrainingHomeFragment;
 import com.eucsoft.foodex.menu.LogoutMenu;
+import com.eucsoft.foodex.notification.Notification;
 import com.eucsoft.foodex.preferences.Preferences;
 
 public class MainActivity extends ActionBarActivity {
