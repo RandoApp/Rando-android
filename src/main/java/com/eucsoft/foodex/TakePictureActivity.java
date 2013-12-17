@@ -31,6 +31,7 @@ import com.eucsoft.foodex.view.FoodexSurfaceView;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 
 public class TakePictureActivity extends Activity implements TaskResultListener {
 
@@ -220,6 +221,14 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
         Camera c = null;
         try {
             c = Camera.open(); // attempt to get a Camera instance
+            Camera.Parameters params = c.getParameters();
+            params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+            params.setFlashMode(Camera.Parameters.FLASH_MODE_ON);
+            List<Camera.Size> sizeList = params.getSupportedPictureSizes();
+
+            //TODO: Set MAXIMUM Size
+            params.setPictureSize(sizeList.get(0).width, sizeList.get(0).height);
+            c.setParameters(params);
         }
         catch (Exception e){
             // Camera is not available (in use or does not exist)
