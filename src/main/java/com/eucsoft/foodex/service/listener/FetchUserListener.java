@@ -1,8 +1,8 @@
 package com.eucsoft.foodex.service.listener;
 
 import com.eucsoft.foodex.App;
-import static com.eucsoft.foodex.Constants.*;
-import com.eucsoft.foodex.api.onFetchUser;
+
+import com.eucsoft.foodex.api.OnFetchUser;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.log.Log;
@@ -12,17 +12,13 @@ import com.eucsoft.foodex.service.SyncService;
 import java.util.Collections;
 import java.util.List;
 
-public class FetchUserListener implements onFetchUser {
+public class FetchUserListener implements OnFetchUser {
 
-    private SyncService syncService;
-
-    public FetchUserListener(SyncService syncService) {
-        this.syncService = syncService;
-    }
+    private OnFetched fetchedListener;
 
     @Override
     public void onFetchUser(List<FoodPair> foodPairs) {
-        Log.v(FetchUserListener.class, "onFetchUser");
+        Log.v(FetchUserListener.class, "OnFetchUser");
         FoodDAO foodDAO = new FoodDAO(App.context);
 
         if (foodPairs.size() != foodDAO.getFoodPairsNumber()) {
@@ -42,15 +38,15 @@ public class FetchUserListener implements onFetchUser {
             }
         }
 
-        if (foodDAO.getNotPairedFoodsNumber() > 0) {
-            syncService.setAlarm(System.currentTimeMillis() + SERVICE_SHORT_PAUSE);
-            Log.i(FetchUserListener.class, "Service will start in " + SERVICE_SHORT_PAUSE / 1000 + " seconds");
-        } else {
-            syncService.setAlarm(System.currentTimeMillis() + SERVICE_LONG_PAUSE);
-            Log.i(FetchUserListener.class, "Service will start in " + SERVICE_LONG_PAUSE / 1000 + " seconds");
+        if (fetchedListener != null && foodDAO.getNotPairedFoodsNumber() > 0) {
+            fetchedListener.onFetched();
         }
 
         foodDAO.close();
     }
 
+    public FetchUserListener onOk(OnFetched listener) {
+        this.fetchedListener = listener;
+        return this;
+    }
 }

@@ -4,26 +4,18 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.os.AsyncTask;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 
-import com.eucsoft.foodex.App;
-import com.eucsoft.foodex.MainActivity;
-import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.TakePictureActivity;
 import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.db.model.FoodPair;
-import com.eucsoft.foodex.fragment.AuthFragment;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
+import com.eucsoft.foodex.service.SyncService;
 import com.eucsoft.foodex.util.FileUtil;
-
-import org.apache.http.auth.AuthenticationException;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
 
 public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> implements BaseTask {
 
@@ -75,7 +67,7 @@ public class CreateFoodAndUploadTask extends AsyncTask<Bitmap, Integer, Long> im
             return RESULT_ERROR;
         }
 
-        App.getInstance(context).startSyncService();
+        SyncService.run();
 
         file.renameTo(new File(FileUtil.getOutputMediaDir().getAbsolutePath() + foodPair.user.getFoodFileName()));
 

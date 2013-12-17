@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
@@ -29,12 +28,9 @@ public class HomeWallFragment extends Fragment {
     private FoodPairsAdapter foodPairsAdapter;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
-        int calls = 1;
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Toast.makeText(context, "Synchronization with server... Shot: #" + calls++,
-                    Toast.LENGTH_LONG).show();
             Log.i(BroadcastReceiver.class, "Recieved Update request");
             foodPairsAdapter.notifyDataSetChanged();
 

@@ -2,7 +2,6 @@ package com.eucsoft.foodex;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
@@ -19,8 +18,7 @@ public class App extends Application {
         super.onCreate();
 
         context = getApplicationContext();
-
-        startSyncService();
+        startService();
 
         requestQueue = Volley.newRequestQueue(this);
         imageLoader = new ImageLoader(requestQueue, new LruBitmapCache());
@@ -38,9 +36,11 @@ public class App extends Application {
         return (App) context.getApplicationContext();
     }
 
-    public void startSyncService() {
-        Intent syncService = new Intent(context, SyncService.class);
-        context.startService(syncService);
+    private void startService() {
+        //App onCreate called twice. Prevent double service run, if it is already created
+        if (!SyncService.isRunning()) {
+            SyncService.run();
+        }
     }
 
 }
