@@ -72,7 +72,7 @@ public class DownloadImageTask extends AsyncTask<String, Integer, Long> implemen
 
     @Override
     protected void onPostExecute(Long aLong) {
-        Log.d(DownloadFoodPicsTask.class, "onPostExecute", aLong.toString());
+        Log.d(DownloadImageTask.class, "onPostExecute", aLong.toString());
         taskResultListener.onTaskResult(TASK_ID, aLong, data);
     }
 

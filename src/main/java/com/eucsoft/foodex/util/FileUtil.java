@@ -4,12 +4,17 @@ import android.content.Context;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 
+import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.log.Log;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -86,5 +91,29 @@ public class FileUtil {
     public static String getFilePathByUrl(String url) {
         String fileName = url == null ? null : url.substring(url.lastIndexOf('/') + 1);
         return FileUtil.getOutputMediaDir() + File.separator + fileName;
+    }
+
+    public static String writeImageToTempFile(byte[] data){
+        File pictureFile = null;
+        try {
+            File outputDir = App.context.getCacheDir(); // context being the Activity pointer
+            pictureFile = File.createTempFile("camera_image", ".jpg", outputDir);
+        } catch (IOException e){
+            Log.d(FileUtil.class, "Error creating media file, check storage permissions: ",
+                    e.getMessage());
+            return null;
+        }
+
+        try {
+            FileOutputStream fos = new FileOutputStream(pictureFile);
+            fos.write(data);
+            fos.close();
+        } catch (FileNotFoundException e) {
+            Log.d(FileUtil.class, "File not found: ",e.getMessage());
+        } catch (IOException e) {
+            Log.d(FileUtil.class, "Error accessing file: " + e.getMessage());
+        }
+
+        return pictureFile.getAbsolutePath();
     }
 }

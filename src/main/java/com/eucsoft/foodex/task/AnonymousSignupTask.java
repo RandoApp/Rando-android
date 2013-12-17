@@ -33,7 +33,7 @@ public class AnonymousSignupTask extends AsyncTask<String, Integer, Long> implem
 
     @Override
     protected void onPostExecute(Long aLong) {
-        Log.d(DownloadFoodPicsTask.class, "onPostExecute", aLong.toString());
+        Log.d(AnonymousSignupTask.class, "onPostExecute", aLong.toString());
         taskResultListener.onTaskResult(0, aLong, errors);
     }
 }

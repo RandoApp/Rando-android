@@ -2,32 +2,30 @@ package com.eucsoft.foodex;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.Display;
+import android.text.TextUtils;
 import android.view.SurfaceHolder;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.CreateFoodAndUploadTask;
+import com.eucsoft.foodex.task.CropImageTask;
+import com.eucsoft.foodex.util.FileUtil;
 import com.eucsoft.foodex.util.LocationUpdater;
 import com.eucsoft.foodex.view.FoodexSurfaceView;
 
@@ -52,23 +50,14 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
 
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-
-            /*File pictureFile = getOutputMediaFile(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
-            if (pictureFile == null){
-                Log.d(TAG, "Error creating media file, check storage permissions: " +
-                        e.getMessage());
-                return;
+            String tmpFile = FileUtil.writeImageToTempFile(data);
+            if(tmpFile != null){
+                Toast.makeText(getApplicationContext(), tmpFile, Toast.LENGTH_LONG).show();
+                new CropImageTask().execute(tmpFile);
+            } else {
+                Toast.makeText(getApplicationContext(), "error saving file", Toast.LENGTH_LONG).show();
             }
-
-            try {
-                FileOutputStream fos = new FileOutputStream(pictureFile);
-                fos.write(data);
-                fos.close();
-            } catch (FileNotFoundException e) {
-                Log.d(TAG, "File not found: " + e.getMessage());
-            } catch (IOException e) {
-                Log.d(TAG, "Error accessing file: " + e.getMessage());
-            }*/
+            showUploadButton();
         }
     };
 
@@ -163,7 +152,6 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
             public void onClick(View arg0) {
                 uploadPictureButton.setEnabled(false);
                 ((LinearLayout) uploadPictureButton.getParent()).setBackgroundColor(getResources().getColor(R.color.button_disabled_background));
-
 
                 Bitmap originalBmp = foodexSurfaceView.getCurrentBitmap();
 
