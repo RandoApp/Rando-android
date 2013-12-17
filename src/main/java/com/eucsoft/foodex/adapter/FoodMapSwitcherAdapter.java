@@ -5,8 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.android.volley.toolbox.NetworkImageView;
-import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.R;
 
 public class FoodMapSwitcherAdapter extends PagerAdapter {
@@ -39,7 +37,6 @@ public class FoodMapSwitcherAdapter extends PagerAdapter {
         imageView.setOnClickListener(imageListener);
 
         if (position == 0){
-            //imageView.setImageUrl(holder., App.getInstance(container.getContext()).getRequestQueue());
             addFoodToHolder(imageView);
         } else {
             addMapToHolder(imageView);
