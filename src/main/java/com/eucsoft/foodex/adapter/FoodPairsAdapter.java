@@ -31,6 +31,7 @@ import com.eucsoft.foodex.task.BonAppetitTask;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FoodPairsAdapter extends BaseAdapter {
 
@@ -138,7 +139,7 @@ public class FoodPairsAdapter extends BaseAdapter {
                     BonAppetitTask bonAppetitTask = new BonAppetitTask();
                     bonAppetitTask.setTaskResultListener(new TaskResultListener() {
                         @Override
-                        public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
+                        public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
 
                             switch (taskCode) {
                                 case BonAppetitTask.TASK_ID:

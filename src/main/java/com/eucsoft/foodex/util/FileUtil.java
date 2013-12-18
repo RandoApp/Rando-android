@@ -110,10 +110,11 @@ public class FileUtil {
             fos.close();
         } catch (FileNotFoundException e) {
             Log.d(FileUtil.class, "File not found: ",e.getMessage());
+            return null;
         } catch (IOException e) {
             Log.d(FileUtil.class, "Error accessing file: " + e.getMessage());
+            return null;
         }
-
         return pictureFile.getAbsolutePath();
     }
 }

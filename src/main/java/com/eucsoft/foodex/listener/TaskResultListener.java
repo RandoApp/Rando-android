@@ -1,9 +1,9 @@
 package com.eucsoft.foodex.listener;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public interface TaskResultListener {
 
-    public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data);
+    public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data);
 
 }

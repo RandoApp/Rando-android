@@ -24,7 +24,7 @@ android {
     }*/
 
     defaultConfig {
-        minSdkVersion 9
+        minSdkVersion 10
         targetSdkVersion 19
         testPackageName 'com.eucsoft.foodex.test'
         testInstrumentationRunner 'com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner'

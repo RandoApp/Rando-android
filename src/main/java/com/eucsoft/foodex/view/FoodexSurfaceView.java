@@ -17,7 +17,6 @@ import java.io.IOException;
 public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
     private Camera camera;
-    boolean previewing = false;
     private Bitmap currentBitmap;
     private SurfaceHolder holder;
 

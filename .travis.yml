@@ -11,7 +11,6 @@ env:
     - ANDROID_SDKS=android-19,sysimg-19 ANDROID_TARGET=android-19 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads NEED_UPLOAD_APK=true
     - ANDROID_SDKS=android-18,sysimg-18 ANDROID_TARGET=android-18 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
     - ANDROID_SDKS=android-10 ANDROID_TARGET=android-10 ANDROID_ABI=armeabi REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
-    - ANDROID_SDKS=android-9 ANDROID_TARGET=android-9 ANDROID_ABI=armeabi REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
   global:
     secure: PITT+C0Whfpah9ot4quUfU+xO20wKRqTDkwR4OrDUktQ80S54Pi/GWiuCi731XqS4rUd0bBMI+cReudETwnvjSKD0tDtmWT3dsXx7/2qlVx7ljaas7YQhFCuVTAi5RuMg4tL7mi748WC29OgwchlASmQ4L2JwnimhsIRT8SKuUo=
 

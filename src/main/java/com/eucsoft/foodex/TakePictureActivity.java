@@ -32,6 +32,7 @@ import com.eucsoft.foodex.view.FoodexSurfaceView;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TakePictureActivity extends Activity implements TaskResultListener {
 
@@ -51,14 +52,17 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
 
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            String tmpFile = FileUtil.writeImageToTempFile(data);
-            if(tmpFile != null){
-                Toast.makeText(getApplicationContext(), tmpFile, Toast.LENGTH_LONG).show();
-                new CropImageTask().execute(tmpFile);
-            } else {
-                Toast.makeText(getApplicationContext(), "error saving file", Toast.LENGTH_LONG).show();
-            }
+            long start = System.currentTimeMillis();
+            new CropImageTask(new TaskResultListener() {
+                @Override
+                public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
+                    if (resultCode == BaseTask.RESULT_OK){
+                        Toast.makeText(getApplicationContext(), "File saved: "+ data.get(Constants.FILEPATH), Toast.LENGTH_LONG).show();
+                    }
+                }
+            }).execute(data);
             showUploadButton();
+            Log.i(TakePictureActivity.class,"Launch taken ", (System.currentTimeMillis() - start) +"");
         }
     };
 
@@ -237,7 +241,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
     }
 
     @Override
-    public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
+    public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
 
         switch (taskCode) {
             case CreateFoodAndUploadTask.TASK_ID:
