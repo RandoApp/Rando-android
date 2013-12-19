@@ -30,7 +30,7 @@ public class DownloadFoodPicsTask extends AsyncTask<FoodPair, Integer, Long> imp
 
     @Override
     protected Long doInBackground(FoodPair... params) {
-        Log.d(CreateFoodAndUploadTask.class, "doInBackground");
+        Log.d(FoodUploadTask.class, "doInBackground");
 
         if (params == null || params.length == 0) {
             return RESULT_ERROR;

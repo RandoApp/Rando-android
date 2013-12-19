@@ -33,7 +33,7 @@ public class DownloadImageTask extends AsyncTask<String, Integer, Long> implemen
 
     @Override
     protected Long doInBackground(String... params) {
-        Log.d(CreateFoodAndUploadTask.class, "doInBackground");
+        Log.d(FoodUploadTask.class, "doInBackground");
 
         if (params == null || params.length == 0) {
             return RESULT_ERROR;

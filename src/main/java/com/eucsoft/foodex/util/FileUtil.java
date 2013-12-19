@@ -4,7 +4,6 @@ import android.content.Context;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
-import android.provider.MediaStore;
 
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
@@ -93,12 +92,24 @@ public class FileUtil {
         return FileUtil.getOutputMediaDir() + File.separator + fileName;
     }
 
-    public static String writeImageToTempFile(byte[] data){
+    public static void writeImageFile(byte[] data, String filename) {
+        try {
+            FileOutputStream fos = new FileOutputStream(filename);
+            fos.write(data);
+            fos.close();
+        } catch (FileNotFoundException e) {
+            Log.d(FileUtil.class, "File not found: ", e.getMessage());
+        } catch (IOException e) {
+            Log.d(FileUtil.class, "Error accessing file: " + e.getMessage());
+        }
+    }
+
+    public static String writeImageToTempFile(byte[] data) {
         File pictureFile = null;
         try {
             File outputDir = App.context.getCacheDir(); // context being the Activity pointer
             pictureFile = File.createTempFile("camera_image", ".jpg", outputDir);
-        } catch (IOException e){
+        } catch (IOException e) {
             Log.d(FileUtil.class, "Error creating media file, check storage permissions: ",
                     e.getMessage());
             return null;
@@ -109,7 +120,7 @@ public class FileUtil {
             fos.write(data);
             fos.close();
         } catch (FileNotFoundException e) {
-            Log.d(FileUtil.class, "File not found: ",e.getMessage());
+            Log.d(FileUtil.class, "File not found: ", e.getMessage());
             return null;
         } catch (IOException e) {
             Log.d(FileUtil.class, "Error accessing file: " + e.getMessage());
