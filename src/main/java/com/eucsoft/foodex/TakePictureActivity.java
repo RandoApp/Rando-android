@@ -4,7 +4,6 @@ package com.eucsoft.foodex;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.location.Location;
@@ -12,7 +11,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -23,19 +21,13 @@ import android.widget.Toast;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.task.BaseTask;
-import com.eucsoft.foodex.task.CreateFoodAndUploadTask;
 import com.eucsoft.foodex.task.CropImageTask;
-import com.eucsoft.foodex.util.FileUtil;
 import com.eucsoft.foodex.util.LocationUpdater;
 import com.eucsoft.foodex.view.FoodexSurfaceView;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class TakePictureActivity extends Activity implements TaskResultListener {
-
     private FoodexSurfaceView foodexSurfaceView;
     private Camera camera;
     private FrameLayout preview;
@@ -44,25 +36,16 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
     private LocationUpdater locationUpdater = new LocationUpdater();
 
     public static Location currentLocation;
-
     private ImageButton uploadPictureButton;
 
+    byte[] imgData;
 
     private Camera.PictureCallback pictureCallback = new Camera.PictureCallback() {
 
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            long start = System.currentTimeMillis();
-            new CropImageTask(new TaskResultListener() {
-                @Override
-                public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
-                    if (resultCode == BaseTask.RESULT_OK){
-                        Toast.makeText(getApplicationContext(), "File saved: "+ data.get(Constants.FILEPATH), Toast.LENGTH_LONG).show();
-                    }
-                }
-            }).execute(data);
+            imgData = data;
             showUploadButton();
-            Log.i(TakePictureActivity.class,"Launch taken ", (System.currentTimeMillis() - start) +"");
         }
     };
 
@@ -104,12 +87,10 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
         setContentView(R.layout.activity_takepicture);
 
         updateLocation();
-        /*createCameraPreview();*/
         setBackButtonListener();
         setTakePictureButtonListener();
         setImageSelectButtonListener();
         setUploadButtonListener();
-
     }
 
     private void setBackButtonListener(){
@@ -131,6 +112,8 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
             public void onClick(View arg0) {
                 /*foodexSurfaceView.takePicture();
                 showUploadButton();*/
+                Log.i(CropImageTask.class, "TOTAL 0:" + Runtime.getRuntime().totalMemory() / (1024 * 1024));
+                Log.i(CropImageTask.class, "0:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
                 camera.takePicture(null, null, pictureCallback);
             }
         });
@@ -157,11 +140,28 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
             public void onClick(View arg0) {
                 uploadPictureButton.setEnabled(false);
                 ((LinearLayout) uploadPictureButton.getParent()).setBackgroundColor(getResources().getColor(R.color.button_disabled_background));
+                Log.i(CropImageTask.class, "00:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
+                new CropImageTask(new TaskResultListener() {
+                    @Override
+                    public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
+                        if (resultCode == BaseTask.RESULT_OK) {
+                            Toast.makeText(TakePictureActivity.this,
+                                    R.string.photo_upload_ok,
+                                    Toast.LENGTH_LONG).show();
+                            TakePictureActivity.this.setResult(Activity.RESULT_OK);
+                            TakePictureActivity.this.finish();
+                        } else {
+                            Toast.makeText(TakePictureActivity.this, R.string.photo_upload_failed,
+                                    Toast.LENGTH_LONG).show();
+                        }
 
-                Bitmap originalBmp = foodexSurfaceView.getCurrentBitmap();
-
-                CreateFoodAndUploadTask uploadTask = new CreateFoodAndUploadTask(TakePictureActivity.this, getApplicationContext());
-                uploadTask.execute(originalBmp);
+                        if (uploadPictureButton != null) {
+                            uploadPictureButton.setEnabled(true);
+                            ((LinearLayout) uploadPictureButton.getParent()).setBackgroundColor(getResources().getColor(R.color.auth_button));
+                        }
+                    }
+                }).doInBackground(imgData);
+                imgData = null;
             }
         });
 
@@ -225,14 +225,6 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
         Camera c = null;
         try {
             c = Camera.open(); // attempt to get a Camera instance
-            Camera.Parameters params = c.getParameters();
-            params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-            params.setFlashMode(Camera.Parameters.FLASH_MODE_ON);
-            List<Camera.Size> sizeList = params.getSupportedPictureSizes();
-
-            //TODO: Set MAXIMUM Size
-            params.setPictureSize(sizeList.get(0).width, sizeList.get(0).height);
-            c.setParameters(params);
         }
         catch (Exception e){
             // Camera is not available (in use or does not exist)
@@ -244,7 +236,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
     public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
 
         switch (taskCode) {
-            case CreateFoodAndUploadTask.TASK_ID:
+            case CropImageTask.TASK_ID:
                 if (resultCode == BaseTask.RESULT_OK) {
                     Toast.makeText(TakePictureActivity.this,
                             R.string.photo_upload_ok,
@@ -289,10 +281,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
     protected void onDestroy() {
         super.onDestroy();
         releaseCamera();
-        /*locationUpdater.cancelTimer();
-        foodexSurfaceView.setCurrentBitmap(null);
-        foodexSurfaceView.releaseCamera();
-        foodexSurfaceView = null;*/
+        locationUpdater.cancelTimer();
     }
 }
 
