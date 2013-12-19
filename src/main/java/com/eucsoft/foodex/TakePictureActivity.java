@@ -22,6 +22,7 @@ import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.CropImageTask;
+import com.eucsoft.foodex.task.FoodUploadTask;
 import com.eucsoft.foodex.util.LocationUpdater;
 import com.eucsoft.foodex.view.FoodexSurfaceView;
 
@@ -36,7 +37,9 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
     private LocationUpdater locationUpdater = new LocationUpdater();
 
     public static Location currentLocation;
+    public static String picFileName = null;
     private ImageButton uploadPictureButton;
+
 
     private Camera.PictureCallback pictureCallback = new Camera.PictureCallback() {
 
@@ -46,12 +49,12 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
                 @Override
                 public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
                     if (resultCode == BaseTask.RESULT_OK) {
+                        picFileName = (String) data.get(Constants.FILEPATH);
                         showUploadButton();
                     } else {
-                        Toast.makeText(TakePictureActivity.this, R.string.photo_upload_failed,
+                        Toast.makeText(TakePictureActivity.this, "Crop Failed.",
                                 Toast.LENGTH_LONG).show();
                     }
-                    showUploadButton();
                 }
             }).execute(data);
         }
@@ -116,8 +119,6 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
         takePictureButton.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                /*foodexSurfaceView.takePicture();
-                showUploadButton();*/
                 Log.i(CropImageTask.class, "TOTAL 0:" + Runtime.getRuntime().totalMemory() / (1024 * 1024));
                 Log.i(CropImageTask.class, "0:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
                 camera.takePicture(null, null, pictureCallback);
@@ -144,12 +145,33 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
 
             @Override
             public void onClick(View arg0) {
-                uploadPictureButton.setEnabled(false);
-                ((LinearLayout) uploadPictureButton.getParent()).setBackgroundColor(getResources().getColor(R.color.button_disabled_background));
-                Log.i(CropImageTask.class, "00:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
+                if (picFileName != null) {
+                    uploadPictureButton.setEnabled(false);
+                    ((LinearLayout) uploadPictureButton.getParent()).setBackgroundColor(getResources().getColor(R.color.button_disabled_background));
+                    Log.i(CropImageTask.class, "00:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
+                    new FoodUploadTask(new TaskResultListener() {
+                        @Override
+                        public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
+                            if (resultCode == BaseTask.RESULT_OK) {
+                                Toast.makeText(TakePictureActivity.this,
+                                        R.string.photo_upload_ok,
+                                        Toast.LENGTH_LONG).show();
+                                TakePictureActivity.this.setResult(Activity.RESULT_OK);
+                                TakePictureActivity.this.finish();
+                            } else {
+                                Toast.makeText(TakePictureActivity.this, R.string.photo_upload_failed,
+                                        Toast.LENGTH_LONG).show();
+                            }
+
+                            if (uploadPictureButton != null) {
+                                uploadPictureButton.setEnabled(true);
+                                ((LinearLayout) uploadPictureButton.getParent()).setBackgroundColor(getResources().getColor(R.color.auth_button));
+                            }
+                        }
+                    }).execute(picFileName);
+                }
             }
         });
-
     }
 
     private void createCameraPreview() {

@@ -81,15 +81,8 @@ public class CropImageTask extends AsyncTask<byte[], Integer, Long> implements B
             FileUtil.scanImage(App.context, file.getAbsolutePath());
             data.put(Constants.FILEPATH, file.getAbsolutePath());
 
-          /*  try {
-                API.uploadFood(file, TakePictureActivity.currentLocation);
-            } catch (Exception e) {
-                Log.w(CreateFoodAndUploadTask.class, "File failed to upload. File=", file.getAbsolutePath());
-                return RESULT_ERROR;
-            }*/
-
         } catch (IOException ex) {
-            Log.e(CreateFoodAndUploadTask.class, "doInBackground", ex.getMessage());
+            Log.e(CropImageTask.class, "doInBackground", ex.getMessage());
             return RESULT_ERROR;
         }
 
