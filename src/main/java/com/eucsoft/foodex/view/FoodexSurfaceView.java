@@ -38,7 +38,8 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
     public void surfaceCreated(SurfaceHolder holder) {
         // The Surface has been created, now tell the camera where to draw the preview.
         try {
-                camera.setPreviewDisplay(holder);
+            camera.setDisplayOrientation(90);
+            camera.setPreviewDisplay(holder);
             camera.startPreview();
         } catch (IOException e) {
             Log.d(FoodexSurfaceView.class, "Error setting camera preview: ",e.getMessage());
@@ -73,6 +74,7 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
 
         Camera.Parameters params = camera.getParameters();
         params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+        params.setRotation(90);
         params.setFlashMode(Camera.Parameters.FLASH_MODE_ON);
         List<Camera.Size> sizeList = params.getSupportedPictureSizes();
 
