@@ -54,6 +54,8 @@ public class BonAppetitTask extends AsyncTask<FoodPair, Integer, Long> implement
                     fragmentManager.beginTransaction().replace(R.id.main_screen, new AuthFragment()).commit();
                 }
             }).execute();
+            foodPair.stranger.bonAppetit = 0;
+            return RESULT_ERROR;
         } catch (Exception e) {
             Log.w(BonAppetitTask.class, "Failed to say Bon Appetit.");
             foodPair.stranger.bonAppetit = 0;
