@@ -75,7 +75,7 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
         Camera.Parameters params = camera.getParameters();
         params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         params.setRotation(90);
-        params.setFlashMode(Camera.Parameters.FLASH_MODE_ON);
+        params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
         List<Camera.Size> sizeList = params.getSupportedPictureSizes();
 
         //TODO: Set MAXIMUM Size

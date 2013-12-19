@@ -54,7 +54,6 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
                     showUploadButton();
                 }
             }).execute(data);
-            releaseCamera();
         }
     };
 
@@ -78,8 +77,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
                     cursor.close();
 
                     int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-                    if (currentapiVersion < Build.VERSION_CODES.HONEYCOMB)
-                    {
+                    if (currentapiVersion < Build.VERSION_CODES.HONEYCOMB) {
                         foodexSurfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_NORMAL);
                     }
                     foodexSurfaceView.setCurrentBitmap(BitmapFactory.decodeFile(filePath));
@@ -101,7 +99,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
         setUploadButtonListener();
     }
 
-    private void setBackButtonListener(){
+    private void setBackButtonListener() {
         ImageButton backButton = (ImageButton) findViewById(R.id.back_button);
         backButton.setOnClickListener(new ImageButton.OnClickListener() {
 
@@ -113,7 +111,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
         });
     }
 
-    private void setTakePictureButtonListener(){
+    private void setTakePictureButtonListener() {
         ImageButton takePictureButton = (ImageButton) findViewById(R.id.take_picture_button);
         takePictureButton.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
@@ -127,7 +125,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
         });
     }
 
-    private void setImageSelectButtonListener(){
+    private void setImageSelectButtonListener() {
         ImageButton openPictureButton = (ImageButton) findViewById(R.id.select_photo_button);
         openPictureButton.setOnClickListener(new ImageButton.OnClickListener() {
 
@@ -140,7 +138,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
         });
     }
 
-    private void setUploadButtonListener(){
+    private void setUploadButtonListener() {
         uploadPictureButton = (ImageButton) findViewById(R.id.upload_photo_button);
         uploadPictureButton.setOnClickListener(new ImageButton.OnClickListener() {
 
@@ -154,10 +152,10 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
 
     }
 
-    private void createCameraPreview(){
+    private void createCameraPreview() {
         camera = getCameraInstance();
 
-        if (camera != null){
+        if (camera != null) {
             foodexSurfaceView = new FoodexSurfaceView(getApplicationContext(), camera);
 
             preview = (FrameLayout) findViewById(R.id.cameraPreview);
@@ -184,7 +182,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
         bottomPanelParams.height = bottomToolbarHeight;*/
     }
 
-    private void updateLocation(){
+    private void updateLocation() {
         LocationUpdater.LocationResult locationResult = new LocationUpdater.LocationResult() {
             @Override
             public void gotLocation(Location location) {
@@ -207,13 +205,14 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
         uploadPhotoButton.setVisibility(View.VISIBLE);
     }
 
-    /** A safe way to get an instance of the Camera object. */
-    private Camera getCameraInstance(){
+    /**
+     * A safe way to get an instance of the Camera object.
+     */
+    private Camera getCameraInstance() {
         Camera c = null;
         try {
             c = Camera.open(); // attempt to get a Camera instance
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             // Camera is not available (in use or does not exist)
         }
         return c; // returns null if camera is unavailable
@@ -243,9 +242,9 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
         }
     }
 
-    private void releaseCamera(){
+    private void releaseCamera() {
         preview.removeAllViews();
-        if (camera != null){
+        if (camera != null) {
             camera.release();        // release the camera for other applications
             camera = null;
         }

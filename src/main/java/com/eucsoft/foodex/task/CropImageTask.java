@@ -3,10 +3,8 @@ package com.eucsoft.foodex.task;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
-import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.AsyncTask;
-import android.os.Environment;
 
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
@@ -17,8 +15,6 @@ import com.eucsoft.foodex.util.FileUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +44,7 @@ public class CropImageTask extends AsyncTask<byte[], Integer, Long> implements B
             BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
             Log.i(CropImageTask.class, "1.1:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
             String tmpFile = FileUtil.writeImageToTempFile(bytes);
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+           /* String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
                     .format(new Date());
             String fullImgFile = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() +
                     File.separator
@@ -57,7 +53,7 @@ public class CropImageTask extends AsyncTask<byte[], Integer, Long> implements B
                     + Constants.IMAGE_POSTFIX;
 
             FileUtil.writeImageFile(bytes, fullImgFile);
-            FileUtil.scanImage(App.context, fullImgFile);
+            FileUtil.scanImage(App.context, fullImgFile);*/
 
             Log.i(CropImageTask.class, "2:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
             int size = Math.min(options.outWidth, options.outHeight);
@@ -69,11 +65,6 @@ public class CropImageTask extends AsyncTask<byte[], Integer, Long> implements B
 
             decoder = null;
             Log.i(CropImageTask.class, "4:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
-
-            Matrix matrix = new Matrix();
-            matrix.postRotate(90);
-            bitmap = Bitmap.createBitmap(bitmap, 0, 0, size, size, matrix, true);
-            Log.i(CropImageTask.class, "5:" + Runtime.getRuntime().freeMemory());
 
             File file = FileUtil.getOutputMediaFile();
             if (file == null) {
