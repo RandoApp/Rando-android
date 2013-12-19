@@ -32,7 +32,7 @@ public class CropImageTask extends AsyncTask<byte[], Integer, Long> implements B
     @Override
     public Long doInBackground(byte[]... files) {
         Log.i(CropImageTask.class, "doInBackground");
-        if(files==null || files.length == 0 ){
+        if (files == null || files.length == 0) {
             return RESULT_ERROR;
         }
 
@@ -40,7 +40,6 @@ public class CropImageTask extends AsyncTask<byte[], Integer, Long> implements B
         files = null;
 
         try {
-            Log.i(CropImageTask.class, "decoding");
             Log.i(CropImageTask.class, "1:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;

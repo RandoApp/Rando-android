@@ -38,14 +38,23 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
     public static Location currentLocation;
     private ImageButton uploadPictureButton;
 
-    byte[] imgData;
-
     private Camera.PictureCallback pictureCallback = new Camera.PictureCallback() {
 
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            imgData = data;
-            showUploadButton();
+            new CropImageTask(new TaskResultListener() {
+                @Override
+                public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
+                    if (resultCode == BaseTask.RESULT_OK) {
+                        showUploadButton();
+                    } else {
+                        Toast.makeText(TakePictureActivity.this, R.string.photo_upload_failed,
+                                Toast.LENGTH_LONG).show();
+                    }
+                    showUploadButton();
+                }
+            }).execute(data);
+            releaseCamera();
         }
     };
 
@@ -68,7 +77,6 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
                     String filePath = cursor.getString(columnIndex);
                     cursor.close();
 
-                    /*foodexSurfaceView.releaseCamera();*/
                     int currentapiVersion = android.os.Build.VERSION.SDK_INT;
                     if (currentapiVersion < Build.VERSION_CODES.HONEYCOMB)
                     {
@@ -141,27 +149,6 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
                 uploadPictureButton.setEnabled(false);
                 ((LinearLayout) uploadPictureButton.getParent()).setBackgroundColor(getResources().getColor(R.color.button_disabled_background));
                 Log.i(CropImageTask.class, "00:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
-                new CropImageTask(new TaskResultListener() {
-                    @Override
-                    public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
-                        if (resultCode == BaseTask.RESULT_OK) {
-                            Toast.makeText(TakePictureActivity.this,
-                                    R.string.photo_upload_ok,
-                                    Toast.LENGTH_LONG).show();
-                            TakePictureActivity.this.setResult(Activity.RESULT_OK);
-                            TakePictureActivity.this.finish();
-                        } else {
-                            Toast.makeText(TakePictureActivity.this, R.string.photo_upload_failed,
-                                    Toast.LENGTH_LONG).show();
-                        }
-
-                        if (uploadPictureButton != null) {
-                            uploadPictureButton.setEnabled(true);
-                            ((LinearLayout) uploadPictureButton.getParent()).setBackgroundColor(getResources().getColor(R.color.auth_button));
-                        }
-                    }
-                }).doInBackground(imgData);
-                imgData = null;
             }
         });
 
