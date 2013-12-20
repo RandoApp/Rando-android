@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -109,7 +110,13 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
             @Override
             public void onClick(View arg0) {
                 setResult(RESULT_CANCELED);
-                finish();
+                if (TextUtils.isEmpty(picFileName)) {
+                    finish();
+                } else {
+                    picFileName = null;
+                    releaseCamera();
+                    createCameraPreview();
+                }
             }
         });
     }
