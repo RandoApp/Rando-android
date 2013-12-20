@@ -2,7 +2,9 @@ package com.eucsoft.foodex.task;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.PowerManager;
 
+import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.TakePictureActivity;
 import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.listener.TaskResultListener;
@@ -16,11 +18,9 @@ public class FoodUploadTask extends AsyncTask<String, Integer, Long> implements 
     public static final int TASK_ID = 100;
 
     private TaskResultListener taskResultListener;
-    private Context context;
 
     public FoodUploadTask(TaskResultListener taskResultListener) {
         this.taskResultListener = taskResultListener;
-        this.context = context;
     }
 
     @Override
@@ -32,11 +32,17 @@ public class FoodUploadTask extends AsyncTask<String, Integer, Long> implements 
         }
 
         String filename = params[0];
+        PowerManager pm = (PowerManager) App.context.getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                FoodUploadTask.class.getName());
+        wl.acquire();
         try {
             API.uploadFood(new File(filename), TakePictureActivity.currentLocation);
         } catch (Exception e) {
             Log.w(FoodUploadTask.class, "File failed to upload. File=", filename);
             return RESULT_ERROR;
+        } finally {
+            wl.release();
         }
         SyncService.run();
         return RESULT_OK;
