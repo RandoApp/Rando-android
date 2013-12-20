@@ -2,6 +2,7 @@ package com.eucsoft.foodex;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
@@ -12,13 +13,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.eucsoft.foodex.activity.BaseActivity;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.task.BaseTask;
@@ -29,7 +34,7 @@ import com.eucsoft.foodex.view.FoodexSurfaceView;
 
 import java.util.Map;
 
-public class TakePictureActivity extends Activity implements TaskResultListener {
+public class TakePictureActivity extends BaseActivity implements TaskResultListener {
     private FoodexSurfaceView foodexSurfaceView;
     private Camera camera;
     private FrameLayout preview;
@@ -56,6 +61,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
                         Toast.makeText(TakePictureActivity.this, "Crop Failed.",
                                 Toast.LENGTH_LONG).show();
                     }
+                    hideProgressbar();
                 }
             }).execute(data);
         }
@@ -101,6 +107,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
         setTakePictureButtonListener();
         setImageSelectButtonListener();
         setUploadButtonListener();
+        normalizeCameraPreview();
     }
 
     private void setBackButtonListener() {
@@ -115,6 +122,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
                 } else {
                     picFileName = null;
                     releaseCamera();
+                    hideUploadButton();
                     createCameraPreview();
                 }
             }
@@ -128,6 +136,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
             public void onClick(View arg0) {
                 Log.i(CropImageTask.class, "TOTAL 0:" + Runtime.getRuntime().totalMemory() / (1024 * 1024));
                 Log.i(CropImageTask.class, "0:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
+                showProgressbar("processing...");
                 camera.takePicture(null, null, pictureCallback);
             }
         });
@@ -153,12 +162,14 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
             @Override
             public void onClick(View arg0) {
                 if (picFileName != null) {
+                    showProgressbar("uploading...");
                     uploadPictureButton.setEnabled(false);
                     ((LinearLayout) uploadPictureButton.getParent()).setBackgroundColor(getResources().getColor(R.color.button_disabled_background));
                     Log.i(CropImageTask.class, "00:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
                     new FoodUploadTask(new TaskResultListener() {
                         @Override
                         public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
+                            hideProgressbar();
                             if (resultCode == BaseTask.RESULT_OK) {
                                 Toast.makeText(TakePictureActivity.this,
                                         R.string.photo_upload_ok,
@@ -193,14 +204,12 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
         } else {
             //TODO: Handle camera not available.
         }
+    }
 
-
-        /*getWindow().setFormat(PixelFormat.UNKNOWN);
+    private void normalizeCameraPreview() {
 
         WindowManager windowManager = (WindowManager) App.context.getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
-
-        foodexSurfaceView = (FoodexSurfaceView) findViewById(R.id.cameraPreview);
 
         int bottomToolbarHeight = display.getHeight() - display.getWidth() - Constants.TOP_PANEL_ON_TAKEPICSCREEN_HEIGHT;
 
@@ -208,7 +217,7 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
         RelativeLayout.LayoutParams bottomPanelParams = (RelativeLayout.LayoutParams) bottomPanel.getLayoutParams();
 
         bottomPanelParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
-        bottomPanelParams.height = bottomToolbarHeight;*/
+        bottomPanelParams.height = bottomToolbarHeight;
     }
 
     private void updateLocation() {
@@ -230,8 +239,23 @@ public class TakePictureActivity extends Activity implements TaskResultListener 
         selectPhotoButton.setVisibility(View.GONE);
         selectPhotoContainer.setVisibility(View.GONE);
 
+        uploadPictureButton.setEnabled(true);
+        ((LinearLayout) uploadPictureButton.getParent()).setBackgroundColor(getResources().getColor(R.color.auth_button));
         ImageButton uploadPhotoButton = (ImageButton) findViewById(R.id.upload_photo_button);
         uploadPhotoButton.setVisibility(View.VISIBLE);
+    }
+
+    private void hideUploadButton() {
+        ImageButton takePictureButton = (ImageButton) findViewById(R.id.take_picture_button);
+        takePictureButton.setVisibility(View.VISIBLE);
+
+        ImageButton selectPhotoButton = (ImageButton) findViewById(R.id.select_photo_button);
+        LinearLayout selectPhotoContainer = (LinearLayout) findViewById(R.id.select_photo_button_container);
+        selectPhotoButton.setVisibility(View.VISIBLE);
+        selectPhotoContainer.setVisibility(View.VISIBLE);
+
+        ImageButton uploadPhotoButton = (ImageButton) findViewById(R.id.upload_photo_button);
+        uploadPhotoButton.setVisibility(View.GONE);
     }
 
     /**
