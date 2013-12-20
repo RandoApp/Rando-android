@@ -15,7 +15,7 @@ import org.apache.http.HttpStatus;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -64,7 +64,7 @@ public class BonAppetitTaskTest extends AndroidTestCase {
         App.context = getContext();
         TaskResultListener listener = new TaskResultListener() {
             @Override
-            public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
+            public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
                 assertThat(taskCode, is(BonAppetitTask.TASK_ID));
                 assertThat(resultCode, is(BonAppetitTask.RESULT_OK));
                 assertThat(data.get(Constants.FOOD_PAIR), notNullValue());
@@ -103,7 +103,7 @@ public class BonAppetitTaskTest extends AndroidTestCase {
         App.context = getContext();
         TaskResultListener listener = new TaskResultListener() {
             @Override
-            public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
+            public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
                 assertThat(taskCode, is(BonAppetitTask.TASK_ID));
                 assertThat(resultCode, is(BonAppetitTask.RESULT_ERROR));
                 assertThat(data.get(Constants.FOOD_PAIR), notNullValue());
@@ -130,7 +130,7 @@ public class BonAppetitTaskTest extends AndroidTestCase {
         App.context = getContext();
         TaskResultListener listener = new TaskResultListener() {
             @Override
-            public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
+            public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
                 assertThat(taskCode, is(BonAppetitTask.TASK_ID));
                 assertThat(resultCode, is(BonAppetitTask.RESULT_ERROR));
                 assertThat(data.get(Constants.FOOD_PAIR), nullValue());
