@@ -8,9 +8,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.eucsoft.foodex.log.Log;
+import com.eucsoft.foodex.util.CameraUtil;
 
 import java.io.IOException;
-import java.util.List;
 
 public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -53,44 +53,42 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-        // If your preview can change or rotate, take care of those events here.
-        // Make sure to stop the preview before resizing or reformatting it.
-
         if (holder.getSurface() == null){
             // preview surface does not exist
             return;
         }
 
-        // stop preview before making changes
         try {
             camera.stopPreview();
         } catch (Exception e){
             // ignore: tried to stop a non-existent preview
         }
 
-        // set preview size and make any resize, rotate or
-        // reformatting changes here
-
         Camera.Parameters params = camera.getParameters();
         params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         params.setRotation(90);
         params.setFlashMode(Camera.Parameters.FLASH_MODE_ON);
-        List<Camera.Size> sizeList = params.getSupportedPictureSizes();
+
+        Camera.Size cameraSize = null;
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            cameraSize = CameraUtil.getBestPictureSizeForOldDevices(params.getSupportedPictureSizes());
+        } else {
+            cameraSize = CameraUtil.getBestPictureSize(params.getSupportedPictureSizes());
+        }
+        params.setPictureSize(cameraSize.width, cameraSize.height);
 
         //TODO: Set MAXIMUM Size
-        params.setPictureSize(sizeList.get(0).width, sizeList.get(0).height);
+        params.setPictureSize(cameraSize.width, cameraSize.height);
         camera.setParameters(params);
 
-        // start preview with new settings
         try {
             camera.setPreviewDisplay(holder);
             camera.startPreview();
-
         } catch (Exception e){
             Log.d(FoodexSurfaceView.class, "Error starting camera preview: ", e.getMessage());
         }
     }
+
     public void setCamera(Camera camera) {
         this.camera = camera;
     }
