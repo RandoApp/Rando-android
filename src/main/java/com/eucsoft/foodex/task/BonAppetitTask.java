@@ -18,6 +18,7 @@ import com.eucsoft.foodex.log.Log;
 import org.apache.http.auth.AuthenticationException;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class BonAppetitTask extends AsyncTask<FoodPair, Integer, Long> implements BaseTask {
     public static final int TASK_ID = 300;
@@ -48,7 +49,7 @@ public class BonAppetitTask extends AsyncTask<FoodPair, Integer, Long> implement
         } catch (AuthenticationException exc) {
             new LogoutTask(new TaskResultListener() {
                 @Override
-                public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
+                public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
                     FragmentManager fragmentManager = ((ActionBarActivity) MainActivity.activity).getSupportFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.main_screen, new AuthFragment()).commit();
                 }

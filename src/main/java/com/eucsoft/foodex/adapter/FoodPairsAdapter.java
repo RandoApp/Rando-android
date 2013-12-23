@@ -30,8 +30,8 @@ import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.BonAppetitTask;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FoodPairsAdapter extends BaseAdapter {
 
@@ -137,7 +137,7 @@ public class FoodPairsAdapter extends BaseAdapter {
                     BonAppetitTask bonAppetitTask = new BonAppetitTask();
                     bonAppetitTask.setTaskResultListener(new TaskResultListener() {
                         @Override
-                        public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
+                        public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
 
                             switch (taskCode) {
                                 case BonAppetitTask.TASK_ID:
@@ -327,7 +327,7 @@ public class FoodPairsAdapter extends BaseAdapter {
                     Log.e(FoodPairsAdapter.class, "Volley Error, when load food: ", userFoodPair.foodURL, " Error: ", error.getMessage());
 
                 }
-            });
+            }, foodImageSize, foodImageSize);
         }
     }
 
@@ -347,7 +347,7 @@ public class FoodPairsAdapter extends BaseAdapter {
                 public void onErrorResponse(VolleyError error) {
                     Log.e(FoodPairsAdapter.class, "Volley Error, when load map: ", userFoodPair.mapURL, " Error: ", error.getMessage());
                 }
-            });
+            }, foodImageSize, foodImageSize);
         }
     }
 

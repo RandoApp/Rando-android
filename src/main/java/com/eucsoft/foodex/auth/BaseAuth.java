@@ -17,6 +17,7 @@ import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.view.Progress;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public abstract class BaseAuth implements View.OnClickListener, TaskResultListener {
 
@@ -29,7 +30,7 @@ public abstract class BaseAuth implements View.OnClickListener, TaskResultListen
     }
 
     @Override
-    public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
+    public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
         if (resultCode == BaseTask.RESULT_ERROR) {
             if (data.get(Constants.ERROR) != null) {
                 Toast.makeText(authFragment.getActivity(), (CharSequence) data.get("error"), Toast.LENGTH_LONG).show();
