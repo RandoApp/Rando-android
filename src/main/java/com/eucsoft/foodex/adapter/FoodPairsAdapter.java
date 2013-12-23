@@ -88,6 +88,7 @@ public class FoodPairsAdapter extends BaseAdapter {
             LayoutInflater inflater = (LayoutInflater) container.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.food_pair_item, container, false);
             holder = createHolder(convertView);
+            addListenersToHolder(holder);
         }
 
         recycle(holder, foodPair);
@@ -118,21 +119,20 @@ public class FoodPairsAdapter extends BaseAdapter {
         holder.stranger.foodMapPagerAdatper = new FoodMapSwitcherAdapter(holder.stranger);
         holder.stranger.foodPager.setAdapter(holder.stranger.foodMapPagerAdatper);
 
-
         convertView.setTag(holder);
 
         return holder;
     }
 
-    private void addListenersToHolder(final ViewHolder holder, final FoodPair foodPair) {
-        View.OnClickListener foodOnClickListener = createFoodOnClickListener(holder, foodPair);
+    private void addListenersToHolder(final ViewHolder holder) {
+        View.OnClickListener foodOnClickListener = createFoodOnClickListener(holder);
         holder.user.foodMapPagerAdatper.setOnClickListener(foodOnClickListener);
         holder.stranger.foodMapPagerAdatper.setOnClickListener(foodOnClickListener);
 
         holder.bonAppetitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (holder.stranger.foodPager.isShown() && !foodPair.stranger.isBonAppetit()) {
+                if (holder.stranger.foodPager.isShown() && !holder.foodPair.stranger.isBonAppetit()) {
                     holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
                     BonAppetitTask bonAppetitTask = new BonAppetitTask();
                     bonAppetitTask.setTaskResultListener(new TaskResultListener() {
@@ -153,13 +153,13 @@ public class FoodPairsAdapter extends BaseAdapter {
                             }
                         }
                     });
-                    bonAppetitTask.execute(foodPair);
+                    bonAppetitTask.execute(holder.foodPair);
                 }
             }
         });
     }
 
-    private View.OnClickListener createFoodOnClickListener(final ViewHolder holder, final FoodPair foodPair) {
+    private View.OnClickListener createFoodOnClickListener(final ViewHolder holder) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,14 +169,14 @@ public class FoodPairsAdapter extends BaseAdapter {
                     ViewPager newFoodMapView = (ViewPager) holder.viewSwitcher.getCurrentView();
                     newFoodMapView.setCurrentItem(oldFoodMapView.getCurrentItem());
 
-                    if (holder.stranger.foodPager.getVisibility() == View.VISIBLE) {
-                        if (foodPair.stranger.isBonAppetit()) {
+                    if (holder.stranger.foodPager.isShown()) {
+                        if (holder.foodPair.stranger.isBonAppetit()) {
                             holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
                         } else {
                             holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
                         }
                     } else {
-                        if (foodPair.user.isBonAppetit()) {
+                        if (holder.foodPair.user.isBonAppetit()) {
                             holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
                         } else {
                             holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
@@ -188,9 +188,8 @@ public class FoodPairsAdapter extends BaseAdapter {
     }
 
     private void recycle(ViewHolder holder, FoodPair foodPair) {
+        holder.foodPair = foodPair;
         holder.animationInProgress = false;
-
-        addListenersToHolder(holder, foodPair);
 
         if (foodPair.stranger.isBonAppetit()) {
             holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
@@ -204,6 +203,13 @@ public class FoodPairsAdapter extends BaseAdapter {
             holder.stranger.foodMapPagerAdatper.recycle(holder.stranger.foodImage, holder.stranger.mapImage);
         }
 
+        cancelRequests(holder);
+
+        setViewSwitcherToDefault(holder);
+        setPagesToDefault(holder);
+    }
+
+    private void cancelRequests(ViewHolder holder) {
         if (holder.stranger.foodContainer != null){
             holder.stranger.foodContainer.cancelRequest();
             holder.stranger.foodContainer = null;
@@ -220,9 +226,6 @@ public class FoodPairsAdapter extends BaseAdapter {
             holder.user.mapContainer.cancelRequest();
             holder.user.mapContainer = null;
         }
-
-        setViewSwitcherToDefault(holder);
-        setPagesToDefault(holder);
     }
 
     private void setViewSwitcherToDefault(ViewHolder holder) {
@@ -353,6 +356,8 @@ public class FoodPairsAdapter extends BaseAdapter {
 
     public static class ViewHolder {
         public boolean animationInProgress = false;
+
+        public FoodPair foodPair;
 
         public ImageButton bonAppetitButton;
         public ViewSwitcher viewSwitcher;
