@@ -16,12 +16,12 @@ android {
     compileSdkVersion 19
     buildToolsVersion '19.0.0'
 
-/*    buildTypes {
+    buildTypes {
         release {
-            runProguard true
-            proguardFile getDefaultProguardFile('proguard-android.txt')
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
-    }*/
+    }
 
     defaultConfig {
         minSdkVersion 10
