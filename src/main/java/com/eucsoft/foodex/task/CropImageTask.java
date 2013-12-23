@@ -22,7 +22,6 @@ public class CropImageTask extends AsyncTask<String, Integer, Long> implements B
 
     private Map<String, Object> data = new HashMap<String, Object>();
     private TaskResultListener taskResultListener;
-    public static final int TASK_ID = 500;
 
     public CropImageTask(TaskResultListener taskResultListener) {
         this.taskResultListener = taskResultListener;
@@ -43,17 +42,6 @@ public class CropImageTask extends AsyncTask<String, Integer, Long> implements B
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeFile(srcFile, options);
             Log.i(CropImageTask.class, "1.1:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
-
-           /* String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
-                    .format(new Date());
-            String fullImgFile = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() +
-                    File.separator
-                    + Constants.IMAGE_PREFIX
-                    + timeStamp
-                    + Constants.IMAGE_POSTFIX;
-
-            FileUtil.writeImageFile(bytes, fullImgFile);
-            FileUtil.scanImage(App.context, fullImgFile);*/
 
             Log.i(CropImageTask.class, "2:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
 
