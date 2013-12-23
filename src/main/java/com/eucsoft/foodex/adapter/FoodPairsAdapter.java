@@ -29,7 +29,6 @@ import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.BonAppetitTask;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -321,7 +320,7 @@ public class FoodPairsAdapter extends BaseAdapter {
                 public void onErrorResponse(VolleyError error) {
 
                 }
-            });
+            }, foodImageSize, foodImageSize);
         }
 
         if (!TextUtils.isEmpty(foodPair.stranger.mapURL))
@@ -340,7 +339,7 @@ public class FoodPairsAdapter extends BaseAdapter {
                 public void onErrorResponse(VolleyError error) {
 
                 }
-            });
+            }, foodImageSize, foodImageSize);
         }
 
         if (!TextUtils.isEmpty(foodPair.user.foodURL))
@@ -359,7 +358,7 @@ public class FoodPairsAdapter extends BaseAdapter {
                 public void onErrorResponse(VolleyError error) {
 
                 }
-            });
+            }, foodImageSize, foodImageSize);
         }
 
         if (!TextUtils.isEmpty(foodPair.user.mapURL))
@@ -378,7 +377,7 @@ public class FoodPairsAdapter extends BaseAdapter {
                 public void onErrorResponse(VolleyError error) {
 
                 }
-            });
+            }, foodImageSize, foodImageSize);
         }
     }
 
