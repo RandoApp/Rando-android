@@ -22,6 +22,7 @@ import com.facebook.widget.LoginButton;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 public class FacebookFragment extends Fragment {
 
@@ -85,7 +86,7 @@ public class FacebookFragment extends Fragment {
             Progress.showLoading();
             new FacebookAuthTask(new TaskResultListener() {
                 @Override
-                public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
+                public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
                     Progress.hide();
                     if (resultCode == BaseTask.RESULT_OK) {
                         done();

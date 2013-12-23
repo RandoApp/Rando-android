@@ -12,6 +12,7 @@ import com.eucsoft.foodex.task.LogoutTask;
 import com.eucsoft.foodex.view.Progress;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class LogoutMenu {
 
@@ -21,7 +22,7 @@ public class LogoutMenu {
         Progress.show(App.context.getResources().getString(R.string.logout_progress));
         new LogoutTask(new TaskResultListener() {
             @Override
-            public void onTaskResult(int taskCode, long resultCode, HashMap<String, Object> data) {
+            public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
                 FragmentManager fragmentManager = ((ActionBarActivity) MainActivity.activity).getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.main_screen, new AuthFragment()).commit();
                 Progress.hide();

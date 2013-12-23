@@ -1,11 +1,9 @@
 package com.eucsoft.foodex.test.task;
 
-import android.support.v7.appcompat.R;
 import android.test.AndroidTestCase;
 
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
-import com.eucsoft.foodex.service.SyncService;
 import com.eucsoft.foodex.service.listener.FetchUserListener;
 import com.eucsoft.foodex.service.listener.OnFetched;
 import com.eucsoft.foodex.test.db.FoodPairTestHelper;
@@ -14,13 +12,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 
 public class FetchUserListenerTest extends AndroidTestCase {
