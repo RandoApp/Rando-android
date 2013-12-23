@@ -36,7 +36,7 @@ public class FoodMapSwitcherAdapter extends PagerAdapter {
         imageView.setPadding(0, 0, 0, 0);
         imageView.setOnClickListener(imageListener);
 
-        if (position == 0){
+        if (position == 0) {
             addFoodToHolder(imageView);
         } else {
             addMapToHolder(imageView);
@@ -48,7 +48,7 @@ public class FoodMapSwitcherAdapter extends PagerAdapter {
         return imageView;
     }
 
-    private void checkCache (int position, ImageView view) {
+    private void checkCache(int position, ImageView view) {
         if (position == 0) {
             if (holder.foodBitmap != null) {
                 view.setImageBitmap(holder.foodBitmap);
