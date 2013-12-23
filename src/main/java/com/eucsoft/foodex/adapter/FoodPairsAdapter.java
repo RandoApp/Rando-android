@@ -26,6 +26,7 @@ import com.eucsoft.foodex.animation.AnimationFactory;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.TaskResultListener;
+import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.BonAppetitTask;
 
@@ -78,18 +79,15 @@ public class FoodPairsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup container) {
-        final ViewHolder holder;
-
         final FoodPair foodPair = foodPairs.get(position);
+        final ViewHolder holder;
 
         if (convertView != null) {
             holder = (ViewHolder) convertView.getTag();
         } else {
-            LayoutInflater inflater = (LayoutInflater) container.getContext()
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) container.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.food_pair_item, container, false);
             holder = createHolder(convertView);
-            addListenersToHolder(holder, foodPair);
         }
 
         recycle(holder, foodPair);
@@ -119,6 +117,7 @@ public class FoodPairsAdapter extends BaseAdapter {
 
         holder.stranger.foodMapPagerAdatper = new FoodMapSwitcherAdapter(holder.stranger);
         holder.stranger.foodPager.setAdapter(holder.stranger.foodMapPagerAdatper);
+
 
         convertView.setTag(holder);
 
@@ -191,6 +190,8 @@ public class FoodPairsAdapter extends BaseAdapter {
     private void recycle(ViewHolder holder, FoodPair foodPair) {
         holder.animationInProgress = false;
 
+        addListenersToHolder(holder, foodPair);
+
         if (foodPair.stranger.isBonAppetit()) {
             holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
         } else {
@@ -219,7 +220,6 @@ public class FoodPairsAdapter extends BaseAdapter {
             holder.user.mapContainer.cancelRequest();
             holder.user.mapContainer = null;
         }
-
 
         setViewSwitcherToDefault(holder);
         setPagesToDefault(holder);
@@ -303,79 +303,49 @@ public class FoodPairsAdapter extends BaseAdapter {
         });
     }
 
-    private void loadImages(final ViewHolder holder, FoodPair foodPair){
-        if (!TextUtils.isEmpty(foodPair.stranger.foodURL))
-        {
-            holder.stranger.foodContainer = App.getInstance(App.context).getImageLoader(). get(foodPair.stranger.foodURL, new ImageLoader.ImageListener() {
+    private void loadImages(final ViewHolder holder, final FoodPair foodPair) {
+        loadFoodImage(holder.stranger, foodPair.stranger);
+        loadFoodImage(holder.user, foodPair.user);
+        loadMapImage(holder.stranger, foodPair.stranger);
+        loadMapImage(holder.user, foodPair.user);
+    }
+
+    private void loadFoodImage(final ViewHolder.UserHolder userHolder, final FoodPair.User userFoodPair) {
+        if (!TextUtils.isEmpty(userFoodPair.foodURL)) {
+            userHolder.foodContainer = App.getInstance(App.context).getImageLoader().get(userFoodPair.foodURL, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                    if (holder.stranger.foodImage != null) {
-                        holder.stranger.foodImage.setImageBitmap(response.getBitmap());
+                    if (userHolder.foodImage != null) {
+                        userHolder.foodImage.setImageBitmap(response.getBitmap());
                     } else {
-                        holder.stranger.foodBitmap = response.getBitmap();
+                        userHolder.foodBitmap = response.getBitmap();
                     }
                 }
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    Log.e(FoodPairsAdapter.class, "Volley Error, when load food: ", userFoodPair.foodURL, " Error: ", error.getMessage());
 
                 }
             });
         }
+    }
 
-        if (!TextUtils.isEmpty(foodPair.stranger.mapURL))
-        {
-            holder.stranger.mapContainer = App.getInstance(App.context).getImageLoader().get(foodPair.stranger.mapURL, new ImageLoader.ImageListener() {
+    private void loadMapImage(final ViewHolder.UserHolder userHolder, final FoodPair.User userFoodPair) {
+        if (!TextUtils.isEmpty(userFoodPair.mapURL)) {
+            userHolder.mapContainer = App.getInstance(App.context).getImageLoader().get(userFoodPair.mapURL, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                    if (holder.stranger.mapImage !=null){
-                        holder.stranger.mapImage.setImageBitmap(response.getBitmap());
+                    if (userHolder.mapImage != null) {
+                        userHolder.mapImage.setImageBitmap(response.getBitmap());
                     } else {
-                        holder.stranger.mapBitmap = response.getBitmap();
+                        userHolder.mapBitmap = response.getBitmap();
                     }
                 }
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
-
-                }
-            });
-        }
-
-        if (!TextUtils.isEmpty(foodPair.user.foodURL))
-        {
-            holder.user.foodContainer = App.getInstance(App.context).getImageLoader().get(foodPair.user.foodURL, new ImageLoader.ImageListener() {
-                @Override
-                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                    if (holder.user.foodImage !=null){
-                        holder.user.foodImage.setImageBitmap(response.getBitmap());
-                    } else {
-                        holder.user.foodBitmap = response.getBitmap();
-                    }
-                }
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                }
-            });
-        }
-
-        if (!TextUtils.isEmpty(foodPair.user.mapURL))
-        {
-            holder.user.mapContainer = App.getInstance(App.context).getImageLoader().get(foodPair.user.mapURL, new ImageLoader.ImageListener() {
-                @Override
-                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                    if (holder.user.mapImage !=null){
-                        holder.user.mapImage.setImageBitmap(response.getBitmap());
-                    } else {
-                        holder.user.mapBitmap = response.getBitmap();
-                    }
-                }
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
+                    Log.e(FoodPairsAdapter.class, "Volley Error, when load map: ", userFoodPair.mapURL, " Error: ", error.getMessage());
                 }
             });
         }
