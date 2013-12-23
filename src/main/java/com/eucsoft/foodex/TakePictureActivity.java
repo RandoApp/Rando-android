@@ -77,12 +77,6 @@ public class TakePictureActivity extends BaseActivity implements TaskResultListe
                     int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                     String filePath = cursor.getString(columnIndex);
                     cursor.close();
-
-                   /* int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-                    if (currentapiVersion < Build.VERSION_CODES.HONEYCOMB) {
-                        foodexSurfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_NORMAL);
-                    }
-                    foodexSurfaceView.setCurrentBitmap(BitmapFactory.decodeFile(filePath));*/
                     new CropImageTask(new CropTaskResult()).execute(filePath);
                 }
                 break;
@@ -308,7 +302,6 @@ public class TakePictureActivity extends BaseActivity implements TaskResultListe
     protected void onPause() {
         super.onPause();
         releaseCamera();
-
     }
 
     @Override
