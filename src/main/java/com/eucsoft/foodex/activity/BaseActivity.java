@@ -20,6 +20,8 @@ public class BaseActivity extends Activity {
     }
 
     protected void hideProgressbar() {
-        progress.hide();
+        if (progress != null) {
+            progress.hide();
+        }
     }
 }
