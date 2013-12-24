@@ -68,6 +68,7 @@ before_install:
 
   #Download foodex.keystore:
   - lftp "sftp://travis:$APK_UPLOAD_PASS@95.85.19.94" -e "get foodex.keystore; ; bye";
+  - mkdir $HOME/.android
   - mv foodex.keystore $HOME/.android/
 
   # Install required components.
