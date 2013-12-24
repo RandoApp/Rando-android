@@ -97,5 +97,5 @@ script:
   - gradle assembleRelease
 
 after_script:
-    - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@95.85.19.94" -e "put foodex-android/build/apk/foodex-android-release-unsigned.apk; bye"; fi
+    - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@95.85.19.94" -e "put foodex-android/build/apk/foodex-android-release.apk; bye"; fi
 
