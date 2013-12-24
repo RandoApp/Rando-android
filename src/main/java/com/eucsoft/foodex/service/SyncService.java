@@ -7,16 +7,15 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import android.widget.Toast;
 
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.api.API;
-
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.service.listener.FetchUserListener;
 import com.eucsoft.foodex.service.listener.OnFetched;
 
-import static com.eucsoft.foodex.Constants.*;
+import static com.eucsoft.foodex.Constants.SERVICE_LONG_PAUSE;
+import static com.eucsoft.foodex.Constants.SERVICE_SHORT_PAUSE;
 
 public class SyncService extends Service {
 
@@ -46,7 +45,6 @@ public class SyncService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(SyncService.class, "onStartCommand");
-        Toast.makeText(App.context, "Synchronization with server... Shot #" + startId, Toast.LENGTH_LONG).show();
 
         API.fetchUserAsync(new FetchUserListener().onOk(new OnFetched() {
             @Override
