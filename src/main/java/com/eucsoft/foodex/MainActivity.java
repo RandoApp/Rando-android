@@ -1,6 +1,8 @@
 package com.eucsoft.foodex;
 
 import android.app.Activity;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -13,8 +15,8 @@ import com.eucsoft.foodex.fragment.AuthFragment;
 import com.eucsoft.foodex.fragment.EmptyHomeWallFragment;
 import com.eucsoft.foodex.fragment.HomeWallFragment;
 import com.eucsoft.foodex.fragment.TrainingHomeFragment;
+import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.menu.LogoutMenu;
-import com.eucsoft.foodex.notification.Notification;
 import com.eucsoft.foodex.preferences.Preferences;
 
 public class MainActivity extends ActionBarActivity {
@@ -26,12 +28,27 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         activity = this;
 
+        setAppTitle();
+
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.main_screen, getFragment())
                     .commit();
+        }
+    }
+
+    //Just for alpha testers. Remove when release.
+    private void setAppTitle() {
+        try {
+            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            String name = getResources().getString(R.string.app_name);
+            String version = packageInfo.versionName;
+            String codeVersion = String.valueOf(packageInfo.versionCode);
+            setTitle(name + " " + version + " [build: " + codeVersion + "]");
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(MainActivity.class, "Can't set app title, because: ", e.getMessage());
         }
     }
 
