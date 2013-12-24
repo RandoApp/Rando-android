@@ -16,10 +16,25 @@ android {
     compileSdkVersion 19
     buildToolsVersion '19.0.0'
 
+    signingConfigs {
+        release {
+            storeFile file(System.getenv("HOME") + "/.android/foodex.keystore")
+            storePassword ''
+            keyAlias ''
+            keyPassword ''
+        }
+    }
+
     buildTypes {
         release {
-            runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            zipAlign true
+            signingConfig signingConfigs.release
+            /*runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'*/
+        }
+
+        debug {
+            zipAlign true
         }
     }
 
