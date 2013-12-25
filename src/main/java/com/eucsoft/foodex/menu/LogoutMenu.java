@@ -11,7 +11,6 @@ import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.task.LogoutTask;
 import com.eucsoft.foodex.view.Progress;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class LogoutMenu {
