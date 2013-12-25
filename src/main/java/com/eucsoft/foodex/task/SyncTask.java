@@ -1,8 +1,7 @@
-package com.eucsoft.foodex.service.listener;
+package com.eucsoft.foodex.task;
 
 import com.eucsoft.foodex.App;
 
-import com.eucsoft.foodex.api.OnFetchUser;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.log.Log;
@@ -12,13 +11,17 @@ import com.eucsoft.foodex.service.SyncService;
 import java.util.Collections;
 import java.util.List;
 
-public class FetchUserListener implements OnFetchUser {
+public class SyncTask extends BaseTask2 {
 
-    private OnFetched fetchedListener;
+    private List<FoodPair> foodPairs;
+
+    public SyncTask(List<FoodPair> foodPairs) {
+        this.foodPairs = foodPairs;
+    }
 
     @Override
-    public void onFetchUser(List<FoodPair> foodPairs) {
-        Log.v(FetchUserListener.class, "OnFetchUser");
+    public Integer run() {
+        Log.v(SyncTask.class, "OnFetchUser");
         FoodDAO foodDAO = new FoodDAO(App.context);
 
         if (foodPairs.size() != foodDAO.getFoodPairsNumber()) {
@@ -38,15 +41,13 @@ public class FetchUserListener implements OnFetchUser {
             }
         }
 
-        if (fetchedListener != null && foodDAO.getNotPairedFoodsNumber() > 0) {
-            fetchedListener.onFetched();
+        if (foodDAO.getNotPairedFoodsNumber() > 0) {
+            foodDAO.close();
+            return ok();
         }
 
         foodDAO.close();
+        return done();
     }
 
-    public FetchUserListener onOk(OnFetched listener) {
-        this.fetchedListener = listener;
-        return this;
-    }
 }
