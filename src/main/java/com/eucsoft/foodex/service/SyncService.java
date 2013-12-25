@@ -10,9 +10,14 @@ import android.os.IBinder;
 
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.api.API;
+import com.eucsoft.foodex.api.OnFetchUser;
+import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.log.Log;
-import com.eucsoft.foodex.service.listener.FetchUserListener;
-import com.eucsoft.foodex.service.listener.OnFetched;
+import com.eucsoft.foodex.task.SyncTask;
+import com.eucsoft.foodex.task.OnOk;
+
+import java.util.List;
+import java.util.Map;
 
 import static com.eucsoft.foodex.Constants.SERVICE_LONG_PAUSE;
 import static com.eucsoft.foodex.Constants.SERVICE_SHORT_PAUSE;
@@ -46,12 +51,20 @@ public class SyncService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(SyncService.class, "onStartCommand");
 
-        API.fetchUserAsync(new FetchUserListener().onOk(new OnFetched() {
+        API.fetchUserAsync(new OnFetchUser() {
             @Override
-            public void onFetched() {
-                setTimeout(System.currentTimeMillis() + SERVICE_SHORT_PAUSE);
+            public void onFetch(List<FoodPair> foodPairs) {
+            new SyncTask(foodPairs)
+            .onOk(new OnOk() {
+                @Override
+                public void onOk(Map<String, Object> data) {
+                    setTimeout(System.currentTimeMillis() + SERVICE_SHORT_PAUSE);
+                }
+            })
+            .execute();
             }
-        }));
+        });
+
         return Service.START_NOT_STICKY;
     }
 

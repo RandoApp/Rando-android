@@ -194,7 +194,7 @@ public class API {
 
                         foods.add(food);
                     }
-                    listener.onFetchUser(foods);
+                    listener.onFetch(foods);
                 } catch (JSONException e) {
                     Log.e(API.class, "Cannot parse JSON from server", e.getMessage());
                 }

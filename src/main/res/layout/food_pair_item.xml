@@ -24,6 +24,17 @@
         </android.support.v4.view.ViewPager>
     </ViewSwitcher>
 
+
+    <Button
+        android:text="REPORT"
+        android:tag="report_dialog"
+        android:visibility="gone"
+        android:layout_height="100dp"
+        android:layout_width="100dp"
+        android:background="@color/album_background"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="19dp" />
+
     <RelativeLayout
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
+import com.eucsoft.foodex.menu.ReportMenu;
 import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.BonAppetitTask;
 
@@ -108,6 +110,8 @@ public class FoodPairsAdapter extends BaseAdapter {
 
         holder.stranger.foodPager = (ViewPager) convertView.findViewWithTag("stranger");
         holder.user.foodPager = (ViewPager) convertView.findViewWithTag("user");
+
+        holder.reportDialog = (Button) convertView.findViewWithTag("report_dialog");
 
         ViewSwitcher.LayoutParams foodImagesLayout = new ViewSwitcher.LayoutParams(foodImageSize, foodImageSize);
         holder.stranger.foodPager.setLayoutParams(foodImagesLayout);
@@ -207,6 +211,12 @@ public class FoodPairsAdapter extends BaseAdapter {
 
         setViewSwitcherToDefault(holder);
         setPagesToDefault(holder);
+
+        if (ReportMenu.isOn) {
+            holder.reportDialog.setVisibility(View.VISIBLE);
+        } else {
+            holder.reportDialog.setVisibility(View.GONE);
+        }
     }
 
     private void cancelRequests(ViewHolder holder) {
@@ -364,6 +374,7 @@ public class FoodPairsAdapter extends BaseAdapter {
 
         public UserHolder user;
         public UserHolder stranger;
+        public Button reportDialog;
 
         public static class UserHolder {
             public ViewPager foodPager;
