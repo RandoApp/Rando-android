@@ -12,7 +12,8 @@ env:
     - ANDROID_SDKS=android-18,sysimg-18 ANDROID_TARGET=android-18 ANDROID_ABI=armeabi-v7a REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
     - ANDROID_SDKS=android-10 ANDROID_TARGET=android-10 ANDROID_ABI=armeabi REPO="xp-vit/foodex-android" CI_HOME=$PWD/$REPO DOWNLOADS_HOME=downloads
   global:
-    secure: PITT+C0Whfpah9ot4quUfU+xO20wKRqTDkwR4OrDUktQ80S54Pi/GWiuCi731XqS4rUd0bBMI+cReudETwnvjSKD0tDtmWT3dsXx7/2qlVx7ljaas7YQhFCuVTAi5RuMg4tL7mi748WC29OgwchlASmQ4L2JwnimhsIRT8SKuUo=
+    - secure: PITT+C0Whfpah9ot4quUfU+xO20wKRqTDkwR4OrDUktQ80S54Pi/GWiuCi731XqS4rUd0bBMI+cReudETwnvjSKD0tDtmWT3dsXx7/2qlVx7ljaas7YQhFCuVTAi5RuMg4tL7mi748WC29OgwchlASmQ4L2JwnimhsIRT8SKuUo=
+    - secure: KMirqXct1UGxYput93fB+kWJZPbYMnbsG3T5/ORa2JNZr7QcAJcYPiS82swAqIqj57xc/7ZvRy5V/DWCoKOnv69iob06rq5kqdM0wHo9glUJn7Xqlbyl0JsmkYNU3ZtCJL4wGP8i5lhhwwBRGW4zVffNqT/FCTGfJplZnuJbu14=
 
 before_install:
   #install lftp for apk upload:
@@ -62,6 +63,14 @@ before_install:
   - cd ..
   - echo "include ':foodex-android:modules:facebook:facebook', ':foodex-android:modules:volley', ':foodex-android'" > settings.gradle
 
+  # Create gradle.properties with secret stroke password:
+  - echo "keyStorePassword=$KEY_STROKE_PASSWORD" > foodex-android/gradle.properties
+
+  #Download foodex.keystore:
+  - lftp "sftp://travis:$APK_UPLOAD_PASS@95.85.19.94" -e "get foodex.keystore; ; bye";
+  - mkdir $HOME/.android
+  - mv foodex.keystore $HOME/.android/
+
   # Install required components.
   # For a full list, run `android list sdk -a --extended`
   # Note that sysimg-19 downloads the ARM, x86 and MIPS images (we should optimize this).
@@ -88,5 +97,5 @@ script:
   - gradle assembleRelease
 
 after_script:
-    - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@95.85.19.94" -e "put foodex-android/build/apk/foodex-android-release-unsigned.apk; bye"; fi
+    - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@95.85.19.94" -e "put foodex-android/build/apk/foodex-android-release.apk; bye"; fi
 

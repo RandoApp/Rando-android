@@ -19,9 +19,9 @@ android {
     signingConfigs {
         release {
             storeFile file(System.getenv("HOME") + "/.android/foodex.keystore")
-            storePassword ''
-            keyAlias ''
-            keyPassword ''
+            storePassword keyStorePassword
+            keyAlias 'alias_name'
+            keyPassword keyStorePassword
         }
     }
 

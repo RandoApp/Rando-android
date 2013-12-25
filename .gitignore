@@ -1,3 +1,6 @@
+#File with secrets:
+gradle.properties
+
 # built application files
 *.apk
 *.ap_
