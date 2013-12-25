@@ -25,7 +25,7 @@ import com.eucsoft.foodex.twowaygrid.TwoWayGridView;
 public class HomeWallFragment extends Fragment {
 
 
-    private FoodPairsAdapter foodPairsAdapter;
+    public static FoodPairsAdapter foodPairsAdapter;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
