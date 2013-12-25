@@ -7,14 +7,15 @@ import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
@@ -111,7 +112,13 @@ public class FoodPairsAdapter extends BaseAdapter {
         holder.stranger.foodPager = (ViewPager) convertView.findViewWithTag("stranger");
         holder.user.foodPager = (ViewPager) convertView.findViewWithTag("user");
 
-        holder.reportDialog = (Button) convertView.findViewWithTag("report_dialog");
+        holder.reportDialog = (LinearLayout) convertView.findViewWithTag("report_dialog");
+        holder.reportDialog.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
 
         ViewSwitcher.LayoutParams foodImagesLayout = new ViewSwitcher.LayoutParams(foodImageSize, foodImageSize);
         holder.stranger.foodPager.setLayoutParams(foodImagesLayout);
@@ -374,7 +381,7 @@ public class FoodPairsAdapter extends BaseAdapter {
 
         public UserHolder user;
         public UserHolder stranger;
-        public Button reportDialog;
+        public LinearLayout reportDialog;
 
         public static class UserHolder {
             public ViewPager foodPager;
