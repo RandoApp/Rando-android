@@ -17,6 +17,7 @@ import com.eucsoft.foodex.fragment.HomeWallFragment;
 import com.eucsoft.foodex.fragment.TrainingHomeFragment;
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.menu.LogoutMenu;
+import com.eucsoft.foodex.menu.ReportMenu;
 import com.eucsoft.foodex.preferences.Preferences;
 
 public class MainActivity extends ActionBarActivity {
@@ -61,9 +62,15 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == LogoutMenu.ID) {
-            new LogoutMenu().select();
+        switch (item.getItemId()) {
+            case ReportMenu.ID:
+                new ReportMenu(this).select();
+                break;
+            case LogoutMenu.ID:
+                new LogoutMenu(this).select();
+                break;
         }
+
         return true;
     }
 

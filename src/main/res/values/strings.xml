@@ -30,6 +30,7 @@
     <string name="app_id">590251961033710</string>
 
     <string name="logout">Logout</string>
+    <string name="report">Report</string>
     <string name="loadig_progress">Loading...</string>
     <string name="logout_progress">Logout...</string>
     <string name="error_400">You are not authorized. Please, signup.</string>
