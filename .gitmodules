@@ -5,6 +5,7 @@
 [submodule "modules/volley"]
 	path = modules/volley
 	url = https://android.googlesource.com/platform/frameworks/volley
+
 [submodule "modules/two-way-gridview"]
 	path = modules/two-way-gridview
 	url = https://github.com/xp-vit/two-way-gridview.git
