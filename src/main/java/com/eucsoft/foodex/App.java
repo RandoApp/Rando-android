@@ -9,7 +9,6 @@ import com.android.volley.toolbox.Volley;
 import com.eucsoft.foodex.service.SyncService;
 
 public class App extends Application {
-    private RequestQueue requestQueue;
     private ImageLoader imageLoader;
     public static Context context;
 
@@ -20,12 +19,8 @@ public class App extends Application {
         context = getApplicationContext();
         startService();
 
-        requestQueue = Volley.newRequestQueue(this);
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
         imageLoader = new ImageLoader(requestQueue, new LruBitmapCache());
-    }
-
-    public RequestQueue getRequestQueue() {
-        return requestQueue;
     }
 
     public ImageLoader getImageLoader() {

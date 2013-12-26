@@ -61,7 +61,7 @@ before_install:
   # Create settings.gradle. Need for modules correct build
   - cd ${CI_HOME}
   - cd ..
-  - echo "include ':foodex-android:modules:facebook:facebook', ':foodex-android:modules:volley', ':foodex-android'" > settings.gradle
+  - echo "include ':foodex-android:modules:facebook:facebook', ':foodex-android:modules:volley', ':foodex-android:modules:two-way-gridview:lib', ':foodex-android'" > settings.gradle
 
   # Create gradle.properties with secret stroke password:
   - echo "keyStorePassword=$KEY_STROKE_PASSWORD" > foodex-android/gradle.properties
