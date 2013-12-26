@@ -17,9 +17,19 @@ import com.eucsoft.foodex.TakePictureActivity;
 import com.eucsoft.foodex.adapter.FoodPairsAdapter;
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.notification.Notification;
-import com.eucsoft.foodex.twowaygrid.TwoWayGridView;
+import com.jess.ui.TwoWayGridView;
 
-import static com.eucsoft.foodex.Constants.*;
+import static com.eucsoft.foodex.Constants.BON_APPETIT_BUTTON_SIZE;
+import static com.eucsoft.foodex.Constants.FOOD_PADDING_LANDSCAPE_COLUMN_BOTTOM;
+import static com.eucsoft.foodex.Constants.FOOD_PADDING_LANDSCAPE_COLUMN_LEFT;
+import static com.eucsoft.foodex.Constants.FOOD_PADDING_LANDSCAPE_COLUMN_RIGHT;
+import static com.eucsoft.foodex.Constants.FOOD_PADDING_LANDSCAPE_COLUMN_TOP;
+import static com.eucsoft.foodex.Constants.FOOD_PADDING_PORTRAIT_COLUMN_BOTTOM;
+import static com.eucsoft.foodex.Constants.FOOD_PADDING_PORTRAIT_COLUMN_LEFT;
+import static com.eucsoft.foodex.Constants.FOOD_PADDING_PORTRAIT_COLUMN_RIGHT;
+import static com.eucsoft.foodex.Constants.FOOD_PADDING_PORTRAIT_COLUMN_TOP;
+import static com.eucsoft.foodex.Constants.REPORT_BROADCAST;
+import static com.eucsoft.foodex.Constants.SYNC_SERVICE_BROADCAST;
 
 public class HomeWallFragment extends Fragment {
 
