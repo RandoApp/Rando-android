@@ -3,6 +3,7 @@ package com.eucsoft.foodex.menu;
 import android.app.Activity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
+import android.view.MenuItem;
 
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.MainActivity;
@@ -18,8 +19,8 @@ public class LogoutMenu extends Menu {
 
     public static final int ID =  R.id.action_logout;
 
-    public LogoutMenu(Activity activity) {
-        super(activity);
+    public LogoutMenu(MenuItem item, Activity activity) {
+        super(item, activity);
     }
 
     public void select () {

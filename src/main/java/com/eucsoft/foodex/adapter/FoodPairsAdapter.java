@@ -13,9 +13,11 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
@@ -29,6 +31,7 @@ import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
+import com.eucsoft.foodex.menu.ReportMenu;
 import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.BonAppetitTask;
 
@@ -55,12 +58,6 @@ public class FoodPairsAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         return 0;
-    }
-
-    private boolean isReport;
-
-    public void toggleReportMode() {
-        isReport = !isReport;
     }
 
     public FoodPairsAdapter(Context context) {
@@ -108,6 +105,8 @@ public class FoodPairsAdapter extends BaseAdapter {
     private ViewHolder createHolder(View convertView) {
         ViewHolder holder = new ViewHolder();
 
+
+
         holder.user = new ViewHolder.UserHolder();
         holder.stranger = new ViewHolder.UserHolder();
 
@@ -116,14 +115,6 @@ public class FoodPairsAdapter extends BaseAdapter {
 
         holder.stranger.foodPager = (ViewPager) convertView.findViewWithTag("stranger");
         holder.user.foodPager = (ViewPager) convertView.findViewWithTag("user");
-
-        holder.reportDialog = (LinearLayout) convertView.findViewWithTag("report_dialog");
-        holder.reportDialog.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
 
         ViewSwitcher.LayoutParams foodImagesLayout = new ViewSwitcher.LayoutParams(foodImageSize, foodImageSize);
         holder.stranger.foodPager.setLayoutParams(foodImagesLayout);
@@ -135,9 +126,36 @@ public class FoodPairsAdapter extends BaseAdapter {
         holder.stranger.foodMapPagerAdatper = new FoodMapSwitcherAdapter(holder.stranger);
         holder.stranger.foodPager.setAdapter(holder.stranger.foodMapPagerAdatper);
 
+        createReportDialog(convertView, holder);
         convertView.setTag(holder);
-
         return holder;
+    }
+
+    private void createReportDialog(View convertView, ViewHolder holder) {
+        holder.reportDialog = (LinearLayout) convertView.findViewWithTag("report_dialog");
+        Button reportButton = (Button) holder.reportDialog.getChildAt(0);
+        int reportButtonWidth = convertView.getResources().getDimensionPixelSize(R.dimen.report_button_width);
+        int reportButtonHeight = convertView.getResources().getDimensionPixelSize(R.dimen.report_button_height);
+
+        LinearLayout.LayoutParams reportButtonParams = new LinearLayout.LayoutParams(reportButtonWidth, reportButtonHeight);
+        int marginCenter = foodImageSize / 2;
+        reportButtonParams.topMargin =  marginCenter - reportButtonHeight / 2;
+        reportButtonParams.leftMargin = marginCenter - reportButtonWidth / 2;
+        reportButton.setLayoutParams(reportButtonParams);
+        holder.reportDialog.setLayoutParams(new RelativeLayout.LayoutParams(foodImageSize, foodImageSize));
+        holder.reportDialog.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
+        reportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReportMenu.off();
+            }
+        });
     }
 
     private void addListenersToHolder(final ViewHolder holder) {
@@ -207,24 +225,31 @@ public class FoodPairsAdapter extends BaseAdapter {
         holder.foodPair = foodPair;
         holder.animationInProgress = false;
 
-        if (foodPair.stranger.isBonAppetit()) {
-            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
-        } else {
-            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
-        }
-
-        if (holder.stranger.foodImage != null && holder.user.foodImage != null
-                && holder.stranger.mapImage != null && holder.user.mapImage != null) {
-            holder.user.foodMapPagerAdatper.recycle(holder.user.foodImage, holder.user.mapImage);
-            holder.stranger.foodMapPagerAdatper.recycle(holder.stranger.foodImage, holder.stranger.mapImage);
-        }
-
         cancelRequests(holder);
 
-        setViewSwitcherToDefault(holder);
-        setPagesToDefault(holder);
+        if (!ReportMenu.isReport) {
+            if (foodPair.stranger.isBonAppetit()) {
+                holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
+            } else {
+                holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
+            }
 
-        holder.reportDialog.setVisibility(isReport ? View.VISIBLE : View.GONE);
+            if (holder.stranger.foodImage != null && holder.user.foodImage != null
+                    && holder.stranger.mapImage != null && holder.user.mapImage != null) {
+                holder.user.foodMapPagerAdatper.recycle(holder.user.foodImage, holder.user.mapImage);
+                holder.stranger.foodMapPagerAdatper.recycle(holder.stranger.foodImage, holder.stranger.mapImage);
+            }
+
+            setViewSwitcherToDefault(holder);
+            setPagesToDefault(holder);
+
+            holder.reportDialog.setVisibility(View.GONE);
+            holder.bonAppetitButton.setVisibility(View.VISIBLE);
+        } else {
+            holder.reportDialog.setVisibility(View.VISIBLE);
+            holder.bonAppetitButton.setEnabled(false);
+            holder.bonAppetitButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void cancelRequests(ViewHolder holder) {

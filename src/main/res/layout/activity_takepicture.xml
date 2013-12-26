@@ -36,7 +36,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignBottom="@+id/cameraPreview"
         android:layout_alignParentLeft="true"
-        android:background="@color/white">
+        android:background="@android:color/white">
 
         <LinearLayout
             android:id="@+id/select_photo_button_container"

@@ -38,7 +38,6 @@ public class HomeWallFragment extends Fragment {
         }
 
         private void toggleReportMode() {
-            foodPairsAdapter.toggleReportMode();
             foodPairsAdapter.notifyDataSetChanged();
         }
 

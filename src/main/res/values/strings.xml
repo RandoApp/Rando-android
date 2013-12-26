@@ -31,6 +31,8 @@
 
     <string name="logout">Logout</string>
     <string name="report">Report</string>
+    <string name="report_off">Report OFF</string>
+    <string name="not_a_food">Not a food</string>
     <string name="loadig_progress">Loading...</string>
     <string name="logout_progress">Logout...</string>
     <string name="error_400">You are not authorized. Please, signup.</string>
