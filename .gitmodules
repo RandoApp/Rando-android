@@ -7,4 +7,4 @@
 	url = https://android.googlesource.com/platform/frameworks/volley
 [submodule "modules/two-way-gridview"]
 	path = modules/two-way-gridview
-	url = git@github.com:xp-vit/two-way-gridview.git
+	url = https://github.com/xp-vit/two-way-gridview.git
