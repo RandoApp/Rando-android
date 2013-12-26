@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import com.eucsoft.foodex.App;
+import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.TakePictureActivity;
 import com.eucsoft.foodex.db.FoodDAO;
@@ -60,6 +61,6 @@ public class EmptyHomeWallFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().registerReceiver(receiver, new IntentFilter(SyncService.NOTIFICATION));
+        getActivity().registerReceiver(receiver, new IntentFilter(Constants.SYNC_SERVICE_BROADCAST));
     }
 }

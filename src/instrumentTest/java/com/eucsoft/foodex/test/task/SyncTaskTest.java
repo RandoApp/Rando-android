@@ -4,20 +4,26 @@ import android.test.AndroidTestCase;
 
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
-import com.eucsoft.foodex.service.listener.FetchUserListener;
-import com.eucsoft.foodex.service.listener.OnFetched;
+import com.eucsoft.foodex.task.SyncTask;
+import com.eucsoft.foodex.task.OnOk;
 import com.eucsoft.foodex.test.db.FoodPairTestHelper;
+
+import org.mockito.Matchers;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyMap;
+import static org.mockito.Matchers.notNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 
-public class FetchUserListenerTest extends AndroidTestCase {
+public class SyncTaskTest extends AndroidTestCase {
 
     private FoodDAO foodDAO;
 
@@ -39,8 +45,8 @@ public class FetchUserListenerTest extends AndroidTestCase {
 
         foodDAO.insertFoodPairs(foodPairs);
 
-        FetchUserListener fetchUserListener = new FetchUserListener();
-        fetchUserListener.onFetchUser(foodPairs);
+        SyncTask syncTask = new SyncTask(foodPairs);
+        syncTask.run();
 
         FoodPairTestHelper.checkListsEqual(foodDAO.getAllFoodPairs(), foodPairs);
     }
@@ -54,8 +60,8 @@ public class FetchUserListenerTest extends AndroidTestCase {
 
         foodDAO.insertFoodPairs(foodPairsInDB);
 
-        FetchUserListener fetchUserListener = new FetchUserListener();
-        fetchUserListener.onFetchUser(foodPairs);
+        SyncTask syncTask = new SyncTask(foodPairs);
+        syncTask.run();
 
         FoodPairTestHelper.checkListsEqual(foodDAO.getAllFoodPairs(), foodPairs);
     }
@@ -67,8 +73,8 @@ public class FetchUserListenerTest extends AndroidTestCase {
 
         foodDAO.insertFoodPairs(forDBList);
 
-        FetchUserListener fetchUserListener = new FetchUserListener();
-        fetchUserListener.onFetchUser(foodPairs);
+        SyncTask syncTask = new SyncTask(foodPairs);
+        syncTask.run();
 
         FoodPairTestHelper.checkListsEqual(foodDAO.getAllFoodPairs(), foodPairs);
     }
@@ -80,8 +86,8 @@ public class FetchUserListenerTest extends AndroidTestCase {
         forDBList.add(FoodPairTestHelper.getRandomFoodPair());
         foodDAO.insertFoodPairs(forDBList);
 
-        FetchUserListener fetchUserListener = new FetchUserListener();
-        fetchUserListener.onFetchUser(foodPairs);
+        SyncTask syncTask = new SyncTask(foodPairs);
+        syncTask.run();
 
         FoodPairTestHelper.checkListsEqual(foodDAO.getAllFoodPairs(), foodPairs);
     }
@@ -91,23 +97,25 @@ public class FetchUserListenerTest extends AndroidTestCase {
 
         foodPairs.add(FoodPairTestHelper.getRandomFoodPairNotPaired());
 
-        OnFetched okCallback = mock(OnFetched.class);
+        OnOk okCallback = mock(OnOk.class);
 
-        FetchUserListener fetchUserListener = new FetchUserListener().onOk(okCallback);
-        fetchUserListener.onFetchUser(foodPairs);
+        new SyncTask(foodPairs)
+        .onOk(okCallback)
+        .executeSync();
 
-        verify(okCallback, times(1)).onFetched();
+        verify(okCallback, times(1)).onOk(anyMap());
     }
 
     public void testOkCallbackIsNotTriggeredWhenDBNotUpdated() throws Exception {
         List<FoodPair> foodPairs = createFoodPairs();
 
-        OnFetched okCallback = mock(OnFetched.class);
+        OnOk okCallback = mock(OnOk.class);
 
-        FetchUserListener fetchUserListener = new FetchUserListener().onOk(okCallback);
-        fetchUserListener.onFetchUser(foodPairs);
+        new SyncTask(foodPairs)
+        .onOk(okCallback)
+        .executeSync();
 
-        verify(okCallback, times(0)).onFetched();
+        verify(okCallback, times(0)).onOk(anyMap());
     }
 
     private List<FoodPair> createFoodPairs() {

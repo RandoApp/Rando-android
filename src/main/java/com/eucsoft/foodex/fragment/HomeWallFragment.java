@@ -12,28 +12,48 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
-import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.TakePictureActivity;
 import com.eucsoft.foodex.adapter.FoodPairsAdapter;
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.notification.Notification;
-import com.eucsoft.foodex.service.SyncService;
-import com.eucsoft.foodex.twowaygrid.TwoWayGridView;
+import com.jess.ui.TwoWayGridView;
 
+import static com.eucsoft.foodex.Constants.BON_APPETIT_BUTTON_SIZE;
+import static com.eucsoft.foodex.Constants.FOOD_PADDING_LANDSCAPE_COLUMN_BOTTOM;
+import static com.eucsoft.foodex.Constants.FOOD_PADDING_LANDSCAPE_COLUMN_LEFT;
+import static com.eucsoft.foodex.Constants.FOOD_PADDING_LANDSCAPE_COLUMN_RIGHT;
+import static com.eucsoft.foodex.Constants.FOOD_PADDING_LANDSCAPE_COLUMN_TOP;
+import static com.eucsoft.foodex.Constants.FOOD_PADDING_PORTRAIT_COLUMN_BOTTOM;
+import static com.eucsoft.foodex.Constants.FOOD_PADDING_PORTRAIT_COLUMN_LEFT;
+import static com.eucsoft.foodex.Constants.FOOD_PADDING_PORTRAIT_COLUMN_RIGHT;
+import static com.eucsoft.foodex.Constants.FOOD_PADDING_PORTRAIT_COLUMN_TOP;
+import static com.eucsoft.foodex.Constants.REPORT_BROADCAST;
+import static com.eucsoft.foodex.Constants.SYNC_SERVICE_BROADCAST;
 
 public class HomeWallFragment extends Fragment {
 
-
-    private FoodPairsAdapter foodPairsAdapter;
+    private  FoodPairsAdapter foodPairsAdapter;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.i(BroadcastReceiver.class, "Recieved Update request");
-            foodPairsAdapter.notifyDataSetChanged();
+            if (REPORT_BROADCAST.equals(intent.getAction())) {
+                toggleReportMode();
+            } else if (SYNC_SERVICE_BROADCAST.equals(intent.getAction())) {
+                showNotification();
+            }
+        }
 
+        private void toggleReportMode() {
+            foodPairsAdapter.toggleReportMode();
+            foodPairsAdapter.notifyDataSetChanged();
+        }
+
+        private void showNotification() {
+            foodPairsAdapter.notifyDataSetChanged();
             Notification.show("Foodex", "Your Foodex pictures got updated");
         }
     };
@@ -53,13 +73,13 @@ public class HomeWallFragment extends Fragment {
         int takePictureButtonHeight = takePictureButton.getHeight();
 
         if (container.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            gridView.setPadding(Constants.FOOD_PADDING_LANDSCAPE_COLUMN_LEFT, Constants.FOOD_PADDING_LANDSCAPE_COLUMN_TOP, Constants.FOOD_PADDING_LANDSCAPE_COLUMN_RIGHT, Constants.FOOD_PADDING_LANDSCAPE_COLUMN_BOTTOM);
+            gridView.setPadding(FOOD_PADDING_LANDSCAPE_COLUMN_LEFT, FOOD_PADDING_LANDSCAPE_COLUMN_TOP, FOOD_PADDING_LANDSCAPE_COLUMN_RIGHT, FOOD_PADDING_LANDSCAPE_COLUMN_BOTTOM);
             delta = takePictureButtonHeight;
             gridView.setNumColumns(2);
         } else {
             gridView.setNumColumns(1);
-            gridView.setPadding(Constants.FOOD_PADDING_PORTRAIT_COLUMN_LEFT, Constants.FOOD_PADDING_PORTRAIT_COLUMN_TOP, Constants.FOOD_PADDING_PORTRAIT_COLUMN_RIGHT, Constants.FOOD_PADDING_PORTRAIT_COLUMN_BOTTOM);
-            delta = takePictureButtonHeight - Constants.BON_APPETIT_BUTTON_SIZE;
+            gridView.setPadding(FOOD_PADDING_PORTRAIT_COLUMN_LEFT, FOOD_PADDING_PORTRAIT_COLUMN_TOP, FOOD_PADDING_PORTRAIT_COLUMN_RIGHT, FOOD_PADDING_PORTRAIT_COLUMN_BOTTOM);
+            delta = takePictureButtonHeight - BON_APPETIT_BUTTON_SIZE;
         }
         //TODO: delta is a height of space which should be added to the end of dataGrid to allow all buttons to be visible.
         takePictureButton.setOnClickListener(new View.OnClickListener() {
@@ -81,6 +101,8 @@ public class HomeWallFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().registerReceiver(receiver, new IntentFilter(SyncService.NOTIFICATION));
+        getActivity().registerReceiver(receiver, new IntentFilter(SYNC_SERVICE_BROADCAST));
+        getActivity().registerReceiver(receiver, new IntentFilter(REPORT_BROADCAST));
     }
+
 }
