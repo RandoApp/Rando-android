@@ -5,11 +5,11 @@ import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.log.Log;
-import com.eucsoft.foodex.broadcast.Broadcast;
-import com.eucsoft.foodex.service.SyncService;
 
 import java.util.Collections;
 import java.util.List;
+
+import static com.eucsoft.foodex.Constants.*;
 
 public class SyncTask extends BaseTask2 {
 
@@ -27,7 +27,7 @@ public class SyncTask extends BaseTask2 {
         if (foodPairs.size() != foodDAO.getFoodPairsNumber()) {
             foodDAO.clearFoodPairs();
             foodDAO.insertFoodPairs(foodPairs);
-            Broadcast.send(SyncService.NOTIFICATION);
+            data.put(NEED_NOTIFICATION, true);
         }
 
         List<FoodPair> dbFoodPairs = foodDAO.getAllFoodPairs();
@@ -37,7 +37,7 @@ public class SyncTask extends BaseTask2 {
             if (!dbFoodPairs.get(i).equals(foodPairs.get(i))) {
                 foodDAO.clearFoodPairs();
                 foodDAO.insertFoodPairs(foodPairs);
-                Broadcast.send(SyncService.NOTIFICATION);
+                data.put(NEED_NOTIFICATION, true);
             }
         }
 

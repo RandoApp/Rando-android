@@ -10,7 +10,7 @@ public abstract class BaseTask2 extends AsyncTask<Void, Integer, Integer> {
     public static final int RESULT_OK = 0;
     public static final int RESULT_ERROR = 1;
     public static final int RESULT_CANCELLED = 2;
-    private Map<String, Object> data = new HashMap<String, Object>();
+    protected Map<String, Object> data = new HashMap<String, Object>();
 
     public abstract Integer run();
 

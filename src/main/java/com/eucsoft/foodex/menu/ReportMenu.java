@@ -1,17 +1,20 @@
 package com.eucsoft.foodex.menu;
 
+import android.app.Activity;
+import android.content.Intent;
+
 import com.eucsoft.foodex.R;
-import com.eucsoft.foodex.fragment.HomeWallFragment;
+import static com.eucsoft.foodex.Constants.*;
 
-public class ReportMenu {
+public class ReportMenu extends Menu {
 
-    public static final int ID =  R.id.action_report;
+    public static final int ID = R.id.action_report;
 
-    public static boolean isOn = false;
+    public ReportMenu(Activity activity) {
+        super(activity);
+    }
 
     public void select () {
-        isOn = !isOn;
-
-        HomeWallFragment.foodPairsAdapter.notifyDataSetChanged();
+        activity.sendBroadcast(new Intent().setAction(REPORT_BROADCAST));
     }
 }

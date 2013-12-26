@@ -29,7 +29,6 @@ import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
-import com.eucsoft.foodex.menu.ReportMenu;
 import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.BonAppetitTask;
 
@@ -56,6 +55,12 @@ public class FoodPairsAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         return 0;
+    }
+
+    private boolean isReport;
+
+    public void toggleReportMode() {
+        isReport = !isReport;
     }
 
     public FoodPairsAdapter(Context context) {
@@ -219,11 +224,7 @@ public class FoodPairsAdapter extends BaseAdapter {
         setViewSwitcherToDefault(holder);
         setPagesToDefault(holder);
 
-        if (ReportMenu.isOn) {
-            holder.reportDialog.setVisibility(View.VISIBLE);
-        } else {
-            holder.reportDialog.setVisibility(View.GONE);
-        }
+        holder.reportDialog.setVisibility(isReport ? View.VISIBLE : View.GONE);
     }
 
     private void cancelRequests(ViewHolder holder) {

@@ -9,22 +9,22 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import com.eucsoft.foodex.App;
+import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.api.OnFetchUser;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.log.Log;
-import com.eucsoft.foodex.task.SyncTask;
 import com.eucsoft.foodex.task.OnOk;
+import com.eucsoft.foodex.task.SyncTask;
 
 import java.util.List;
 import java.util.Map;
 
+import static com.eucsoft.foodex.Constants.NEED_NOTIFICATION;
 import static com.eucsoft.foodex.Constants.SERVICE_LONG_PAUSE;
 import static com.eucsoft.foodex.Constants.SERVICE_SHORT_PAUSE;
 
 public class SyncService extends Service {
-
-    public static final String NOTIFICATION = "SyncService";
 
     public static void run() {
         Intent syncService = new Intent(App.context, SyncService.class);
@@ -58,6 +58,9 @@ public class SyncService extends Service {
             .onOk(new OnOk() {
                 @Override
                 public void onOk(Map<String, Object> data) {
+                    if (data.get(NEED_NOTIFICATION) != null) {
+                        sendNotification();
+                    }
                     setTimeout(System.currentTimeMillis() + SERVICE_SHORT_PAUSE);
                 }
             })
@@ -87,6 +90,13 @@ public class SyncService extends Service {
         Intent intent = new Intent(getApplicationContext(), SyncService.class);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
         return pendingIntent;
+    }
+
+    private void sendNotification() {
+        Intent intent = new Intent(Constants.SYNC_SERVICE_BROADCAST);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(App.context, 0, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) App.context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pendingIntent);
     }
 
 }

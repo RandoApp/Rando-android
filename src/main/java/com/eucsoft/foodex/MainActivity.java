@@ -64,10 +64,10 @@ public class MainActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case ReportMenu.ID:
-                new ReportMenu().select();
+                new ReportMenu(this).select();
                 break;
             case LogoutMenu.ID:
-                new LogoutMenu().select();
+                new LogoutMenu(this).select();
                 break;
         }
 
