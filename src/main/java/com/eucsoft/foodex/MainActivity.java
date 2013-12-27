@@ -35,13 +35,18 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.i(android.content.BroadcastReceiver.class, "Recieved Update request.");
+
             RelativeLayout emptyHome = (RelativeLayout) findViewById(R.id.empty_home);
-            if (emptyHome != null) {
-                Bundle extra = intent.getExtras();
-                if (((Integer) extra.get(Constants.FOOD_PAIRS_NUMBER)) > 0) {
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
-                }
+
+            Bundle extra = intent.getExtras();
+            int foodPairsNumber = (Integer) extra.get(Constants.FOOD_PAIRS_NUMBER);
+            if (foodPairsNumber == 0 && emptyHome != null) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.main_screen, new EmptyHomeWallFragment()).commit();
+            }
+            if (foodPairsNumber > 0 && emptyHome != null) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
             }
         }
     };
