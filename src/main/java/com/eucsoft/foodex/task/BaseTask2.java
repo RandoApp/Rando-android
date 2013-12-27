@@ -9,7 +9,6 @@ public abstract class BaseTask2 extends AsyncTask<Void, Integer, Integer> {
 
     public static final int RESULT_OK = 0;
     public static final int RESULT_ERROR = 1;
-    public static final int RESULT_CANCELLED = 2;
     protected Map<String, Object> data = new HashMap<String, Object>();
 
     public abstract Integer run();
@@ -26,11 +25,6 @@ public abstract class BaseTask2 extends AsyncTask<Void, Integer, Integer> {
     public BaseTask2 onError(OnError callback) {
         this.errorCallback = callback;
         return this;
-    }
-
-    protected Integer done(Object ... data) {
-        this.data = null;
-        return RESULT_OK;
     }
 
     protected Integer ok(Object ... data) {
@@ -67,9 +61,9 @@ public abstract class BaseTask2 extends AsyncTask<Void, Integer, Integer> {
     }
 
     protected void triggerCallback(int result) {
-        if (result == RESULT_OK && okCallback != null && data != null) {
+        if (result == RESULT_OK && okCallback != null) {
             okCallback.onOk(data);
-        } else if (result == RESULT_ERROR && errorCallback != null && data != null) {
+        } else if (result == RESULT_ERROR && errorCallback != null) {
             errorCallback.onError(data);
         }
     }

@@ -1,7 +1,6 @@
 package com.eucsoft.foodex.task;
 
 import com.eucsoft.foodex.App;
-
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.log.Log;
@@ -9,7 +8,7 @@ import com.eucsoft.foodex.log.Log;
 import java.util.Collections;
 import java.util.List;
 
-import static com.eucsoft.foodex.Constants.*;
+import static com.eucsoft.foodex.Constants.NEED_NOTIFICATION;
 
 public class SyncTask extends BaseTask2 {
 
@@ -41,13 +40,14 @@ public class SyncTask extends BaseTask2 {
             }
         }
 
-        if (foodDAO.getNotPairedFoodsNumber() > 0) {
+        if (data.get(NEED_NOTIFICATION) != null
+                || foodDAO.getNotPairedFoodsNumber() > 0) {
             foodDAO.close();
             return ok();
         }
 
         foodDAO.close();
-        return done();
+        return ok();
     }
 
 }
