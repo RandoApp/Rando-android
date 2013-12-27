@@ -4,10 +4,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.db.model.FoodPair;
+import com.eucsoft.foodex.log.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -75,7 +75,7 @@ public class FoodDAO {
         long id = foodPair.id;
         database.delete(FoodDBHelper.TABLE_FOOD, FoodDBHelper.COLUMN_ID
                 + " = " + id, null);
-        Log.w(FoodDBHelper.TAG, "FoodPair deleted with id: " + id);
+        Log.i(FoodDAO.class, "FoodPair deleted with id: ", String.valueOf(id));
     }
 
     /**
@@ -83,7 +83,7 @@ public class FoodDAO {
      */
     public void clearFoodPairs() {
         database.delete(FoodDBHelper.TABLE_FOOD, "", null);
-        Log.w(FoodDBHelper.TAG, "FoodPairs cleared");
+        Log.i(FoodDAO.class, "FoodPairs cleared");
     }
 
 
@@ -99,7 +99,7 @@ public class FoodDAO {
 
         database.update(FoodDBHelper.TABLE_FOOD, values, FoodDBHelper.COLUMN_ID
                 + " = " + id, null);
-        Log.w(FoodDBHelper.TAG, "FoodPair updated with id: " + id);
+        Log.w(FoodDAO.class, "FoodPair updated with id: ", String.valueOf(id));
     }
 
 
