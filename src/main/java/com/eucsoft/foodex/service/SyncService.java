@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.eucsoft.foodex.Constants.NEED_NOTIFICATION;
+import static com.eucsoft.foodex.Constants.NOT_PAIRED_FOOD_PAIRS_NUMBER;
 import static com.eucsoft.foodex.Constants.SERVICE_LONG_PAUSE;
 import static com.eucsoft.foodex.Constants.SERVICE_SHORT_PAUSE;
 
@@ -54,6 +55,7 @@ public class SyncService extends Service {
         API.fetchUserAsync(new OnFetchUser() {
             @Override
             public void onFetch(final List<FoodPair> foodPairs) {
+                Log.i(SyncService.class, "Fetched ", String.valueOf(foodPairs.size()), " foodPairs");
                 new SyncTask(foodPairs)
                         .onOk(new OnOk() {
                             @Override
@@ -61,7 +63,8 @@ public class SyncService extends Service {
                                 if (data.get(NEED_NOTIFICATION) != null) {
                                     sendNotification(foodPairs.size());
                                 }
-                                setTimeout(System.currentTimeMillis() + SERVICE_SHORT_PAUSE);
+                                if ((Integer) data.get(NOT_PAIRED_FOOD_PAIRS_NUMBER) > 0)
+                                    setTimeout(System.currentTimeMillis() + SERVICE_SHORT_PAUSE);
                             }
                         })
                         .execute();

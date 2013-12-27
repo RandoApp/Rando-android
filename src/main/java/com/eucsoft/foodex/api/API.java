@@ -10,7 +10,6 @@ import com.android.volley.toolbox.HttpClientStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.eucsoft.foodex.App;
-import static com.eucsoft.foodex.Constants.*;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.log.Log;
@@ -54,6 +53,7 @@ import static com.eucsoft.foodex.Constants.ANONYMOUS_ID_PARAM;
 import static com.eucsoft.foodex.Constants.ANONYMOUS_URL;
 import static com.eucsoft.foodex.Constants.BON_APPETIT_PARAM;
 import static com.eucsoft.foodex.Constants.BON_APPETIT_URL;
+import static com.eucsoft.foodex.Constants.CONNECTION_TIMEOUT;
 import static com.eucsoft.foodex.Constants.CREATION_PARAM;
 import static com.eucsoft.foodex.Constants.ERROR_CODE_PARAM;
 import static com.eucsoft.foodex.Constants.FACEBOOK_EMAIL_PARAM;
@@ -87,6 +87,10 @@ public class API {
     private static RequestQueue requestQueue;
 
     static {
+        initClient();
+    }
+
+    public static void initClient() {
         try {
             String cookieValue = Preferences.getSessionCookieValue();
             if (!"".equals(cookieValue)) {
@@ -112,6 +116,7 @@ public class API {
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
                 storeSession(((DefaultHttpClient) client).getCookieStore());
+                initClient();
             } else {
                 throw processServerError(readJSON(response));
             }
@@ -128,6 +133,7 @@ public class API {
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
                 storeSession(((DefaultHttpClient) client).getCookieStore());
+                initClient();
             } else {
                 throw processServerError(readJSON(response));
             }
@@ -145,6 +151,7 @@ public class API {
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
                 storeSession(((DefaultHttpClient) client).getCookieStore());
+                initClient();
             } else {
                 throw processServerError(readJSON(response));
             }
@@ -160,6 +167,7 @@ public class API {
             if (response.getStatusLine().getStatusCode() != SC_OK) {
                 throw processServerError(readJSON(response));
             }
+            initClient();
         } catch (IOException e) {
             throw processError(e);
         }
@@ -196,14 +204,14 @@ public class API {
                     }
                     listener.onFetch(foods);
                 } catch (JSONException e) {
-                    Log.e(API.class, "Cannot parse JSON from server", e.getMessage());
+                    Log.e(API.class, e);
                 }
             }
         }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError e) {
-                Log.e(API.class, "Volley error reposnse: ", e.getMessage());
+                Log.e(API.class, e);
             }
         }));
     }
