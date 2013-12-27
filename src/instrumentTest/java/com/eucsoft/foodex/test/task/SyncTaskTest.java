@@ -4,20 +4,15 @@ import android.test.AndroidTestCase;
 
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
-import com.eucsoft.foodex.task.SyncTask;
 import com.eucsoft.foodex.task.OnOk;
+import com.eucsoft.foodex.task.SyncTask;
 import com.eucsoft.foodex.test.db.FoodPairTestHelper;
-
-import org.mockito.Matchers;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMap;
-import static org.mockito.Matchers.notNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -115,7 +110,7 @@ public class SyncTaskTest extends AndroidTestCase {
         .onOk(okCallback)
         .executeSync();
 
-        verify(okCallback, times(0)).onOk(anyMap());
+        verify(okCallback, times(1)).onOk(anyMap());
     }
 
     private List<FoodPair> createFoodPairs() {

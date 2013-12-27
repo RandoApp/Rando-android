@@ -8,6 +8,7 @@ public class Constants {
 
     public static final String FILEPATH = "FILEPATH";
     public static final String FOOD_PAIR = "foodPair";
+    public static final String FOOD_PAIRS_NUMBER = "FOOD_PAIRS_NUMBER";
 
     public static final String IMAGE_FILTER = "image/*";
     public static final String IMAGE_PREFIX = "IMG_";
