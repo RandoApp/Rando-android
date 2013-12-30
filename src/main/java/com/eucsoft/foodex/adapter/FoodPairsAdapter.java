@@ -3,6 +3,7 @@ package com.eucsoft.foodex.adapter;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.Display;
@@ -27,6 +28,7 @@ import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.animation.AnimationFactory;
+import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.TaskResultListener;
@@ -34,6 +36,8 @@ import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.menu.ReportMenu;
 import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.BonAppetitTask;
+
+import org.apache.http.auth.AuthenticationException;
 
 import java.util.List;
 import java.util.Map;
@@ -131,7 +135,7 @@ public class FoodPairsAdapter extends BaseAdapter {
         return holder;
     }
 
-    private void createReportDialog(View convertView, ViewHolder holder) {
+    private void createReportDialog(View convertView, final ViewHolder holder) {
         holder.reportDialog = (LinearLayout) convertView.findViewWithTag("report_dialog");
         Button reportButton = (Button) holder.reportDialog.getChildAt(0);
         int reportButtonWidth = convertView.getResources().getDimensionPixelSize(R.dimen.report_button_width);
@@ -153,7 +157,16 @@ public class FoodPairsAdapter extends BaseAdapter {
         reportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ReportMenu.off();
+                try {
+                    API.report(holder.foodPair.stranger.foodId);
+                    ReportMenu.off();
+                    holder.foodPair.stranger.foodURL = "android.resource://com.eucsoft.foodex/flag.png";
+                    notifyDataSetChanged();
+                } catch (AuthenticationException exc) {
+                    exc.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
