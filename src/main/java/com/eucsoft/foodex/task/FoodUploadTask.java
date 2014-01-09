@@ -13,13 +13,11 @@ import java.io.File;
 
 public class FoodUploadTask extends BaseTask2 {
 
-    public static final int TASK_ID = 100;
     private String fileToUpload;
 
     public FoodUploadTask(String fileToUpload) {
         this.fileToUpload = fileToUpload;
     }
-
 
     @Override
     public Integer run() {
@@ -41,7 +39,6 @@ public class FoodUploadTask extends BaseTask2 {
         } finally {
             wl.release();
         }
-
         return ok();
     }
 }
