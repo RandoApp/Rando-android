@@ -26,9 +26,12 @@ import android.widget.Toast;
 import com.eucsoft.foodex.activity.BaseActivity;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
+import com.eucsoft.foodex.service.SyncService;
 import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.CropImageTask;
 import com.eucsoft.foodex.task.FoodUploadTask;
+import com.eucsoft.foodex.task.OnError;
+import com.eucsoft.foodex.task.OnOk;
 import com.eucsoft.foodex.util.BitmapUtil;
 import com.eucsoft.foodex.util.FileUtil;
 import com.eucsoft.foodex.util.LocationUpdater;
@@ -151,28 +154,31 @@ public class TakePictureActivity extends BaseActivity implements TaskResultListe
                     showProgressbar("uploading...");
                     uploadPictureButton.setEnabled(false);
                     ((LinearLayout) uploadPictureButton.getParent()).setBackgroundColor(getResources().getColor(R.color.button_disabled_background));
-                    Log.i(CropImageTask.class, "00:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
-                    new FoodUploadTask(new TaskResultListener() {
+                    new FoodUploadTask(picFileName).onOk(new OnOk() {
                         @Override
-                        public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
+                        public void onOk(Map<String, Object> data) {
+                            SyncService.run();
                             hideProgressbar();
-                            if (resultCode == BaseTask.RESULT_OK) {
-                                Toast.makeText(TakePictureActivity.this,
-                                        R.string.photo_upload_ok,
-                                        Toast.LENGTH_LONG).show();
-                                TakePictureActivity.this.setResult(Activity.RESULT_OK);
-                                TakePictureActivity.this.finish();
-                            } else {
-                                Toast.makeText(TakePictureActivity.this, R.string.photo_upload_failed,
-                                        Toast.LENGTH_LONG).show();
-                            }
+                            Toast.makeText(TakePictureActivity.this,
+                                    R.string.photo_upload_ok,
+                                    Toast.LENGTH_LONG).show();
+                            TakePictureActivity.this.setResult(Activity.RESULT_OK);
+                            TakePictureActivity.this.finish();
+                        }
+                    }).onError(new OnError() {
+                        @Override
+                        public void onError(Map<String, Object> data) {
+                            hideProgressbar();
+                            Toast.makeText(TakePictureActivity.this, R.string.photo_upload_failed,
+                                    Toast.LENGTH_LONG).show();
 
                             if (uploadPictureButton != null) {
                                 uploadPictureButton.setEnabled(true);
                                 ((LinearLayout) uploadPictureButton.getParent()).setBackgroundColor(getResources().getColor(R.color.auth_button));
                             }
                         }
-                    }).execute(picFileName);
+                    }).execute();
+
                 }
             }
         });
