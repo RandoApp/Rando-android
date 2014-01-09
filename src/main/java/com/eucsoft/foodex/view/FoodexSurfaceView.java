@@ -1,7 +1,6 @@
 package com.eucsoft.foodex.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.os.Build;
 import android.view.SurfaceHolder;
@@ -15,7 +14,6 @@ import java.io.IOException;
 public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
     private Camera camera;
-    private Bitmap currentBitmap;
     private SurfaceHolder holder;
 
     public FoodexSurfaceView(Context context, Camera camera) {
@@ -26,9 +24,8 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
         holder = getHolder();
         holder.addCallback(this);
 
-        // deprecated setting, but required on Android versions prior to 3.0
-        int currentAPIVersion = android.os.Build.VERSION.SDK_INT;
-        if (currentAPIVersion < Build.VERSION_CODES.HONEYCOMB) {
+        // deprecated setting, but required on Android versions prior to 3.0(HONEYCOMB)
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         }
         getHolder().setKeepScreenOn(true);
@@ -57,7 +54,6 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
             // preview surface does not exist
             return;
         }
-
         try {
             camera.stopPreview();
         } catch (Exception e){
@@ -69,7 +65,7 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
         params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
         params.setRotation(90);
 
-        Camera.Size cameraSize = null;
+        Camera.Size cameraSize;
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             cameraSize = CameraUtil.getBestPictureSizeForOldDevices(params.getSupportedPictureSizes());
         } else {
@@ -77,10 +73,10 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
         }
         params.setPictureSize(cameraSize.width, cameraSize.height);
 
-        //TODO: Set MAXIMUM Size
-        params.setPictureSize(cameraSize.width, cameraSize.height);
-        camera.setParameters(params);
+        Camera.Size optimalPreviewSize = CameraUtil.getOptimalPreviewSize(params.getSupportedPreviewSizes(), width, height);
+        params.setPreviewSize(optimalPreviewSize.width, optimalPreviewSize.height);
 
+        camera.setParameters(params);
         try {
             camera.setPreviewDisplay(holder);
             camera.startPreview();
@@ -89,15 +85,4 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
         }
     }
 
-    public void setCamera(Camera camera) {
-        this.camera = camera;
-    }
-
-    public Bitmap getCurrentBitmap() {
-        return currentBitmap;
-    }
-
-    public void setCurrentBitmap(Bitmap currentBitmap) {
-        this.currentBitmap = currentBitmap;
-    }
 }
