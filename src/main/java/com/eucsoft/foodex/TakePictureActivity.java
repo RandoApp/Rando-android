@@ -39,7 +39,7 @@ import com.eucsoft.foodex.view.FoodexSurfaceView;
 
 import java.util.Map;
 
-public class TakePictureActivity extends BaseActivity implements TaskResultListener {
+public class TakePictureActivity extends BaseActivity {
     private FoodexSurfaceView foodexSurfaceView;
     private Camera camera;
     private FrameLayout preview;
@@ -262,30 +262,6 @@ public class TakePictureActivity extends BaseActivity implements TaskResultListe
             // Camera is not available (in use or does not exist)
         }
         return c; // returns null if camera is unavailable
-    }
-
-    @Override
-    public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
-
-        switch (taskCode) {
-            case FoodUploadTask.TASK_ID:
-                if (resultCode == BaseTask.RESULT_OK) {
-                    Toast.makeText(TakePictureActivity.this,
-                            R.string.photo_upload_ok,
-                            Toast.LENGTH_LONG).show();
-                    TakePictureActivity.this.setResult(Activity.RESULT_OK);
-                    TakePictureActivity.this.finish();
-                } else {
-                    Toast.makeText(TakePictureActivity.this, R.string.photo_upload_failed,
-                            Toast.LENGTH_LONG).show();
-                }
-
-                if (uploadPictureButton != null) {
-                    uploadPictureButton.setEnabled(true);
-                    ((LinearLayout) uploadPictureButton.getParent()).setBackgroundColor(getResources().getColor(R.color.auth_button));
-                }
-                break;
-        }
     }
 
     private void releaseCamera() {
