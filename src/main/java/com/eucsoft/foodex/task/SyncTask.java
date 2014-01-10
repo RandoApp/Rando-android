@@ -3,6 +3,7 @@ package com.eucsoft.foodex.task;
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
+import com.eucsoft.foodex.db.model.FoodPairDateComparator;
 import com.eucsoft.foodex.log.Log;
 
 import java.util.Collections;
@@ -31,7 +32,7 @@ public class SyncTask extends BaseTask2 {
         }
 
         List<FoodPair> dbFoodPairs = foodDAO.getAllFoodPairs();
-        Collections.sort(foodPairs);
+        Collections.sort(foodPairs, new FoodPairDateComparator());
 
         for (int i = 0; i < dbFoodPairs.size(); i++) {
             if (!dbFoodPairs.get(i).equals(foodPairs.get(i))) {
