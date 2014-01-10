@@ -3,7 +3,6 @@ package com.eucsoft.foodex.adapter;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.Display;
@@ -34,6 +33,7 @@ import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.menu.ReportMenu;
+import com.eucsoft.foodex.service.SyncService;
 import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.BonAppetitTask;
 
@@ -160,8 +160,7 @@ public class FoodPairsAdapter extends BaseAdapter {
                 try {
                     API.report(holder.foodPair.stranger.foodId);
                     ReportMenu.off();
-                    holder.foodPair.stranger.foodURL = "android.resource://com.eucsoft.foodex/flag.png";
-                    notifyDataSetChanged();
+                    SyncService.run();
                 } catch (AuthenticationException exc) {
                     exc.printStackTrace();
                 } catch (Exception e) {
