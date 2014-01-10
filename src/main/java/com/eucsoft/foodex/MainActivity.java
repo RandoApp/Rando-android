@@ -81,6 +81,15 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        if (ReportMenu.isReport) {
+            ReportMenu.off();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
@@ -88,13 +97,21 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem actionReportItem = menu.findItem(R.id.action_report);
+        actionReportItem.setTitle(ReportMenu.getMenuTitle());
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case ReportMenu.ID:
-                new ReportMenu(this).select();
+                new ReportMenu(item, this).select();
                 break;
             case LogoutMenu.ID:
-                new LogoutMenu(this).select();
+                new LogoutMenu(item, this).select();
                 break;
         }
 
