@@ -109,8 +109,6 @@ public class FoodPairsAdapter extends BaseAdapter {
     private ViewHolder createHolder(View convertView) {
         ViewHolder holder = new ViewHolder();
 
-
-
         holder.user = new ViewHolder.UserHolder();
         holder.stranger = new ViewHolder.UserHolder();
 
@@ -131,11 +129,12 @@ public class FoodPairsAdapter extends BaseAdapter {
         holder.stranger.foodPager.setAdapter(holder.stranger.foodMapPagerAdatper);
 
         createReportDialog(convertView, holder);
+
         convertView.setTag(holder);
         return holder;
     }
 
-    private void z createReportDialog(View convertView, final ViewHolder holder) {
+    private void createReportDialog(View convertView, final ViewHolder holder) {
         holder.reportDialog = (LinearLayout) convertView.findViewWithTag("report_dialog");
         Button reportButton = (Button) holder.reportDialog.getChildAt(0);
         int reportButtonWidth = convertView.getResources().getDimensionPixelSize(R.dimen.report_button_width);
@@ -147,27 +146,6 @@ public class FoodPairsAdapter extends BaseAdapter {
         reportButtonParams.leftMargin = marginCenter - reportButtonWidth / 2;
         reportButton.setLayoutParams(reportButtonParams);
         holder.reportDialog.setLayoutParams(new RelativeLayout.LayoutParams(foodImageSize, foodImageSize));
-        holder.reportDialog.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
-
-        reportButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    API.report(holder.foodPair.stranger.foodId);
-                    ReportMenu.off();
-                    SyncService.run();
-                } catch (AuthenticationException exc) {
-                    exc.printStackTrace();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     private void addListenersToHolder(final ViewHolder holder) {
@@ -200,6 +178,28 @@ public class FoodPairsAdapter extends BaseAdapter {
                         }
                     });
                     bonAppetitTask.execute(holder.foodPair);
+                }
+            }
+        });
+
+        holder.reportDialog.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
+        holder.reportDialog.getChildAt(0).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    API.report(holder.foodPair.stranger.foodId);
+                    ReportMenu.off();
+                    SyncService.run();
+                } catch (AuthenticationException exc) {
+                    exc.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -239,29 +239,26 @@ public class FoodPairsAdapter extends BaseAdapter {
 
         cancelRequests(holder);
 
-        if (!ReportMenu.isReport) {
-            if (foodPair.stranger.isBonAppetit()) {
-                holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
-            } else {
-                holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
-            }
+        setViewSwitcherToDefault(holder);
+        setPagesToDefault(holder);
 
-            if (holder.stranger.foodImage != null && holder.user.foodImage != null
-                    && holder.stranger.mapImage != null && holder.user.mapImage != null) {
-                holder.user.foodMapPagerAdatper.recycle(holder.user.foodImage, holder.user.mapImage);
-                holder.stranger.foodMapPagerAdatper.recycle(holder.stranger.foodImage, holder.stranger.mapImage);
-            }
-
-            holder.reportDialog.setVisibility(View.GONE);
-            holder.bonAppetitButton.setVisibility(View.VISIBLE);
-        } else {
+        if (ReportMenu.isReport) {
             holder.reportDialog.setVisibility(View.VISIBLE);
             holder.bonAppetitButton.setEnabled(false);
             holder.bonAppetitButton.setVisibility(View.INVISIBLE);
+            return;
         }
 
-        setViewSwitcherToDefault(holder);
-        setPagesToDefault(holder);
+        holder.bonAppetitButton.setImageResource(foodPair.stranger.isBonAppetit() ? R.drawable.bonappetit2 : R.drawable.bonappetit);
+
+        if (holder.stranger.foodImage != null && holder.user.foodImage != null
+                && holder.stranger.mapImage != null && holder.user.mapImage != null) {
+            holder.user.foodMapPagerAdatper.recycle(holder.user.foodImage, holder.user.mapImage);
+            holder.stranger.foodMapPagerAdatper.recycle(holder.stranger.foodImage, holder.stranger.mapImage);
+        }
+
+        holder.reportDialog.setVisibility(View.GONE);
+        holder.bonAppetitButton.setVisibility(View.VISIBLE);
     }
 
     private void cancelRequests(ViewHolder holder) {
