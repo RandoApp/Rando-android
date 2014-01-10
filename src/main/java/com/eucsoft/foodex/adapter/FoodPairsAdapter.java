@@ -135,7 +135,7 @@ public class FoodPairsAdapter extends BaseAdapter {
         return holder;
     }
 
-    private void createReportDialog(View convertView, final ViewHolder holder) {
+    private void z createReportDialog(View convertView, final ViewHolder holder) {
         holder.reportDialog = (LinearLayout) convertView.findViewWithTag("report_dialog");
         Button reportButton = (Button) holder.reportDialog.getChildAt(0);
         int reportButtonWidth = convertView.getResources().getDimensionPixelSize(R.dimen.report_button_width);
@@ -252,9 +252,6 @@ public class FoodPairsAdapter extends BaseAdapter {
                 holder.stranger.foodMapPagerAdatper.recycle(holder.stranger.foodImage, holder.stranger.mapImage);
             }
 
-            setViewSwitcherToDefault(holder);
-            setPagesToDefault(holder);
-
             holder.reportDialog.setVisibility(View.GONE);
             holder.bonAppetitButton.setVisibility(View.VISIBLE);
         } else {
@@ -262,6 +259,9 @@ public class FoodPairsAdapter extends BaseAdapter {
             holder.bonAppetitButton.setEnabled(false);
             holder.bonAppetitButton.setVisibility(View.INVISIBLE);
         }
+
+        setViewSwitcherToDefault(holder);
+        setPagesToDefault(holder);
     }
 
     private void cancelRequests(ViewHolder holder) {
