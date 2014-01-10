@@ -19,6 +19,13 @@
             android:layout_gravity="center"
             android:background="@drawable/back" />
 
+        <ImageButton
+            android:id="@+id/flashlight_button"
+            android:layout_height="50dp"
+            android:layout_width="50dp"
+            android:layout_gravity="center"
+            android:background="@drawable/lightening_auto" />
+
     </LinearLayout>
 
     <FrameLayout
