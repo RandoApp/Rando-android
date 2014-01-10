@@ -93,10 +93,37 @@ public class TakePictureActivity extends BaseActivity {
 
         updateLocation();
         setBackButtonListener();
+        setFlashLightButtonListener();
         setTakePictureButtonListener();
         setImageSelectButtonListener();
         setUploadButtonListener();
         normalizeCameraPreview();
+    }
+
+    private void setFlashLightButtonListener() {
+        final ImageButton flashLightButton = (ImageButton) findViewById(R.id.flashlight_button);
+        flashLightButton.setOnClickListener(new ImageButton.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                Camera.Parameters params = camera.getParameters();
+                String flashMode = params.getFlashMode();
+
+                if (flashMode.equals(Camera.Parameters.FLASH_MODE_AUTO)) {
+                    flashLightButton.setBackgroundResource(R.drawable.lightening_off);
+                    flashMode = Camera.Parameters.FLASH_MODE_OFF;
+                } else if (flashMode.equals(Camera.Parameters.FLASH_MODE_OFF)) {
+                    flashLightButton.setBackgroundResource(R.drawable.lightening);
+                    flashMode = Camera.Parameters.FLASH_MODE_ON;
+                } else if (flashMode.equals(Camera.Parameters.FLASH_MODE_ON)) {
+                    flashLightButton.setBackgroundResource(R.drawable.lightening_auto);
+                    flashMode = Camera.Parameters.FLASH_MODE_AUTO;
+                }
+                params.setFlashMode(flashMode);
+
+                camera.setParameters(params);
+            }
+        });
     }
 
     private void setBackButtonListener() {
@@ -188,6 +215,13 @@ public class TakePictureActivity extends BaseActivity {
         camera = getCameraInstance();
 
         if (camera != null) {
+
+            Camera.Parameters params = camera.getParameters();
+            params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+            params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+            params.setRotation(90);
+            camera.setParameters(params);
+
             foodexSurfaceView = new FoodexSurfaceView(getApplicationContext(), camera);
 
             preview = (FrameLayout) findViewById(R.id.cameraPreview);

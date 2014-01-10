@@ -39,7 +39,7 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
             camera.setPreviewDisplay(holder);
             camera.startPreview();
         } catch (IOException e) {
-            Log.d(FoodexSurfaceView.class, "Error setting camera preview: ",e.getMessage());
+            Log.d(FoodexSurfaceView.class, "Error setting camera preview: ", e.getMessage());
         }
 
     }
@@ -50,20 +50,17 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        if (holder.getSurface() == null){
+        if (holder.getSurface() == null) {
             // preview surface does not exist
             return;
         }
         try {
             camera.stopPreview();
-        } catch (Exception e){
+        } catch (Exception e) {
             // ignore: tried to stop a non-existent preview
         }
 
         Camera.Parameters params = camera.getParameters();
-        params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-        params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
-        params.setRotation(90);
 
         Camera.Size cameraSize;
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
@@ -80,7 +77,7 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
         try {
             camera.setPreviewDisplay(holder);
             camera.startPreview();
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.d(FoodexSurfaceView.class, "Error starting camera preview: ", e.getMessage());
         }
     }
