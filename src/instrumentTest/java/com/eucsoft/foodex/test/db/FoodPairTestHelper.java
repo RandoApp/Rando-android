@@ -1,6 +1,7 @@
 package com.eucsoft.foodex.test.db;
 
 import com.eucsoft.foodex.db.model.FoodPair;
+import com.eucsoft.foodex.db.model.FoodPairDateComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -100,8 +101,8 @@ public class FoodPairTestHelper {
         assertThat(foodPairs1, notNullValue());
         assertThat(foodPairs2, notNullValue());
         assertThat("Sizes not equal", foodPairs1.size(), is(foodPairs2.size()));
-        Collections.sort(foodPairs1);
-        Collections.sort(foodPairs2);
+        Collections.sort(foodPairs1, new FoodPairDateComparator());
+        Collections.sort(foodPairs2, new FoodPairDateComparator());
         for (int i = 0; i < foodPairs1.size(); i++) {
             assertThat("FoodPairs not equal: " + foodPairs1.get(i).toString() + " != " + foodPairs2.get(i).toString(), foodPairs1.get(i), is(foodPairs2.get(i)));
         }

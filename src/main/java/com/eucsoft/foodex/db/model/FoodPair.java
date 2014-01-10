@@ -3,7 +3,7 @@ package com.eucsoft.foodex.db.model;
 import java.io.Serializable;
 import java.util.Date;
 
-public class FoodPair implements Serializable, Comparable<FoodPair> {
+public class FoodPair implements Serializable/*, Comparable<FoodPair>*/ {
 
     public static final int STRANGER_FOOD = 0;
     public static final int STRANGER_MAP = 1;
@@ -35,18 +35,6 @@ public class FoodPair implements Serializable, Comparable<FoodPair> {
         int result = user != null ? user.hashCode() : 0;
         result = 31 * result + (stranger != null ? stranger.hashCode() : 0);
         return result;
-    }
-
-
-    /**
-     * Compares user.foodDate, to provide ability to sort lists in backward natural orders, based on creation date.
-     *
-     * @param another
-     * @return
-     */
-    @Override
-    public int compareTo(FoodPair another) {
-        return (int) (another.user.foodDate.getTime() - this.user.foodDate.getTime());
     }
 
     @Override
