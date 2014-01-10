@@ -56,6 +56,7 @@ android {
 dependencies {
     compile project(':foodex-android:modules:facebook:facebook')
     compile project(':foodex-android:modules:volley')
+    compile project(':foodex-android:modules:two-way-gridview:lib')
     compile 'com.android.support:appcompat-v7:+'
     compile 'org.apache.httpcomponents:httpcore:4.3'
     compile 'org.apache.httpcomponents:httpmime:4.3.1'

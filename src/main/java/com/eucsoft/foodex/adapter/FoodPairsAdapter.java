@@ -28,6 +28,7 @@ import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.animation.AnimationFactory;
 import com.eucsoft.foodex.api.API;
+import com.eucsoft.foodex.api.VolleySingleton;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.listener.TaskResultListener;
@@ -367,7 +368,7 @@ public class FoodPairsAdapter extends BaseAdapter {
 
     private void loadFoodImage(final ViewHolder.UserHolder userHolder, final FoodPair.User userFoodPair) {
         if (!TextUtils.isEmpty(userFoodPair.foodURL)) {
-            userHolder.foodContainer = App.getInstance(App.context).getImageLoader().get(userFoodPair.foodURL, new ImageLoader.ImageListener() {
+            userHolder.foodContainer = VolleySingleton.getInstance(App.context).getImageLoader().get(userFoodPair.foodURL, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                     if (userHolder.foodImage != null) {
@@ -388,7 +389,7 @@ public class FoodPairsAdapter extends BaseAdapter {
 
     private void loadMapImage(final ViewHolder.UserHolder userHolder, final FoodPair.User userFoodPair) {
         if (!TextUtils.isEmpty(userFoodPair.mapURL)) {
-            userHolder.mapContainer = App.getInstance(App.context).getImageLoader().get(userFoodPair.mapURL, new ImageLoader.ImageListener() {
+            userHolder.mapContainer = VolleySingleton.getInstance(App.context).getImageLoader().get(userFoodPair.mapURL, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                     if (userHolder.mapImage != null) {

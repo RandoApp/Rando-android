@@ -1,15 +1,20 @@
 package com.eucsoft.foodex;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.fragment.AuthFragment;
@@ -21,11 +26,30 @@ import com.eucsoft.foodex.menu.LogoutMenu;
 import com.eucsoft.foodex.menu.ReportMenu;
 import com.eucsoft.foodex.preferences.Preferences;
 
-import static com.eucsoft.foodex.Constants.REPORT_BROADCAST;
-
 public class MainActivity extends ActionBarActivity {
 
     public static Activity activity;
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(android.content.BroadcastReceiver.class, "Recieved Update request.");
+
+            RelativeLayout emptyHome = (RelativeLayout) findViewById(R.id.empty_home);
+
+            Bundle extra = intent.getExtras();
+            int foodPairsNumber = (Integer) extra.get(Constants.FOOD_PAIRS_NUMBER);
+            if (foodPairsNumber == 0 && emptyHome != null) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.main_screen, new EmptyHomeWallFragment()).commit();
+            }
+            if (foodPairsNumber > 0 && emptyHome != null) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,10 +138,18 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private boolean isNotAuthorized() {
-        if (Preferences.getSessionCookieValue().isEmpty()) {
-            return true;
-        }
-        return false;
+        return Preferences.getSessionCookieValue().isEmpty();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        registerReceiver(receiver, new IntentFilter(Constants.SYNC_SERVICE_BROADCAST));
+    }
 }

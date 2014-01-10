@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.eucsoft.foodex.Constants.NEED_NOTIFICATION;
+import static com.eucsoft.foodex.Constants.NOT_PAIRED_FOOD_PAIRS_NUMBER;
 import static com.eucsoft.foodex.Constants.SERVICE_LONG_PAUSE;
 import static com.eucsoft.foodex.Constants.SERVICE_SHORT_PAUSE;
 
@@ -53,18 +54,20 @@ public class SyncService extends Service {
 
         API.fetchUserAsync(new OnFetchUser() {
             @Override
-            public void onFetch(List<FoodPair> foodPairs) {
-            new SyncTask(foodPairs)
-            .onOk(new OnOk() {
-                @Override
-                public void onOk(Map<String, Object> data) {
-                    if (data.get(NEED_NOTIFICATION) != null) {
-                        sendNotification();
-                    }
-                    setTimeout(System.currentTimeMillis() + SERVICE_SHORT_PAUSE);
-                }
-            })
-            .execute();
+            public void onFetch(final List<FoodPair> foodPairs) {
+                Log.i(SyncService.class, "Fetched ", String.valueOf(foodPairs.size()), " foodPairs");
+                new SyncTask(foodPairs)
+                        .onOk(new OnOk() {
+                            @Override
+                            public void onOk(Map<String, Object> data) {
+                                if (data.get(NEED_NOTIFICATION) != null) {
+                                    sendNotification(foodPairs.size());
+                                }
+                                if ((Integer) data.get(NOT_PAIRED_FOOD_PAIRS_NUMBER) > 0)
+                                    setTimeout(System.currentTimeMillis() + SERVICE_SHORT_PAUSE);
+                            }
+                        })
+                        .execute();
             }
         });
 
@@ -92,11 +95,13 @@ public class SyncService extends Service {
         return pendingIntent;
     }
 
-    private void sendNotification() {
+    private void sendNotification(int foodPairsNumber) {
         Intent intent = new Intent(Constants.SYNC_SERVICE_BROADCAST);
+        intent.putExtra(Constants.FOOD_PAIRS_NUMBER, foodPairsNumber);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(App.context, 0, intent, 0);
         AlarmManager alarmManager = (AlarmManager) App.context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pendingIntent);
+        Log.i(SyncService.class, "Update broadcast sent.");
     }
 
 }

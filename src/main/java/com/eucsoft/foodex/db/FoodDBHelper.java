@@ -7,8 +7,6 @@ import android.util.Log;
 
 public class FoodDBHelper extends SQLiteOpenHelper {
 
-    public static final String TAG = "database";
-
     public static String COLUMN_ID = "_id";
     public static String COLUMN_USER_FOOD_ID = "USER_FOOD_ID";
     public static String COLUMN_USER_FOOD_URL = "USER_FOOD_URL";
