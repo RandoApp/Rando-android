@@ -5,7 +5,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 
 import com.eucsoft.foodex.App;
-import com.eucsoft.foodex.MainActivity;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.fragment.AuthFragment;
 import com.eucsoft.foodex.listener.TaskResultListener;
@@ -16,13 +15,13 @@ import java.util.Map;
 
 public class LogoutMenu extends Menu {
 
-    public static final int ID =  R.id.action_logout;
+    public static final int ID = R.id.action_logout;
 
     public LogoutMenu(Activity activity) {
         super(activity);
     }
 
-    public void select () {
+    public void select() {
         Progress.show(App.context.getResources().getString(R.string.logout_progress));
         new LogoutTask(new TaskResultListener() {
             @Override

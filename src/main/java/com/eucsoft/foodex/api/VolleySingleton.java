@@ -5,7 +5,7 @@ import android.content.Context;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
-import com.eucsoft.foodex.LruBitmapCache;
+import com.eucsoft.foodex.cache.TwoLevelBitmapCache;
 
 public class VolleySingleton {
     private static VolleySingleton mInstance = null;
@@ -14,7 +14,7 @@ public class VolleySingleton {
 
     private VolleySingleton(Context context) {
         mRequestQueue = Volley.newRequestQueue(context);
-        mImageLoader = new ImageLoader(this.mRequestQueue, new LruBitmapCache());
+        mImageLoader = new ImageLoader(this.mRequestQueue, new TwoLevelBitmapCache());
     }
 
     public static VolleySingleton getInstance(Context context) {
