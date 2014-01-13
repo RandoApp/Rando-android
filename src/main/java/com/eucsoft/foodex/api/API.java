@@ -10,6 +10,7 @@ import com.android.volley.toolbox.HttpClientStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.eucsoft.foodex.App;
+import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.log.Log;
@@ -20,17 +21,14 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
@@ -70,7 +68,6 @@ import static com.eucsoft.foodex.Constants.LOGOUT_URL;
 import static com.eucsoft.foodex.Constants.LONGITUDE_PARAM;
 import static com.eucsoft.foodex.Constants.MAP_URL_PARAM;
 import static com.eucsoft.foodex.Constants.REPORT_URL;
-import static com.eucsoft.foodex.Constants.SEESSION_COOKIE_NAME;
 import static com.eucsoft.foodex.Constants.SIGNUP_EMAIL_PARAM;
 import static com.eucsoft.foodex.Constants.SIGNUP_PASSWORD_PARAM;
 import static com.eucsoft.foodex.Constants.SIGNUP_URL;
@@ -84,25 +81,13 @@ public class API {
 
     private static HttpParams httpParams = new BasicHttpParams();
     public static HttpClient client = new DefaultHttpClient(httpParams);
-    private static RequestQueue requestQueue;
+    private static RequestQueue requestQueue = Volley.newRequestQueue(App.context, new HttpClientStack(client));
+    private static String authToken = Preferences.getAuthToken();
 
     static {
-        initClient();
-    }
-
-    public static void initClient() {
         try {
-            String cookieValue = Preferences.getSessionCookieValue();
-            if (!"".equals(cookieValue)) {
-                BasicClientCookie cookie = new BasicClientCookie(SEESSION_COOKIE_NAME, cookieValue);
-                cookie.setDomain(Preferences.getSessionCookieDomain());
-                cookie.setPath(Preferences.getSessionCookiePath());
-                ((DefaultHttpClient) client).getCookieStore().addCookie(cookie);
-            }
-
             HttpConnectionParams.setConnectionTimeout(httpParams, CONNECTION_TIMEOUT);
             HttpConnectionParams.setSoTimeout(httpParams, CONNECTION_TIMEOUT);
-            requestQueue = Volley.newRequestQueue(App.context, new HttpClientStack(client));
         } catch (Exception e) {
             //Why is the world so cruel?
         }
@@ -115,8 +100,8 @@ public class API {
             HttpResponse response = client.execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
-                storeSession(((DefaultHttpClient) client).getCookieStore());
-                initClient();
+                authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
+                Preferences.setAuthToken(authToken);
             } else {
                 throw processServerError(readJSON(response));
             }
@@ -132,8 +117,8 @@ public class API {
             HttpResponse response = client.execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
-                storeSession(((DefaultHttpClient) client).getCookieStore());
-                initClient();
+                authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
+                Preferences.setAuthToken(authToken);
             } else {
                 throw processServerError(readJSON(response));
             }
@@ -150,8 +135,8 @@ public class API {
             HttpResponse response = client.execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
-                storeSession(((DefaultHttpClient) client).getCookieStore());
-                initClient();
+                authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
+                Preferences.setAuthToken(authToken);
             } else {
                 throw processServerError(readJSON(response));
             }
@@ -162,12 +147,11 @@ public class API {
 
     public static void logout() throws AuthenticationException, Exception {
         try {
-            HttpPost request = new HttpPost(LOGOUT_URL);
+            HttpPost request = new HttpPost(getUrl(LOGOUT_URL));
             HttpResponse response = client.execute(request);
             if (response.getStatusLine().getStatusCode() != SC_OK) {
                 throw processServerError(readJSON(response));
             }
-            initClient();
         } catch (IOException e) {
             throw processError(e);
         }
@@ -176,7 +160,7 @@ public class API {
     public static void fetchUserAsync(final OnFetchUser listener) {
         Log.i(API.class, "API.fetchUser");
 
-        requestQueue.add(new JsonObjectRequest(Request.Method.GET, FETCH_USER_URL, null, new Response.Listener<JSONObject>() {
+        requestQueue.add(new JsonObjectRequest(Request.Method.GET, getUrl(FETCH_USER_URL), null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
@@ -218,7 +202,7 @@ public class API {
 
     public static List<FoodPair> fetchUser() throws AuthenticationException, Exception {
         try {
-            HttpGet request = new HttpGet(FETCH_USER_URL);
+            HttpGet request = new HttpGet(getUrl(FETCH_USER_URL));
             HttpResponse response = client.execute(request);
 
 
@@ -257,7 +241,7 @@ public class API {
 
     public static byte[] downloadFood(String url) throws AuthenticationException, Exception {
         try {
-            HttpGet request = new HttpGet(url);
+            HttpGet request = new HttpGet(getUrl(url));
             HttpResponse response = client.execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
@@ -281,7 +265,7 @@ public class API {
                 longitude = String.valueOf(location.getLongitude());
             }
 
-            HttpPost request = new HttpPost(ULOAD_FOOD_URL);
+            HttpPost request = new HttpPost(getUrl(ULOAD_FOOD_URL));
 
             MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
             multipartEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
@@ -308,7 +292,7 @@ public class API {
 
     public static void report(String id) throws AuthenticationException, Exception {
         try {
-            HttpPost request = new HttpPost(REPORT_URL + id);
+            HttpPost request = new HttpPost(getUrl(REPORT_URL + id));
 
             HttpResponse response = client.execute(request);
             if (response.getStatusLine().getStatusCode() != SC_OK) {
@@ -325,7 +309,7 @@ public class API {
 
     public static void bonAppetit(String id) throws AuthenticationException, Exception {
         try {
-            HttpPost request = new HttpPost(BON_APPETIT_URL + id);
+            HttpPost request = new HttpPost(getUrl(BON_APPETIT_URL + id));
             HttpResponse response = client.execute(request);
 
             if (response.getStatusLine().getStatusCode() != SC_OK) {
@@ -348,15 +332,6 @@ public class API {
         request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
     }
 
-    private static void storeSession(CookieStore cookieStore) {
-        for (Cookie cookie : cookieStore.getCookies()) {
-            if (SEESSION_COOKIE_NAME.equals(cookie.getName())) {
-                Preferences.setSessionCookie(cookie.getValue(), cookie.getDomain(), cookie.getPath());
-                return;
-            }
-        }
-    }
-
     private static JSONObject readJSON(HttpResponse response) throws Exception {
         try {
             String line = "";
@@ -374,6 +349,15 @@ public class API {
         } catch (IOException e) {
             throw processError(e);
         }
+    }
+
+    private static String getUrl(String url) {
+        StringBuilder urlBuilder = new StringBuilder(url);
+        urlBuilder.append("/");
+        urlBuilder.append(Constants.AUTH_TOKEN_PARAM);
+        urlBuilder.append("=");
+        urlBuilder.append(authToken);
+        return urlBuilder.toString();
     }
 
     private static Exception processServerError(JSONObject json) {
@@ -394,6 +378,5 @@ public class API {
         Log.e(API.class, exc);
         return new Exception(App.context.getResources().getString(R.string.error_unknown_err));
     }
-
 
 }

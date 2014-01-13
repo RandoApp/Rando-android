@@ -47,12 +47,10 @@ public class Constants {
 
     //Shared Preferences
     public static final String PREFERENCES_FILE_NAME = "foodex.prefs";
-    public static final String SEESSION_COOKIE_NAME = "connect.sid";
-    public static final String SEESSION_COOKIE_VALUE = "connect.sid.value";
-    public static final String SEESSION_COOKIE_DOMAIN = "connect.sid.domain";
-    public static final String SEESSION_COOKIE_PATH = "connect.sid.path";
+    public static final String AUTH_TOKEN = "auth.token";
     public static final String TRAINING_FRAGMENT_SHOWN = "training.fragment.shown";
 
+    public static final String AUTH_TOKEN_PARAM = "token";
     public static final String SIGNUP_EMAIL_PARAM = "username";
     public static final String SIGNUP_PASSWORD_PARAM = "password";
     public static final String FACEBOOK_EMAIL_PARAM = "email";

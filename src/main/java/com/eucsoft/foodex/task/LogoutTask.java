@@ -36,7 +36,7 @@ public class LogoutTask extends AsyncTask<Void, Integer, Long> implements BaseTa
                 }
             }
 
-            Preferences.removeSessionCookie();
+            Preferences.removeAuthToken();
 
             API.logout();
             ((DefaultHttpClient) API.client).getCookieStore().clear();
