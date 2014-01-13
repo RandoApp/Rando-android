@@ -1,9 +1,10 @@
 package com.eucsoft.foodex.db.model;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Date;
 
-public class FoodPair implements Serializable/*, Comparable<FoodPair>*/ {
+public class FoodPair implements Serializable {
 
     public static final int STRANGER_FOOD = 0;
     public static final int STRANGER_MAP = 1;
@@ -102,6 +103,14 @@ public class FoodPair implements Serializable/*, Comparable<FoodPair>*/ {
                     ", bonAppetit=" + bonAppetit +
                     ", mapURL='" + mapURL + '\'' +
                     '}';
+        }
+    }
+
+    public static class DateComparator implements Comparator<FoodPair> {
+
+        @Override
+        public int compare(FoodPair lhs, FoodPair rhs) {
+            return (int) (rhs.user.foodDate.getTime() - lhs.user.foodDate.getTime());
         }
     }
 }

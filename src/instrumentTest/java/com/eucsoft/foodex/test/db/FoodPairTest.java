@@ -4,7 +4,6 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.eucsoft.foodex.db.model.FoodPair;
-import com.eucsoft.foodex.db.model.FoodPairDateComparator;
 
 import org.hamcrest.Matchers;
 
@@ -33,7 +32,7 @@ public class FoodPairTest extends AndroidTestCase {
         FoodPair foodPair2 = FoodPairTestHelper.getRandomFoodPair();
         foodPair1.user.foodDate = date;
         foodPair2.user.foodDate = date;
-        assertThat("Equal FoodPair dates doesn't return 0 on compare.", foodPair1.compareTo(foodPair2), is(0));
+        assertThat("Equal FoodPair dates doesn't return 0 on compare.", new FoodPair.DateComparator().compare(foodPair2, foodPair1), is(0));
     }
 
     @SmallTest
@@ -45,7 +44,7 @@ public class FoodPairTest extends AndroidTestCase {
         FoodPair foodPair2 = FoodPairTestHelper.getRandomFoodPair();
         foodPair1.user.foodDate = date1;
         foodPair2.user.foodDate = date2;
-        assertThat("FoodPairs comparation failed", foodPair2.compareTo(foodPair1), Matchers.greaterThan(0));
+        assertThat("FoodPairs comparation failed", new FoodPair.DateComparator().compare(foodPair2, foodPair1), Matchers.greaterThan(0));
     }
 
     @SmallTest
@@ -57,13 +56,13 @@ public class FoodPairTest extends AndroidTestCase {
         FoodPair foodPair2 = FoodPairTestHelper.getRandomFoodPair();
         foodPair1.user.foodDate = date1;
         foodPair2.user.foodDate = date2;
-        assertThat("FoodPairs comparation failed", foodPair2.compareTo(foodPair1), Matchers.lessThan(0));
+        assertThat("FoodPairs comparation failed", new FoodPair.DateComparator().compare(foodPair2, foodPair1), Matchers.lessThan(0));
     }
 
     @SmallTest
     public void testDateSortability() {
         List<FoodPair> foodPairs = FoodPairTestHelper.getNRandomFoodPairs(100);
-        Collections.sort(foodPairs, new FoodPairDateComparator());
+        Collections.sort(foodPairs, new FoodPair.DateComparator());
         FoodPairTestHelper.checkListNaturalOrder(foodPairs);
     }
 
