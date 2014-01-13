@@ -50,7 +50,7 @@ public class TakePictureActivity extends BaseActivity {
     public static Location currentLocation;
     public static String picFileName = null;
     private ImageButton uploadPictureButton;
-
+    private ImageButton flashLightButton;
 
     private Camera.PictureCallback pictureCallback = new Camera.PictureCallback() {
 
@@ -101,7 +101,7 @@ public class TakePictureActivity extends BaseActivity {
     }
 
     private void setFlashLightButtonListener() {
-        final ImageButton flashLightButton = (ImageButton) findViewById(R.id.flashlight_button);
+        flashLightButton = (ImageButton) findViewById(R.id.flashlight_button);
         flashLightButton.setOnClickListener(new ImageButton.OnClickListener() {
 
             @Override
@@ -109,13 +109,13 @@ public class TakePictureActivity extends BaseActivity {
                 Camera.Parameters params = camera.getParameters();
                 String flashMode = params.getFlashMode();
 
-                if (flashMode.equals(Camera.Parameters.FLASH_MODE_AUTO)) {
+                if (Camera.Parameters.FLASH_MODE_AUTO.equals(flashMode)) {
                     flashLightButton.setBackgroundResource(R.drawable.lightening_off);
                     flashMode = Camera.Parameters.FLASH_MODE_OFF;
-                } else if (flashMode.equals(Camera.Parameters.FLASH_MODE_OFF)) {
+                } else if (Camera.Parameters.FLASH_MODE_OFF.equals(flashMode)) {
                     flashLightButton.setBackgroundResource(R.drawable.lightening);
                     flashMode = Camera.Parameters.FLASH_MODE_ON;
-                } else if (flashMode.equals(Camera.Parameters.FLASH_MODE_ON)) {
+                } else if (Camera.Parameters.FLASH_MODE_ON.equals(flashMode)) {
                     flashLightButton.setBackgroundResource(R.drawable.lightening_auto);
                     flashMode = Camera.Parameters.FLASH_MODE_AUTO;
                 }
@@ -217,6 +217,11 @@ public class TakePictureActivity extends BaseActivity {
         if (camera != null) {
 
             Camera.Parameters params = camera.getParameters();
+            //disable flashlight button if flash light not supported
+            if (params.getFlashMode() == null) {
+                flashLightButton.setEnabled(false);
+                flashLightButton.setBackgroundResource(R.drawable.lightening_off);
+            }
             params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
             params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
             params.setRotation(90);
