@@ -21,7 +21,6 @@ import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.LoginButton;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 public class FacebookFragment extends Fragment {
