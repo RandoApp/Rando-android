@@ -6,7 +6,8 @@ import android.view.MenuItem;
 
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.R;
-import static com.eucsoft.foodex.Constants.*;
+
+import static com.eucsoft.foodex.Constants.REPORT_BROADCAST;
 
 public class ReportMenu extends Menu {
 
@@ -18,7 +19,7 @@ public class ReportMenu extends Menu {
         super(item, activity);
     }
 
-    public void select () {
+    public void select() {
         isReport = !isReport;
         activity.sendBroadcast(new Intent().setAction(REPORT_BROADCAST));
         menuItem.setTitle(getMenuTitle());

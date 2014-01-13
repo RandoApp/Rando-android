@@ -4,6 +4,7 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.eucsoft.foodex.db.model.FoodPair;
+import com.eucsoft.foodex.db.model.FoodPairDateComparator;
 
 import org.hamcrest.Matchers;
 
@@ -62,7 +63,7 @@ public class FoodPairTest extends AndroidTestCase {
     @SmallTest
     public void testDateSortability() {
         List<FoodPair> foodPairs = FoodPairTestHelper.getNRandomFoodPairs(100);
-        Collections.sort(foodPairs);
+        Collections.sort(foodPairs, new FoodPairDateComparator());
         FoodPairTestHelper.checkListNaturalOrder(foodPairs);
     }
 

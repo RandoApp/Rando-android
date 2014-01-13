@@ -5,6 +5,7 @@ import android.app.AlarmManager;
 public class Constants {
 
     public static final String ALBUM_NAME = "Foodex";
+    public static final String CACHE_FOLDER = "com.eucsoft.foodex";
 
     public static final String FILEPATH = "FILEPATH";
     public static final String FOOD_PAIR = "foodPair";
