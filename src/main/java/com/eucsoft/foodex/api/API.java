@@ -82,7 +82,6 @@ public class API {
     private static HttpParams httpParams = new BasicHttpParams();
     public static HttpClient client = new DefaultHttpClient(httpParams);
     private static RequestQueue requestQueue = Volley.newRequestQueue(App.context, new HttpClientStack(client));
-    private static String authToken = Preferences.getAuthToken();
 
     static {
         try {
@@ -100,7 +99,7 @@ public class API {
             HttpResponse response = client.execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
-                authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
+                String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
                 Preferences.setAuthToken(authToken);
             } else {
                 throw processServerError(readJSON(response));
@@ -117,7 +116,7 @@ public class API {
             HttpResponse response = client.execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
-                authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
+                String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
                 Preferences.setAuthToken(authToken);
             } else {
                 throw processServerError(readJSON(response));
@@ -135,7 +134,7 @@ public class API {
             HttpResponse response = client.execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
-                authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
+                String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
                 Preferences.setAuthToken(authToken);
             } else {
                 throw processServerError(readJSON(response));
@@ -149,7 +148,6 @@ public class API {
         try {
             HttpPost request = new HttpPost(getUrl(LOGOUT_URL));
             HttpResponse response = client.execute(request);
-            authToken = "";
             if (response.getStatusLine().getStatusCode() != SC_OK) {
                 throw processServerError(readJSON(response));
             }
@@ -355,7 +353,7 @@ public class API {
     private static String getUrl(String url) {
         StringBuilder urlBuilder = new StringBuilder(url);
         urlBuilder.append("/");
-        urlBuilder.append(authToken);
+        urlBuilder.append(Preferences.getAuthToken());
         return urlBuilder.toString();
     }
 

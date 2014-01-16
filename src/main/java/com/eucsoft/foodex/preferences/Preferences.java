@@ -11,35 +11,37 @@ import static com.eucsoft.foodex.Constants.TRAINING_FRAGMENT_SHOWN;
 
 public class Preferences {
 
-    private static final SharedPreferences sharedPref = App.context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
-
     public static final String AUTH_TOKEN_DEFAULT_VALUE = "";
 
     public static String getAuthToken() {
-        return sharedPref.getString(AUTH_TOKEN, AUTH_TOKEN_DEFAULT_VALUE);
+        return getSharedPreferences().getString(AUTH_TOKEN, AUTH_TOKEN_DEFAULT_VALUE);
     }
 
     public static void setAuthToken(String token) {
         if (token != null) {
-            sharedPref.edit().putString(AUTH_TOKEN, token).commit();
+            getSharedPreferences().edit().putString(AUTH_TOKEN, token).commit();
         }
     }
 
     public static void removeAuthToken() {
-        sharedPref.edit().remove(AUTH_TOKEN).commit();
+        getSharedPreferences().edit().remove(AUTH_TOKEN).commit();
     }
 
     public static boolean isTrainingFragmentShown() {
         //TODO: change to return real value when Training will be Implemented.
         return true;
-        //return 1 == sharedPref.getInt(Constants.TRAINING_FRAGMENT_SHOWN, 0);
+        //return 1 == getSharedPreferences().getInt(Constants.TRAINING_FRAGMENT_SHOWN, 0);
     }
 
     public static void setTrainingFragmentShown(int i) {
-        sharedPref.edit().putInt(TRAINING_FRAGMENT_SHOWN, i).commit();
+        getSharedPreferences().edit().putInt(TRAINING_FRAGMENT_SHOWN, i).commit();
     }
 
     public static void removeTrainingFragmentShown() {
-        sharedPref.edit().remove(TRAINING_FRAGMENT_SHOWN).commit();
+        getSharedPreferences().edit().remove(TRAINING_FRAGMENT_SHOWN).commit();
+    }
+
+    private static SharedPreferences getSharedPreferences() {
+        return App.context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
     }
 }
