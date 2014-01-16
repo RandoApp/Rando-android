@@ -149,6 +149,7 @@ public class API {
         try {
             HttpPost request = new HttpPost(getUrl(LOGOUT_URL));
             HttpResponse response = client.execute(request);
+            authToken = "";
             if (response.getStatusLine().getStatusCode() != SC_OK) {
                 throw processServerError(readJSON(response));
             }
@@ -354,8 +355,6 @@ public class API {
     private static String getUrl(String url) {
         StringBuilder urlBuilder = new StringBuilder(url);
         urlBuilder.append("/");
-        urlBuilder.append(Constants.AUTH_TOKEN_PARAM);
-        urlBuilder.append("=");
         urlBuilder.append(authToken);
         return urlBuilder.toString();
     }

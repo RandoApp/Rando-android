@@ -52,7 +52,7 @@ public class Constants {
     public static final String TRAINING_FRAGMENT_SHOWN = "training.fragment.shown";
 
     public static final String AUTH_TOKEN_PARAM = "token";
-    public static final String SIGNUP_EMAIL_PARAM = "username";
+    public static final String SIGNUP_EMAIL_PARAM = "email";
     public static final String SIGNUP_PASSWORD_PARAM = "password";
     public static final String FACEBOOK_EMAIL_PARAM = "email";
     public static final String FACEBOOK_ID_PARAM = "id";
