@@ -5,50 +5,28 @@ import android.content.SharedPreferences;
 
 import com.eucsoft.foodex.App;
 
+import static com.eucsoft.foodex.Constants.AUTH_TOKEN;
 import static com.eucsoft.foodex.Constants.PREFERENCES_FILE_NAME;
-import static com.eucsoft.foodex.Constants.SEESSION_COOKIE_DOMAIN;
-import static com.eucsoft.foodex.Constants.SEESSION_COOKIE_PATH;
-import static com.eucsoft.foodex.Constants.SEESSION_COOKIE_VALUE;
-import static com.eucsoft.foodex.Constants.SERVER_HOST;
 import static com.eucsoft.foodex.Constants.TRAINING_FRAGMENT_SHOWN;
 
 public class Preferences {
 
     private static final SharedPreferences sharedPref = App.context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
 
-    public static final String SESSION_COOKIE_DEFAULT_VALUE = "";
-    public static final String SESSION_COOKIE_PATH_DEFAULT_VALUE = "/";
+    public static final String AUTH_TOKEN_DEFAULT_VALUE = "";
 
-    public static String getSessionCookieValue() {
-        return sharedPref.getString(SEESSION_COOKIE_VALUE, SESSION_COOKIE_DEFAULT_VALUE);
+    public static String getAuthToken() {
+        return sharedPref.getString(AUTH_TOKEN, AUTH_TOKEN_DEFAULT_VALUE);
     }
 
-    public static String getSessionCookieDomain() {
-        return sharedPref.getString(SEESSION_COOKIE_DOMAIN, SERVER_HOST);
+    public static void setAuthToken(String token) {
+        if (token != null) {
+            sharedPref.edit().putString(AUTH_TOKEN, token).commit();
+        }
     }
 
-    public static String getSessionCookiePath() {
-        return sharedPref.getString(SEESSION_COOKIE_PATH, SESSION_COOKIE_PATH_DEFAULT_VALUE);
-    }
-
-    public static void setSessionCookie(String value, String domain, String path) {
-        if (value == null) return;
-        if (domain == null) domain = SERVER_HOST;
-        if (path == null) path = SESSION_COOKIE_PATH_DEFAULT_VALUE;
-
-        sharedPref.edit()
-                .putString(SEESSION_COOKIE_VALUE, value)
-                .putString(SEESSION_COOKIE_DOMAIN, domain)
-                .putString(SEESSION_COOKIE_PATH, path)
-                .commit();
-    }
-
-    public static void removeSessionCookie() {
-        sharedPref.edit()
-                .remove(SEESSION_COOKIE_VALUE)
-                .remove(SEESSION_COOKIE_DOMAIN)
-                .remove(SEESSION_COOKIE_PATH)
-                .commit();
+    public static void removeAuthToken() {
+        sharedPref.edit().remove(AUTH_TOKEN).commit();
     }
 
     public static boolean isTrainingFragmentShown() {

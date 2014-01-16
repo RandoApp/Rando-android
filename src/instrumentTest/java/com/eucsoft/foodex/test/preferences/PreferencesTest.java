@@ -9,9 +9,7 @@ import com.eucsoft.foodex.preferences.Preferences;
 import java.util.UUID;
 
 import static com.eucsoft.foodex.Constants.PREFERENCES_FILE_NAME;
-import static com.eucsoft.foodex.Constants.SERVER_HOST;
-import static com.eucsoft.foodex.preferences.Preferences.SESSION_COOKIE_DEFAULT_VALUE;
-import static com.eucsoft.foodex.preferences.Preferences.SESSION_COOKIE_PATH_DEFAULT_VALUE;
+import static com.eucsoft.foodex.preferences.Preferences.AUTH_TOKEN_DEFAULT_VALUE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -23,61 +21,37 @@ public class PreferencesTest extends AndroidTestCase {
         App.context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE).edit().clear().commit();
     }
 
-    public void testGetSessionCookie() {
+    public void testGetAuthToken() {
         String value = UUID.randomUUID().toString();
-        String domain = "domain.com";
-        String path = "/";
 
-        Preferences.setSessionCookie(value, domain, path);
-        assertThat(Preferences.getSessionCookieValue(), is(value));
-        assertThat(Preferences.getSessionCookieDomain(), is(domain));
-        assertThat(Preferences.getSessionCookiePath(), is(path));
+        Preferences.setAuthToken(value);
+
+        assertThat(Preferences.getAuthToken(), is(value));
     }
 
-    public void testGetSessionCookieSetEmptyValueDomainAndPath() {
+    public void testSetEmptyAuthTokenReturnEmptyTokenOnGet() {
         String value = "";
-        String domain = "";
-        String path = "";
 
-        Preferences.setSessionCookie(value, domain, path);
-        assertThat(Preferences.getSessionCookieValue(), is(value));
-        assertThat(Preferences.getSessionCookieDomain(), is(domain));
-        assertThat(Preferences.getSessionCookiePath(), is(path));
+        Preferences.setAuthToken(value);
+
+        assertThat(Preferences.getAuthToken(), is(value));
     }
 
-    public void testGetSessionCookieSetCookieValueAsNull() {
-        String domain = "domain.com";
-        String path = "/";
+    public void testGetAuthTokenAsNull() {
+        Preferences.setAuthToken(null);
 
-        Preferences.setSessionCookie(null, domain, path);
-        assertThat(Preferences.getSessionCookieValue(), is(SESSION_COOKIE_DEFAULT_VALUE));
-        assertThat(Preferences.getSessionCookieDomain(), is(SERVER_HOST));
-        assertThat(Preferences.getSessionCookiePath(), is(SESSION_COOKIE_PATH_DEFAULT_VALUE));
+        assertThat(Preferences.getAuthToken(), is(AUTH_TOKEN_DEFAULT_VALUE));
     }
 
-    public void testGetSessionCookieSetDomainAndPathAsNull() {
+    public void testRemoveAuthToken() {
         String value = UUID.randomUUID().toString();
-        Preferences.setSessionCookie(value, null, null);
-        assertThat(Preferences.getSessionCookieValue(), is(value));
-        assertThat(Preferences.getSessionCookieDomain(), is(SERVER_HOST));
-        assertThat(Preferences.getSessionCookiePath(), is(SESSION_COOKIE_PATH_DEFAULT_VALUE));
-    }
 
-    public void testRemoveSessionCookie() {
-        String value = UUID.randomUUID().toString();
-        String domain = "domain.com";
-        String path = "/";
+        Preferences.setAuthToken(value);
+        assertThat(Preferences.getAuthToken(), is(value));
 
-        Preferences.setSessionCookie(value, domain, path);
-        assertThat(Preferences.getSessionCookieValue(), is(value));
-        assertThat(Preferences.getSessionCookieDomain(), is(domain));
-        assertThat(Preferences.getSessionCookiePath(), is(path));
+        Preferences.removeAuthToken();
 
-        Preferences.removeSessionCookie();
-
-        assertThat(Preferences.getSessionCookieValue(), is(SESSION_COOKIE_DEFAULT_VALUE));
-        assertThat(Preferences.getSessionCookieDomain(), is(SERVER_HOST));
-        assertThat(Preferences.getSessionCookiePath(), is(SESSION_COOKIE_PATH_DEFAULT_VALUE));
+        assertThat(Preferences.getAuthToken(), is(AUTH_TOKEN_DEFAULT_VALUE));
     }
 
     //This test should pass untill we implement Training logic

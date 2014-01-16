@@ -138,7 +138,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private boolean isNotAuthorized() {
-        return Preferences.getSessionCookieValue().isEmpty();
+        return Preferences.getAuthToken().isEmpty();
     }
 
     @Override

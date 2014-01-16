@@ -175,7 +175,7 @@ public class APITest extends AndroidTestCase {
 
         verify(API.client).execute(captor.capture());
 
-        assertThat(captor.getValue().getURI().toString(), is(Constants.REPORT_URL + "2222"));
+        assertThat(captor.getValue().getURI().toString().contains(Constants.REPORT_URL + "2222"), is(true));
     }
 
     @SmallTest
@@ -204,8 +204,10 @@ public class APITest extends AndroidTestCase {
 
         verify(API.client).execute(captor.capture());
 
-        assertThat(captor.getValue().getURI().toString(), is(Constants.BON_APPETIT_URL + "3333"));
+        assertThat(captor.getValue().getURI().toString().contains(Constants.BON_APPETIT_URL + "3333"), is(true));
     }
+
+
 
     @SmallTest
     public void testBonAppetitWithError() throws Exception {
