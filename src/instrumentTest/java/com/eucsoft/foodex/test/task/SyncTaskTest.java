@@ -4,7 +4,7 @@ import android.test.AndroidTestCase;
 
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
-import com.eucsoft.foodex.task.OnOk;
+import com.eucsoft.foodex.task.callback.OnOk;
 import com.eucsoft.foodex.task.SyncTask;
 import com.eucsoft.foodex.test.db.FoodPairTestHelper;
 

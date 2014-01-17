@@ -24,14 +24,13 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.eucsoft.foodex.activity.BaseActivity;
-import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.service.SyncService;
-import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.CropImageTask;
 import com.eucsoft.foodex.task.FoodUploadTask;
-import com.eucsoft.foodex.task.OnError;
-import com.eucsoft.foodex.task.OnOk;
+import com.eucsoft.foodex.task.callback.OnDone;
+import com.eucsoft.foodex.task.callback.OnError;
+import com.eucsoft.foodex.task.callback.OnOk;
 import com.eucsoft.foodex.util.BitmapUtil;
 import com.eucsoft.foodex.util.FileUtil;
 import com.eucsoft.foodex.util.LocationUpdater;
@@ -57,7 +56,27 @@ public class TakePictureActivity extends BaseActivity {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             String tmpFile = FileUtil.writeImageToTempFile(data);
-            new CropImageTask(new CropTaskResult()).execute(tmpFile);
+            new CropImageTask(tmpFile)
+                .onOk(new OnOk() {
+                    @Override
+                    public void onOk(Map<String, Object> data) {
+                        onCropOk(data);
+                    }
+                })
+                .onError(new OnError() {
+                    @Override
+                    public void onError(Map<String, Object> data) {
+                        Toast.makeText(TakePictureActivity.this, "Crop Failed.",
+                                Toast.LENGTH_LONG).show();
+                    }
+                })
+                .onDone(new OnDone() {
+                    @Override
+                    public void onDone(Map<String, Object> data) {
+                        hideProgressbar();
+                    }
+                })
+                .execute();
         }
     };
 
@@ -80,10 +99,54 @@ public class TakePictureActivity extends BaseActivity {
                     int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                     String filePath = cursor.getString(columnIndex);
                     cursor.close();
-                    new CropImageTask(new CropTaskResult()).execute(filePath);
+                    new CropImageTask(filePath)
+                        .onOk(new OnOk() {
+                            @Override
+                            public void onOk(Map<String, Object> data) {
+                                onCropOk(data);
+                            }
+                        })
+                        .onError(new OnError() {
+                            @Override
+                            public void onError(Map<String, Object> data) {
+                                Toast.makeText(TakePictureActivity.this, "Crop Failed.",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        })
+                        .onDone(new OnDone() {
+                            @Override
+                            public void onDone(Map<String, Object> data) {
+                                hideProgressbar();
+                            }
+                        })
+                        .execute();
                 }
                 break;
         }
+    }
+
+    private void onCropOk(Map<String, Object> data) {
+        picFileName = (String) data.get(Constants.FILEPATH);
+        showUploadButton();
+        Log.i(TakePictureActivity.class, "" + foodexSurfaceView.getWidth());
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(picFileName, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = BitmapUtil.calculateInSampleSize(options, preview.getWidth(), preview.getWidth());
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        Bitmap bitmap = BitmapFactory.decodeFile(picFileName, options);
+        preview.removeAllViews();
+        ImageView imagePreview = new ImageView(getApplicationContext());
+        imagePreview.setImageBitmap(bitmap);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(preview.getWidth(), preview.getWidth());
+        imagePreview.setLayoutParams(layoutParams);
+        preview.addView(imagePreview);
     }
 
     @Override
@@ -332,38 +395,5 @@ public class TakePictureActivity extends BaseActivity {
         locationUpdater.cancelTimer();
     }
 
-    class CropTaskResult implements TaskResultListener {
-        @Override
-        public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
-            if (resultCode == BaseTask.RESULT_OK) {
-                picFileName = (String) data.get(Constants.FILEPATH);
-                showUploadButton();
-                Log.i(TakePictureActivity.class, "" + foodexSurfaceView.getWidth());
-
-                // First decode with inJustDecodeBounds=true to check dimensions
-                final BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(picFileName, options);
-
-                // Calculate inSampleSize
-                options.inSampleSize = BitmapUtil.calculateInSampleSize(options, preview.getWidth(), preview.getWidth());
-
-                // Decode bitmap with inSampleSize set
-                options.inJustDecodeBounds = false;
-                Bitmap bitmap = BitmapFactory.decodeFile(picFileName, options);
-                preview.removeAllViews();
-                ImageView imagePreview = new ImageView(getApplicationContext());
-                imagePreview.setImageBitmap(bitmap);
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(preview.getWidth(), preview.getWidth());
-                imagePreview.setLayoutParams(layoutParams);
-                preview.addView(imagePreview);
-
-            } else {
-                Toast.makeText(TakePictureActivity.this, "Crop Failed.",
-                        Toast.LENGTH_LONG).show();
-            }
-            hideProgressbar();
-        }
-    }
 }
 

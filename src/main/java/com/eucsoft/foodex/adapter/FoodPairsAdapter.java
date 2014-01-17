@@ -31,12 +31,11 @@ import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.api.VolleySingleton;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
-import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.menu.ReportMenu;
 import com.eucsoft.foodex.service.SyncService;
-import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.BonAppetitTask;
+import com.eucsoft.foodex.task.callback.OnError;
 
 import org.apache.http.auth.AuthenticationException;
 
@@ -159,26 +158,21 @@ public class FoodPairsAdapter extends BaseAdapter {
             public void onClick(View v) {
                 if (holder.stranger.foodPager.isShown() && !holder.foodPair.stranger.isBonAppetit()) {
                     holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
-                    BonAppetitTask bonAppetitTask = new BonAppetitTask();
-                    bonAppetitTask.setTaskResultListener(new TaskResultListener() {
-                        @Override
-                        public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
-
-                            switch (taskCode) {
-                                case BonAppetitTask.TASK_ID:
-                                    if (resultCode != BaseTask.RESULT_OK && holder.stranger.foodPager.isShown()) {
-                                        holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
-                                        if (data.get(Constants.ERROR) != null) {
-                                            Toast.makeText(App.context, (CharSequence) data.get(Constants.ERROR), Toast.LENGTH_LONG).show();
-                                        } else {
-                                            Toast.makeText(App.context, R.string.failed_to_set_bon_appetit_for_food, Toast.LENGTH_LONG).show();
-                                        }
+                    new BonAppetitTask(holder.foodPair)
+                        .onError(new OnError() {
+                            @Override
+                            public void onError(Map<String, Object> data) {
+                                if (holder.stranger.foodPager.isShown()) {
+                                    holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
+                                    if (data.get(Constants.ERROR) != null) {
+                                        Toast.makeText(App.context, (CharSequence) data.get(Constants.ERROR), Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(App.context, R.string.failed_to_set_bon_appetit_for_food, Toast.LENGTH_LONG).show();
                                     }
-                                    break;
+                                }
                             }
-                        }
-                    });
-                    bonAppetitTask.execute(holder.foodPair);
+                        })
+                        .execute();
                 }
             }
         });
