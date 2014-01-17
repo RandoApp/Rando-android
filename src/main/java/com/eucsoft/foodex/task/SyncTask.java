@@ -11,7 +11,7 @@ import java.util.List;
 import static com.eucsoft.foodex.Constants.NEED_NOTIFICATION;
 import static com.eucsoft.foodex.Constants.NOT_PAIRED_FOOD_PAIRS_NUMBER;
 
-public class SyncTask extends BaseTask2 {
+public class SyncTask extends BaseTask {
 
     private List<FoodPair> foodPairs;
 
@@ -43,7 +43,7 @@ public class SyncTask extends BaseTask2 {
 
         data.put(NOT_PAIRED_FOOD_PAIRS_NUMBER, foodDAO.getNotPairedFoodsNumber());
         foodDAO.close();
-        return ok();
+        return OK;
     }
 
 }

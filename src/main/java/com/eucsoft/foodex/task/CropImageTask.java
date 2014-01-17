@@ -4,11 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Rect;
-import android.os.AsyncTask;
 
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
-import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.util.FileUtil;
 
@@ -16,25 +14,21 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
-public class CropImageTask extends AsyncTask<String, Integer, Long> implements BaseTask {
+public class CropImageTask extends BaseTask {
 
-    private Map<String, Object> data = new HashMap<String, Object>();
-    private TaskResultListener taskResultListener;
+    private String srcFile;
 
-    public CropImageTask(TaskResultListener taskResultListener) {
-        this.taskResultListener = taskResultListener;
+    public CropImageTask(String srcFile) {
+        this.srcFile = srcFile;
     }
 
     @Override
-    public Long doInBackground(String... files) {
-        Log.i(CropImageTask.class, "doInBackground");
-        if (files == null || files.length == 0) {
-            return RESULT_ERROR;
+    public Integer run() {
+        Log.i(CropImageTask.class, "Start task");
+        if (srcFile == null) {
+            return ERROR;
         }
-
-        String srcFile = files[0];
 
         try {
             Log.i(CropImageTask.class, "1:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
@@ -47,7 +41,7 @@ public class CropImageTask extends AsyncTask<String, Integer, Long> implements B
 
             File file = FileUtil.getOutputMediaFile();
             if (file == null) {
-                return RESULT_ERROR;
+                return ERROR;
             }
 
             if (options.outHeight == options.outWidth) {
@@ -73,18 +67,12 @@ public class CropImageTask extends AsyncTask<String, Integer, Long> implements B
 
             FileUtil.scanImage(App.context, file.getAbsolutePath());
             data.put(Constants.FILEPATH, file.getAbsolutePath());
-
         } catch (IOException ex) {
-            Log.e(CropImageTask.class, "doInBackground", ex.getMessage());
-            return RESULT_ERROR;
+            Log.e(CropImageTask.class, "CropImageTask catch exception: ", ex.getMessage());
+            return ERROR;
         }
 
-        return RESULT_OK;
+        return OK;
     }
 
-    @Override
-    protected void onPostExecute(Long aLong) {
-        Log.d(CropImageTask.class, "onPostExecute", aLong.toString());
-        taskResultListener.onTaskResult(0, aLong, data);
-    }
 }

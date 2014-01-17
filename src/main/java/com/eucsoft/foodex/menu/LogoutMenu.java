@@ -8,8 +8,8 @@ import android.view.MenuItem;
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.fragment.AuthFragment;
-import com.eucsoft.foodex.listener.TaskResultListener;
 import com.eucsoft.foodex.task.LogoutTask;
+import com.eucsoft.foodex.task.callback.OnDone;
 import com.eucsoft.foodex.view.Progress;
 
 import java.util.Map;
@@ -24,13 +24,15 @@ public class LogoutMenu extends Menu {
 
     public void select() {
         Progress.show(App.context.getResources().getString(R.string.logout_progress));
-        new LogoutTask(new TaskResultListener() {
-            @Override
-            public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
-                FragmentManager fragmentManager = ((ActionBarActivity) activity).getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.main_screen, new AuthFragment()).commit();
-                Progress.hide();
-            }
-        }).execute();
+        new LogoutTask()
+            .onDone(new OnDone() {
+                @Override
+                public void onDone(Map<String, Object> data) {
+                    FragmentManager fragmentManager = ((ActionBarActivity) activity).getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.main_screen, new AuthFragment()).commit();
+                    Progress.hide();
+                }
+            })
+            .execute();
     }
 }
