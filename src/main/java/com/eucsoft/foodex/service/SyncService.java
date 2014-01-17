@@ -14,7 +14,7 @@ import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.api.OnFetchUser;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.log.Log;
-import com.eucsoft.foodex.task.OnOk;
+import com.eucsoft.foodex.task.callback.OnOk;
 import com.eucsoft.foodex.task.SyncTask;
 
 import java.util.List;

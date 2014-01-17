@@ -11,7 +11,7 @@ import com.eucsoft.foodex.log.Log;
 
 import java.io.File;
 
-public class FoodUploadTask extends BaseTask2 {
+public class FoodUploadTask extends BaseTask {
 
     private String fileToUpload;
 
@@ -24,7 +24,7 @@ public class FoodUploadTask extends BaseTask2 {
         Log.d(FoodUploadTask.class, "run");
 
         if (fileToUpload == null || TextUtils.isEmpty(fileToUpload)) {
-            return error();
+            return ERROR;
         }
 
         PowerManager pm = (PowerManager) App.context.getSystemService(Context.POWER_SERVICE);
@@ -35,10 +35,10 @@ public class FoodUploadTask extends BaseTask2 {
             API.uploadFood(new File(fileToUpload), TakePictureActivity.currentLocation);
         } catch (Exception e) {
             Log.w(FoodUploadTask.class, "File failed to upload. File=", fileToUpload);
-            return error();
+            return ERROR;
         } finally {
             wl.release();
         }
-        return ok();
+        return OK;
     }
 }

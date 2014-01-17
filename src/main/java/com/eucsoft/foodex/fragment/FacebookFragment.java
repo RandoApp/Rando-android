@@ -3,17 +3,16 @@ package com.eucsoft.foodex.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.eucsoft.foodex.R;
-import com.eucsoft.foodex.db.FoodDAO;
-import com.eucsoft.foodex.listener.TaskResultListener;
+import com.eucsoft.foodex.auth.BaseAuth;
 import com.eucsoft.foodex.log.Log;
-import com.eucsoft.foodex.task.BaseTask;
 import com.eucsoft.foodex.task.FacebookAuthTask;
+import com.eucsoft.foodex.task.callback.OnDone;
+import com.eucsoft.foodex.task.callback.OnOk;
 import com.eucsoft.foodex.view.Progress;
 import com.facebook.Session;
 import com.facebook.SessionState;
@@ -83,15 +82,20 @@ public class FacebookFragment extends Fragment {
     private void onSessionStateChange(final Session session, SessionState state) {
         if (state.isOpened()) {
             Progress.showLoading();
-            new FacebookAuthTask(new TaskResultListener() {
-                @Override
-                public void onTaskResult(int taskCode, long resultCode, Map<String, Object> data) {
-                    Progress.hide();
-                    if (resultCode == BaseTask.RESULT_OK) {
-                        done();
+            new FacebookAuthTask(session)
+                .onOk(new OnOk() {
+                    @Override
+                    public void onOk(Map<String, Object> data) {
+                        BaseAuth.done(getActivity());
                     }
-                }
-            }).execute(session);
+                })
+                .onDone(new OnDone() {
+                    @Override
+                    public void onDone(Map<String, Object> data) {
+                        Progress.hide();
+                    }
+                })
+                .execute();
             Progress.showLoading();
         } else if (state.isClosed()) {
             Log.i(FacebookFragment.class, "Logged out...");
@@ -104,19 +108,5 @@ public class FacebookFragment extends Fragment {
             onSessionStateChange(session, state);
         }
     };
-
-    public void done() {
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        Fragment nextFragment;
-        FoodDAO foodDAO = new FoodDAO(getActivity().getApplicationContext());
-        int foodCount = foodDAO.getFoodPairsNumber();
-        foodDAO.close();
-        if (foodCount == 0) {
-            nextFragment = new EmptyHomeWallFragment();
-        } else {
-            nextFragment = new HomeWallFragment();
-        }
-        fragmentManager.beginTransaction().replace(R.id.main_screen, nextFragment).commit();
-    }
 
 }
