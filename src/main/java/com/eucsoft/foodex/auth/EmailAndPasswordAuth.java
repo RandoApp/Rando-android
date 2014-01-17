@@ -8,9 +8,9 @@ import android.widget.Toast;
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.fragment.AuthFragment;
+import com.eucsoft.foodex.task.SignupTask;
 import com.eucsoft.foodex.task.callback.OnError;
 import com.eucsoft.foodex.task.callback.OnOk;
-import com.eucsoft.foodex.task.SignupTask;
 import com.eucsoft.foodex.view.Progress;
 
 import java.util.Map;
