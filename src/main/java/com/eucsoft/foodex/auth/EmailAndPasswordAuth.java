@@ -1,16 +1,18 @@
 package com.eucsoft.foodex.auth;
 
+import android.content.Context;
 import android.util.Patterns;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.fragment.AuthFragment;
+import com.eucsoft.foodex.task.SignupTask;
 import com.eucsoft.foodex.task.callback.OnError;
 import com.eucsoft.foodex.task.callback.OnOk;
-import com.eucsoft.foodex.task.SignupTask;
 import com.eucsoft.foodex.view.Progress;
 
 import java.util.Map;
@@ -48,6 +50,8 @@ public class EmailAndPasswordAuth extends BaseAuth {
             .onOk(new OnOk() {
                 @Override
                 public void onOk(Map<String, Object> data) {
+                    hideSoftKeyboard();
+
                     done(authFragment.getActivity());
                 }
             })
@@ -68,6 +72,12 @@ public class EmailAndPasswordAuth extends BaseAuth {
 
     private boolean isPasswordCorrect(String password) {
         return password.length() > 0;
+    }
+
+    private void hideSoftKeyboard() {
+        InputMethodManager inputMethodManager = (InputMethodManager) authFragment.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(emailText.getWindowToken(), 0);
+        inputMethodManager.hideSoftInputFromWindow(passwordText.getWindowToken(), 0);
     }
 
 }
