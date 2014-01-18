@@ -25,15 +25,15 @@ public class Constants {
 
     public static final int BON_APPETIT_BUTTON_SIZE = 100;
 
-    public static final int FOOD_MARGIN_PORTRAIT = 40;
+    public static final int FOOD_MARGIN_PORTRAIT = 30;
 
     public static final int FOOD_PADDING_PORTRAIT_COLUMN_LEFT = 15;
-    public static final int FOOD_PADDING_PORTRAIT_COLUMN_RIGHT = 15;
+    public static final int FOOD_PADDING_PORTRAIT_COLUMN_RIGHT = 5;
     public static final int FOOD_PADDING_PORTRAIT_COLUMN_TOP = 15;
     public static final int FOOD_PADDING_PORTRAIT_COLUMN_BOTTOM = 5;
 
     public static final int FOOD_PADDING_LANDSCAPE_COLUMN_LEFT = 10;
-    public static final int FOOD_PADDING_LANDSCAPE_COLUMN_RIGHT = 10;
+    public static final int FOOD_PADDING_LANDSCAPE_COLUMN_RIGHT = 5;
     public static final int FOOD_PADDING_LANDSCAPE_COLUMN_TOP = 15;
     public static final int FOOD_PADDING_LANDSCAPE_COLUMN_BOTTOM = 5;
 

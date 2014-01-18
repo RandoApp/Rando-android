@@ -15,7 +15,7 @@ public class LogoutTask extends BaseTask {
     @Override
     public Integer run() {
         try {
-            logoutFaceBook();
+            logoutFacebook();
             API.logout();
             Preferences.removeAuthToken();
             return OK;
@@ -25,7 +25,7 @@ public class LogoutTask extends BaseTask {
         }
     }
 
-    private void logoutFaceBook() {
+    private void logoutFacebook() {
         if (Session.getActiveSession() != null) {
             Session.getActiveSession().closeAndClearTokenInformation();
         } else {
