@@ -6,8 +6,6 @@ import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.preferences.Preferences;
 import com.facebook.Session;
 
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import java.util.HashMap;
 
 public class LogoutTask extends BaseTask {
@@ -17,23 +15,24 @@ public class LogoutTask extends BaseTask {
     @Override
     public Integer run() {
         try {
-            if (Session.getActiveSession() != null) {
-                Session.getActiveSession().closeAndClearTokenInformation();
-            } else {
-                Session session = Session.openActiveSessionFromCache(App.context);
-                if (session != null) {
-                    session.closeAndClearTokenInformation();
-                }
-            }
-
-            Preferences.removeAuthToken();
-
+            logoutFaceBook();
             API.logout();
-            ((DefaultHttpClient) API.client).getCookieStore().clear();
+            Preferences.removeAuthToken();
             return OK;
         } catch (Exception exc) {
             data.put(Constants.ERROR, exc.getMessage());
             return ERROR;
+        }
+    }
+
+    private void logoutFaceBook() {
+        if (Session.getActiveSession() != null) {
+            Session.getActiveSession().closeAndClearTokenInformation();
+        } else {
+            Session session = Session.openActiveSessionFromCache(App.context);
+            if (session != null) {
+                session.closeAndClearTokenInformation();
+            }
         }
     }
 

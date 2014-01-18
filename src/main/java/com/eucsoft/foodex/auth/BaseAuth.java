@@ -35,8 +35,11 @@ public abstract class BaseAuth implements View.OnClickListener {
 
     private static void hideSoftKeyboard(FragmentActivity fragmentActivit) {
         InputMethodManager inputManager = (InputMethodManager) fragmentActivit.getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.hideSoftInputFromWindow(fragmentActivit.getCurrentFocus().getWindowToken(),
+        View textFieldWithSoftKeyboard = fragmentActivit.getCurrentFocus();
+        if (textFieldWithSoftKeyboard != null) {
+            inputManager.hideSoftInputFromWindow(textFieldWithSoftKeyboard.getWindowToken(),
                 InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
     private static void clearDBForChangeAccount(Context context) {
