@@ -306,13 +306,25 @@ public class TakePictureActivity extends BaseActivity {
         WindowManager windowManager = (WindowManager) App.context.getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
 
-        int bottomToolbarHeight = display.getHeight() - display.getWidth() - Constants.TOP_PANEL_ON_TAKEPICSCREEN_HEIGHT;
+        int actionBarHeight = getResources().getDimensionPixelSize(android.support.v7.appcompat.R.dimen.abc_action_bar_default_height);
+        int cameraPreviewHeight = display.getWidth();
+        int statusBarHeight = getStatusBarHeight();
+
+        int bottomToolbarHeight = display.getHeight() - statusBarHeight - actionBarHeight - cameraPreviewHeight;
 
         LinearLayout bottomPanel = (LinearLayout) findViewById(R.id.bottom_panel);
         RelativeLayout.LayoutParams bottomPanelParams = (RelativeLayout.LayoutParams) bottomPanel.getLayoutParams();
 
         bottomPanelParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
         bottomPanelParams.height = bottomToolbarHeight;
+    }
+
+    public int getStatusBarHeight() {
+        int statusBarId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (statusBarId > 0) {
+            return getResources().getDimensionPixelSize(statusBarId);
+        }
+        return 0;
     }
 
     private void updateLocation() {
