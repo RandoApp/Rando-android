@@ -39,7 +39,6 @@ public class Constants {
 
     public static final String SERVER_HOST = "95.85.19.94";
     public static final String SERVER_URL = "http://" + SERVER_HOST;
-    public static final int TOP_PANEL_ON_TAKEPICSCREEN_HEIGHT = 50;
 
     public static final int CONNECTION_TIMEOUT = 6000;
 
