@@ -60,7 +60,8 @@ public class TakePictureActivity extends BaseActivity {
                 .onOk(new OnOk() {
                     @Override
                     public void onOk(Map<String, Object> data) {
-                        onCropOk(data);
+                        picFileName = (String) data.get(Constants.FILEPATH);
+                        showUploadScreen();
                     }
                 })
                 .onError(new OnError() {
@@ -103,7 +104,8 @@ public class TakePictureActivity extends BaseActivity {
                         .onOk(new OnOk() {
                             @Override
                             public void onOk(Map<String, Object> data) {
-                                onCropOk(data);
+                                picFileName = (String) data.get(Constants.FILEPATH);
+                                showUploadScreen();
                             }
                         })
                         .onError(new OnError() {
@@ -125,11 +127,12 @@ public class TakePictureActivity extends BaseActivity {
         }
     }
 
-    private void onCropOk(Map<String, Object> data) {
-        picFileName = (String) data.get(Constants.FILEPATH);
+    private void showUploadScreen() {
         showUploadButton();
-        Log.i(TakePictureActivity.class, "" + foodexSurfaceView.getWidth());
+        showPictureOnPreview();
+    }
 
+    private void showPictureOnPreview() {
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -388,10 +391,17 @@ public class TakePictureActivity extends BaseActivity {
         }
     }
 
+    private void resumeUploadScreenIfNeed() {
+        if (!TextUtils.isEmpty(picFileName)) {
+            showUploadScreen();
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         createCameraPreview();
+        resumeUploadScreenIfNeed();
     }
 
     @Override
