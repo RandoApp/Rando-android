@@ -8,6 +8,7 @@ import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.api.API;
+import com.eucsoft.foodex.api.VolleySingleton;
 import com.eucsoft.foodex.db.model.FoodPair;
 
 import org.apache.http.HttpResponse;
@@ -163,17 +164,17 @@ public class APITest extends AndroidTestCase {
 
     @SmallTest
     public void testReport() throws Exception {
-        API.client = mock(HttpClient.class);
+        VolleySingleton.getInstance().httpClient = mock(HttpClient.class);
         StatusLine statusLineMock = mock(StatusLine.class);
         when(statusLineMock.getStatusCode()).thenReturn(HttpStatus.SC_OK);
         HttpResponse responseMock = mock(HttpResponse.class);
         when(responseMock.getStatusLine()).thenReturn(statusLineMock);
-        when(API.client.execute(isA(HttpUriRequest.class))).thenReturn(responseMock);
+        when(VolleySingleton.getInstance().httpClient.execute(isA(HttpUriRequest.class))).thenReturn(responseMock);
         ArgumentCaptor<HttpPost> captor = ArgumentCaptor.forClass(HttpPost.class);
 
         API.report("2222");
 
-        verify(API.client).execute(captor.capture());
+        verify(VolleySingleton.getInstance().httpClient).execute(captor.capture());
 
         assertThat(captor.getValue().getURI().toString().contains(Constants.REPORT_URL + "2222"), is(true));
     }
@@ -192,17 +193,17 @@ public class APITest extends AndroidTestCase {
 
     @SmallTest
     public void testBonAppetit() throws Exception {
-        API.client = mock(HttpClient.class);
+        VolleySingleton.getInstance().httpClient = mock(HttpClient.class);
         StatusLine statusLineMock = mock(StatusLine.class);
         when(statusLineMock.getStatusCode()).thenReturn(HttpStatus.SC_OK);
         HttpResponse responseMock = mock(HttpResponse.class);
         when(responseMock.getStatusLine()).thenReturn(statusLineMock);
-        when(API.client.execute(isA(HttpUriRequest.class))).thenReturn(responseMock);
+        when(VolleySingleton.getInstance().httpClient.execute(isA(HttpUriRequest.class))).thenReturn(responseMock);
         ArgumentCaptor<HttpPost> captor = ArgumentCaptor.forClass(HttpPost.class);
 
         API.bonAppetit("3333");
 
-        verify(API.client).execute(captor.capture());
+        verify(VolleySingleton.getInstance().httpClient).execute(captor.capture());
 
         assertThat(captor.getValue().getURI().toString().contains(Constants.BON_APPETIT_URL + "3333"), is(true));
     }
@@ -254,7 +255,7 @@ public class APITest extends AndroidTestCase {
             //DefaultHttpClient cannot be mocked... Just ignore the line with storeSession
         }
 
-        verify(API.client).execute(captor.capture());
+        verify(VolleySingleton.getInstance().httpClient).execute(captor.capture());
 
         assertThat(params(captor.getValue()), is(Constants.SIGNUP_EMAIL_PARAM + "=user%40mail.com&" + Constants.SIGNUP_PASSWORD_PARAM + "=password"));
         assertThat(captor.getValue().getURI().toString(), is(Constants.SIGNUP_URL));
