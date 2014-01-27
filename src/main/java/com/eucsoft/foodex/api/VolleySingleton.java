@@ -21,7 +21,7 @@ public class VolleySingleton {
 
     private RequestQueue requestQueue;
     private ImageLoader imageLoader;
-    private HttpClient httpClient;
+    public HttpClient httpClient;
 
     private VolleySingleton() {
         HttpParams httpParams = new BasicHttpParams();

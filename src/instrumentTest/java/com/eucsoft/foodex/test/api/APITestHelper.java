@@ -1,6 +1,6 @@
 package com.eucsoft.foodex.test.api;
 
-import com.eucsoft.foodex.api.API;
+import com.eucsoft.foodex.api.VolleySingleton;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -19,24 +19,24 @@ import static org.mockito.Mockito.when;
 public class APITestHelper {
 
     public static void mockAPIWithError() throws IOException {
-        API.client = mockClient(HttpStatus.SC_INTERNAL_SERVER_ERROR, "{'code': '501'," +
+        VolleySingleton.getInstance().httpClient = mockClient(HttpStatus.SC_INTERNAL_SERVER_ERROR, "{'code': '501'," +
                 "'message': 'Internal Server Error'," +
                 "'description': 'See https://github.com/dimhold/foodex/wiki/Errors/#system'}");
     }
 
     public static void mockAPIForUploadFood() throws IOException {
-        API.client = mockClient(HttpStatus.SC_OK, "{" +
+        VolleySingleton.getInstance().httpClient = mockClient(HttpStatus.SC_OK, "{" +
                 "'creation': '1383670800877'," +
                 "'foodUrl': 'http://api.foodex.com/food/abcd/abcdadfwefwef.jpg'," +
                 "'mapUrl': ''}");
     }
 
     public static void mockAPIForDownloadFood() throws IOException {
-        API.client = mockClient(HttpStatus.SC_OK, "jpg file");
+        VolleySingleton.getInstance().httpClient = mockClient(HttpStatus.SC_OK, "jpg file");
     }
 
     public static void mockAPIForFetchUser() throws IOException {
-        API.client = mockClient(HttpStatus.SC_OK, "{'email': 'user@mail.com'," +
+        VolleySingleton.getInstance().httpClient = mockClient(HttpStatus.SC_OK, "{'email': 'user@mail.com'," +
                 "'foods': [" +
                 "{" +
                 "'user': {" +
@@ -70,7 +70,7 @@ public class APITestHelper {
     }
 
     public static void mockAPI(int statusCode, String response) throws IOException {
-        API.client = mockClient(statusCode, response);
+        VolleySingleton.getInstance().httpClient = mockClient(statusCode, response);
     }
 
     private static HttpClient mockClient(int statusCode, String response) throws IOException {
