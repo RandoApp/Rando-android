@@ -58,6 +58,7 @@ public class Constants {
     public static final String FACEBOOK_TOKEN_PARAM = "token";
     public static final String GOOGLE_EMAIL_PARAM = "email";
     public static final String GOOGLE_TOKEN_PARAM = "token";
+    public static final String GOOGLE_FAMILY_NAME_PARAM = "family_name";
     public static final String ANONYMOUS_ID_PARAM = "id";
     public static final String BON_APPETIT_PARAM = "bonAppetit";
     public static final String FOOD_URL_PARAM = "foodUrl";
@@ -93,4 +94,9 @@ public class Constants {
     public static final String SYNC_SERVICE_BROADCAST = "SyncService";
 
     public static final String NEED_NOTIFICATION = "Notification";
+
+    public static final String GOOGLE_AUTH_SCOPE = "oauth2:https://www.googleapis.com/auth/userinfo.profile";
+    public static final String GOOGLE_USER_INFO_URL = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=";
+
+
 }

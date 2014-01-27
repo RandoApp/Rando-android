@@ -9,11 +9,11 @@ import android.widget.Toast;
 
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.R;
-import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.fragment.AuthFragment;
 import com.eucsoft.foodex.task.GoogleAuthTask;
 import com.eucsoft.foodex.task.callback.OnError;
 import com.eucsoft.foodex.task.callback.OnOk;
+import com.eucsoft.foodex.view.Progress;
 import com.google.android.gms.auth.GoogleAuthUtil;
 
 import java.util.Map;
@@ -37,36 +37,30 @@ public class GoogleAuth extends BaseAuth {
     }
 
     private void fetchUserToken(String email) {
+        Progress.showLoading();
         new GoogleAuthTask(email)
             .onOk(new OnOk() {
                 @Override
                 public void onOk(Map<String, Object> data) {
-                    String email = (String) data.get("email");
-                    String token = (String) data.get("token");
-                    if (email != null && token != null) {
-                        try {
-                            API.google(email, token);
-                        } catch (Exception e) {
-                            Toast.makeText(authFragment.getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    }
+                    done(authFragment.getActivity());
                 }
             })
             .onError(new OnError() {
                 @Override
                 public void onError(Map<String, Object> data) {
+                    Progress.hide();
                     String error = (String) data.get("error");
                     if (error != null) {
                         Toast.makeText(authFragment.getActivity(), error, Toast.LENGTH_LONG).show();
                     }
                 }
             })
-        .execute();
+            .execute();
     }
 
     private String[] getAccountNames() {
-        AccountManager mAccountManager = AccountManager.get(App.context);
-        Account[] accounts = mAccountManager.getAccountsByType(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE);
+        AccountManager accountManager = AccountManager.get(App.context);
+        Account[] accounts = accountManager.getAccountsByType(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE);
         String[] names = new String[accounts.length];
         for (int i = 0; i < names.length; i++) {
             names[i] = accounts[i].name;
@@ -75,14 +69,14 @@ public class GoogleAuth extends BaseAuth {
     }
 
     private void selectAccount(final CharSequence[] names) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(authFragment.getActivity());
-        builder.setTitle(authFragment.getString(R.string.select_account));
-        builder.setItems(names, new DialogInterface.OnClickListener() {
+        AlertDialog.Builder selectAccountDialog = new AlertDialog.Builder(authFragment.getActivity());
+        selectAccountDialog.setTitle(authFragment.getString(R.string.select_account));
+        selectAccountDialog.setItems(names, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 fetchUserToken((String) names[which]);
             }
         });
-        builder.show();
+        selectAccountDialog.show();
     }
 }

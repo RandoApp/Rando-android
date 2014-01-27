@@ -54,6 +54,7 @@ public class EmailAndPasswordAuth extends BaseAuth {
             .onError(new OnError() {
                 @Override
                 public void onError(Map<String, Object> data) {
+                    Progress.hide();
                     if (data.get(Constants.ERROR) != null) {
                         Toast.makeText(authFragment.getActivity(), (CharSequence) data.get("error"), Toast.LENGTH_LONG).show();
                     }

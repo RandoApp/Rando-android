@@ -1,35 +1,55 @@
 package com.eucsoft.foodex.api;
 
-import android.content.Context;
-
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.HttpClientStack;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.cache.LruMemCache;
 
-public class VolleySingleton {
-    private static VolleySingleton mInstance = null;
-    private RequestQueue mRequestQueue;
-    private ImageLoader mImageLoader;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
-    private VolleySingleton(Context context) {
-        mRequestQueue = Volley.newRequestQueue(context);
-        mImageLoader = new ImageLoader(this.mRequestQueue, new LruMemCache());
+import static com.eucsoft.foodex.Constants.CONNECTION_TIMEOUT;
+
+public class VolleySingleton {
+
+    private static VolleySingleton instance = null;
+
+    private RequestQueue requestQueue;
+    private ImageLoader imageLoader;
+    private HttpClient httpClient;
+
+    private VolleySingleton() {
+        HttpParams httpParams = new BasicHttpParams();
+        HttpConnectionParams.setConnectionTimeout(httpParams, CONNECTION_TIMEOUT);
+        HttpConnectionParams.setSoTimeout(httpParams, CONNECTION_TIMEOUT);
+        httpClient = new DefaultHttpClient(httpParams);
+
+        requestQueue = Volley.newRequestQueue(App.context, new HttpClientStack(httpClient));
+        imageLoader = new ImageLoader(this.requestQueue, new LruMemCache());
     }
 
-    public static VolleySingleton getInstance(Context context) {
-        if (mInstance == null) {
-            mInstance = new VolleySingleton(context);
+    public static VolleySingleton getInstance() {
+        if (instance == null) {
+            instance = new VolleySingleton();
         }
-        return mInstance;
+        return instance;
+    }
+
+    public HttpClient getHttpClient() {
+        return httpClient;
     }
 
     public RequestQueue getRequestQueue() {
-        return this.mRequestQueue;
+        return requestQueue;
     }
 
     public ImageLoader getImageLoader() {
-        return this.mImageLoader;
+        return imageLoader;
     }
 
 }

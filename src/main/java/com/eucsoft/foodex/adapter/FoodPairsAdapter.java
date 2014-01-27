@@ -363,7 +363,7 @@ public class FoodPairsAdapter extends BaseAdapter {
     private void loadFoodImage(final ViewHolder.UserHolder userHolder, final FoodPair.User userFoodPair) {
         if (!TextUtils.isEmpty(userFoodPair.foodURL)) {
             Log.w(FoodPairsAdapter.class, "userFoodPair.foodURL: ", userFoodPair.foodURL);
-            userHolder.foodContainer = VolleySingleton.getInstance(App.context).getImageLoader().get(userFoodPair.foodURL, new ImageLoader.ImageListener() {
+            userHolder.foodContainer = VolleySingleton.getInstance().getImageLoader().get(userFoodPair.foodURL, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                     if (userHolder.foodImage != null) {
@@ -384,7 +384,7 @@ public class FoodPairsAdapter extends BaseAdapter {
 
     private void loadMapImage(final ViewHolder.UserHolder userHolder, final FoodPair.User userFoodPair) {
         if (!TextUtils.isEmpty(userFoodPair.mapURL)) {
-            userHolder.mapContainer = VolleySingleton.getInstance(App.context).getImageLoader().get(userFoodPair.mapURL, new ImageLoader.ImageListener() {
+            userHolder.mapContainer = VolleySingleton.getInstance().getImageLoader().get(userFoodPair.mapURL, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                     if (userHolder.mapImage != null) {

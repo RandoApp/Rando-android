@@ -3,12 +3,9 @@ package com.eucsoft.foodex.api;
 import android.location.Location;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpClientStack;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
@@ -21,18 +18,13 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,7 +43,6 @@ import static com.eucsoft.foodex.Constants.ANONYMOUS_ID_PARAM;
 import static com.eucsoft.foodex.Constants.ANONYMOUS_URL;
 import static com.eucsoft.foodex.Constants.BON_APPETIT_PARAM;
 import static com.eucsoft.foodex.Constants.BON_APPETIT_URL;
-import static com.eucsoft.foodex.Constants.CONNECTION_TIMEOUT;
 import static com.eucsoft.foodex.Constants.CREATION_PARAM;
 import static com.eucsoft.foodex.Constants.ERROR_CODE_PARAM;
 import static com.eucsoft.foodex.Constants.FACEBOOK_EMAIL_PARAM;
@@ -63,6 +54,7 @@ import static com.eucsoft.foodex.Constants.FOODS_PARAM;
 import static com.eucsoft.foodex.Constants.FOOD_ID_PARAM;
 import static com.eucsoft.foodex.Constants.FOOD_URL_PARAM;
 import static com.eucsoft.foodex.Constants.GOOGLE_EMAIL_PARAM;
+import static com.eucsoft.foodex.Constants.GOOGLE_FAMILY_NAME_PARAM;
 import static com.eucsoft.foodex.Constants.GOOGLE_TOKEN_PARAM;
 import static com.eucsoft.foodex.Constants.GOOGLE_URL;
 import static com.eucsoft.foodex.Constants.IMAGE_PARAM;
@@ -82,24 +74,11 @@ import static org.apache.http.HttpStatus.SC_OK;
 
 public class API {
 
-    private static HttpParams httpParams = new BasicHttpParams();
-    public static HttpClient client = new DefaultHttpClient(httpParams);
-    private static RequestQueue requestQueue = Volley.newRequestQueue(App.context, new HttpClientStack(client));
-
-    static {
-        try {
-            HttpConnectionParams.setConnectionTimeout(httpParams, CONNECTION_TIMEOUT);
-            HttpConnectionParams.setSoTimeout(httpParams, CONNECTION_TIMEOUT);
-        } catch (Exception e) {
-            //Why is the world so cruel?
-        }
-    }
-
     public static void signup(String email, String password) throws Exception {
         try {
             HttpPost request = new HttpPost(SIGNUP_URL);
             addParamsToRequest(request, SIGNUP_EMAIL_PARAM, email, SIGNUP_PASSWORD_PARAM, password);
-            HttpResponse response = client.execute(request);
+            HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
                 String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
@@ -116,7 +95,7 @@ public class API {
         try {
             HttpPost request = new HttpPost(FACEBOOK_URL);
             addParamsToRequest(request, FACEBOOK_ID_PARAM, id, FACEBOOK_EMAIL_PARAM, email, FACEBOOK_TOKEN_PARAM, token);
-            HttpResponse response = client.execute(request);
+            HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
                 String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
@@ -129,11 +108,11 @@ public class API {
         }
     }
 
-    public static void google(String email, String token) throws Exception {
+    public static void google(String email, String token, String familyName) throws Exception {
         try {
             HttpPost request = new HttpPost(GOOGLE_URL);
-            addParamsToRequest(request, GOOGLE_EMAIL_PARAM, email, GOOGLE_TOKEN_PARAM, token);
-            HttpResponse response = client.execute(request);
+            addParamsToRequest(request, GOOGLE_EMAIL_PARAM, email, GOOGLE_TOKEN_PARAM, token, GOOGLE_FAMILY_NAME_PARAM, familyName);
+            HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
                 String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
@@ -151,7 +130,7 @@ public class API {
             HttpPost request = new HttpPost(ANONYMOUS_URL);
             addParamsToRequest(request, ANONYMOUS_ID_PARAM, uuid);
 
-            HttpResponse response = client.execute(request);
+            HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
                 String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
@@ -167,7 +146,7 @@ public class API {
     public static void logout() throws AuthenticationException, Exception {
         try {
             HttpPost request = new HttpPost(getUrl(LOGOUT_URL));
-            HttpResponse response = client.execute(request);
+            HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
             if (response.getStatusLine().getStatusCode() != SC_OK) {
                 throw processServerError(readJSON(response));
             }
@@ -176,10 +155,10 @@ public class API {
         }
     }
 
-    public static void fetchUserAsync(final OnFetchUser listener) {
+    public static void  fetchUserAsync(final OnFetchUser listener) {
         Log.i(API.class, "API.fetchUser");
 
-        requestQueue.add(new JsonObjectRequest(Request.Method.GET, getUrl(FETCH_USER_URL), null, new Response.Listener<JSONObject>() {
+        VolleySingleton.getInstance().getRequestQueue().add(new JsonObjectRequest(Request.Method.GET, getUrl(FETCH_USER_URL), null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
@@ -216,13 +195,14 @@ public class API {
             public void onErrorResponse(VolleyError e) {
                 Log.e(API.class, e);
             }
-        }));
+        }
+        ));
     }
 
     public static List<FoodPair> fetchUser() throws AuthenticationException, Exception {
         try {
             HttpGet request = new HttpGet(getUrl(FETCH_USER_URL));
-            HttpResponse response = client.execute(request);
+            HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
@@ -261,7 +241,7 @@ public class API {
     public static byte[] downloadFood(String url) throws AuthenticationException, Exception {
         try {
             HttpGet request = new HttpGet(getUrl(url));
-            HttpResponse response = client.execute(request);
+            HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
                 HttpEntity entity = response.getEntity();
@@ -293,7 +273,7 @@ public class API {
             multipartEntity.addTextBody(LONGITUDE_PARAM, longitude);
             request.setEntity(multipartEntity.build());
 
-            HttpResponse response = client.execute(request);
+            HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
                 JSONObject json = readJSON(response);
@@ -313,7 +293,7 @@ public class API {
         try {
             HttpPost request = new HttpPost(getUrl(REPORT_URL + id));
 
-            HttpResponse response = client.execute(request);
+            HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
             if (response.getStatusLine().getStatusCode() != SC_OK) {
                 throw processServerError(readJSON(response));
             }
@@ -329,7 +309,7 @@ public class API {
     public static void bonAppetit(String id) throws AuthenticationException, Exception {
         try {
             HttpPost request = new HttpPost(getUrl(BON_APPETIT_URL + id));
-            HttpResponse response = client.execute(request);
+            HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
             if (response.getStatusLine().getStatusCode() != SC_OK) {
                 throw processServerError(readJSON(response));
@@ -382,7 +362,6 @@ public class API {
             switch (json.getInt(ERROR_CODE_PARAM)) {
                 case UNAUTHORIZED_CODE:
                     return new AuthenticationException(App.context.getResources().getString(R.string.error_400));
-
             }
             //TODO: implement all code handling in switch and replace server "message" with default value.
             return new Exception(json.getString("message"));
