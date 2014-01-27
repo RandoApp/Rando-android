@@ -9,19 +9,18 @@
     <string name="skip">Skip…</string>
     <string name="action_settings">Settings</string>
 
-    <!-- Empty Home Wall -->
     <string name="empty_home_message">No pictures yet.\n Take your first food picture and deliver it.</string>
 
 
-    <!-- Take Picture Screen Strings -->
     <string name="take_picture_screen_label">Take Picture</string>
     <string name="photo_upload_ok">Upload Finished Successfully.</string>
     <string name="photo_upload_failed">"Upload Failed. Please check you connection and try again."</string>
     <string name="failed_to_set_bon_appetit_for_food">"Bon Appetit Failed. Please check you internet connection and try again."</string>
 
-    <string name="emailShouldBe">You have error in email</string>
-    <string name="passwordShouldBe">Password can not be empty</string>
-
+    <string name="email_should_be">You have error in email</string>
+    <string name="password_should_be">Password can not be empty</string>
+    <string name="no_google_account">No account available. Please add an account to the phone first</string>
+    <string name="select_account">Chooise account</string>
 
     <string name="error_unknown_err">Oops, Something wrong...</string>
 

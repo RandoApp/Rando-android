@@ -33,12 +33,12 @@ public class EmailAndPasswordAuth extends BaseAuth {
         String password = passwordText.getText().toString();
 
         if (!isEmailCorrect(email)) {
-            Toast.makeText(authFragment.getActivity(), authFragment.getResources().getString(R.string.emailShouldBe), Toast.LENGTH_LONG).show();
+            Toast.makeText(authFragment.getActivity(), authFragment.getResources().getString(R.string.email_should_be), Toast.LENGTH_LONG).show();
             return;
         }
 
         if (!isPasswordCorrect(password)) {
-            Toast.makeText(authFragment.getActivity(), authFragment.getResources().getString(R.string.passwordShouldBe), Toast.LENGTH_LONG).show();
+            Toast.makeText(authFragment.getActivity(), authFragment.getResources().getString(R.string.password_should_be), Toast.LENGTH_LONG).show();
             return;
         }
 

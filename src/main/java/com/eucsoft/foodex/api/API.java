@@ -62,6 +62,9 @@ import static com.eucsoft.foodex.Constants.FETCH_USER_URL;
 import static com.eucsoft.foodex.Constants.FOODS_PARAM;
 import static com.eucsoft.foodex.Constants.FOOD_ID_PARAM;
 import static com.eucsoft.foodex.Constants.FOOD_URL_PARAM;
+import static com.eucsoft.foodex.Constants.GOOGLE_EMAIL_PARAM;
+import static com.eucsoft.foodex.Constants.GOOGLE_TOKEN_PARAM;
+import static com.eucsoft.foodex.Constants.GOOGLE_URL;
 import static com.eucsoft.foodex.Constants.IMAGE_PARAM;
 import static com.eucsoft.foodex.Constants.LATITUDE_PARAM;
 import static com.eucsoft.foodex.Constants.LOGOUT_URL;
@@ -113,6 +116,23 @@ public class API {
         try {
             HttpPost request = new HttpPost(FACEBOOK_URL);
             addParamsToRequest(request, FACEBOOK_ID_PARAM, id, FACEBOOK_EMAIL_PARAM, email, FACEBOOK_TOKEN_PARAM, token);
+            HttpResponse response = client.execute(request);
+
+            if (response.getStatusLine().getStatusCode() == SC_OK) {
+                String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
+                Preferences.setAuthToken(authToken);
+            } else {
+                throw processServerError(readJSON(response));
+            }
+        } catch (IOException e) {
+            throw processError(e);
+        }
+    }
+
+    public static void google(String email, String token) throws Exception {
+        try {
+            HttpPost request = new HttpPost(GOOGLE_URL);
+            addParamsToRequest(request, GOOGLE_EMAIL_PARAM, email, GOOGLE_TOKEN_PARAM, token);
             HttpResponse response = client.execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {

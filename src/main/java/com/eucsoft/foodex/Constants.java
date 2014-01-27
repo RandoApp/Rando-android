@@ -56,6 +56,8 @@ public class Constants {
     public static final String FACEBOOK_EMAIL_PARAM = "email";
     public static final String FACEBOOK_ID_PARAM = "id";
     public static final String FACEBOOK_TOKEN_PARAM = "token";
+    public static final String GOOGLE_EMAIL_PARAM = "email";
+    public static final String GOOGLE_TOKEN_PARAM = "token";
     public static final String ANONYMOUS_ID_PARAM = "id";
     public static final String BON_APPETIT_PARAM = "bonAppetit";
     public static final String FOOD_URL_PARAM = "foodUrl";
@@ -78,6 +80,7 @@ public class Constants {
     public static final String IMAGE_MIME_TYPE = "image/jpeg";
     public static final String SIGNUP_URL = SERVER_URL + "/user";
     public static final String FACEBOOK_URL = SERVER_URL + "/facebook";
+    public static final String GOOGLE_URL = SERVER_URL + "/google";
     public static final String ANONYMOUS_URL = SERVER_URL + "/anonymous";
     public static final String LOGOUT_URL = SERVER_URL + "/logout";
     public static final String FETCH_USER_URL = SERVER_URL + "/user";
