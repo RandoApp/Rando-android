@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.auth.EmailAndPasswordAuth;
+import com.eucsoft.foodex.auth.GoogleAuth;
 import com.eucsoft.foodex.auth.SkipAuth;
 
 public class AuthFragment extends Fragment {
@@ -24,6 +25,9 @@ public class AuthFragment extends Fragment {
 
         Button signupButton = (Button) rootView.findViewById(R.id.signupButton);
         signupButton.setOnClickListener(new EmailAndPasswordAuth(rootView, this));
+
+        Button googleButton = (Button) rootView.findViewById(R.id.googleAuthButton);
+        googleButton.setOnClickListener(new GoogleAuth(this));
 
         return rootView;
     }
