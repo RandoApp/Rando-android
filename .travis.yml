@@ -79,7 +79,7 @@ before_install:
   - echo yes | android update sdk --filter $ANDROID_SDKS --all --no-ui --force > /dev/null
   - echo yes | android update sdk --filter extra-android-support --no-ui --force > /dev/null
   - echo yes | android update sdk --filter extra-android-m2repository --no-ui --force > /dev/null
-  - echo yes | android update sdk --filter extra-google-google_play_services --no-ui --force > /dev/null
+  - echo yes | android update sdk --filter extra-google-google_play_services --no-ui --force
 
   - ls $ANDROID_HOME -R | grep ':$' | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/ /' -e 's/-/|/'
   - android update project --target $ANDROID_TARGET --path ${CI_HOME} --library $ANDROID_HOME/extras/google/google_play_services/libproject/google-play-services_lib
