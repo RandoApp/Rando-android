@@ -15,22 +15,28 @@
         android:paddingBottom="@dimen/activity_vertical_margin"
         tools:context=".MainActivity$PlaceholderFragment">
 
-        <TableLayout
+        <LinearLayout
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="65dp"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <TableRow>
-                <fragment class="com.eucsoft.foodex.fragment.FacebookFragment"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"/>
 
-                <Button
-                    android:id="@+id/googleAuthButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="28dp"
-                    android:text="G+"/>
-            </TableRow>
-        </TableLayout>
+            <fragment class="com.eucsoft.foodex.fragment.FacebookFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"/>
+
+            <Button
+                android:id="@+id/googleAuthButton"
+                android:layout_width="match_parent"
+                android:textSize="18dp"
+                android:layout_height="62dp"
+                android:textColor="@android:color/white"
+                android:text="Log in with Google"
+                android:layout_marginTop="12dp"/>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textViewEmail"

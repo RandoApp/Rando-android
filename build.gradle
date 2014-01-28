@@ -59,6 +59,7 @@ dependencies {
     compile project(':foodex-android:modules:two-way-gridview:lib')
     compile 'com.android.support:appcompat-v7:+'
     compile 'com.google.android.gms:play-services:4.0.30'
+//    compile files('libs/google-play-services.jar')
     compile 'org.apache.httpcomponents:httpcore:4.3'
     compile 'org.apache.httpcomponents:httpmime:4.3.1'
 
