@@ -83,6 +83,9 @@ before_install:
 
   - ls $ANDROID_HOME -R | grep ':$' | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/ /' -e 's/-/|/'
   - android update project --target $ANDROID_TARGET --path ${CI_HOME}/src/main --library $ANDROID_HOME/extras/google/google_play_services/libproject/google-play-services_lib
+  - cat /home/travis/build/xp-vit/foodex-android/src/main/build.xml
+  - cat /home/travis/build/xp-vit/foodex-android/src/main/proguard-project.txt
+  - cat /home/travis/build/xp-vit/foodex-android/src/main/project.properties
 
   # Create and start emulator
   - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
