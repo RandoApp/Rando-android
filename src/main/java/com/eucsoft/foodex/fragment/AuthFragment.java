@@ -26,10 +26,19 @@ public class AuthFragment extends Fragment {
         Button signupButton = (Button) rootView.findViewById(R.id.signupButton);
         signupButton.setOnClickListener(new EmailAndPasswordAuth(rootView, this));
 
-        Button googleButton = (Button) rootView.findViewById(R.id.googleAuthButton);
-        googleButton.setOnClickListener(new GoogleAuth(this));
+        createGoogleAuthButton(rootView);
 
         return rootView;
+    }
+
+    private void createGoogleAuthButton(View rootView) {
+        Button googleButton = (Button) rootView.findViewById(R.id.googleAuthButton);
+        googleButton.setBackground(getResources().getDrawable(com.google.android.gms.R.drawable.common_signin_btn_text_normal_dark));
+        googleButton.setText(getResources().getString(com.google.android.gms.R.string.common_signin_button_text_long));
+
+        GoogleAuth googleAuthListener = new GoogleAuth(this, googleButton);
+        googleButton.setOnTouchListener(googleAuthListener);
+        googleButton.setOnClickListener(googleAuthListener);
     }
 
 }
