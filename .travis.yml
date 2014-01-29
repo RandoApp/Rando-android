@@ -80,12 +80,7 @@ before_install:
   - echo yes | android update sdk --filter extra-android-support --no-ui --force > /dev/null
   - echo yes | android update sdk --filter extra-android-m2repository --no-ui --force > /dev/null
   - echo yes | android update sdk --filter extra-google-google_play_services --no-ui --force
-
-  - ls $ANDROID_HOME -R | grep ':$' | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/ /' -e 's/-/|/'
-  - android update project --target $ANDROID_TARGET --path ${CI_HOME}/src/main --library $ANDROID_HOME/extras/google/google_play_services/libproject/google-play-services_lib
-  - cat /home/travis/build/xp-vit/foodex-android/src/main/build.xml
-  - cat /home/travis/build/xp-vit/foodex-android/src/main/proguard-project.txt
-  - cat /home/travis/build/xp-vit/foodex-android/src/main/project.properties
+  - cp -r $ANDROID_HOME/extras/google/google_play_services/libproject/google-play-services_lib/res/* ${CI_HOME}/src/main/res
 
   # Create and start emulator
   - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
