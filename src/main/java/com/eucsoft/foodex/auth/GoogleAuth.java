@@ -45,6 +45,7 @@ public class GoogleAuth extends BaseAuth implements View.OnTouchListener {
     @Override
     public void onClick(View v) {
         String[] names = getAccountNames();
+        names = null;
         if (names.length == 1) {
             fetchUserToken(names[0]);
         } else if (names.length > 1) {

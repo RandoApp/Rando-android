@@ -89,6 +89,7 @@ public class Constants {
     public static final String ULOAD_FOOD_URL = SERVER_URL + "/food";
     public static final String REPORT_URL = SERVER_URL + "/report/";
     public static final String BON_APPETIT_URL = SERVER_URL + "/bonappetit/";
+    public static final String LOG_URL = SERVER_URL + "/log";
 
     public static final String REPORT_BROADCAST = "Report";
     public static final String SYNC_SERVICE_BROADCAST = "SyncService";
