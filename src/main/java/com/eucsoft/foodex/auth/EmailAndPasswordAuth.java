@@ -1,17 +1,22 @@
 package com.eucsoft.foodex.auth;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.fragment.AuthFragment;
 import com.eucsoft.foodex.task.SignupTask;
 import com.eucsoft.foodex.task.callback.OnError;
 import com.eucsoft.foodex.task.callback.OnOk;
+import com.eucsoft.foodex.util.AccountUtil;
 import com.eucsoft.foodex.view.Progress;
+import com.google.android.gms.auth.GoogleAuthUtil;
 
 import java.util.Map;
 
@@ -22,9 +27,17 @@ public class EmailAndPasswordAuth extends BaseAuth {
 
     public EmailAndPasswordAuth(View rootView, AuthFragment authFragment) {
         super(authFragment);
-
         this.emailText = (EditText) rootView.findViewById(R.id.emailEditText);
         this.passwordText = (EditText) rootView.findViewById(R.id.passwordEditText);
+
+        setEmailFromAccount(emailText);
+    }
+
+    private void setEmailFromAccount(EditText emailText) {
+        String[] accounts = AccountUtil.getAccountNames();
+        if (accounts.length > 0) {
+            emailText.setText(accounts[0]);
+        }
     }
 
     @Override

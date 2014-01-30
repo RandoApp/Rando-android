@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 
 import com.eucsoft.foodex.service.SyncService;
-import com.github.anrwatchdog.ANRWatchDog;
 
 import org.acra.ACRA;
 import org.acra.ReportField;
@@ -21,8 +20,6 @@ import org.acra.sender.HttpSender;
 public class App extends Application {
 
     public static Context context;
-
-    public ANRWatchDog watchDog = new ANRWatchDog();
 
     @Override
     public void onCreate() {
@@ -45,14 +42,6 @@ public class App extends Application {
 
     private void startLogging() {
         ACRA.init(this);
-        startWatchDog();
-    }
-
-    private void startWatchDog() {
-        //not run in debug mode for breakpoints pause ignore
-        if (BuildConfig.DEBUG == false) {
-            watchDog.start();
-        }
     }
 
 }

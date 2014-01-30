@@ -1,7 +1,5 @@
 package com.eucsoft.foodex.auth;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.view.MotionEvent;
@@ -9,15 +7,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.fragment.AuthFragment;
 import com.eucsoft.foodex.task.GoogleAuthTask;
 import com.eucsoft.foodex.task.callback.OnDone;
 import com.eucsoft.foodex.task.callback.OnError;
 import com.eucsoft.foodex.task.callback.OnOk;
+import com.eucsoft.foodex.util.AccountUtil;
 import com.eucsoft.foodex.view.Progress;
-import com.google.android.gms.auth.GoogleAuthUtil;
 
 import java.util.Map;
 
@@ -31,21 +28,20 @@ public class GoogleAuth extends BaseAuth implements View.OnTouchListener {
     }
 
     private void setButtonFocused() {
-        googleButton.setBackground(authFragment.getResources().getDrawable(com.google.android.gms.R.drawable.common_signin_btn_text_focus_dark));
+        googleButton.setBackgroundDrawable(authFragment.getResources().getDrawable(com.google.android.gms.R.drawable.common_signin_btn_text_focus_dark));
     }
 
     private void setButtonPressed() {
-        googleButton.setBackground(authFragment.getResources().getDrawable(com.google.android.gms.R.drawable.common_signin_btn_text_pressed_dark));
+        googleButton.setBackgroundDrawable(authFragment.getResources().getDrawable(com.google.android.gms.R.drawable.common_signin_btn_text_pressed_dark));
     }
 
     private void setButtonNormal() {
-        googleButton.setBackground(authFragment.getResources().getDrawable(com.google.android.gms.R.drawable.common_signin_btn_text_normal_dark));
+        googleButton.setBackgroundDrawable(authFragment.getResources().getDrawable(com.google.android.gms.R.drawable.common_signin_btn_text_normal_dark));
     }
 
     @Override
     public void onClick(View v) {
-        String[] names = getAccountNames();
-        names = null;
+        String[] names = AccountUtil.getAccountNames();
         if (names.length == 1) {
             fetchUserToken(names[0]);
         } else if (names.length > 1) {
@@ -82,16 +78,6 @@ public class GoogleAuth extends BaseAuth implements View.OnTouchListener {
                 }
             })
             .execute();
-    }
-
-    private String[] getAccountNames() {
-        AccountManager accountManager = AccountManager.get(App.context);
-        Account[] accounts = accountManager.getAccountsByType(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE);
-        String[] names = new String[accounts.length];
-        for (int i = 0; i < names.length; i++) {
-            names[i] = accounts[i].name;
-        }
-        return names;
     }
 
     private void selectAccount(final CharSequence[] names) {
