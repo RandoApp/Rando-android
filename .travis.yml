@@ -26,6 +26,7 @@ before_install:
   - wget http://cool-project.com/foodex/testrunner-runtime-1.0-SNAPSHOT.jar -P libs/
   - wget http://cool-project.com/foodex/hamcrest-integration-1.1.jar -P libs/
   - wget http://cool-project.com/foodex/hamcrest-library-1.1.jar -P libs/
+  - wget http://cool-project.com/foodex/ANRWatchDog.jar -P libs/
 
   # Install base Android SDK
   - cd ${HOME}
