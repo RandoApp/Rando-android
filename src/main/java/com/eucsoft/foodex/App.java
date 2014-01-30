@@ -17,7 +17,6 @@ import org.acra.sender.HttpSender;
         reportType = HttpSender.Type.JSON,
         mode = ReportingInteractionMode.TOAST,
         customReportContent = { ReportField.APP_VERSION_CODE, ReportField.APP_VERSION_NAME, ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL, ReportField.STACK_TRACE},
-        forceCloseDialogAfterToast = false, // optional, default false
         resToastText = R.string.crash_toast_text)
 public class App extends Application {
 
