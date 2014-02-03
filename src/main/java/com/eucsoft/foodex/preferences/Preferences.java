@@ -42,6 +42,7 @@ public class Preferences {
     }
 
     private static SharedPreferences getSharedPreferences() {
-        return App.context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        //Context.MODE_MULTI_PROCESS needs for access from SyncService
+        return App.context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE | Context.MODE_MULTI_PROCESS);
     }
 }
