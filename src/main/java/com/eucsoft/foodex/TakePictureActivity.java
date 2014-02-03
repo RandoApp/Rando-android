@@ -291,6 +291,8 @@ public class TakePictureActivity extends BaseActivity {
             params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
             params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
             params.setRotation(90);
+            params.set("orientation", "portrait");
+            params.set("rotation", 90);
             camera.setParameters(params);
 
             foodexSurfaceView = new FoodexSurfaceView(getApplicationContext(), camera);
