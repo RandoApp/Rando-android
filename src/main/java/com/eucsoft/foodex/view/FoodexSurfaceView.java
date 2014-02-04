@@ -70,8 +70,8 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
         }
         params.setPictureSize(cameraSize.width, cameraSize.height);
 
-        Camera.Size optimalPreviewSize = CameraUtil.getOptimalPreviewSize(params.getSupportedPreviewSizes(), width, height);
-        params.setPreviewSize(optimalPreviewSize.width, optimalPreviewSize.height);
+        Camera.Size previewSize = CameraUtil.getBestPreviewSize(params.getSupportedPreviewSizes(), width, height);
+        params.setPreviewSize(previewSize.width, previewSize.height);
 
         camera.setParameters(params);
         try {

@@ -131,6 +131,28 @@ public class CameraUtilTest extends AndroidTestCase {
         assertThat(actual.width + ":" + actual.height, actual, is(createSize(4000, 5000)));
     }
 
+    public void testGetBestPreivewSize() throws Exception {
+        Camera.Size actual = CameraUtil.getBestPreviewSize(createSizes(
+                4000, 5000,
+                2000, 4000,
+                3000, 3000,
+                400, 900,
+                400, 100), 400, 800);
+
+        assertThat(actual.width + ":" + actual.height, actual, is(createSize(2000, 4000)));
+    }
+
+    public void testGetBestPreivewSizeSameSize() throws Exception {
+        Camera.Size actual = CameraUtil.getBestPreviewSize(createSizes(
+                4000, 5000,
+                400, 800,
+                4000, 8000,
+                400, 900,
+                400, 100), 400, 800);
+
+        assertThat(actual.width + ":" + actual.height, actual, is(createSize(400, 800)));
+    }
+
     private List<Camera.Size> createSizes(int... sizes) {
         List<Camera.Size> cameraSizes = new ArrayList<Camera.Size>();
 
