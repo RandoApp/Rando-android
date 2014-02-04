@@ -147,6 +147,7 @@ public class CameraUtilTest extends AndroidTestCase {
                 4000, 5000,
                 400, 800,
                 4000, 8000,
+                400, 1000,
                 400, 900,
                 400, 100), 400, 800);
 
