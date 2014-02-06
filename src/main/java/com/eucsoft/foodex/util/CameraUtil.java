@@ -30,26 +30,46 @@ public static Camera.Size getBestPictureSize(List<Camera.Size> cameraSizes) {
         return cameraSizes.get(0);
     }
 
-    public static Camera.Size getBestPreviewSize(List<Camera.Size> cameraSizes, final int width, final int height) {
-        return findClosestSize(cameraSizes, width, height);
+    public static Camera.Size getBestPreviewSize(List<Camera.Size> cameraSizes, final int screenWidth, final int screenHeight) {
+        Camera.Size optimalSize = findBestSizeByRatio(cameraSizes, screenWidth, screenHeight);
+
+        if ( optimalSize == null) {
+            optimalSize = findClosestSize(cameraSizes, screenWidth, screenHeight);
+        }
+
+        return optimalSize;
     }
+
+    private static Camera.Size findBestSizeByRatio(List<Camera.Size> cameraSizes, final int screenWidth, final int screenHeight) {
+        double screenRatio = (double) screenWidth / screenHeight;
+        Camera.Size optimalSize = null;
+        for (Camera.Size cameraSize : cameraSizes) {
+            double ration = (double) cameraSize.width / cameraSize.height;
+            if (Math.abs( screenRatio - ration ) < 0.05) {
+                if (optimalSize != null) {
+                    if (optimalSize.height > cameraSize.height && optimalSize.width > cameraSize.width) {
+                        optimalSize = cameraSize;
+                    }
+                } else {
+                    optimalSize = cameraSize;
+                }
+            }
+        }
+        return optimalSize;
+    }
+
 
     private static Camera.Size findClosestSize(List<Camera.Size> cameraSizes, final int width, final int height) {
         Collections.sort(cameraSizes, new Comparator<Camera.Size>() {
             @Override
             public int compare(Camera.Size cameraSize1, Camera.Size cameraSize2) {
-                double targetRatio = (double) height / width;
-                double ratio1 = (double) cameraSize1.height / cameraSize1.width;
-                double ratio2 = (double) cameraSize2.height / cameraSize2.width;
-
-                if (cameraSize1.height >= height & cameraSize2.height >= height
-                        & cameraSize1.width >= width & cameraSize2.width >= width) {
-                    if (Math.abs(ratio1 - targetRatio) >= (Math.abs(ratio2 - targetRatio))) {
-                        return -1;
-                    }
+                if (cameraSize1.height >= height && cameraSize1.width >= width
+                    && cameraSize2.height >= height && cameraSize2.width >= width) {
+                    return cameraSize1.height * cameraSize1.width - cameraSize2.height * cameraSize2.width;
+                } else if (cameraSize2.height >= height && cameraSize2.width >= width) {
+                    return 1;
                 }
-
-                return 1;
+                return -1;
             }
         });
         return cameraSizes.get(0);
