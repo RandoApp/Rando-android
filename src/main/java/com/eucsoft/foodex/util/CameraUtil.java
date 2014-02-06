@@ -33,7 +33,7 @@ public static Camera.Size getBestPictureSize(List<Camera.Size> cameraSizes) {
     public static Camera.Size getBestPreviewSize(List<Camera.Size> cameraSizes, final int screenWidth, final int screenHeight) {
         Camera.Size optimalSize = findBestSizeByRatio(cameraSizes, screenWidth, screenHeight);
 
-        if ( optimalSize == null) {
+        if (optimalSize == null) {
             optimalSize = findClosestSize(cameraSizes, screenWidth, screenHeight);
         }
 
@@ -60,19 +60,16 @@ public static Camera.Size getBestPictureSize(List<Camera.Size> cameraSizes) {
 
 
     private static Camera.Size findClosestSize(List<Camera.Size> cameraSizes, final int width, final int height) {
-        Collections.sort(cameraSizes, new Comparator<Camera.Size>() {
-            @Override
-            public int compare(Camera.Size cameraSize1, Camera.Size cameraSize2) {
-                if (cameraSize1.height >= height && cameraSize1.width >= width
-                    && cameraSize2.height >= height && cameraSize2.width >= width) {
-                    return cameraSize1.height * cameraSize1.width - cameraSize2.height * cameraSize2.width;
-                } else if (cameraSize2.height >= height && cameraSize2.width >= width) {
-                    return 1;
-                }
-                return -1;
+        Camera.Size optimalSize = cameraSizes.get(0);
+
+        for (Camera.Size cameraSize : cameraSizes) {
+            if (cameraSize.height >= height && optimalSize.height >= cameraSize.height
+                    && cameraSize.width >= width && optimalSize.width >= cameraSize.width) {
+                optimalSize = cameraSize;
             }
-        });
-        return cameraSizes.get(0);
+        }
+
+        return optimalSize;
     }
 
     private static Camera.Size findMaxCameraSize(List<Camera.Size> cameraSizes) {
