@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -12,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
+import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -361,8 +361,8 @@ public class FoodPairsAdapter extends BaseAdapter {
     }
 
     private void loadFoodImage(final ViewHolder.UserHolder userHolder, final FoodPair.User userFoodPair) {
-        if (!TextUtils.isEmpty(userFoodPair.foodURL)) {
-            Log.w(FoodPairsAdapter.class, "userFoodPair.foodURL: ", userFoodPair.foodURL);
+        if (URLUtil.isValidUrl(userFoodPair.foodURL)) {
+            Log.d(FoodPairsAdapter.class, "userFoodPair.foodURL: ", userFoodPair.foodURL);
             userHolder.foodContainer = VolleySingleton.getInstance().getImageLoader().get(userFoodPair.foodURL, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
@@ -383,7 +383,8 @@ public class FoodPairsAdapter extends BaseAdapter {
     }
 
     private void loadMapImage(final ViewHolder.UserHolder userHolder, final FoodPair.User userFoodPair) {
-        if (!TextUtils.isEmpty(userFoodPair.mapURL)) {
+        if (URLUtil.isValidUrl(userFoodPair.mapURL)) {
+            Log.d(FoodPairsAdapter.class, "userFoodPair.mapURL: ", userFoodPair.mapURL);
             userHolder.mapContainer = VolleySingleton.getInstance().getImageLoader().get(userFoodPair.mapURL, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
