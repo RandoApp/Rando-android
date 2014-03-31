@@ -48,13 +48,10 @@ before_install:
   # Install android build tools
   - if [ ! -f build-tools_r19.0.3-linux.zip ]; then wget https://dl-ssl.google.com/android/repository/build-tools_r19.0.3-linux.zip > /dev/null; fi
   - unzip build-tools_r19.0.3-linux.zip -d $ANDROID_HOME
-
-
   - mkdir -p $ANDROID_HOME/build-tools/
-  - mv $ANDROID_HOME/android-4.4 $ANDROID_HOME/build-tools/19.0.3
+  - mv $ANDROID_HOME/android-4.4.2 $ANDROID_HOME/build-tools/19.0.3
   - if [ ! -f build-tools_r17-linux.zip ]; then wget https://dl-ssl.google.com/android/repository/build-tools_r17-linux.zip > /dev/null; fi
   - unzip build-tools_r17-linux.zip -d $ANDROID_HOME
-  - ls -R $ANDROID_HOME | grep ':$' | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/ /' -e 's/-/|/'
   - mkdir -p $ANDROID_HOME/build-tools/
   - mv $ANDROID_HOME/android-4.2.2 $ANDROID_HOME/build-tools/17.0.0
 
