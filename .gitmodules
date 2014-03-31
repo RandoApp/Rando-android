@@ -1,11 +1,9 @@
-[submodule "modules/facebook"]
-	path = modules/facebook
-	url = https://github.com/dimhold/facebook-android-sdk.git
-
 [submodule "modules/volley"]
 	path = modules/volley
 	url = https://android.googlesource.com/platform/frameworks/volley
-
 [submodule "modules/two-way-gridview"]
 	path = modules/two-way-gridview
 	url = https://github.com/xp-vit/two-way-gridview.git
+[submodule "modules/facebook"]
+	path = modules/facebook
+	url = https://github.com/facebook/facebook-android-sdk.git
