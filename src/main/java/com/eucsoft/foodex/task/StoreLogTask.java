@@ -1,9 +1,8 @@
-package com.eucsoft.foodex.log;
+package com.eucsoft.foodex.task;
 
 import android.os.Environment;
 
 import com.eucsoft.foodex.Constants;
-import com.eucsoft.foodex.task.BaseTask;
 
 import java.io.File;
 import java.io.FileWriter;

@@ -1,5 +1,6 @@
 package com.eucsoft.foodex.log;
 
+import com.eucsoft.foodex.task.StoreLogTask;
 import com.eucsoft.foodex.task.callback.OnDone;
 
 import java.util.ArrayList;

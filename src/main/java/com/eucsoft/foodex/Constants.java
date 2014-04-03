@@ -77,6 +77,7 @@ public class Constants {
     public static final String ERROR_CODE_PARAM = "code";
 
     public static final String IMAGE_PARAM = "image";
+    public static final String LOG_PARAM = "log";
 
     public static final String IMAGE_MIME_TYPE = "image/jpeg";
     public static final String SIGNUP_URL = SERVER_URL + "/user";

@@ -60,6 +60,7 @@ import static com.eucsoft.foodex.Constants.GOOGLE_URL;
 import static com.eucsoft.foodex.Constants.IMAGE_PARAM;
 import static com.eucsoft.foodex.Constants.LATITUDE_PARAM;
 import static com.eucsoft.foodex.Constants.LOGOUT_URL;
+import static com.eucsoft.foodex.Constants.LOG_URL;
 import static com.eucsoft.foodex.Constants.LONGITUDE_PARAM;
 import static com.eucsoft.foodex.Constants.MAP_URL_PARAM;
 import static com.eucsoft.foodex.Constants.REPORT_URL;
@@ -70,6 +71,7 @@ import static com.eucsoft.foodex.Constants.STRANGER_PARAM;
 import static com.eucsoft.foodex.Constants.ULOAD_FOOD_URL;
 import static com.eucsoft.foodex.Constants.UNAUTHORIZED_CODE;
 import static com.eucsoft.foodex.Constants.USER_PARAM;
+import static com.eucsoft.foodex.Constants.LOG_PARAM;
 import static org.apache.http.HttpStatus.SC_OK;
 
 public class API {
@@ -289,6 +291,23 @@ public class API {
         }
     }
 
+    public static void uploadLog(File logFile) throws AuthenticationException, Exception {
+        Log.i(API.class, "uploadLog");
+        try {
+            HttpPost request = new HttpPost(getUrl(LOG_URL));
+
+            MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
+            multipartEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+            multipartEntity.addPart(LOG_PARAM, new FileBody(logFile));
+            request.setEntity(multipartEntity.build());
+            VolleySingleton.getInstance().getHttpClient().execute(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
     public static void report(String id) throws AuthenticationException, Exception {
         try {
             HttpPost request = new HttpPost(getUrl(REPORT_URL + id));
@@ -322,6 +341,8 @@ public class API {
             throw processError(e);
         }
     }
+
+
 
     private static void addParamsToRequest(HttpPost request, String... args) throws UnsupportedEncodingException {
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
