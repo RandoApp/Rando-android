@@ -12,7 +12,7 @@ public class StorableLog {
 
     public static void add(String log) {
         if (isNeedStore()) {
-            new StoreLogTask()
+            new StoreLogTask(logs)
             .onDone(new OnDone() {
                 @Override
                 public void onDone(Map<String, Object> data) {

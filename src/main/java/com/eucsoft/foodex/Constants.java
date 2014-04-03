@@ -99,5 +99,6 @@ public class Constants {
     public static final String GOOGLE_AUTH_SCOPE = "oauth2:https://www.googleapis.com/auth/userinfo.profile";
     public static final String GOOGLE_USER_INFO_URL = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=";
 
+    public static final String LOG_FILE_NAME = "foodex.log";
 
 }
