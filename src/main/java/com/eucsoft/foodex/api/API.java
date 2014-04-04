@@ -21,6 +21,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
@@ -32,6 +33,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -291,15 +293,11 @@ public class API {
         }
     }
 
-    public static void uploadLog(File logFile) throws AuthenticationException, Exception {
+    public static void uploadLog(String logs) throws AuthenticationException, Exception {
         Log.i(API.class, "uploadLog");
         try {
             HttpPost request = new HttpPost(getUrl(LOG_URL));
-
-            MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
-            multipartEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-            multipartEntity.addPart(LOG_PARAM, new FileBody(logFile));
-            request.setEntity(multipartEntity.build());
+            request.setEntity(new StringEntity(logs, "UTF-8"));
             VolleySingleton.getInstance().getHttpClient().execute(request);
         } catch (IOException e) {
             e.printStackTrace();

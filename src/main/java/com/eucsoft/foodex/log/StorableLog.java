@@ -1,33 +1,28 @@
 package com.eucsoft.foodex.log;
 
 import com.eucsoft.foodex.task.StoreLogTask;
-import com.eucsoft.foodex.task.callback.OnDone;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class StorableLog {
 
-    private static List<String> logs = new ArrayList<String>();
+    private static List<String> logs = new LinkedList<String>();
+
+    private static final int LOG_SIZE = 100000;
 
     public static void add(String log) {
         if (isNeedStore()) {
-            new StoreLogTask(logs)
-            .onDone(new OnDone() {
-                @Override
-                public void onDone(Map<String, Object> data) {
-                    logs.clear();
-                }
-            })
-            .execute();
+            String logsStr = logs.toString();
+            logs.clear();
+            new StoreLogTask(logsStr).execute();
         }
 
         logs.add(log);
     }
 
     private static boolean isNeedStore() {
-        return logs.size() > 5000;
+        return logs.size() > LOG_SIZE;
     }
 
 

@@ -1,27 +1,25 @@
 package com.eucsoft.foodex.task;
 
-import android.os.Environment;
-
+import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.util.List;
 
 public class StoreLogTask extends BaseTask {
 
-    private List<String> logs;
+    String logs;
 
-    public StoreLogTask (List<String> logs) {
+    public StoreLogTask (String logs) {
         this.logs = logs;
     }
 
     @Override
     public Integer run() {
         try {
-            File logFile = new File(Environment.getExternalStorageDirectory(), Constants.LOG_FILE_NAME);
+            File logFile = new File(App.context.getExternalCacheDir(), Constants.LOG_FILE_NAME);
             FileWriter fileWriter = new FileWriter(logFile, true);
-            fileWriter.write(logs.toString());
+            fileWriter.write(logs);
             fileWriter.close();
         } catch (Exception e) {
             return ERROR;
