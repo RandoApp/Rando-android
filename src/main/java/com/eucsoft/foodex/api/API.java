@@ -299,7 +299,7 @@ public class API {
             request.setEntity(new StringEntity(logs, "UTF-8"));
             VolleySingleton.getInstance().getHttpClient().execute(request);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(API.class, "Can not upload logs, because: ", e.getMessage());
         }
     }
 

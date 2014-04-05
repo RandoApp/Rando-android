@@ -5,11 +5,11 @@ import com.eucsoft.foodex.task.StoreLogTask;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.eucsoft.foodex.Constants.LOG_BUFFER_SIZE;
+
 public class StorableLog {
 
     private static List<String> logs = new LinkedList<String>();
-
-    private static final int LOG_SIZE = 2048;
 
     public static void add(String log) {
         if (isNeedStore()) {
@@ -22,7 +22,7 @@ public class StorableLog {
     }
 
     private static boolean isNeedStore() {
-        return logs.size() > LOG_SIZE;
+        return logs.size() > LOG_BUFFER_SIZE;
     }
 
 

@@ -45,6 +45,7 @@ public class Constants {
     public static final long SERVICE_SHORT_PAUSE = 30 * 1000;
     public static final long SERVICE_LONG_PAUSE = AlarmManager.INTERVAL_HALF_HOUR;
 
+
     //Shared Preferences
     public static final String PREFERENCES_FILE_NAME = "foodex.prefs";
     public static final String AUTH_TOKEN = "auth.token";
@@ -101,5 +102,7 @@ public class Constants {
     public static final String GOOGLE_USER_INFO_URL = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=";
 
     public static final String LOG_FILE_NAME = "foodex.log";
+    public static final int LOG_BUFFER_SIZE = 1024;
+    public static final long LOG_SRVICE_INTERVAL = AlarmManager.INTERVAL_DAY;
 
 }

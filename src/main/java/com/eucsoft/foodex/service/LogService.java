@@ -7,18 +7,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 
+import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.task.SendLogTask;
+
+import static com.eucsoft.foodex.Constants.LOG_SRVICE_INTERVAL;
 
 public class LogService extends Service {
 
     @Override
     public void onCreate() {
         super.onCreate();
-        setTimeout(AlarmManager.INTERVAL_DAY);
+        Log.d(LogService.class, "LogService created");
+        setInterval(LOG_SRVICE_INTERVAL);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(LogService.class, "LogService wakeup and start command");
         new SendLogTask().execute();
         return Service.START_NOT_STICKY;
     }
@@ -28,9 +33,9 @@ public class LogService extends Service {
         return null;
     }
 
-    private void setTimeout(long time) {
+    private void setInterval(long time) {
         AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarm.set(AlarmManager.RTC_WAKEUP, time, createIntent());
+        alarm.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + time, time, createIntent());
     }
 
     private PendingIntent createIntent() {
