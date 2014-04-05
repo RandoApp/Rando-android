@@ -21,6 +21,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
@@ -60,6 +61,7 @@ import static com.eucsoft.foodex.Constants.GOOGLE_URL;
 import static com.eucsoft.foodex.Constants.IMAGE_PARAM;
 import static com.eucsoft.foodex.Constants.LATITUDE_PARAM;
 import static com.eucsoft.foodex.Constants.LOGOUT_URL;
+import static com.eucsoft.foodex.Constants.LOG_URL;
 import static com.eucsoft.foodex.Constants.LONGITUDE_PARAM;
 import static com.eucsoft.foodex.Constants.MAP_URL_PARAM;
 import static com.eucsoft.foodex.Constants.REPORT_URL;
@@ -289,6 +291,20 @@ public class API {
         }
     }
 
+    public static void uploadLog(String logs) throws AuthenticationException, Exception {
+        Log.i(API.class, "uploadLog");
+        try {
+            HttpPost request = new HttpPost(getUrl(LOG_URL));
+            request.setHeader("Content-Type", "application/json");
+            request.setEntity(new StringEntity(logs, "UTF-8"));
+            VolleySingleton.getInstance().getHttpClient().execute(request);
+        } catch (IOException e) {
+            Log.e(API.class, "Can not upload logs, because: ", e.getMessage());
+        }
+    }
+
+
+
     public static void report(String id) throws AuthenticationException, Exception {
         try {
             HttpPost request = new HttpPost(getUrl(REPORT_URL + id));
@@ -322,6 +338,8 @@ public class API {
             throw processError(e);
         }
     }
+
+
 
     private static void addParamsToRequest(HttpPost request, String... args) throws UnsupportedEncodingException {
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);

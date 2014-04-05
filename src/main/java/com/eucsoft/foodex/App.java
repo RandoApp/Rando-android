@@ -3,6 +3,7 @@ package com.eucsoft.foodex;
 import android.app.Application;
 import android.content.Context;
 
+import com.eucsoft.foodex.service.LogService;
 import com.eucsoft.foodex.service.SyncService;
 
 import org.acra.ACRA;
@@ -37,6 +38,10 @@ public class App extends Application {
         //App onCreate called twice. Prevent double service run, if it is already created
         if (!SyncService.isRunning()) {
             SyncService.run();
+        }
+
+        if (!LogService.isRunning()) {
+            LogService.run();
         }
     }
 

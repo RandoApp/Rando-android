@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.eucsoft.foodex"
-    android:versionCode="9"
+    android:versionCode="10"
     android:versionName="0.0.1">
 
 <uses-sdk
@@ -42,6 +42,12 @@
             android:process=":sync_process"
             android:enabled="true"
             android:label="@string/sync_service_name" />
+        <service
+            android:name=".service.LogService"
+            android:icon="@drawable/bonappetit"
+            android:process=":log_process"
+            android:enabled="true"
+            android:label="@string/log_service_name" />
     </application>
 
     <uses-feature android:name="android.hardware.camera" />
@@ -56,7 +62,6 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
-
     <uses-permission android:name="android.permission.READ_LOGS"></uses-permission>
 
 </manifest>

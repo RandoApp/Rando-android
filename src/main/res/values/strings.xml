@@ -37,6 +37,7 @@
     <string name="error_400">You are not authorized. Please, signup.</string>
 
     <string name="sync_service_name">Foodex Sync Service</string>
+    <string name="log_service_name">Foodex log sender service</string>
 
     <string name="crash_toast_text">Ooooops ! I crashed, but a report has been sent to my developer to help fix the issue !</string>
 
