@@ -9,7 +9,7 @@ public class StorableLog {
 
     private static List<String> logs = new LinkedList<String>();
 
-    private static final int LOG_SIZE = 100000;
+    private static final int LOG_SIZE = 2048;
 
     public static void add(String log) {
         if (isNeedStore()) {

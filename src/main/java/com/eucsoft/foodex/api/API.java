@@ -33,7 +33,6 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -73,7 +72,6 @@ import static com.eucsoft.foodex.Constants.STRANGER_PARAM;
 import static com.eucsoft.foodex.Constants.ULOAD_FOOD_URL;
 import static com.eucsoft.foodex.Constants.UNAUTHORIZED_CODE;
 import static com.eucsoft.foodex.Constants.USER_PARAM;
-import static com.eucsoft.foodex.Constants.LOG_PARAM;
 import static org.apache.http.HttpStatus.SC_OK;
 
 public class API {
@@ -297,6 +295,7 @@ public class API {
         Log.i(API.class, "uploadLog");
         try {
             HttpPost request = new HttpPost(getUrl(LOG_URL));
+            request.setHeader("Content-Type", "application/json");
             request.setEntity(new StringEntity(logs, "UTF-8"));
             VolleySingleton.getInstance().getHttpClient().execute(request);
         } catch (IOException e) {
