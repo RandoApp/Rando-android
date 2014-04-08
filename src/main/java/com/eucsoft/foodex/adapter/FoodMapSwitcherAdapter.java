@@ -90,7 +90,7 @@ public class FoodMapSwitcherAdapter extends PagerAdapter {
     }
 
     public void recycle(ImageView foodImage, ImageView mapImage) {
-        Log.d(FoodMapSwitcherAdapter.class, "recycle");
+        Log.d(FoodMapSwitcherAdapter.class, "Recycle");
         foodImage.setImageResource(R.drawable.food_wait);
         mapImage.setImageResource(R.drawable.map_wait);
     }

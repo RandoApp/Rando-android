@@ -1,6 +1,6 @@
 [submodule "modules/volley"]
 	path = modules/volley
-	url = https://android.googlesource.com/platform/frameworks/volley
+	url = https://github.com/dimhold/volley.git
 [submodule "modules/two-way-gridview"]
 	path = modules/two-way-gridview
 	url = https://github.com/xp-vit/two-way-gridview.git
