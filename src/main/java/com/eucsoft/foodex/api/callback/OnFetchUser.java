@@ -1,4 +1,4 @@
-package com.eucsoft.foodex.api;
+package com.eucsoft.foodex.api.callback;
 
 import com.eucsoft.foodex.db.model.FoodPair;
 

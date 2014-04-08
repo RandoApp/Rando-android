@@ -9,8 +9,10 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
+import com.eucsoft.foodex.api.callback.OnFetchUser;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.log.Log;
+import com.eucsoft.foodex.network.VolleySingleton;
 import com.eucsoft.foodex.preferences.Preferences;
 
 import org.apache.http.HttpEntity;

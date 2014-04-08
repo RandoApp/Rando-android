@@ -1,13 +1,11 @@
 package com.eucsoft.foodex.task;
 
 import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.api.API;
-import com.eucsoft.foodex.api.VolleySingleton;
+import com.eucsoft.foodex.network.VolleySingleton;
 import com.eucsoft.foodex.log.Log;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;

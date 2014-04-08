@@ -28,11 +28,11 @@ import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.animation.AnimationFactory;
 import com.eucsoft.foodex.api.API;
-import com.eucsoft.foodex.api.VolleySingleton;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.menu.ReportMenu;
+import com.eucsoft.foodex.network.VolleySingleton;
 import com.eucsoft.foodex.service.SyncService;
 import com.eucsoft.foodex.task.BonAppetitTask;
 import com.eucsoft.foodex.task.callback.OnError;
@@ -41,6 +41,8 @@ import org.apache.http.auth.AuthenticationException;
 
 import java.util.List;
 import java.util.Map;
+
+import static com.android.volley.Request.Priority;
 
 public class FoodPairsAdapter extends BaseAdapter {
 
@@ -354,52 +356,79 @@ public class FoodPairsAdapter extends BaseAdapter {
     }
 
     private void loadImages(final ViewHolder holder, final FoodPair foodPair) {
-        loadFoodImage(holder.stranger, foodPair.stranger);
-        loadFoodImage(holder.user, foodPair.user);
-        loadMapImage(holder.stranger, foodPair.stranger);
-        loadMapImage(holder.user, foodPair.user);
+        loadFoodImage(holder.stranger, foodPair.stranger, Priority.HIGH);
+        loadFoodImage(holder.user, foodPair.user, Priority.LOW);
+        loadMapImage(holder.stranger, foodPair.stranger, Priority.NORMAL);
+        loadMapImage(holder.user, foodPair.user, Priority.LOW);
     }
 
-    private void loadFoodImage(final ViewHolder.UserHolder userHolder, final FoodPair.User userFoodPair) {
+    private void loadFoodImage(final ViewHolder.UserHolder userHolder, final FoodPair.User userFoodPair, Priority priority) {
         if (URLUtil.isValidUrl(userFoodPair.foodURL)) {
             Log.d(FoodPairsAdapter.class, "userFoodPair.foodURL: ", userFoodPair.foodURL);
-            userHolder.foodContainer = VolleySingleton.getInstance().getImageLoader().get(userFoodPair.foodURL, new ImageLoader.ImageListener() {
+            userHolder.foodContainer = VolleySingleton.getInstance().getImageLoader().get(userFoodPair.foodURL, priority, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                    if (userHolder.foodImage != null) {
+                    if (userHolder.foodImage != null && response.getBitmap() != null) {
                         userHolder.foodImage.setImageBitmap(response.getBitmap());
-                    } else {
+                    } else if (userHolder.foodImage == null && response.getBitmap() != null) {
                         userHolder.foodBitmap = response.getBitmap();
+                    } else if (userHolder.foodImage != null && response.getBitmap() == null) {
+                        userHolder.foodImage.setImageResource(R.drawable.food_wait);
                     }
                 }
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.e(FoodPairsAdapter.class, "Volley Error, when load food: ", userFoodPair.foodURL, " Error: ", error.getMessage());
-
+                    Log.e(FoodPairsAdapter.class, "VolleyError when load food image with url: ", userFoodPair.foodURL, " , because ", error.getMessage());
+                    if (userHolder.foodImage != null) {
+                        userHolder.foodImage.setImageResource(R.drawable.food_error);
+                    } else {
+                        userHolder.needSetFoodError = true;
+                    }
                 }
-            }, foodImageSize, foodImageSize);
+            });
+        } else {
+            Log.e(FoodPairsAdapter.class, "Ignore food image because url: ", userFoodPair.foodURL, " incorrect");
+            if (userHolder.foodImage != null) {
+                userHolder.foodImage.setImageResource(R.drawable.food_error);
+            } else {
+                userHolder.needSetFoodError = true;
+            }
         }
     }
 
-    private void loadMapImage(final ViewHolder.UserHolder userHolder, final FoodPair.User userFoodPair) {
+    private void loadMapImage(final ViewHolder.UserHolder userHolder, final FoodPair.User userFoodPair,  Priority priority) {
         if (URLUtil.isValidUrl(userFoodPair.mapURL)) {
             Log.d(FoodPairsAdapter.class, "userFoodPair.mapURL: ", userFoodPair.mapURL);
-            userHolder.mapContainer = VolleySingleton.getInstance().getImageLoader().get(userFoodPair.mapURL, new ImageLoader.ImageListener() {
+            userHolder.mapContainer = VolleySingleton.getInstance().getImageLoader().get(userFoodPair.mapURL, priority, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                    if (userHolder.mapImage != null) {
+                    if (userHolder.mapImage != null && response.getBitmap() != null) {
                         userHolder.mapImage.setImageBitmap(response.getBitmap());
-                    } else {
+                    } else if (userHolder.mapImage == null && response.getBitmap() != null) {
                         userHolder.mapBitmap = response.getBitmap();
+                    } else if (userHolder.mapImage != null && response.getBitmap() == null) {
+                        userHolder.mapImage.setImageResource(R.drawable.map_wait);
                     }
                 }
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.e(FoodPairsAdapter.class, "Volley Error, when load map: ", userFoodPair.mapURL, " Error: ", error.getMessage());
+                    Log.e(FoodPairsAdapter.class, "VolleyError when load map image with url: ", userFoodPair.mapURL, " , because ", error.getMessage());
+                    if (userHolder.mapImage != null) {
+                        userHolder.mapImage.setImageResource(R.drawable.map_error);
+                    } else {
+                        userHolder.needSetMapError = true;
+                    }
                 }
-            }, foodImageSize, foodImageSize);
+            });
+        } else {
+            Log.e(FoodPairsAdapter.class, "Ignore map image because url: ", userFoodPair.foodURL, " incorrect");
+            if (userHolder.mapImage != null) {
+                userHolder.mapImage.setImageResource(R.drawable.map_error);
+            } else {
+                userHolder.needSetMapError = true;
+            }
         }
     }
 
@@ -424,6 +453,9 @@ public class FoodPairsAdapter extends BaseAdapter {
 
             public ImageLoader.ImageContainer foodContainer;
             public ImageLoader.ImageContainer mapContainer;
+
+            public boolean needSetFoodError = false;
+            public boolean needSetMapError = false;
 
             public Bitmap foodBitmap;
             public Bitmap mapBitmap;
