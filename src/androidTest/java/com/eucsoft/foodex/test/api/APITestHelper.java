@@ -1,6 +1,6 @@
 package com.eucsoft.foodex.test.api;
 
-import com.eucsoft.foodex.api.VolleySingleton;
+import com.eucsoft.foodex.network.VolleySingleton;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

@@ -8,7 +8,7 @@ import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.api.API;
-import com.eucsoft.foodex.api.VolleySingleton;
+import com.eucsoft.foodex.network.VolleySingleton;
 import com.eucsoft.foodex.db.model.FoodPair;
 
 import org.apache.http.HttpResponse;

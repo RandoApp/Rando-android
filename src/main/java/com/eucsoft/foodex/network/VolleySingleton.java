@@ -1,4 +1,4 @@
-package com.eucsoft.foodex.api;
+package com.eucsoft.foodex.network;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.HttpClientStack;

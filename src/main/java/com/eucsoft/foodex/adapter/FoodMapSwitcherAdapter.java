@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.eucsoft.foodex.R;
+import com.eucsoft.foodex.log.Log;
 
 public class FoodMapSwitcherAdapter extends PagerAdapter {
 
@@ -50,30 +51,47 @@ public class FoodMapSwitcherAdapter extends PagerAdapter {
 
     private void checkCache(int position, ImageView view) {
         if (position == 0) {
+            if (holder.needSetFoodError && holder.foodBitmap == null) {
+                Log.d(FoodMapSwitcherAdapter.class, "Need set food error");
+                view.setImageResource(R.drawable.map_error);
+                holder.needSetFoodError = false;
+            }
             if (holder.foodBitmap != null) {
+                Log.d(FoodMapSwitcherAdapter.class, "Bitmap of food found in memory cache");
                 view.setImageBitmap(holder.foodBitmap);
                 holder.foodBitmap = null;
+                holder.needSetFoodError = false;
             }
         } else {
+            if (holder.needSetMapError && holder.mapBitmap == null) {
+                Log.d(FoodMapSwitcherAdapter.class, "Need set map error");
+                view.setImageResource(R.drawable.map_error);
+                holder.needSetMapError = false;
+            }
             if (holder.mapBitmap != null) {
+                Log.d(FoodMapSwitcherAdapter.class, "Bitmap of map found in memory cache");
                 view.setImageBitmap(holder.mapBitmap);
                 holder.mapBitmap = null;
+                holder.needSetMapError = false;
             }
         }
     }
 
     public void addFoodToHolder(ImageView imageView) {
-        imageView.setImageResource(R.drawable.bonappetit2);
+        Log.d(FoodMapSwitcherAdapter.class, "Set temporary food image");
+        imageView.setImageResource(R.drawable.food_wait);
         holder.foodImage = imageView;
     }
 
     public void addMapToHolder(ImageView imageView) {
-        imageView.setImageResource(R.drawable.bonappetit2);
+        Log.d(FoodMapSwitcherAdapter.class, "Set temporary map image");
+        imageView.setImageResource(R.drawable.map_wait);
         holder.mapImage = imageView;
     }
 
     public void recycle(ImageView foodImage, ImageView mapImage) {
-        foodImage.setImageResource(R.drawable.bonappetit2);
-        mapImage.setImageResource(R.drawable.bonappetit2);
+        Log.d(FoodMapSwitcherAdapter.class, "recycle");
+        foodImage.setImageResource(R.drawable.food_wait);
+        mapImage.setImageResource(R.drawable.map_wait);
     }
 }

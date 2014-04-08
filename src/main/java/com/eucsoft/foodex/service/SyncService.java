@@ -11,7 +11,7 @@ import android.os.IBinder;
 import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.api.API;
-import com.eucsoft.foodex.api.OnFetchUser;
+import com.eucsoft.foodex.api.callback.OnFetchUser;
 import com.eucsoft.foodex.db.model.FoodPair;
 import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.task.callback.OnOk;
