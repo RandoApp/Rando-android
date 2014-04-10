@@ -14,11 +14,9 @@ import android.view.animation.Animation;
 import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.android.volley.VolleyError;
@@ -34,13 +32,10 @@ import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.menu.ReportMenu;
 import com.eucsoft.foodex.network.VolleySingleton;
 import com.eucsoft.foodex.service.SyncService;
-import com.eucsoft.foodex.task.BonAppetitTask;
-import com.eucsoft.foodex.task.callback.OnError;
 
 import org.apache.http.auth.AuthenticationException;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.android.volley.Request.Priority;
 
@@ -114,7 +109,8 @@ public class FoodPairsAdapter extends BaseAdapter {
         holder.user = new ViewHolder.UserHolder();
         holder.stranger = new ViewHolder.UserHolder();
 
-        holder.bonAppetitButton = (ImageButton) convertView.findViewWithTag("bon_appetit_button");
+        //TODO: enable bonAppetit button, when sexy ui will be ready
+//        holder.bonAppetitButton = (ImageButton) convertView.findViewWithTag("bon_appetit_button");
         holder.viewSwitcher = (ViewSwitcher) convertView.findViewWithTag("viewSwitcher");
 
         holder.stranger.foodPager = (ViewPager) convertView.findViewWithTag("stranger");
@@ -155,6 +151,8 @@ public class FoodPairsAdapter extends BaseAdapter {
         holder.user.foodMapPagerAdatper.setOnClickListener(foodOnClickListener);
         holder.stranger.foodMapPagerAdatper.setOnClickListener(foodOnClickListener);
 
+        //TODO: enable bonAppetit button, when sexy ui will be ready
+        /*
         holder.bonAppetitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,7 +176,7 @@ public class FoodPairsAdapter extends BaseAdapter {
                 }
             }
         });
-
+        */
         holder.reportDialog.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -212,6 +210,8 @@ public class FoodPairsAdapter extends BaseAdapter {
                     ViewPager newFoodMapView = (ViewPager) holder.viewSwitcher.getCurrentView();
                     newFoodMapView.setCurrentItem(oldFoodMapView.getCurrentItem());
 
+                    //TODO: enable bonAppetit button, when sexy ui will be ready
+                    /*
                     if (holder.stranger.foodPager.isShown()) {
                         if (holder.foodPair.stranger.isBonAppetit()) {
                             holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
@@ -225,6 +225,7 @@ public class FoodPairsAdapter extends BaseAdapter {
                             holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
                         }
                     }
+                    */
                 }
             }
         };
@@ -241,12 +242,16 @@ public class FoodPairsAdapter extends BaseAdapter {
 
         if (ReportMenu.isReport) {
             holder.reportDialog.setVisibility(View.VISIBLE);
+            //TODO: enable bonAppetit button, when sexy ui will be ready
+            /*
             holder.bonAppetitButton.setEnabled(false);
             holder.bonAppetitButton.setVisibility(View.INVISIBLE);
+            */
             return;
         }
 
-        holder.bonAppetitButton.setImageResource(foodPair.stranger.isBonAppetit() ? R.drawable.bonappetit2 : R.drawable.bonappetit);
+        //TODO: enable bonAppetit button, when sexy ui will be ready
+//        holder.bonAppetitButton.setImageResource(foodPair.stranger.isBonAppetit() ? R.drawable.bonappetit2 : R.drawable.bonappetit);
 
         if (holder.stranger.foodImage != null && holder.user.foodImage != null
                 && holder.stranger.mapImage != null && holder.user.mapImage != null) {
@@ -255,7 +260,8 @@ public class FoodPairsAdapter extends BaseAdapter {
         }
 
         holder.reportDialog.setVisibility(View.GONE);
-        holder.bonAppetitButton.setVisibility(View.VISIBLE);
+        //TODO: enable bonAppetit button, when sexy ui will be ready
+//        holder.bonAppetitButton.setVisibility(View.VISIBLE);
     }
 
     private void cancelRequests(ViewHolder holder) {
@@ -371,7 +377,7 @@ public class FoodPairsAdapter extends BaseAdapter {
                     if (userHolder.foodImage != null && response.getBitmap() != null) {
                         userHolder.foodImage.setImageBitmap(response.getBitmap());
                     } else if (userHolder.foodImage == null && response.getBitmap() != null) {
-                        userHolder.foodBitmap = response.getBitmap();
+//                        userHolder.foodBitmap = response.getBitmap();
                     } else if (userHolder.foodImage != null && response.getBitmap() == null) {
                         userHolder.foodImage.setImageResource(R.drawable.food_wait);
                     }
@@ -406,7 +412,7 @@ public class FoodPairsAdapter extends BaseAdapter {
                     if (userHolder.mapImage != null && response.getBitmap() != null) {
                         userHolder.mapImage.setImageBitmap(response.getBitmap());
                     } else if (userHolder.mapImage == null && response.getBitmap() != null) {
-                        userHolder.mapBitmap = response.getBitmap();
+//                        userHolder.mapBitmap = response.getBitmap();
                     } else if (userHolder.mapImage != null && response.getBitmap() == null) {
                         userHolder.mapImage.setImageResource(R.drawable.map_wait);
                     }
@@ -437,7 +443,8 @@ public class FoodPairsAdapter extends BaseAdapter {
 
         public FoodPair foodPair;
 
-        public ImageButton bonAppetitButton;
+//TODO: enable bonAppetit button, when sexy ui will be ready
+//        public ImageButton bonAppetitButton;
         public ViewSwitcher viewSwitcher;
 
         public UserHolder user;
