@@ -33,13 +33,13 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        // The Surface has been created, now tell the camera where to draw the preview.
+        // The Surface has been created, now tell the ic_camera where to draw the preview.
         try {
             camera.setDisplayOrientation(90);
             camera.setPreviewDisplay(holder);
             camera.startPreview();
         } catch (IOException e) {
-            Log.d(FoodexSurfaceView.class, "Error setting camera preview: ", e.getMessage());
+            Log.d(FoodexSurfaceView.class, "Error setting ic_camera preview: ", e.getMessage());
         }
 
     }
@@ -78,7 +78,7 @@ public class FoodexSurfaceView extends SurfaceView implements SurfaceHolder.Call
             camera.setPreviewDisplay(holder);
             camera.startPreview();
         } catch (Exception e) {
-            Log.d(FoodexSurfaceView.class, "Error starting camera preview: ", e.getMessage());
+            Log.d(FoodexSurfaceView.class, "Error starting ic_camera preview: ", e.getMessage());
         }
     }
 

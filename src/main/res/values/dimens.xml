@@ -1,8 +1,7 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
+
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-
 
     <dimen name="bon_appetit_button_size">100dp</dimen>
     <dimen name="bon_appetit_button_margin_right">5dp</dimen>
@@ -10,7 +9,7 @@
     <dimen name="bon_appetit_button_margin_bottom">20dp</dimen>
 
     <dimen name="camera_button_height">100dp</dimen>
-    <dimen name="camera_button_width">126dp</dimen>
+    <dimen name="camera_button_width">125dp</dimen>
     <dimen name="camera_button_margin_bottom">15dp</dimen>
 
     <dimen name="food_margin_portrait_column_top">15dp</dimen>
@@ -18,7 +17,10 @@
     <dimen name="food_margin_portrait_column_right">15dp</dimen>
 
     <dimen name="relative_layout_margin_top">5dp</dimen>
+    <dimen name="food_pair_padding_bottom">20dp</dimen>
     <dimen name="food_margin_portrait">30dp</dimen>
+
+    <dimen name="date_time_padding_bottom">3dp</dimen>
 
     <dimen name="padding_small">4dp</dimen>
     <dimen name="padding_medium">8dp</dimen>
@@ -28,6 +30,11 @@
 
     <dimen name="report_button_width">230dp</dimen>
     <dimen name="report_button_height">150dp</dimen>
+
+    <dimen name="empty_home_message_width">0dp</dimen>
+
+    <dimen name="ic_home_size">35dp</dimen>
+    <dimen name="ic_home_margin_top">2dp</dimen>
 
 </resources>
 

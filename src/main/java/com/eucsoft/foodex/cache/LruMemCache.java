@@ -5,10 +5,12 @@ import android.support.v4.util.LruCache;
 
 import com.android.volley.toolbox.ImageLoader;
 
+import static com.eucsoft.foodex.Constants.NUMBER_OF_IMAGES_FOR_CACHING;
+
 public class LruMemCache extends LruCache<String, Bitmap> implements ImageLoader.ImageCache {
     public static int getDefaultLruCacheSize() {
         final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-        final int cacheSize = maxMemory / 8;
+        final int cacheSize = maxMemory / NUMBER_OF_IMAGES_FOR_CACHING;
 
         return cacheSize;
     }

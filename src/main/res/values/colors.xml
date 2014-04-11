@@ -15,4 +15,8 @@
 
     <color name="fader">#80000000</color>
     <color name="report_button_background">#BB000000</color>
+
+    <color name="empty_home_message">#BB000000</color>
+    <color name="empty_home_message_shadow">#CCCCCC</color>
+
 </resources>
