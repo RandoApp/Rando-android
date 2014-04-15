@@ -35,17 +35,9 @@
         android:layout_alignBottom="@+id/cameraPreview"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:background="@color/takepicture_bottom_panel_background"
-        android:orientation="horizontal"></LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/bottom_panel_with_buttons"
-        android:layout_width="fill_parent"
-        android:layout_height="100dp"
-        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:gravity="center"
+        android:background="@color/takepicture_bottom_panel_background"
         android:orientation="horizontal">
 
         <View

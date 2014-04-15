@@ -12,7 +12,7 @@
     <dimen name="camera_button_width">125dp</dimen>
     <dimen name="camera_button_margin_bottom">15dp</dimen>
 
-    <dimen name="takepicture_bottom_panel_with_buttons_min_height">130dp</dimen>
+    <dimen name="takepicture_bottom_panel_with_buttons_min_height">144dp</dimen>
     <dimen name="simple_camera_button_size">144dp</dimen>
     <dimen name="takepicture_default_button_size">96dp</dimen>
     <dimen name="takepicture_close_button_size">48dp</dimen>

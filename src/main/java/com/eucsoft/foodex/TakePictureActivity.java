@@ -319,17 +319,11 @@ public class TakePictureActivity extends BaseActivity {
         int bottomToolbarHeight = display.getHeight() - statusBarHeight - actionBarHeight - cameraPreviewHeight;
 
         LinearLayout bottomColoredStubPanel = (LinearLayout) findViewById(R.id.bottom_colored_stub_panel);
-        LinearLayout bottomPanelWithButtons = (LinearLayout) findViewById(R.id.bottom_panel_with_buttons);
         RelativeLayout.LayoutParams bottomColoredStubPanelParams = (RelativeLayout.LayoutParams) bottomColoredStubPanel.getLayoutParams();
-        RelativeLayout.LayoutParams bottomPanelWithButtonsLayoutParams = (RelativeLayout.LayoutParams) bottomPanelWithButtons.getLayoutParams();
-
-        bottomColoredStubPanelParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
-        bottomColoredStubPanelParams.height = bottomToolbarHeight;
-
-        bottomPanelWithButtonsLayoutParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
 
         int minPanelHeight = (int) getResources().getDimension(R.dimen.takepicture_bottom_panel_with_buttons_min_height);
-        bottomPanelWithButtonsLayoutParams.height = bottomToolbarHeight >=  minPanelHeight ? bottomToolbarHeight: minPanelHeight;
+        bottomColoredStubPanelParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+        bottomColoredStubPanelParams.height = bottomToolbarHeight >= minPanelHeight ? bottomToolbarHeight: minPanelHeight;
     }
 
     public int getStatusBarHeight() {
