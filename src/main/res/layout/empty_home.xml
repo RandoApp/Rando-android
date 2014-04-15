@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/empty_home"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:id="@+id/empty_home">
+    android:layout_height="fill_parent">
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="100"
+        android:layout_marginBottom="@dimen/bon_appetit_button_size"
         android:gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/bon_appetit_button_size">
+        android:orientation="horizontal"
+        android:weightSum="100">
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_weight="50"
-            android:layout_height="wrap_content"
-            android:text="@string/empty_home_message"
             android:id="@+id/textView"
-            android:gravity="center"
-            android:textColor="#888888"
-            android:textStyle="bold"
-            android:textSize="20.0sp"
-            android:minWidth="50sp"
+            android:layout_width="@dimen/empty_home_message_width"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:shadowColor="#CCCCCC"
+            android:layout_weight="50"
+            android:gravity="center"
+            android:minWidth="50sp"
+            android:shadowColor="@color/empty_home_message_shadow"
             android:shadowDx="2.0"
             android:shadowDy="2.0"
-            android:shadowRadius="3.0" />
+            android:shadowRadius="3.0"
+            android:text="@string/empty_home_message"
+            android:textColor="@color/empty_home_message"
+            android:textSize="20.0sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <ImageButton
         android:id="@+id/cameraButton"
-        android:layout_height="@dimen/camera_button_height"
         android:layout_width="@dimen/camera_button_width"
-        android:layout_centerHorizontal="true"
+        android:layout_height="@dimen/camera_button_height"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/camera_button_margin_bottom"
-        android:background="@drawable/camera27" />
+        android:background="@drawable/ic_camera" />
 
 </RelativeLayout>

@@ -38,6 +38,8 @@ import com.eucsoft.foodex.view.FoodexSurfaceView;
 
 import java.util.Map;
 
+import static android.view.View.VISIBLE;
+
 public class TakePictureActivity extends BaseActivity {
     private FoodexSurfaceView foodexSurfaceView;
     private Camera camera;
@@ -176,13 +178,13 @@ public class TakePictureActivity extends BaseActivity {
                 String flashMode = params.getFlashMode();
 
                 if (Camera.Parameters.FLASH_MODE_AUTO.equals(flashMode)) {
-                    flashLightButton.setBackgroundResource(R.drawable.lightening_off);
+                    flashLightButton.setBackgroundResource(R.drawable.ic_flash_disable);
                     flashMode = Camera.Parameters.FLASH_MODE_OFF;
                 } else if (Camera.Parameters.FLASH_MODE_OFF.equals(flashMode)) {
-                    flashLightButton.setBackgroundResource(R.drawable.lightening);
+                    flashLightButton.setBackgroundResource(R.drawable.ic_flash);
                     flashMode = Camera.Parameters.FLASH_MODE_ON;
                 } else if (Camera.Parameters.FLASH_MODE_ON.equals(flashMode)) {
-                    flashLightButton.setBackgroundResource(R.drawable.lightening_auto);
+                    flashLightButton.setBackgroundResource(R.drawable.ic_flash_auto);
                     flashMode = Camera.Parameters.FLASH_MODE_AUTO;
                 }
                 params.setFlashMode(flashMode);
@@ -286,7 +288,7 @@ public class TakePictureActivity extends BaseActivity {
             //disable flashlight button if flash light not supported
             if (params.getFlashMode() == null) {
                 flashLightButton.setEnabled(false);
-                flashLightButton.setBackgroundResource(R.drawable.lightening_off);
+                flashLightButton.setBackgroundResource(R.drawable.ic_flash_disable);
             }
             params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
             params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
@@ -307,7 +309,6 @@ public class TakePictureActivity extends BaseActivity {
     }
 
     private void normalizeCameraPreview() {
-
         WindowManager windowManager = (WindowManager) App.context.getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
 
@@ -317,11 +318,12 @@ public class TakePictureActivity extends BaseActivity {
 
         int bottomToolbarHeight = display.getHeight() - statusBarHeight - actionBarHeight - cameraPreviewHeight;
 
-        LinearLayout bottomPanel = (LinearLayout) findViewById(R.id.bottom_panel);
-        RelativeLayout.LayoutParams bottomPanelParams = (RelativeLayout.LayoutParams) bottomPanel.getLayoutParams();
+        LinearLayout bottomColoredStubPanel = (LinearLayout) findViewById(R.id.bottom_colored_stub_panel);
+        RelativeLayout.LayoutParams bottomColoredStubPanelParams = (RelativeLayout.LayoutParams) bottomColoredStubPanel.getLayoutParams();
 
-        bottomPanelParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
-        bottomPanelParams.height = bottomToolbarHeight;
+        int minPanelHeight = (int) getResources().getDimension(R.dimen.takepicture_bottom_panel_with_buttons_min_height);
+        bottomColoredStubPanelParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+        bottomColoredStubPanelParams.height = bottomToolbarHeight >= minPanelHeight ? bottomToolbarHeight: minPanelHeight;
     }
 
     public int getStatusBarHeight() {
@@ -343,31 +345,20 @@ public class TakePictureActivity extends BaseActivity {
     }
 
     private void showUploadButton() {
-        ImageButton takePictureButton = (ImageButton) findViewById(R.id.take_picture_button);
-        takePictureButton.setVisibility(View.GONE);
-
-        ImageButton selectPhotoButton = (ImageButton) findViewById(R.id.select_photo_button);
-        LinearLayout selectPhotoContainer = (LinearLayout) findViewById(R.id.select_photo_button_container);
-        selectPhotoButton.setVisibility(View.GONE);
-        selectPhotoContainer.setVisibility(View.GONE);
+        findViewById(R.id.take_picture_button).setVisibility(View.GONE);
+        findViewById(R.id.select_photo_button).setVisibility(View.GONE);
+        findViewById(R.id.flashlight_button).setVisibility(View.GONE);
 
         uploadPictureButton.setEnabled(true);
-        ((LinearLayout) uploadPictureButton.getParent()).setBackgroundColor(getResources().getColor(R.color.auth_button));
-        ImageButton uploadPhotoButton = (ImageButton) findViewById(R.id.upload_photo_button);
-        uploadPhotoButton.setVisibility(View.VISIBLE);
+        findViewById(R.id.upload_photo_button).setVisibility(VISIBLE);
     }
 
     private void hideUploadButton() {
-        ImageButton takePictureButton = (ImageButton) findViewById(R.id.take_picture_button);
-        takePictureButton.setVisibility(View.VISIBLE);
+        findViewById(R.id.take_picture_button).setVisibility(VISIBLE);
+        findViewById(R.id.select_photo_button).setVisibility(VISIBLE);
+        findViewById(R.id.flashlight_button).setVisibility(VISIBLE);
 
-        ImageButton selectPhotoButton = (ImageButton) findViewById(R.id.select_photo_button);
-        LinearLayout selectPhotoContainer = (LinearLayout) findViewById(R.id.select_photo_button_container);
-        selectPhotoButton.setVisibility(View.VISIBLE);
-        selectPhotoContainer.setVisibility(View.VISIBLE);
-
-        ImageButton uploadPhotoButton = (ImageButton) findViewById(R.id.upload_photo_button);
-        uploadPhotoButton.setVisibility(View.GONE);
+        findViewById(R.id.upload_photo_button).setVisibility(View.GONE);
     }
 
     /**

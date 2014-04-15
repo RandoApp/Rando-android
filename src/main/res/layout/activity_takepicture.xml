@@ -6,86 +6,88 @@
     android:layout_height="fill_parent">
 
     <LinearLayout
+        android:id="@+id/top_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/abc_action_bar_default_height"
-        android:id="@+id/top_toolbar"
         android:background="@color/back_button_background">
 
         <ImageButton
             android:id="@+id/back_button"
-            android:layout_height="50dp"
-            android:layout_width="150dp"
+            android:layout_width="@dimen/takepicture_close_button_size"
+            android:layout_height="@dimen/takepicture_close_button_size"
             android:layout_gravity="center"
-            android:background="@drawable/back" />
-
-        <ImageButton
-            android:id="@+id/flashlight_button"
-            android:layout_height="50dp"
-            android:layout_width="50dp"
-            android:layout_gravity="center"
-            android:background="@drawable/lightening_auto" />
+            android:background="@drawable/ic_back_button" />
 
     </LinearLayout>
 
     <FrameLayout
+        android:id="@+id/cameraPreview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/cameraPreview"
         android:layout_below="@+id/top_toolbar"
         android:layout_gravity="center_horizontal" />
 
     <!-- Height will be overridden programmatically -->
     <LinearLayout
+        android:id="@+id/bottom_colored_stub_panel"
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:id="@+id/bottom_panel"
         android:layout_height="100dp"
-        android:layout_alignParentBottom="true"
         android:layout_alignBottom="@+id/cameraPreview"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:background="@android:color/white">
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:background="@color/takepicture_bottom_panel_background"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/select_photo_button_container"
-            android:layout_width="150dp"
-            android:layout_height="match_parent"
-            android:gravity="center_horizontal"
-            android:background="@color/album_background">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"></View>
 
-            <ImageButton
-                android:id="@+id/select_photo_button"
-                android:layout_height="80dp"
-                android:layout_width="80dp"
-                android:layout_marginBottom="@dimen/camera_button_margin_bottom"
-                android:layout_gravity="center"
-                android:background="@drawable/gallery" />
+        <ImageButton
+            android:id="@+id/select_photo_button"
+            android:layout_width="@dimen/takepicture_default_button_size"
+            android:layout_height="@dimen/takepicture_default_button_size"
+            android:layout_gravity="center"
+            android:background="@drawable/ic_gallery" />
 
-        </LinearLayout>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"></View>
 
-        <LinearLayout
-            android:id="@+id/take_photo_and_upload_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_horizontal"
-            android:background="@color/auth_button">
+        <ImageButton
+            android:id="@+id/upload_photo_button"
+            android:layout_width="@dimen/simple_camera_button_size"
+            android:layout_height="@dimen/simple_camera_button_size"
+            android:layout_gravity="center"
+            android:background="@drawable/ic_upload"
+            android:visibility="gone" />
 
-            <ImageButton
-                android:id="@+id/upload_photo_button"
-                android:layout_height="200dp"
-                android:layout_width="200dp"
-                android:visibility="gone"
-                android:layout_marginTop="30dp"
-                android:layout_gravity="center"
-                android:background="@drawable/upload" />
+        <ImageButton
+            android:id="@+id/take_picture_button"
+            android:layout_width="@dimen/simple_camera_button_size"
+            android:layout_height="@dimen/simple_camera_button_size"
+            android:layout_gravity="center"
+            android:background="@drawable/ic_camera_simple" />
 
-            <ImageButton
-                android:id="@+id/take_picture_button"
-                android:layout_height="150dp"
-                android:layout_width="200dp"
-                android:layout_gravity="center"
-                android:background="@drawable/camera28" />
-        </LinearLayout>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"></View>
 
+        <ImageButton
+            android:id="@+id/flashlight_button"
+            android:layout_width="@dimen/takepicture_default_button_size"
+            android:layout_height="@dimen/takepicture_default_button_size"
+            android:layout_gravity="center"
+            android:background="@drawable/ic_flash" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"></View>
     </LinearLayout>
 
 </RelativeLayout>

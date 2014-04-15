@@ -105,4 +105,7 @@ public class Constants {
     public static final int LOG_BUFFER_SIZE = 1024;
     public static final long LOG_SRVICE_INTERVAL = AlarmManager.INTERVAL_DAY;
 
+    private static final int NUMBER_OF_IMAGES_IN_ONE_SET = 4; //stranger's + user's foods and maps
+    public static final int NUMBER_OF_IMAGES_FOR_CACHING = NUMBER_OF_IMAGES_IN_ONE_SET * 2; //2 visible image sets per screen
+
 }

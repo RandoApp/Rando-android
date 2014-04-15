@@ -4,19 +4,20 @@
     android:layout_height="fill_parent">
 
     <com.jess.ui.TwoWayGridView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/main_grid"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/main_grid"
         app:numRows="auto_fit"
-        app:scrollDirectionPortrait="vertical"
-        app:scrollDirectionLandscape="vertical" />
+        app:scrollDirectionLandscape="vertical"
+        app:scrollDirectionPortrait="vertical" />
 
     <ImageButton
         android:id="@+id/cameraButton"
-        android:layout_height="@dimen/camera_button_height"
         android:layout_width="@dimen/camera_button_width"
-        android:layout_marginBottom="@dimen/camera_button_margin_bottom"
-        android:layout_centerHorizontal="true"
+        android:layout_height="@dimen/camera_button_height"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/camera27" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/camera_button_margin_bottom"
+        android:background="@drawable/ic_camera" />
+
 </RelativeLayout>

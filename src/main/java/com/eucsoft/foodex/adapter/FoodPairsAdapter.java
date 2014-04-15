@@ -14,11 +14,10 @@ import android.view.animation.Animation;
 import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.android.volley.VolleyError;
@@ -27,6 +26,7 @@ import com.eucsoft.foodex.App;
 import com.eucsoft.foodex.Constants;
 import com.eucsoft.foodex.R;
 import com.eucsoft.foodex.animation.AnimationFactory;
+import com.eucsoft.foodex.animation.AnimationListenerAdapter;
 import com.eucsoft.foodex.api.API;
 import com.eucsoft.foodex.db.FoodDAO;
 import com.eucsoft.foodex.db.model.FoodPair;
@@ -34,14 +34,13 @@ import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.menu.ReportMenu;
 import com.eucsoft.foodex.network.VolleySingleton;
 import com.eucsoft.foodex.service.SyncService;
-import com.eucsoft.foodex.task.BonAppetitTask;
-import com.eucsoft.foodex.task.callback.OnError;
 
 import org.apache.http.auth.AuthenticationException;
 
+import java.text.DateFormat;
 import java.util.List;
-import java.util.Map;
 
+import static android.view.View.VISIBLE;
 import static com.android.volley.Request.Priority;
 
 public class FoodPairsAdapter extends BaseAdapter {
@@ -114,7 +113,8 @@ public class FoodPairsAdapter extends BaseAdapter {
         holder.user = new ViewHolder.UserHolder();
         holder.stranger = new ViewHolder.UserHolder();
 
-        holder.bonAppetitButton = (ImageButton) convertView.findViewWithTag("bon_appetit_button");
+        //TODO: enable bonAppetit button, when sexy ui will be ready
+//        holder.bonAppetitButton = (ImageButton) convertView.findViewWithTag("bon_appetit_button");
         holder.viewSwitcher = (ViewSwitcher) convertView.findViewWithTag("viewSwitcher");
 
         holder.stranger.foodPager = (ViewPager) convertView.findViewWithTag("stranger");
@@ -130,6 +130,9 @@ public class FoodPairsAdapter extends BaseAdapter {
         holder.stranger.foodMapPagerAdatper = new FoodMapSwitcherAdapter(holder.stranger);
         holder.stranger.foodPager.setAdapter(holder.stranger.foodMapPagerAdatper);
 
+        holder.dateTimeView = (TextView) convertView.findViewWithTag("date_time");
+        holder.homeIconSwitcher = (ViewSwitcher) convertView.findViewWithTag("home_ic_switcher");
+
         createReportDialog(convertView, holder);
 
         convertView.setTag(holder);
@@ -144,7 +147,7 @@ public class FoodPairsAdapter extends BaseAdapter {
 
         LinearLayout.LayoutParams reportButtonParams = new LinearLayout.LayoutParams(reportButtonWidth, reportButtonHeight);
         int marginCenter = foodImageSize / 2;
-        reportButtonParams.topMargin =  marginCenter - reportButtonHeight / 2;
+        reportButtonParams.topMargin = marginCenter - reportButtonHeight / 2;
         reportButtonParams.leftMargin = marginCenter - reportButtonWidth / 2;
         reportButton.setLayoutParams(reportButtonParams);
         holder.reportDialog.setLayoutParams(new RelativeLayout.LayoutParams(foodImageSize, foodImageSize));
@@ -155,6 +158,8 @@ public class FoodPairsAdapter extends BaseAdapter {
         holder.user.foodMapPagerAdatper.setOnClickListener(foodOnClickListener);
         holder.stranger.foodMapPagerAdatper.setOnClickListener(foodOnClickListener);
 
+        //TODO: enable bonAppetit button, when sexy ui will be ready
+        /*
         holder.bonAppetitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,7 +183,7 @@ public class FoodPairsAdapter extends BaseAdapter {
                 }
             }
         });
-
+        */
         holder.reportDialog.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -206,26 +211,32 @@ public class FoodPairsAdapter extends BaseAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!holder.animationInProgress) {
-                    ViewPager oldFoodMapView = (ViewPager) holder.viewSwitcher.getCurrentView();
-                    holder.viewSwitcher.showNext();
-                    ViewPager newFoodMapView = (ViewPager) holder.viewSwitcher.getCurrentView();
-                    newFoodMapView.setCurrentItem(oldFoodMapView.getCurrentItem());
+                if (holder.animationInProgress) return;
 
-                    if (holder.stranger.foodPager.isShown()) {
-                        if (holder.foodPair.stranger.isBonAppetit()) {
-                            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
-                        } else {
-                            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
-                        }
+                int foodOrMapItem = ((ViewPager) holder.viewSwitcher.getCurrentView()).getCurrentItem();
+                holder.viewSwitcher.showNext();
+                ViewPager foodMapView = (ViewPager) holder.viewSwitcher.getCurrentView();
+                foodMapView.setCurrentItem(foodOrMapItem);
+
+                holder.homeIconSwitcher.showNext();
+
+
+                //TODO: enable bonAppetit button, when sexy ui will be ready
+                /*
+                if (holder.stranger.foodPager.isShown()) {
+                    if (holder.foodPair.stranger.isBonAppetit()) {
+                        holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
                     } else {
-                        if (holder.foodPair.user.isBonAppetit()) {
-                            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
-                        } else {
-                            holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
-                        }
+                        holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
+                    }
+                } else {
+                    if (holder.foodPair.user.isBonAppetit()) {
+                        holder.bonAppetitButton.setImageResource(R.drawable.bonappetit2);
+                    } else {
+                        holder.bonAppetitButton.setImageResource(R.drawable.bonappetit);
                     }
                 }
+                */
             }
         };
     }
@@ -236,17 +247,26 @@ public class FoodPairsAdapter extends BaseAdapter {
 
         cancelRequests(holder);
 
-        setViewSwitcherToDefault(holder);
-        setPagesToDefault(holder);
+        recycleViewSwitcher(holder.viewSwitcher);
+        recycleViewPager(holder);
+
+        holder.homeIconSwitcher.setDisplayedChild(0);
+
+        holder.dateTimeView.setText(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
+                .format(holder.foodPair.user.foodDate) + " "); //1 space for fix italic cutting off issue
 
         if (ReportMenu.isReport) {
-            holder.reportDialog.setVisibility(View.VISIBLE);
+            holder.reportDialog.setVisibility(VISIBLE);
+            //TODO: enable bonAppetit button, when sexy ui will be ready
+            /*
             holder.bonAppetitButton.setEnabled(false);
             holder.bonAppetitButton.setVisibility(View.INVISIBLE);
+            */
             return;
         }
 
-        holder.bonAppetitButton.setImageResource(foodPair.stranger.isBonAppetit() ? R.drawable.bonappetit2 : R.drawable.bonappetit);
+        //TODO: enable bonAppetit button, when sexy ui will be ready
+//        holder.bonAppetitButton.setImageResource(foodPair.stranger.isBonAppetit() ? R.drawable.bonappetit2 : R.drawable.bonappetit);
 
         if (holder.stranger.foodImage != null && holder.user.foodImage != null
                 && holder.stranger.mapImage != null && holder.user.mapImage != null) {
@@ -255,36 +275,37 @@ public class FoodPairsAdapter extends BaseAdapter {
         }
 
         holder.reportDialog.setVisibility(View.GONE);
-        holder.bonAppetitButton.setVisibility(View.VISIBLE);
+        //TODO: enable bonAppetit button, when sexy ui will be ready
+//        holder.bonAppetitButton.setVisibility(View.VISIBLE);
     }
 
     private void cancelRequests(ViewHolder holder) {
-        if (holder.stranger.foodContainer != null){
+        if (holder.stranger.foodContainer != null) {
             holder.stranger.foodContainer.cancelRequest();
             holder.stranger.foodContainer = null;
         }
-        if (holder.stranger.mapContainer != null){
+        if (holder.stranger.mapContainer != null) {
             holder.stranger.mapContainer.cancelRequest();
             holder.stranger.mapContainer = null;
         }
-        if (holder.user.foodContainer != null){
+        if (holder.user.foodContainer != null) {
             holder.user.foodContainer.cancelRequest();
             holder.user.foodContainer = null;
         }
-        if (holder.user.mapContainer != null){
+        if (holder.user.mapContainer != null) {
             holder.user.mapContainer.cancelRequest();
             holder.user.mapContainer = null;
         }
     }
 
-    private void setViewSwitcherToDefault(ViewHolder holder) {
+    private void recycleViewSwitcher(ViewSwitcher viewSwitcher) {
         //disable animation for immediately and undetectable switching to zero child:
-        holder.viewSwitcher.setInAnimation(null);
-        holder.viewSwitcher.setOutAnimation(null);
-        holder.viewSwitcher.setDisplayedChild(0);
+        viewSwitcher.setInAnimation(null);
+        viewSwitcher.setOutAnimation(null);
+        viewSwitcher.setDisplayedChild(0);
     }
 
-    private void setPagesToDefault(ViewHolder holder) {
+    private void recycleViewPager(ViewHolder holder) {
         holder.user.foodPager.setCurrentItem(0);
         holder.stranger.foodPager.setCurrentItem(0);
     }
@@ -304,53 +325,29 @@ public class FoodPairsAdapter extends BaseAdapter {
         holder.viewSwitcher.setOutAnimation(leftToRightAnimation[0]);
         holder.viewSwitcher.setInAnimation(leftToRightAnimation[1]);
 
-        Animation.AnimationListener outAnimationListener = new Animation.AnimationListener() {
+        Animation.AnimationListener outAnimationListener = new AnimationListenerAdapter() {
             @Override
             public void onAnimationStart(Animation animation) {
                 holder.animationInProgress = true;
             }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
         };
         leftToRightAnimation[0].setAnimationListener(outAnimationListener);
-        leftToRightAnimation[1].setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
-
+        leftToRightAnimation[1].setAnimationListener(new AnimationListenerAdapter() {
             @Override
             public void onAnimationEnd(Animation animation) {
                 holder.viewSwitcher.setOutAnimation(rightToLeftAnimation[0]);
                 holder.viewSwitcher.setInAnimation(rightToLeftAnimation[1]);
                 holder.animationInProgress = false;
             }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
         });
 
         rightToLeftAnimation[0].setAnimationListener(outAnimationListener);
-        rightToLeftAnimation[1].setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
-
+        rightToLeftAnimation[1].setAnimationListener(new AnimationListenerAdapter() {
             @Override
             public void onAnimationEnd(Animation animation) {
                 holder.viewSwitcher.setOutAnimation(leftToRightAnimation[0]);
                 holder.viewSwitcher.setInAnimation(leftToRightAnimation[1]);
                 holder.animationInProgress = false;
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
             }
         });
     }
@@ -397,7 +394,7 @@ public class FoodPairsAdapter extends BaseAdapter {
         }
     }
 
-    private void loadMapImage(final ViewHolder.UserHolder userHolder, final FoodPair.User userFoodPair,  Priority priority) {
+    private void loadMapImage(final ViewHolder.UserHolder userHolder, final FoodPair.User userFoodPair, Priority priority) {
         if (URLUtil.isValidUrl(userFoodPair.mapURL)) {
             Log.d(FoodPairsAdapter.class, "userFoodPair.mapURL: ", userFoodPair.mapURL);
             userHolder.mapContainer = VolleySingleton.getInstance().getImageLoader().get(userFoodPair.mapURL, priority, new ImageLoader.ImageListener() {
@@ -437,12 +434,16 @@ public class FoodPairsAdapter extends BaseAdapter {
 
         public FoodPair foodPair;
 
-        public ImageButton bonAppetitButton;
+        //TODO: enable bonAppetit button, when sexy ui will be ready
+//        public ImageButton bonAppetitButton;
         public ViewSwitcher viewSwitcher;
+
+        public TextView dateTimeView;
 
         public UserHolder user;
         public UserHolder stranger;
         public LinearLayout reportDialog;
+        public ViewSwitcher homeIconSwitcher;
 
         public static class UserHolder {
             public ViewPager foodPager;
