@@ -11,6 +11,8 @@
     <color name="back_button_background">#393939</color>
     <color name="button_disabled_background">#595959</color>
 
+    <color name="takepicture_bottom_panel_background">#16181a</color>
+
     <color name="overscroll">#33b5e5</color>
 
     <color name="fader">#80000000</color>

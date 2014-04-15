@@ -252,7 +252,8 @@ public class FoodPairsAdapter extends BaseAdapter {
 
         holder.homeIconSwitcher.setDisplayedChild(0);
 
-        holder.dateTimeView.setText(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(holder.foodPair.user.foodDate));
+        holder.dateTimeView.setText(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
+                .format(holder.foodPair.user.foodDate) + " "); //1 space for fix italic cutting off issue
 
         if (ReportMenu.isReport) {
             holder.reportDialog.setVisibility(VISIBLE);
