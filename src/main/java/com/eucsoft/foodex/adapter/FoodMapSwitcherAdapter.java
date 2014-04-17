@@ -53,7 +53,7 @@ public class FoodMapSwitcherAdapter extends PagerAdapter {
         if (position == 0) {
             if (holder.needSetFoodError && holder.foodBitmap == null) {
                 Log.d(FoodMapSwitcherAdapter.class, "Need set food error");
-                view.setImageResource(R.drawable.map_error);
+                view.setImageResource(R.drawable.food_error);
                 holder.needSetFoodError = false;
             }
             if (holder.foodBitmap != null) {
