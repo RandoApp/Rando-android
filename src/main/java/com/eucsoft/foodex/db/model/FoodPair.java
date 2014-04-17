@@ -6,11 +6,6 @@ import java.util.Date;
 
 public class FoodPair implements Serializable {
 
-    public static final int STRANGER_FOOD = 0;
-    public static final int STRANGER_MAP = 1;
-    public static final int USER_FOOD = 2;
-    public static final int USER_MAP = 3;
-
     public long id;
     //user FoodPair props
     public User user = new User();
@@ -50,6 +45,9 @@ public class FoodPair implements Serializable {
     public class User implements Serializable {
         public String foodId;
         public String foodURL;
+        public String foodURLSmall;
+        public String foodURLMedium;
+        public String foodURLLarge;
         public Date foodDate;
         public int bonAppetit;
         public String mapURL;
@@ -79,6 +77,12 @@ public class FoodPair implements Serializable {
             if (foodId != null ? !foodId.equals(user.foodId) : user.foodId != null) return false;
             if (foodURL != null ? !foodURL.equals(user.foodURL) : user.foodURL != null)
                 return false;
+            if (foodURLLarge != null ? !foodURLLarge.equals(user.foodURLLarge) : user.foodURLLarge != null)
+                return false;
+            if (foodURLMedium != null ? !foodURLMedium.equals(user.foodURLMedium) : user.foodURLMedium != null)
+                return false;
+            if (foodURLSmall != null ? !foodURLSmall.equals(user.foodURLSmall) : user.foodURLSmall != null)
+                return false;
             if (mapURL != null ? !mapURL.equals(user.mapURL) : user.mapURL != null) return false;
 
             return true;
@@ -88,6 +92,9 @@ public class FoodPair implements Serializable {
         public int hashCode() {
             int result = foodId != null ? foodId.hashCode() : 0;
             result = 31 * result + (foodURL != null ? foodURL.hashCode() : 0);
+            result = 31 * result + (foodURLSmall != null ? foodURLSmall.hashCode() : 0);
+            result = 31 * result + (foodURLMedium != null ? foodURLMedium.hashCode() : 0);
+            result = 31 * result + (foodURLLarge != null ? foodURLLarge.hashCode() : 0);
             result = 31 * result + (foodDate != null ? foodDate.hashCode() : 0);
             result = 31 * result + bonAppetit;
             result = 31 * result + (mapURL != null ? mapURL.hashCode() : 0);
@@ -99,6 +106,9 @@ public class FoodPair implements Serializable {
             return "User{" +
                     "foodId='" + foodId + '\'' +
                     ", foodURL='" + foodURL + '\'' +
+                    ", foodURLSmall='" + foodURLSmall + '\'' +
+                    ", foodURLMedium='" + foodURLMedium + '\'' +
+                    ", foodURLLarge='" + foodURLLarge + '\'' +
                     ", foodDate=" + foodDate +
                     ", bonAppetit=" + bonAppetit +
                     ", mapURL='" + mapURL + '\'' +
