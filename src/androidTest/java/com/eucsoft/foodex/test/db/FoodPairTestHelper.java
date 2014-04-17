@@ -29,6 +29,9 @@ public class FoodPairTestHelper {
             foodPair = new FoodPair();
             foodPair.user.foodId = UUID.randomUUID().toString();
             foodPair.user.foodURL = "blaURL" + i;
+            foodPair.user.foodURLSmall = "blaURL" + i;
+            foodPair.user.foodURLMedium = "blaURL" + i;
+            foodPair.user.foodURLLarge = "blaURL" + i;
             foodPair.user.mapURL = "blaFile" + i;
             foodPair.user.bonAppetit = 0;
             foodPair.user.foodDate = userDate;
@@ -37,6 +40,9 @@ public class FoodPairTestHelper {
             strangerDate.setTime(baseDate.getTime() + random.nextInt(1000000));
             foodPair.stranger.foodId = UUID.randomUUID().toString();
             foodPair.stranger.foodURL = "Bla2URL" + i;
+            foodPair.stranger.foodURLSmall = "Bla2URL" + i;
+            foodPair.stranger.foodURLMedium = "Bla2URL" + i;
+            foodPair.stranger.foodURLLarge = "Bla2URL" + i;
             foodPair.stranger.mapURL = "LocalFileStranger" + i;
             foodPair.stranger.bonAppetit = 0;
             foodPair.stranger.foodDate = strangerDate;
@@ -55,6 +61,9 @@ public class FoodPairTestHelper {
         foodPair = new FoodPair();
         foodPair.user.foodId = UUID.randomUUID().toString();
         foodPair.user.foodURL = "blaURL";
+        foodPair.user.foodURLSmall = "blaURL";
+        foodPair.user.foodURLMedium = "blaURL";
+        foodPair.user.foodURLLarge = "blaURL";
         foodPair.user.mapURL = "blaFile";
         foodPair.user.bonAppetit = 0;
         foodPair.user.foodDate = userDate;
@@ -63,6 +72,9 @@ public class FoodPairTestHelper {
         strangerDate.setTime(new Date().getTime() + random.nextInt(1000000));
         foodPair.stranger.foodId = UUID.randomUUID().toString();
         foodPair.stranger.foodURL = "Bla2URL";
+        foodPair.stranger.foodURLSmall = "Bla2URL";
+        foodPair.stranger.foodURLMedium = "Bla2URL";
+        foodPair.stranger.foodURLLarge = "Bla2URL";
         foodPair.stranger.mapURL = "LocalFileStranger";
         foodPair.stranger.bonAppetit = 0;
         foodPair.stranger.foodDate = strangerDate;
@@ -78,6 +90,9 @@ public class FoodPairTestHelper {
         foodPair = new FoodPair();
         foodPair.user.foodId = UUID.randomUUID().toString();
         foodPair.user.foodURL = "blaURL";
+        foodPair.user.foodURLSmall = "blaURL";
+        foodPair.user.foodURLMedium = "blaURL";
+        foodPair.user.foodURLLarge = "blaURL";
         foodPair.user.mapURL = "blaFile";
         foodPair.user.bonAppetit = 0;
         foodPair.user.foodDate = userDate;
