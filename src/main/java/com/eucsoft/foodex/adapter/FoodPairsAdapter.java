@@ -34,6 +34,7 @@ import com.eucsoft.foodex.log.Log;
 import com.eucsoft.foodex.menu.ReportMenu;
 import com.eucsoft.foodex.network.VolleySingleton;
 import com.eucsoft.foodex.service.SyncService;
+import com.eucsoft.foodex.util.FoodPairUtil;
 
 import org.apache.http.auth.AuthenticationException;
 
@@ -353,25 +354,16 @@ public class FoodPairsAdapter extends BaseAdapter {
     }
 
     private void loadImages(final ViewHolder holder, final FoodPair foodPair) {
-        loadFoodImage(holder.stranger, foodPair.stranger, Priority.HIGH);
-        loadFoodImage(holder.user, foodPair.user, Priority.LOW);
-        loadMapImage(holder.stranger, foodPair.stranger, Priority.NORMAL);
-        loadMapImage(holder.user, foodPair.user, Priority.LOW);
+        loadFoodImage(holder.stranger, FoodPairUtil.getUrlByImageSize(foodImageSize, foodPair.stranger.foodUrlSize), Priority.HIGH);
+        loadFoodImage(holder.user, FoodPairUtil.getUrlByImageSize(foodImageSize, foodPair.user.foodUrlSize), Priority.LOW);
+        loadMapImage(holder.stranger, FoodPairUtil.getUrlByImageSize(foodImageSize, foodPair.stranger.mapUrlSize), Priority.NORMAL);
+        loadMapImage(holder.user, FoodPairUtil.getUrlByImageSize(foodImageSize, foodPair.user.mapUrlSize), Priority.LOW);
     }
 
-    private void loadFoodImage(final ViewHolder.UserHolder userHolder, final FoodPair.User userFoodPair, Priority priority) {
-        String foodUrlToLoad;
-        if (foodImageSize >= Constants.SIZE_LARGE){
-            foodUrlToLoad = userFoodPair.foodURLLarge;
-        } else if (foodImageSize >= Constants.SIZE_MEDIUM){
-            foodUrlToLoad = userFoodPair.foodURLMedium;
-        } else {
-            foodUrlToLoad = userFoodPair.foodURLSmall;
-        }
-
-        if (URLUtil.isValidUrl(foodUrlToLoad)) {
-            Log.d(FoodPairsAdapter.class, "userFoodPair.foodURL: ", foodUrlToLoad);
-            userHolder.foodContainer = VolleySingleton.getInstance().getImageLoader().get(foodUrlToLoad, priority, new ImageLoader.ImageListener() {
+    private void loadFoodImage(final ViewHolder.UserHolder userHolder, final String url, Priority priority) {
+        if (URLUtil.isValidUrl(url)) {
+            Log.d(FoodPairsAdapter.class, "food url: ", url);
+            userHolder.foodContainer = VolleySingleton.getInstance().getImageLoader().get(url, priority, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                     if (userHolder.foodImage != null && response.getBitmap() != null) {
@@ -385,7 +377,7 @@ public class FoodPairsAdapter extends BaseAdapter {
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.e(FoodPairsAdapter.class, "VolleyError when load food image for: ", userFoodPair.toString(), "with foodImageSize = ", String.valueOf(foodImageSize), " , because ", error.getMessage());
+                    Log.e(FoodPairsAdapter.class, "VolleyError when load food image: ", url , "with foodImageSize = ", String.valueOf(foodImageSize), " , because ", error.getMessage());
                     if (userHolder.foodImage != null) {
                         userHolder.foodImage.setImageResource(R.drawable.food_error);
                     } else {
@@ -394,7 +386,7 @@ public class FoodPairsAdapter extends BaseAdapter {
                 }
             });
         } else {
-            Log.e(FoodPairsAdapter.class, "Ignore food image because url: ", foodUrlToLoad, " incorrect");
+            Log.e(FoodPairsAdapter.class, "Ignore food image because url: ", url, " incorrect");
             if (userHolder.foodImage != null) {
                 userHolder.foodImage.setImageResource(R.drawable.food_error);
             } else {
@@ -403,10 +395,10 @@ public class FoodPairsAdapter extends BaseAdapter {
         }
     }
 
-    private void loadMapImage(final ViewHolder.UserHolder userHolder, final FoodPair.User userFoodPair, Priority priority) {
-        if (URLUtil.isValidUrl(userFoodPair.mapURL)) {
-            Log.d(FoodPairsAdapter.class, "userFoodPair.mapURL: ", userFoodPair.mapURL);
-            userHolder.mapContainer = VolleySingleton.getInstance().getImageLoader().get(userFoodPair.mapURL, priority, new ImageLoader.ImageListener() {
+    private void loadMapImage(final ViewHolder.UserHolder userHolder, final String url, Priority priority) {
+        if (URLUtil.isValidUrl(url)) {
+            Log.d(FoodPairsAdapter.class, "map url: ", url);
+            userHolder.mapContainer = VolleySingleton.getInstance().getImageLoader().get(url, priority, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                     if (userHolder.mapImage != null && response.getBitmap() != null) {
@@ -420,7 +412,7 @@ public class FoodPairsAdapter extends BaseAdapter {
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.e(FoodPairsAdapter.class, "VolleyError when load map image with url: ", userFoodPair.mapURL, " , because ", error.getMessage());
+                    Log.e(FoodPairsAdapter.class, "VolleyError when load map image: ", url , "with foodImageSize = ", String.valueOf(foodImageSize), " , because ", error.getMessage());
                     if (userHolder.mapImage != null) {
                         userHolder.mapImage.setImageResource(R.drawable.map_error);
                     } else {
@@ -429,7 +421,7 @@ public class FoodPairsAdapter extends BaseAdapter {
                 }
             });
         } else {
-            Log.e(FoodPairsAdapter.class, "Ignore map image because url: ", userFoodPair.foodURL, " incorrect");
+            Log.e(FoodPairsAdapter.class, "Ignore map image because url: ", url, " incorrect");
             if (userHolder.mapImage != null) {
                 userHolder.mapImage.setImageResource(R.drawable.map_error);
             } else {

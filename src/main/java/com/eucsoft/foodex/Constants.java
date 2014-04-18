@@ -68,6 +68,7 @@ public class Constants {
     public static final String BON_APPETIT_PARAM = "bonAppetit";
     public static final String FOOD_URL_PARAM = "foodUrl";
     public static final String FOOD_URL_SIZES_PARAM = "foodSizeUrl";
+    public static final String MAP_URL_SIZES_PARAM = "mapSizeUrl";
     public static final String SMALL_PARAM = "small";
     public static final String MEDIUM_PARAM = "medium";
     public static final String LARGE_PARAM = "large";

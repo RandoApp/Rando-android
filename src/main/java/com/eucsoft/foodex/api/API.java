@@ -68,6 +68,7 @@ import static com.eucsoft.foodex.Constants.LOGOUT_URL;
 import static com.eucsoft.foodex.Constants.LOG_URL;
 import static com.eucsoft.foodex.Constants.LONGITUDE_PARAM;
 import static com.eucsoft.foodex.Constants.MAP_URL_PARAM;
+import static com.eucsoft.foodex.Constants.MAP_URL_SIZES_PARAM;
 import static com.eucsoft.foodex.Constants.MEDIUM_PARAM;
 import static com.eucsoft.foodex.Constants.REPORT_URL;
 import static com.eucsoft.foodex.Constants.SIGNUP_EMAIL_PARAM;
@@ -179,23 +180,37 @@ public class API {
                         JSONObject jsonFood = jsonFoods.getJSONObject(i);
                         JSONObject user = jsonFood.getJSONObject(USER_PARAM);
                         JSONObject userFoodUrlSizes = user.getJSONObject(FOOD_URL_SIZES_PARAM);
+                        JSONObject userMapUrlSizes = user.getJSONObject(MAP_URL_SIZES_PARAM);
+
                         JSONObject stranger = jsonFood.getJSONObject(STRANGER_PARAM);
                         JSONObject strangerFoodUrlSizes = stranger.getJSONObject(FOOD_URL_SIZES_PARAM);
+                        JSONObject strangerMapUrlSizes = stranger.getJSONObject(MAP_URL_SIZES_PARAM);
+
                         food.user.foodId = user.getString(FOOD_ID_PARAM);
                         food.user.foodURL = user.getString(FOOD_URL_PARAM);
-                        food.user.foodURLSmall = userFoodUrlSizes.getString(SMALL_PARAM);
-                        food.user.foodURLMedium = userFoodUrlSizes.getString(MEDIUM_PARAM);
-                        food.user.foodURLLarge = userFoodUrlSizes.getString(LARGE_PARAM);
+                        food.user.foodUrlSize.small = userFoodUrlSizes.getString(SMALL_PARAM);
+                        food.user.foodUrlSize.medium = userFoodUrlSizes.getString(MEDIUM_PARAM);
+                        food.user.foodUrlSize.large = userFoodUrlSizes.getString(LARGE_PARAM);
+
                         food.user.mapURL = user.getString(MAP_URL_PARAM);
+                        food.user.mapUrlSize.small = userMapUrlSizes.getString(SMALL_PARAM);
+                        food.user.mapUrlSize.medium = userMapUrlSizes.getString(MEDIUM_PARAM);
+                        food.user.mapUrlSize.large = userMapUrlSizes.getString(LARGE_PARAM);
+
                         food.user.bonAppetit = user.getInt(BON_APPETIT_PARAM);
                         food.user.foodDate = new Date(user.getLong(CREATION_PARAM));
 
                         food.stranger.foodId = stranger.getString(FOOD_ID_PARAM);
                         food.stranger.foodURL = stranger.getString(FOOD_URL_PARAM);
-                        food.stranger.foodURLSmall = strangerFoodUrlSizes.getString(SMALL_PARAM);
-                        food.stranger.foodURLMedium = strangerFoodUrlSizes.getString(MEDIUM_PARAM);
-                        food.stranger.foodURLLarge = strangerFoodUrlSizes.getString(LARGE_PARAM);
+                        food.stranger.foodUrlSize.small = strangerFoodUrlSizes.getString(SMALL_PARAM);
+                        food.stranger.foodUrlSize.medium = strangerFoodUrlSizes.getString(MEDIUM_PARAM);
+                        food.stranger.foodUrlSize.large = strangerFoodUrlSizes.getString(LARGE_PARAM);
+
                         food.stranger.mapURL = stranger.getString(MAP_URL_PARAM);
+                        food.stranger.mapUrlSize.small = strangerMapUrlSizes.getString(SMALL_PARAM);
+                        food.stranger.mapUrlSize.medium = strangerMapUrlSizes.getString(MEDIUM_PARAM);
+                        food.stranger.mapUrlSize.large = strangerMapUrlSizes.getString(LARGE_PARAM);
+
                         food.stranger.bonAppetit = stranger.getInt(BON_APPETIT_PARAM);
 
                         foods.add(food);
