@@ -16,6 +16,9 @@ public class FoodDBHelper extends SQLiteOpenHelper {
     public static String COLUMN_USER_FOOD_DATE = "USER_FOOD_DATE";
     public static String COLUMN_USER_BON_APPETIT = "USER_BON_APPETIT";
     public static String COLUMN_USER_MAP_URL = "USER_MAP_URL";
+    public static String COLUMN_USER_MAP_URL_SMALL = "USER_MAP_URL_SMALL";
+    public static String COLUMN_USER_MAP_URL_MEDIUM = "USER_MAP_URL_MEDIUM";
+    public static String COLUMN_USER_MAP_URL_LARGE = "USER_MAP_URL_LARGE";
 
     public static String COLUMN_STRANGER_FOOD_ID = "STRANGER_FOOD_ID";
     public static String COLUMN_STRANGER_FOOD_URL = "STRANGER_FOOD_URL";
@@ -25,8 +28,11 @@ public class FoodDBHelper extends SQLiteOpenHelper {
     public static String COLUMN_STRANGER_FOOD_DATE = "STRANGER_FOOD_DATE";
     public static String COLUMN_STRANGER_BON_APPETIT = "STRANGER_BON_APPETIT";
     public static String COLUMN_STRANGER_MAP_URL = "STRANGER_MAP_URL";
+    public static String COLUMN_STRANGER_MAP_URL_SMALL = "STRANGER_MAP_URL_SMALL";
+    public static String COLUMN_STRANGER_MAP_URL_MEDIUM = "STRANGER_MAP_URL_MEDIUM";
+    public static String COLUMN_STRANGER_MAP_URL_LARGE = "STRANGER_MAP_URL_LARGE";
 
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     public static final String TABLE_FOOD = "food";
     private static final String DATABASE_NAME = "foodex.db";
@@ -40,6 +46,9 @@ public class FoodDBHelper extends SQLiteOpenHelper {
             COLUMN_USER_FOOD_DATE + " integer," +
             COLUMN_USER_BON_APPETIT + " integer not null," +
             COLUMN_USER_MAP_URL + " text," +
+            COLUMN_USER_MAP_URL_SMALL + " text," +
+            COLUMN_USER_MAP_URL_MEDIUM + " text," +
+            COLUMN_USER_MAP_URL_LARGE + " text," +
             COLUMN_STRANGER_FOOD_ID + " text," +
             COLUMN_STRANGER_FOOD_URL + " text," +
             COLUMN_STRANGER_FOOD_URL_SMALL + " text," +
@@ -47,7 +56,10 @@ public class FoodDBHelper extends SQLiteOpenHelper {
             COLUMN_STRANGER_FOOD_URL_LARGE + " text," +
             COLUMN_STRANGER_FOOD_DATE + " integer," +
             COLUMN_STRANGER_BON_APPETIT + " integer not null," +
-            COLUMN_STRANGER_MAP_URL + " text" +
+            COLUMN_STRANGER_MAP_URL + " text," +
+            COLUMN_STRANGER_MAP_URL_SMALL + " text," +
+            COLUMN_STRANGER_MAP_URL_MEDIUM + " text," +
+            COLUMN_STRANGER_MAP_URL_LARGE + " text" +
             ");";
 
     FoodDBHelper(Context context) {

@@ -19,8 +19,8 @@ public class FoodDAO {
     private SQLiteDatabase database;
     private FoodDBHelper foodDBHelper;
     private String[] allColumns = {FoodDBHelper.COLUMN_ID,
-            FoodDBHelper.COLUMN_USER_FOOD_ID, FoodDBHelper.COLUMN_USER_FOOD_URL, FoodDBHelper.COLUMN_USER_FOOD_URL_SMALL, FoodDBHelper.COLUMN_USER_FOOD_URL_MEDIUM, FoodDBHelper.COLUMN_USER_FOOD_URL_LARGE, FoodDBHelper.COLUMN_USER_FOOD_DATE, FoodDBHelper.COLUMN_USER_BON_APPETIT, FoodDBHelper.COLUMN_USER_MAP_URL,
-            FoodDBHelper.COLUMN_STRANGER_FOOD_ID, FoodDBHelper.COLUMN_STRANGER_FOOD_URL, FoodDBHelper.COLUMN_STRANGER_FOOD_URL_SMALL, FoodDBHelper.COLUMN_STRANGER_FOOD_URL_MEDIUM, FoodDBHelper.COLUMN_STRANGER_FOOD_URL_LARGE, FoodDBHelper.COLUMN_STRANGER_FOOD_DATE, FoodDBHelper.COLUMN_STRANGER_BON_APPETIT, FoodDBHelper.COLUMN_STRANGER_MAP_URL};
+            FoodDBHelper.COLUMN_USER_FOOD_ID, FoodDBHelper.COLUMN_USER_FOOD_URL, FoodDBHelper.COLUMN_USER_FOOD_URL_SMALL, FoodDBHelper.COLUMN_USER_FOOD_URL_MEDIUM, FoodDBHelper.COLUMN_USER_FOOD_URL_LARGE, FoodDBHelper.COLUMN_USER_FOOD_DATE, FoodDBHelper.COLUMN_USER_BON_APPETIT, FoodDBHelper.COLUMN_USER_MAP_URL, FoodDBHelper.COLUMN_USER_MAP_URL_SMALL, FoodDBHelper.COLUMN_USER_MAP_URL_MEDIUM, FoodDBHelper.COLUMN_USER_MAP_URL_LARGE,
+            FoodDBHelper.COLUMN_STRANGER_FOOD_ID, FoodDBHelper.COLUMN_STRANGER_FOOD_URL, FoodDBHelper.COLUMN_STRANGER_FOOD_URL_SMALL, FoodDBHelper.COLUMN_STRANGER_FOOD_URL_MEDIUM, FoodDBHelper.COLUMN_STRANGER_FOOD_URL_LARGE, FoodDBHelper.COLUMN_STRANGER_FOOD_DATE, FoodDBHelper.COLUMN_STRANGER_BON_APPETIT, FoodDBHelper.COLUMN_STRANGER_MAP_URL, FoodDBHelper.COLUMN_STRANGER_MAP_URL_SMALL, FoodDBHelper.COLUMN_STRANGER_MAP_URL_MEDIUM, FoodDBHelper.COLUMN_STRANGER_MAP_URL_LARGE};
 
     public FoodDAO(Context context) {
         foodDBHelper = new FoodDBHelper(context);
@@ -231,23 +231,29 @@ public class FoodDAO {
 
             foodPair.user.foodId = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_ID));
             foodPair.user.foodURL = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_URL));
-            foodPair.user.foodURLSmall = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_URL_SMALL));
-            foodPair.user.foodURLMedium = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_URL_MEDIUM));
-            foodPair.user.foodURLLarge = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_URL_LARGE));
+            foodPair.user.foodUrlSize.small = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_URL_SMALL));
+            foodPair.user.foodUrlSize.medium = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_URL_MEDIUM));
+            foodPair.user.foodUrlSize.large = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_URL_LARGE));
             long userDate = cursor.getLong(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_FOOD_DATE));
             foodPair.user.foodDate = userDate != 0 ? new Date(userDate) : null;
             foodPair.user.bonAppetit = cursor.getInt(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_BON_APPETIT));
             foodPair.user.mapURL = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_MAP_URL));
+            foodPair.user.mapUrlSize.small = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_MAP_URL_SMALL));
+            foodPair.user.mapUrlSize.medium = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_MAP_URL_MEDIUM));
+            foodPair.user.mapUrlSize.large = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_USER_MAP_URL_LARGE));
 
             foodPair.stranger.foodId = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_FOOD_ID));
             foodPair.stranger.foodURL = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_FOOD_URL));
-            foodPair.stranger.foodURLSmall = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_FOOD_URL_SMALL));
-            foodPair.stranger.foodURLMedium = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_FOOD_URL_MEDIUM));
-            foodPair.stranger.foodURLLarge = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_FOOD_URL_LARGE));
+            foodPair.stranger.foodUrlSize.small = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_FOOD_URL_SMALL));
+            foodPair.stranger.foodUrlSize.medium = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_FOOD_URL_MEDIUM));
+            foodPair.stranger.foodUrlSize.large = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_FOOD_URL_LARGE));
             long strangerDate = cursor.getLong(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_FOOD_DATE));
             foodPair.stranger.foodDate = strangerDate != 0 ? new Date(strangerDate) : null;
             foodPair.stranger.bonAppetit = cursor.getInt(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_BON_APPETIT));
             foodPair.stranger.mapURL = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_MAP_URL));
+            foodPair.stranger.mapUrlSize.small = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_MAP_URL_SMALL));
+            foodPair.stranger.mapUrlSize.medium = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_MAP_URL_MEDIUM));
+            foodPair.stranger.mapUrlSize.large = cursor.getString(cursor.getColumnIndexOrThrow(FoodDBHelper.COLUMN_STRANGER_MAP_URL_LARGE));
 
             return foodPair;
         }
@@ -264,21 +270,27 @@ public class FoodDAO {
 
         values.put(FoodDBHelper.COLUMN_USER_FOOD_ID, foodPair.user.foodId);
         values.put(FoodDBHelper.COLUMN_USER_FOOD_URL, foodPair.user.foodURL);
-        values.put(FoodDBHelper.COLUMN_USER_FOOD_URL_SMALL, foodPair.user.foodURLSmall);
-        values.put(FoodDBHelper.COLUMN_USER_FOOD_URL_MEDIUM, foodPair.user.foodURLMedium);
-        values.put(FoodDBHelper.COLUMN_USER_FOOD_URL_LARGE, foodPair.user.foodURLLarge);
+        values.put(FoodDBHelper.COLUMN_USER_FOOD_URL_SMALL, foodPair.user.foodUrlSize.small);
+        values.put(FoodDBHelper.COLUMN_USER_FOOD_URL_MEDIUM, foodPair.user.foodUrlSize.medium);
+        values.put(FoodDBHelper.COLUMN_USER_FOOD_URL_LARGE, foodPair.user.foodUrlSize.large);
         values.put(FoodDBHelper.COLUMN_USER_FOOD_DATE, foodPair.user.foodDate.getTime());
         values.put(FoodDBHelper.COLUMN_USER_BON_APPETIT, foodPair.user.bonAppetit);
         values.put(FoodDBHelper.COLUMN_USER_MAP_URL, foodPair.user.mapURL);
+        values.put(FoodDBHelper.COLUMN_USER_MAP_URL_SMALL, foodPair.user.mapUrlSize.small);
+        values.put(FoodDBHelper.COLUMN_USER_MAP_URL_MEDIUM, foodPair.user.mapUrlSize.medium);
+        values.put(FoodDBHelper.COLUMN_USER_MAP_URL_LARGE, foodPair.user.mapUrlSize.large);
 
         values.put(FoodDBHelper.COLUMN_STRANGER_FOOD_ID, foodPair.stranger.foodId);
         values.put(FoodDBHelper.COLUMN_STRANGER_FOOD_URL, foodPair.stranger.foodURL);
-        values.put(FoodDBHelper.COLUMN_STRANGER_FOOD_URL_SMALL, foodPair.stranger.foodURLSmall);
-        values.put(FoodDBHelper.COLUMN_STRANGER_FOOD_URL_MEDIUM, foodPair.stranger.foodURLMedium);
-        values.put(FoodDBHelper.COLUMN_STRANGER_FOOD_URL_LARGE, foodPair.stranger.foodURLLarge);
+        values.put(FoodDBHelper.COLUMN_STRANGER_FOOD_URL_SMALL, foodPair.stranger.foodUrlSize.small);
+        values.put(FoodDBHelper.COLUMN_STRANGER_FOOD_URL_MEDIUM, foodPair.stranger.foodUrlSize.medium);
+        values.put(FoodDBHelper.COLUMN_STRANGER_FOOD_URL_LARGE, foodPair.stranger.foodUrlSize.large);
         values.put(FoodDBHelper.COLUMN_STRANGER_FOOD_DATE, foodPair.stranger.foodDate != null ? foodPair.stranger.foodDate.getTime() : null);
         values.put(FoodDBHelper.COLUMN_STRANGER_BON_APPETIT, foodPair.stranger.bonAppetit);
         values.put(FoodDBHelper.COLUMN_STRANGER_MAP_URL, foodPair.stranger.mapURL);
+        values.put(FoodDBHelper.COLUMN_STRANGER_MAP_URL_SMALL, foodPair.stranger.mapUrlSize.small);
+        values.put(FoodDBHelper.COLUMN_STRANGER_MAP_URL_MEDIUM, foodPair.stranger.mapUrlSize.medium);
+        values.put(FoodDBHelper.COLUMN_STRANGER_MAP_URL_LARGE, foodPair.stranger.mapUrlSize.large);
 
         return values;
     }

@@ -13,9 +13,18 @@ public class FoodPair implements Serializable {
     public User stranger = new User();
 
     @Override
+    public String toString() {
+        return "FoodPair{" +
+                "id=" + id +
+                ", user=" + user +
+                ", stranger=" + stranger +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || (getClass() != o.getClass())) return false;
+        if (!(o instanceof FoodPair)) return false;
 
         FoodPair foodPair = (FoodPair) o;
 
@@ -33,24 +42,82 @@ public class FoodPair implements Serializable {
         return result;
     }
 
-    @Override
-    public String toString() {
-        return "FoodPair{" +
-                "id=" + id +
-                ", user=" + user +
-                ", stranger=" + stranger +
-                '}';
-    }
-
     public class User implements Serializable {
+
+        public class UrlSize implements Serializable {
+            public String small;
+            public String medium;
+            public String large;
+
+            @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (!(o instanceof UrlSize)) return false;
+
+                UrlSize urlSize = (UrlSize) o;
+
+                if (large != null ? !large.equals(urlSize.large) : urlSize.large != null)
+                    return false;
+                if (medium != null ? !medium.equals(urlSize.medium) : urlSize.medium != null)
+                    return false;
+                if (small != null ? !small.equals(urlSize.small) : urlSize.small != null)
+                    return false;
+
+                return true;
+            }
+
+            @Override
+            public int hashCode() {
+                int result = small != null ? small.hashCode() : 0;
+                result = 31 * result + (medium != null ? medium.hashCode() : 0);
+                result = 31 * result + (large != null ? large.hashCode() : 0);
+                return result;
+            }
+        }
+
         public String foodId;
         public String foodURL;
-        public String foodURLSmall;
-        public String foodURLMedium;
-        public String foodURLLarge;
+        public UrlSize foodUrlSize = new UrlSize();
         public Date foodDate;
         public int bonAppetit;
         public String mapURL;
+        public UrlSize mapUrlSize = new UrlSize();
+
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof User)) return false;
+
+            User user = (User) o;
+
+            if (bonAppetit != user.bonAppetit) return false;
+            if (foodDate != null ? !foodDate.equals(user.foodDate) : user.foodDate != null)
+                return false;
+            if (foodId != null ? !foodId.equals(user.foodId) : user.foodId != null) return false;
+            if (foodURL != null ? !foodURL.equals(user.foodURL) : user.foodURL != null)
+                return false;
+            if (foodUrlSize != null ? !foodUrlSize.equals(user.foodUrlSize) : user.foodUrlSize != null)
+                return false;
+            if (mapURL != null ? !mapURL.equals(user.mapURL) : user.mapURL != null) return false;
+            if (mapUrlSize != null ? !mapUrlSize.equals(user.mapUrlSize) : user.mapUrlSize != null)
+                return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = foodId != null ? foodId.hashCode() : 0;
+            result = 31 * result + (foodURL != null ? foodURL.hashCode() : 0);
+            result = 31 * result + (foodUrlSize != null ? foodUrlSize.hashCode() : 0);
+            result = 31 * result + (foodDate != null ? foodDate.hashCode() : 0);
+            result = 31 * result + bonAppetit;
+            result = 31 * result + (mapURL != null ? mapURL.hashCode() : 0);
+            result = 31 * result + (mapUrlSize != null ? mapUrlSize.hashCode() : 0);
+            return result;
+        }
+
 
         public boolean isBonAppetit() {
             return bonAppetit > 0;
@@ -65,53 +132,19 @@ public class FoodPair implements Serializable {
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            User user = (User) o;
-
-            if (bonAppetit != user.bonAppetit) return false;
-            if (foodDate != null ? !foodDate.equals(user.foodDate) : user.foodDate != null)
-                return false;
-            if (foodId != null ? !foodId.equals(user.foodId) : user.foodId != null) return false;
-            if (foodURL != null ? !foodURL.equals(user.foodURL) : user.foodURL != null)
-                return false;
-            if (foodURLLarge != null ? !foodURLLarge.equals(user.foodURLLarge) : user.foodURLLarge != null)
-                return false;
-            if (foodURLMedium != null ? !foodURLMedium.equals(user.foodURLMedium) : user.foodURLMedium != null)
-                return false;
-            if (foodURLSmall != null ? !foodURLSmall.equals(user.foodURLSmall) : user.foodURLSmall != null)
-                return false;
-            if (mapURL != null ? !mapURL.equals(user.mapURL) : user.mapURL != null) return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = foodId != null ? foodId.hashCode() : 0;
-            result = 31 * result + (foodURL != null ? foodURL.hashCode() : 0);
-            result = 31 * result + (foodURLSmall != null ? foodURLSmall.hashCode() : 0);
-            result = 31 * result + (foodURLMedium != null ? foodURLMedium.hashCode() : 0);
-            result = 31 * result + (foodURLLarge != null ? foodURLLarge.hashCode() : 0);
-            result = 31 * result + (foodDate != null ? foodDate.hashCode() : 0);
-            result = 31 * result + bonAppetit;
-            result = 31 * result + (mapURL != null ? mapURL.hashCode() : 0);
-            return result;
-        }
-
-        @Override
         public String toString() {
             return "User{" +
                     "foodId='" + foodId + '\'' +
                     ", foodURL='" + foodURL + '\'' +
-                    ", foodURLSmall='" + foodURLSmall + '\'' +
-                    ", foodURLMedium='" + foodURLMedium + '\'' +
-                    ", foodURLLarge='" + foodURLLarge + '\'' +
+                    ", foodUrlSize.small='" + foodUrlSize.small + '\'' +
+                    ", foodUrlSize.medium='" + foodUrlSize.medium + '\'' +
+                    ", foodUrlSize.large='" + foodUrlSize.large + '\'' +
                     ", foodDate=" + foodDate +
                     ", bonAppetit=" + bonAppetit +
                     ", mapURL='" + mapURL + '\'' +
+                    ", mapUrlSize.small='" + mapUrlSize.small + '\'' +
+                    ", mapUrlSize.medium='" + mapUrlSize.medium + '\'' +
+                    ", mapUrlSize.large='" + mapUrlSize.large + '\'' +
                     '}';
         }
     }
