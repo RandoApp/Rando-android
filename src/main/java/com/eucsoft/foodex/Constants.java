@@ -15,6 +15,7 @@ public class Constants {
     public static final String IMAGE_FILTER = "image/*";
     public static final String IMAGE_PREFIX = "IMG_";
     public static final String IMAGE_POSTFIX = ".jpg";
+    public static final int JPEG_QUALITY = 90;
 
     public static final int LOCATION_PERIOD = 20000;
 
