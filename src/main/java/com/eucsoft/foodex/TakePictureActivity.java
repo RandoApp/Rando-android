@@ -38,7 +38,9 @@ import com.eucsoft.foodex.view.FoodexSurfaceView;
 
 import java.util.Map;
 
+import static android.graphics.ImageFormat.JPEG;
 import static android.view.View.VISIBLE;
+import static com.eucsoft.foodex.Constants.JPEG_QUALITY;
 
 public class TakePictureActivity extends BaseActivity {
     private FoodexSurfaceView foodexSurfaceView;
@@ -292,6 +294,9 @@ public class TakePictureActivity extends BaseActivity {
             }
             params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
             params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+            params.setPictureFormat(JPEG);
+            params.setJpegQuality(JPEG_QUALITY);
+            params.set("jpeg-quality", JPEG_QUALITY);
             params.setRotation(90);
             params.set("orientation", "portrait");
             params.set("rotation", 90);
