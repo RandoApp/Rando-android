@@ -8,8 +8,8 @@
     <dimen name="bon_appetit_button_margin_top">5dp</dimen>
     <dimen name="bon_appetit_button_margin_bottom">20dp</dimen>
 
-    <dimen name="camera_button_height">100dp</dimen>
-    <dimen name="camera_button_width">125dp</dimen>
+    <dimen name="camera_button_height">80dp</dimen>
+    <dimen name="camera_button_width">80dp</dimen>
     <dimen name="camera_button_margin_bottom">15dp</dimen>
 
     <dimen name="takepicture_bottom_panel_with_buttons_min_height">144dp</dimen>
@@ -17,13 +17,13 @@
     <dimen name="takepicture_default_button_size">96dp</dimen>
     <dimen name="takepicture_close_button_size">48dp</dimen>
 
-    <dimen name="food_margin_portrait_column_top">15dp</dimen>
-    <dimen name="food_margin_portrait_column_left">15dp</dimen>
-    <dimen name="food_margin_portrait_column_right">15dp</dimen>
+    <dimen name="rando_margin_portrait_column_top">15dp</dimen>
+    <dimen name="rando_margin_portrait_column_left">15dp</dimen>
+    <dimen name="rando_margin_portrait_column_right">15dp</dimen>
 
     <dimen name="relative_layout_margin_top">5dp</dimen>
-    <dimen name="food_pair_padding_bottom">20dp</dimen>
-    <dimen name="food_margin_portrait">30dp</dimen>
+    <dimen name="rando_pair_padding_bottom">20dp</dimen>
+    <dimen name="rando_margin_portrait">30dp</dimen>
 
     <dimen name="date_time_padding_bottom">3dp</dimen>
 

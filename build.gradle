@@ -18,7 +18,7 @@ android {
 
     signingConfigs {
         release {
-            storeFile file(System.getenv("HOME") + "/.android/foodex.keystore")
+            storeFile file(System.getenv("HOME") + "/.android/rando.keystore")
             storePassword keyStorePassword
             keyAlias 'alias_name'
             keyPassword keyStorePassword
@@ -41,7 +41,7 @@ android {
     defaultConfig {
         minSdkVersion 10
         targetSdkVersion 19
-        testPackageName 'com.eucsoft.foodex.test'
+        testPackageName 'com.github.randoapp.test'
         testInstrumentationRunner 'com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner'
     }
 
@@ -54,9 +54,9 @@ android {
 }
 
 dependencies {
-    compile project(':foodex-android:modules:facebook:facebook')
-    compile project(':foodex-android:modules:volley')
-    compile project(':foodex-android:modules:two-way-gridview:lib')
+    compile project(':Rando-android:modules:facebook:facebook')
+    compile project(':Rando-android:modules:volley')
+    compile project(':Rando-android:modules:two-way-gridview:lib')
     compile 'com.android.support:appcompat-v7:+'
     compile 'com.google.android.gms:play-services:4.0.30'
     compile 'org.apache.httpcomponents:httpcore:4.3'

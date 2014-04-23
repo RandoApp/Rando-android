@@ -9,7 +9,7 @@
         android:id="@+id/top_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/abc_action_bar_default_height"
-        android:background="@color/back_button_background">
+        android:background="@android:color/black">
 
         <ImageButton
             android:id="@+id/back_button"
@@ -17,8 +17,20 @@
             android:layout_height="@dimen/takepicture_close_button_size"
             android:layout_gravity="center"
             android:background="@drawable/ic_back_button" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"></View>
+
+        <ImageButton
+            android:id="@+id/flashlight_button"
+            android:layout_width="@dimen/takepicture_close_button_size"
+            android:layout_height="@dimen/takepicture_close_button_size"
+            android:layout_gravity="center"
+            android:background="@drawable/ic_flash" />
 
     </LinearLayout>
+
 
     <FrameLayout
         android:id="@+id/cameraPreview"
@@ -26,6 +38,13 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/top_toolbar"
         android:layout_gravity="center_horizontal" />
+
+    <View
+        android:id="@+id/circle"
+        android:layout_marginTop="@dimen/abc_action_bar_default_height"
+        android:background="@drawable/black_circle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <!-- Height will be overridden programmatically -->
     <LinearLayout
@@ -36,26 +55,10 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_centerHorizontal="true"
+        android:background="@android:color/black"
         android:gravity="center"
-        android:background="@color/takepicture_bottom_panel_background"
         android:orientation="horizontal">
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1"></View>
-
-        <ImageButton
-            android:id="@+id/select_photo_button"
-            android:layout_width="@dimen/takepicture_default_button_size"
-            android:layout_height="@dimen/takepicture_default_button_size"
-            android:layout_gravity="center"
-            android:background="@drawable/ic_gallery" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1"></View>
 
         <ImageButton
             android:id="@+id/upload_photo_button"
@@ -67,27 +70,11 @@
 
         <ImageButton
             android:id="@+id/take_picture_button"
-            android:layout_width="@dimen/simple_camera_button_size"
-            android:layout_height="@dimen/simple_camera_button_size"
+            android:layout_width="@dimen/camera_button_width"
+            android:layout_height="@dimen/camera_button_height"
             android:layout_gravity="center"
-            android:background="@drawable/ic_camera_simple" />
+            android:background="@drawable/ic_camera" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1"></View>
-
-        <ImageButton
-            android:id="@+id/flashlight_button"
-            android:layout_width="@dimen/takepicture_default_button_size"
-            android:layout_height="@dimen/takepicture_default_button_size"
-            android:layout_gravity="center"
-            android:background="@drawable/ic_flash" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1"></View>
     </LinearLayout>
 
 </RelativeLayout>

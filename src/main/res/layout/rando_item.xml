@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/rando_pair_padding_bottom"
+    android:tag="rando_pair">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:tag="rando_placeholder">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/date_time_padding_bottom">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:tag="date_time"
+                android:textSize="14sp"
+                android:textStyle="italic" />
+        </LinearLayout>
+
+
+        <ViewSwitcher
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:tag="viewSwitcher">
+
+
+            <android.support.v4.view.ViewPager
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:tag="stranger"></android.support.v4.view.ViewPager>
+
+            <android.support.v4.view.ViewPager
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:tag="user"></android.support.v4.view.ViewPager>
+
+        </ViewSwitcher>
+
+
+    </LinearLayout>
+
+    <ViewSwitcher
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inAnimation="@anim/fade_in"
+        android:outAnimation="@anim/fade_out"
+        android:tag="home_ic_switcher">
+
+        <View
+            android:layout_width="@dimen/ic_home_size"
+            android:layout_height="@dimen/ic_home_size"
+            android:visibility="gone" />
+
+        <ImageView
+            android:layout_width="@dimen/ic_home_size"
+            android:layout_height="@dimen/ic_home_size"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/ic_home_margin_top"
+            android:src="@drawable/ic_home"
+            android:tag="ic_home" />
+    </ViewSwitcher>
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/fader"
+        android:tag="report_dialog"
+        android:visibility="gone">
+
+        <Button
+            android:layout_width="@dimen/report_button_width"
+            android:layout_height="@dimen/report_button_height"
+            android:background="@drawable/report_button_background"
+            android:gravity="center"
+            android:text="@string/report_message"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size" />
+    </LinearLayout>
+
+</RelativeLayout>
