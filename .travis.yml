@@ -98,5 +98,5 @@ script:
   - gradle assembleRelease
 
 after_script:
-    - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@95.85.19.94" -e "put Rando-android/build/apk/rando-android-release.apk; bye"; fi
+    - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@95.85.19.94" -e "put Rando-android/build/apk/Rando-android-release.apk; bye"; fi
 
