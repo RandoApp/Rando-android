@@ -12,7 +12,7 @@
         app:scrollDirectionPortrait="vertical" />
 
     <ImageView
-        android:id="@id/camera_button"
+        android:id="@+id/camera_button"
         android:layout_width="@dimen/rando_button_size"
         android:layout_height="@dimen/rando_button_size"
         android:layout_alignParentBottom="true"

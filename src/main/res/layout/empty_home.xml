@@ -13,7 +13,7 @@
         android:weightSum="100">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/empty_home_message"
             android:layout_width="@dimen/empty_home_message_width"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -30,13 +30,15 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <ImageButton
+    <ImageView
         android:id="@+id/camera_button"
-        android:layout_width="@dimen/camera_button_width"
-        android:layout_height="@dimen/camera_button_height"
+        android:layout_width="@dimen/rando_button_size"
+        android:layout_height="@dimen/rando_button_size"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/camera_button_margin_bottom"
-        android:background="@drawable/ic_camera" />
+        android:background="@drawable/rando_background"
+        android:scaleType="center"
+        android:src="@drawable/rando_ring" />
 
 </RelativeLayout>
