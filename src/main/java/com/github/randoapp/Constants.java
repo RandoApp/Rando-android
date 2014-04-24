@@ -97,7 +97,7 @@ public class Constants {
     public static final String ANONYMOUS_URL = SERVER_URL + "/anonymous";
     public static final String LOGOUT_URL = SERVER_URL + "/logout";
     public static final String FETCH_USER_URL = SERVER_URL + "/user";
-    public static final String ULOAD_RANDO_URL = SERVER_URL + "/rando";
+    public static final String ULOAD_RANDO_URL = SERVER_URL + "/image";
     public static final String REPORT_URL = SERVER_URL + "/report/";
     public static final String BON_APPETIT_URL = SERVER_URL + "/bonappetit/";
     public static final String LOG_URL = SERVER_URL + "/log";
