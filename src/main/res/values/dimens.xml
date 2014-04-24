@@ -8,9 +8,19 @@
     <dimen name="bon_appetit_button_margin_top">5dp</dimen>
     <dimen name="bon_appetit_button_margin_bottom">20dp</dimen>
 
+
+    <dimen name="rando_button_size">80dp</dimen>
+    <dimen name="rando_button_ring_thickness">3.25dp</dimen>
+    <dimen name="rando_button_ring_size">32dp</dimen>
+
+    <dimen name="actionbar_button_ring_thickness">2dp</dimen>
+
+
     <dimen name="camera_button_height">80dp</dimen>
     <dimen name="camera_button_width">80dp</dimen>
     <dimen name="camera_button_margin_bottom">15dp</dimen>
+
+
 
     <dimen name="takepicture_bottom_panel_with_buttons_min_height">144dp</dimen>
     <dimen name="simple_camera_button_size">144dp</dimen>

@@ -10,10 +10,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 
+import com.github.randoapp.CameraActivity;
 import com.github.randoapp.R;
-import com.github.randoapp.TakePictureActivity;
 import com.github.randoapp.adapter.RandoPairsAdapter;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.notification.Notification;
@@ -68,7 +68,7 @@ public class HomeWallFragment extends Fragment {
         gridView.setAdapter(randoPairsAdapter);
 
         int delta;
-        ImageButton takePictureButton = (ImageButton) rootView.findViewById(R.id.cameraButton);
+        ImageView takePictureButton = (ImageView) rootView.findViewById(R.id.camera_button);
         int takePictureButtonHeight = takePictureButton.getHeight();
 
         if (container.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -84,7 +84,7 @@ public class HomeWallFragment extends Fragment {
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(rootView.getContext(), TakePictureActivity.class);
+                Intent intent = new Intent(rootView.getContext(), CameraActivity.class);
                 startActivityForResult(intent, 100);
             }
         });

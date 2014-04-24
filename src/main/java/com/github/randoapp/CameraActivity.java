@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -26,6 +25,7 @@ import android.widget.Toast;
 
 import com.github.randoapp.activity.BaseActivity;
 import com.github.randoapp.log.Log;
+import com.github.randoapp.menu.ReportMenu;
 import com.github.randoapp.service.SyncService;
 import com.github.randoapp.task.CropImageTask;
 import com.github.randoapp.task.RandoUploadTask;
@@ -42,7 +42,7 @@ import static android.graphics.ImageFormat.JPEG;
 import static android.view.View.VISIBLE;
 import static com.github.randoapp.Constants.JPEG_QUALITY;
 
-public class TakePictureActivity extends BaseActivity {
+public class CameraActivity extends BaseActivity {
     private com.github.randoapp.view.RandoSurfaceView randoSurfaceView;
     private Camera camera;
     private FrameLayout preview;
@@ -52,8 +52,8 @@ public class TakePictureActivity extends BaseActivity {
 
     public static Location currentLocation;
     public static String picFileName = null;
-    private ImageButton uploadPictureButton;
-    private ImageButton flashLightButton;
+    private ImageView uploadPictureButton;
+    private ImageView flashLightButton;
 
     private Camera.PictureCallback pictureCallback = new Camera.PictureCallback() {
 
@@ -61,27 +61,27 @@ public class TakePictureActivity extends BaseActivity {
         public void onPictureTaken(byte[] data, Camera camera) {
             String tmpFile = FileUtil.writeImageToTempFile(data);
             new CropImageTask(tmpFile)
-                .onOk(new OnOk() {
-                    @Override
-                    public void onOk(Map<String, Object> data) {
-                        picFileName = (String) data.get(Constants.FILEPATH);
-                        showUploadScreen();
-                    }
-                })
-                .onError(new OnError() {
-                    @Override
-                    public void onError(Map<String, Object> data) {
-                        Toast.makeText(TakePictureActivity.this, "Crop Failed.",
-                                Toast.LENGTH_LONG).show();
-                    }
-                })
-                .onDone(new OnDone() {
-                    @Override
-                    public void onDone(Map<String, Object> data) {
-                        hideProgressbar();
-                    }
-                })
-                .execute();
+                    .onOk(new OnOk() {
+                        @Override
+                        public void onOk(Map<String, Object> data) {
+                            picFileName = (String) data.get(Constants.FILEPATH);
+                            showUploadScreen();
+                        }
+                    })
+                    .onError(new OnError() {
+                        @Override
+                        public void onError(Map<String, Object> data) {
+                            Toast.makeText(CameraActivity.this, "Crop Failed.",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    })
+                    .onDone(new OnDone() {
+                        @Override
+                        public void onDone(Map<String, Object> data) {
+                            hideProgressbar();
+                        }
+                    })
+                    .execute();
         }
     };
 
@@ -97,7 +97,7 @@ public class TakePictureActivity extends BaseActivity {
                     Cursor cursor = getContentResolver().query(
                             selectedImage, filePathColumn, null, null, null);
                     if (cursor == null) {
-                        Log.w(TakePictureActivity.class, "Selecting from Album failed.");
+                        Log.w(CameraActivity.class, "Selecting from Album failed.");
                         break;
                     }
                     cursor.moveToFirst();
@@ -105,27 +105,27 @@ public class TakePictureActivity extends BaseActivity {
                     String filePath = cursor.getString(columnIndex);
                     cursor.close();
                     new CropImageTask(filePath)
-                        .onOk(new OnOk() {
-                            @Override
-                            public void onOk(Map<String, Object> data) {
-                                picFileName = (String) data.get(Constants.FILEPATH);
-                                showUploadScreen();
-                            }
-                        })
-                        .onError(new OnError() {
-                            @Override
-                            public void onError(Map<String, Object> data) {
-                                Toast.makeText(TakePictureActivity.this, "Crop Failed.",
-                                        Toast.LENGTH_LONG).show();
-                            }
-                        })
-                        .onDone(new OnDone() {
-                            @Override
-                            public void onDone(Map<String, Object> data) {
-                                hideProgressbar();
-                            }
-                        })
-                        .execute();
+                            .onOk(new OnOk() {
+                                @Override
+                                public void onOk(Map<String, Object> data) {
+                                    picFileName = (String) data.get(Constants.FILEPATH);
+                                    showUploadScreen();
+                                }
+                            })
+                            .onError(new OnError() {
+                                @Override
+                                public void onError(Map<String, Object> data) {
+                                    Toast.makeText(CameraActivity.this, "Crop Failed.",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            })
+                            .onDone(new OnDone() {
+                                @Override
+                                public void onDone(Map<String, Object> data) {
+                                    hideProgressbar();
+                                }
+                            })
+                            .execute();
                 }
                 break;
         }
@@ -159,7 +159,7 @@ public class TakePictureActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_takepicture);
+        setContentView(R.layout.camera);
 
         updateLocation();
         setBackButtonListener();
@@ -170,8 +170,8 @@ public class TakePictureActivity extends BaseActivity {
     }
 
     private void setFlashLightButtonListener() {
-        flashLightButton = (ImageButton) findViewById(R.id.flashlight_button);
-        flashLightButton.setOnClickListener(new ImageButton.OnClickListener() {
+        flashLightButton = (ImageView) findViewById(R.id.flash_button);
+        flashLightButton.setOnClickListener(new ImageView.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -179,13 +179,13 @@ public class TakePictureActivity extends BaseActivity {
                 String flashMode = params.getFlashMode();
 
                 if (Camera.Parameters.FLASH_MODE_AUTO.equals(flashMode)) {
-                    flashLightButton.setBackgroundResource(R.drawable.ic_flash_disable);
+                    flashLightButton.setImageResource(R.drawable.flash_disable);
                     flashMode = Camera.Parameters.FLASH_MODE_OFF;
                 } else if (Camera.Parameters.FLASH_MODE_OFF.equals(flashMode)) {
-                    flashLightButton.setBackgroundResource(R.drawable.ic_flash);
+                    flashLightButton.setImageResource(R.drawable.flash_background);
                     flashMode = Camera.Parameters.FLASH_MODE_ON;
                 } else if (Camera.Parameters.FLASH_MODE_ON.equals(flashMode)) {
-                    flashLightButton.setBackgroundResource(R.drawable.ic_flash_auto);
+                    flashLightButton.setImageResource(R.drawable.flash_auto);
                     flashMode = Camera.Parameters.FLASH_MODE_AUTO;
                 }
                 params.setFlashMode(flashMode);
@@ -195,9 +195,16 @@ public class TakePictureActivity extends BaseActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        picFileName = null;
+        releaseCamera();
+        super.onBackPressed();
+    }
+
     private void setBackButtonListener() {
-        ImageButton backButton = (ImageButton) findViewById(R.id.back_button);
-        backButton.setOnClickListener(new ImageButton.OnClickListener() {
+        ImageView backButton = (ImageView) findViewById(R.id.back_button);
+        backButton.setOnClickListener(new ImageView.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -215,8 +222,8 @@ public class TakePictureActivity extends BaseActivity {
     }
 
     private void setTakePictureButtonListener() {
-        ImageButton takePictureButton = (ImageButton) findViewById(R.id.take_picture_button);
-        takePictureButton.setOnClickListener(new ImageButton.OnClickListener() {
+        ImageView takePictureButton = (ImageView) findViewById(R.id.capture_button);
+        takePictureButton.setOnClickListener(new ImageView.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 Log.i(CropImageTask.class, "TOTAL 0:" + Runtime.getRuntime().totalMemory() / (1024 * 1024));
@@ -229,36 +236,34 @@ public class TakePictureActivity extends BaseActivity {
 
 
     private void setUploadButtonListener() {
-        uploadPictureButton = (ImageButton) findViewById(R.id.upload_photo_button);
-        uploadPictureButton.setOnClickListener(new ImageButton.OnClickListener() {
+        uploadPictureButton = (ImageView) findViewById(R.id.upload_button);
+        uploadPictureButton.setOnClickListener(new ImageView.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
                 if (picFileName != null) {
                     showProgressbar("uploading...");
                     uploadPictureButton.setEnabled(false);
-                    ((LinearLayout) uploadPictureButton.getParent()).setBackgroundColor(getResources().getColor(R.color.button_disabled_background));
                     new RandoUploadTask(picFileName).onOk(new OnOk() {
                         @Override
                         public void onOk(Map<String, Object> data) {
                             SyncService.run();
                             hideProgressbar();
-                            Toast.makeText(TakePictureActivity.this,
+                            Toast.makeText(CameraActivity.this,
                                     R.string.photo_upload_ok,
                                     Toast.LENGTH_LONG).show();
-                            TakePictureActivity.this.setResult(Activity.RESULT_OK);
-                            TakePictureActivity.this.finish();
+                            CameraActivity.this.setResult(Activity.RESULT_OK);
+                            CameraActivity.this.finish();
                         }
                     }).onError(new OnError() {
                         @Override
                         public void onError(Map<String, Object> data) {
                             hideProgressbar();
-                            Toast.makeText(TakePictureActivity.this, R.string.photo_upload_failed,
+                            Toast.makeText(CameraActivity.this, R.string.photo_upload_failed,
                                     Toast.LENGTH_LONG).show();
 
                             if (uploadPictureButton != null) {
                                 uploadPictureButton.setEnabled(true);
-                                ((LinearLayout) uploadPictureButton.getParent()).setBackgroundColor(getResources().getColor(R.color.auth_button));
                             }
                         }
                     }).execute();
@@ -274,10 +279,10 @@ public class TakePictureActivity extends BaseActivity {
         if (camera != null) {
 
             Camera.Parameters params = camera.getParameters();
-            //disable flashlight button if flash light not supported
+            //disable flashlight button if flash_background light not supported
             if (params.getFlashMode() == null) {
                 flashLightButton.setEnabled(false);
-                flashLightButton.setBackgroundResource(R.drawable.ic_flash_disable);
+                flashLightButton.setImageResource(R.drawable.flash_disable);
             }
             params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
             params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
@@ -291,10 +296,7 @@ public class TakePictureActivity extends BaseActivity {
 
             randoSurfaceView = new com.github.randoapp.view.RandoSurfaceView(getApplicationContext(), camera);
 
-
-
-
-            preview = (FrameLayout) findViewById(R.id.cameraPreview);
+            preview = (FrameLayout) findViewById(R.id.camera_preview);
             preview.removeAllViews();
             preview.addView(randoSurfaceView);
 
@@ -311,16 +313,14 @@ public class TakePictureActivity extends BaseActivity {
         int cameraPreviewHeight = display.getWidth();
         int statusBarHeight = getStatusBarHeight();
 
+        LinearLayout bottomBlackPanel = (LinearLayout) findViewById(R.id.bottom_black_panel);
+        RelativeLayout.LayoutParams bottomBlackPanelParams = (RelativeLayout.LayoutParams) bottomBlackPanel.getLayoutParams();
+
         int bottomToolbarHeight = display.getHeight() - statusBarHeight - actionBarHeight - cameraPreviewHeight;
+        bottomBlackPanelParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+        bottomBlackPanelParams.height = bottomToolbarHeight;
 
-        LinearLayout bottomColoredStubPanel = (LinearLayout) findViewById(R.id.bottom_colored_stub_panel);
-        RelativeLayout.LayoutParams bottomColoredStubPanelParams = (RelativeLayout.LayoutParams) bottomColoredStubPanel.getLayoutParams();
-
-        int minPanelHeight = (int) getResources().getDimension(R.dimen.takepicture_bottom_panel_with_buttons_min_height);
-        bottomColoredStubPanelParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
-        bottomColoredStubPanelParams.height = bottomToolbarHeight >= minPanelHeight ? bottomToolbarHeight: minPanelHeight;
-
-        View circle = findViewById(R.id.circle);
+        View circle = findViewById(R.id.circle_mask);
         ViewGroup.LayoutParams circleParams = circle.getLayoutParams();
         int size = Math.min(display.getHeight(), display.getWidth());
         circleParams.height = size;
@@ -347,14 +347,16 @@ public class TakePictureActivity extends BaseActivity {
     }
 
     private void showUploadButton() {
-        findViewById(R.id.take_picture_button).setVisibility(View.GONE);
+        findViewById(R.id.capture_button).setVisibility(View.GONE);
+        findViewById(R.id.flash_button).setVisibility(View.GONE);
         uploadPictureButton.setEnabled(true);
-        findViewById(R.id.upload_photo_button).setVisibility(VISIBLE);
+        findViewById(R.id.upload_button).setVisibility(VISIBLE);
     }
 
     private void hideUploadButton() {
-        findViewById(R.id.take_picture_button).setVisibility(VISIBLE);
-        findViewById(R.id.upload_photo_button).setVisibility(View.GONE);
+        findViewById(R.id.capture_button).setVisibility(VISIBLE);
+        findViewById(R.id.flash_button).setVisibility(VISIBLE);
+        findViewById(R.id.upload_button).setVisibility(View.GONE);
     }
 
     /**
