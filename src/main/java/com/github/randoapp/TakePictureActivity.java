@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -52,8 +51,8 @@ public class TakePictureActivity extends BaseActivity {
 
     public static Location currentLocation;
     public static String picFileName = null;
-    private ImageButton uploadPictureButton;
-    private ImageButton flashLightButton;
+    private ImageView uploadPictureButton;
+    private ImageView flashLightButton;
 
     private Camera.PictureCallback pictureCallback = new Camera.PictureCallback() {
 
@@ -159,7 +158,7 @@ public class TakePictureActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_takepicture);
+        setContentView(R.layout.camera);
 
         updateLocation();
         setBackButtonListener();
@@ -170,8 +169,8 @@ public class TakePictureActivity extends BaseActivity {
     }
 
     private void setFlashLightButtonListener() {
-        flashLightButton = (ImageButton) findViewById(R.id.flashlight_button);
-        flashLightButton.setOnClickListener(new ImageButton.OnClickListener() {
+        flashLightButton = (ImageView) findViewById(R.id.flashlight_button);
+        flashLightButton.setOnClickListener(new ImageView.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -196,8 +195,8 @@ public class TakePictureActivity extends BaseActivity {
     }
 
     private void setBackButtonListener() {
-        ImageButton backButton = (ImageButton) findViewById(R.id.back_button);
-        backButton.setOnClickListener(new ImageButton.OnClickListener() {
+        ImageView backButton = (ImageView) findViewById(R.id.back_button);
+        backButton.setOnClickListener(new ImageView.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -215,8 +214,8 @@ public class TakePictureActivity extends BaseActivity {
     }
 
     private void setTakePictureButtonListener() {
-        ImageButton takePictureButton = (ImageButton) findViewById(R.id.take_picture_button);
-        takePictureButton.setOnClickListener(new ImageButton.OnClickListener() {
+        ImageView takePictureButton = (ImageView) findViewById(R.id.take_picture_button);
+        takePictureButton.setOnClickListener(new ImageView.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 Log.i(CropImageTask.class, "TOTAL 0:" + Runtime.getRuntime().totalMemory() / (1024 * 1024));
@@ -229,15 +228,14 @@ public class TakePictureActivity extends BaseActivity {
 
 
     private void setUploadButtonListener() {
-        uploadPictureButton = (ImageButton) findViewById(R.id.upload_photo_button);
-        uploadPictureButton.setOnClickListener(new ImageButton.OnClickListener() {
+        uploadPictureButton = (ImageView) findViewById(R.id.upload_photo_button);
+        uploadPictureButton.setOnClickListener(new ImageView.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
                 if (picFileName != null) {
                     showProgressbar("uploading...");
                     uploadPictureButton.setEnabled(false);
-                    ((LinearLayout) uploadPictureButton.getParent()).setBackgroundColor(getResources().getColor(R.color.button_disabled_background));
                     new RandoUploadTask(picFileName).onOk(new OnOk() {
                         @Override
                         public void onOk(Map<String, Object> data) {
@@ -258,7 +256,6 @@ public class TakePictureActivity extends BaseActivity {
 
                             if (uploadPictureButton != null) {
                                 uploadPictureButton.setEnabled(true);
-                                ((LinearLayout) uploadPictureButton.getParent()).setBackgroundColor(getResources().getColor(R.color.auth_button));
                             }
                         }
                     }).execute();
@@ -311,14 +308,12 @@ public class TakePictureActivity extends BaseActivity {
         int cameraPreviewHeight = display.getWidth();
         int statusBarHeight = getStatusBarHeight();
 
+        LinearLayout bottomBlackPanel = (LinearLayout) findViewById(R.id.bottom_colored_stub_panel);
+        RelativeLayout.LayoutParams bottomBlackPanelParams = (RelativeLayout.LayoutParams) bottomBlackPanel.getLayoutParams();
+
         int bottomToolbarHeight = display.getHeight() - statusBarHeight - actionBarHeight - cameraPreviewHeight;
-
-        LinearLayout bottomColoredStubPanel = (LinearLayout) findViewById(R.id.bottom_colored_stub_panel);
-        RelativeLayout.LayoutParams bottomColoredStubPanelParams = (RelativeLayout.LayoutParams) bottomColoredStubPanel.getLayoutParams();
-
-        int minPanelHeight = (int) getResources().getDimension(R.dimen.takepicture_bottom_panel_with_buttons_min_height);
-        bottomColoredStubPanelParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
-        bottomColoredStubPanelParams.height = bottomToolbarHeight >= minPanelHeight ? bottomToolbarHeight: minPanelHeight;
+        bottomBlackPanelParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+        bottomBlackPanelParams.height = bottomToolbarHeight;
 
         View circle = findViewById(R.id.circle);
         ViewGroup.LayoutParams circleParams = circle.getLayoutParams();

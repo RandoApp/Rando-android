@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape android:shape="oval"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <stroke android:width="@dimen/rando_button_ring_thickness" android:color="#ffffffff" />
+    <solid android:color="@color/rando_red" />
+    <size android:height="@dimen/rando_button_ring_size" android:width="@dimen/rando_button_ring_size" />
+</shape>

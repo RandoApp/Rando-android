@@ -11,13 +11,15 @@
         app:scrollDirectionLandscape="vertical"
         app:scrollDirectionPortrait="vertical" />
 
-    <ImageButton
-        android:id="@+id/cameraButton"
-        android:layout_width="@dimen/camera_button_width"
-        android:layout_height="@dimen/camera_button_height"
+    <ImageView
+        android:id="@id/camera_button"
+        android:layout_width="@dimen/rando_button_size"
+        android:layout_height="@dimen/rando_button_size"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/camera_button_margin_bottom"
-        android:background="@drawable/ic_camera" />
+        android:background="@drawable/rando_background"
+        android:scaleType="center"
+        android:src="@drawable/rando_ring" />
 
 </RelativeLayout>

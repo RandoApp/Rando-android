@@ -54,6 +54,6 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         onView(withId(R.id.textViewSkipLink)).perform(scrollTo());
         onView(withId(R.id.textViewSkipLink)).check(matches(isDisplayed()));
         onView(withId(R.id.textViewSkipLink)).perform(click());
-        onView(withId(R.id.cameraButton)).check(matches(isDisplayed()));
+        onView(withId(R.id.camera_button)).check(matches(isDisplayed()));
     }
 }

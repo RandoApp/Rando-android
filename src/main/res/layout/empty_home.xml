@@ -31,7 +31,7 @@
     </LinearLayout>
 
     <ImageButton
-        android:id="@+id/cameraButton"
+        android:id="@+id/camera_button"
         android:layout_width="@dimen/camera_button_width"
         android:layout_height="@dimen/camera_button_height"
         android:layout_alignParentBottom="true"
