@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.github.randoapp.activity.BaseActivity;
 import com.github.randoapp.log.Log;
+import com.github.randoapp.menu.ReportMenu;
 import com.github.randoapp.service.SyncService;
 import com.github.randoapp.task.CropImageTask;
 import com.github.randoapp.task.RandoUploadTask;
@@ -41,7 +42,7 @@ import static android.graphics.ImageFormat.JPEG;
 import static android.view.View.VISIBLE;
 import static com.github.randoapp.Constants.JPEG_QUALITY;
 
-public class TakePictureActivity extends BaseActivity {
+public class CameraActivity extends BaseActivity {
     private com.github.randoapp.view.RandoSurfaceView randoSurfaceView;
     private Camera camera;
     private FrameLayout preview;
@@ -70,7 +71,7 @@ public class TakePictureActivity extends BaseActivity {
                     .onError(new OnError() {
                         @Override
                         public void onError(Map<String, Object> data) {
-                            Toast.makeText(TakePictureActivity.this, "Crop Failed.",
+                            Toast.makeText(CameraActivity.this, "Crop Failed.",
                                     Toast.LENGTH_LONG).show();
                         }
                     })
@@ -96,7 +97,7 @@ public class TakePictureActivity extends BaseActivity {
                     Cursor cursor = getContentResolver().query(
                             selectedImage, filePathColumn, null, null, null);
                     if (cursor == null) {
-                        Log.w(TakePictureActivity.class, "Selecting from Album failed.");
+                        Log.w(CameraActivity.class, "Selecting from Album failed.");
                         break;
                     }
                     cursor.moveToFirst();
@@ -114,7 +115,7 @@ public class TakePictureActivity extends BaseActivity {
                             .onError(new OnError() {
                                 @Override
                                 public void onError(Map<String, Object> data) {
-                                    Toast.makeText(TakePictureActivity.this, "Crop Failed.",
+                                    Toast.makeText(CameraActivity.this, "Crop Failed.",
                                             Toast.LENGTH_LONG).show();
                                 }
                             })
@@ -194,6 +195,13 @@ public class TakePictureActivity extends BaseActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        picFileName = null;
+        releaseCamera();
+        super.onBackPressed();
+    }
+
     private void setBackButtonListener() {
         ImageView backButton = (ImageView) findViewById(R.id.back_button);
         backButton.setOnClickListener(new ImageView.OnClickListener() {
@@ -241,17 +249,17 @@ public class TakePictureActivity extends BaseActivity {
                         public void onOk(Map<String, Object> data) {
                             SyncService.run();
                             hideProgressbar();
-                            Toast.makeText(TakePictureActivity.this,
+                            Toast.makeText(CameraActivity.this,
                                     R.string.photo_upload_ok,
                                     Toast.LENGTH_LONG).show();
-                            TakePictureActivity.this.setResult(Activity.RESULT_OK);
-                            TakePictureActivity.this.finish();
+                            CameraActivity.this.setResult(Activity.RESULT_OK);
+                            CameraActivity.this.finish();
                         }
                     }).onError(new OnError() {
                         @Override
                         public void onError(Map<String, Object> data) {
                             hideProgressbar();
-                            Toast.makeText(TakePictureActivity.this, R.string.photo_upload_failed,
+                            Toast.makeText(CameraActivity.this, R.string.photo_upload_failed,
                                     Toast.LENGTH_LONG).show();
 
                             if (uploadPictureButton != null) {
@@ -340,12 +348,14 @@ public class TakePictureActivity extends BaseActivity {
 
     private void showUploadButton() {
         findViewById(R.id.capture_button).setVisibility(View.GONE);
+        findViewById(R.id.flash_button).setVisibility(View.GONE);
         uploadPictureButton.setEnabled(true);
         findViewById(R.id.upload_button).setVisibility(VISIBLE);
     }
 
     private void hideUploadButton() {
         findViewById(R.id.capture_button).setVisibility(VISIBLE);
+        findViewById(R.id.flash_button).setVisibility(VISIBLE);
         findViewById(R.id.upload_button).setVisibility(View.GONE);
     }
 

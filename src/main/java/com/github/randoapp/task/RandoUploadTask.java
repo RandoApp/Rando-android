@@ -5,7 +5,7 @@ import android.os.PowerManager;
 import android.text.TextUtils;
 
 import com.github.randoapp.App;
-import com.github.randoapp.TakePictureActivity;
+import com.github.randoapp.CameraActivity;
 import com.github.randoapp.api.API;
 import com.github.randoapp.log.Log;
 
@@ -32,7 +32,7 @@ public class RandoUploadTask extends BaseTask {
                 RandoUploadTask.class.getName());
         wl.acquire();
         try {
-            API.uploadImage(new File(fileToUpload), TakePictureActivity.currentLocation);
+            API.uploadImage(new File(fileToUpload), CameraActivity.currentLocation);
         } catch (Exception e) {
             Log.w(RandoUploadTask.class, "File failed to upload. File=", fileToUpload);
             return ERROR;

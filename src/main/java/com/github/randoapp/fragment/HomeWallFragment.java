@@ -12,8 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.github.randoapp.CameraActivity;
 import com.github.randoapp.R;
-import com.github.randoapp.TakePictureActivity;
 import com.github.randoapp.adapter.RandoPairsAdapter;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.notification.Notification;
@@ -84,7 +84,7 @@ public class HomeWallFragment extends Fragment {
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(rootView.getContext(), TakePictureActivity.class);
+                Intent intent = new Intent(rootView.getContext(), CameraActivity.class);
                 startActivityForResult(intent, 100);
             }
         });

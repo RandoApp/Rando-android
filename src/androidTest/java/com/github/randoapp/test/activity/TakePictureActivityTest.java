@@ -3,8 +3,8 @@ package com.github.randoapp.test.activity;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 
+import com.github.randoapp.CameraActivity;
 import com.github.randoapp.R;
-import com.github.randoapp.TakePictureActivity;
 import com.github.randoapp.test.api.APITestHelper;
 
 import java.io.IOException;
@@ -16,15 +16,15 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.CoreMatchers.not;
 
-public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<TakePictureActivity> implements ActivityTestI {
+public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<CameraActivity> implements ActivityTestI {
 
     //Activity to test
-    private TakePictureActivity takePictureActivity;
+    private CameraActivity takePictureActivity;
 
     // Be careful about letting the IDE create the constructor.  As of this writing,
     // it creates a constructor that's compiles cleanly but doesn't run any tests
     public TakePictureActivityTest() {
-        super(TakePictureActivity.class);
+        super(CameraActivity.class);
     }
 
     @Override
