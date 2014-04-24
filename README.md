@@ -1,4 +1,4 @@
-foodex-android [![Build Status](https://travis-ci.org/xp-vit/foodex-android.png?branch=master)](https://travis-ci.org/xp-vit/foodex-android)
+Rando-android [![Build Status](https://travis-ci.org/RandoApp/Rando-android.png?branch=master)](https://travis-ci.org/RandoApp/Rando-android)
 ==============
 
-Foodex android client
+Rando android client. Give, receive and collect unique photos from random people from all over the world.
