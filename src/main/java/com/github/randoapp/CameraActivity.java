@@ -2,40 +2,33 @@ package com.github.randoapp;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.hardware.Camera;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.view.Display;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.github.randoapp.activity.BaseActivity;
 import com.github.randoapp.log.Log;
-import com.github.randoapp.menu.ReportMenu;
 import com.github.randoapp.service.SyncService;
 import com.github.randoapp.task.CropImageTask;
-import com.github.randoapp.task.RandoUploadTask;
+import com.github.randoapp.task.UploadTask;
 import com.github.randoapp.task.callback.OnDone;
 import com.github.randoapp.task.callback.OnError;
 import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.BitmapUtil;
 import com.github.randoapp.util.FileUtil;
 import com.github.randoapp.util.LocationUpdater;
+import com.github.randoapp.view.RandoSurfaceView;
 import com.makeramen.RoundedImageView;
 
 import java.util.Map;
@@ -45,7 +38,7 @@ import static android.view.View.VISIBLE;
 import static com.github.randoapp.Constants.JPEG_QUALITY;
 
 public class CameraActivity extends BaseActivity {
-    private com.github.randoapp.view.RandoSurfaceView randoSurfaceView;
+    private RandoSurfaceView randoSurfaceView;
     private Camera camera;
     private FrameLayout preview;
 
@@ -88,8 +81,19 @@ public class CameraActivity extends BaseActivity {
     };
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.camera);
 
+        updateLocation();
+        setBackButtonListener();
+        setFlashLightButtonListener();
+        setTakePictureButtonListener();
+        setUploadButtonListener();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQ_CODE_SELECT_PHOTO:
                 if (resultCode == RESULT_OK) {
@@ -151,49 +155,58 @@ public class CameraActivity extends BaseActivity {
         options.inJustDecodeBounds = false;
         Bitmap bitmap = BitmapFactory.decodeFile(picFileName, options);
         preview.removeAllViews();
-        ImageView imagePreview = new ImageView(getApplicationContext());
+
+        RoundedImageView imagePreview = new RoundedImageView(getApplicationContext());
+        imagePreview.setOval(true);
         imagePreview.setImageBitmap(bitmap);
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(preview.getWidth(), preview.getWidth());
         imagePreview.setLayoutParams(layoutParams);
         preview.addView(imagePreview);
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.camera);
+    private void createCameraPreview() {
+        camera = getCameraInstance();
 
-        updateLocation();
-        setBackButtonListener();
-        setFlashLightButtonListener();
-        setTakePictureButtonListener();
-        setUploadButtonListener();
+        if (camera != null) {
+            Camera.Parameters params = camera.getParameters();
+            //disable flashlight button if flash_background light not supported
+            if (params.getFlashMode() == null) {
+                flashLightButton.setEnabled(false);
+                flashLightButton.setImageResource(R.drawable.flash_disable);
+            }
+            params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+            params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+            params.setPictureFormat(JPEG);
+            params.setJpegQuality(JPEG_QUALITY);
+            params.set("jpeg-quality", JPEG_QUALITY);
+            params.setRotation(90);
+            params.set("orientation", "portrait");
+            params.set("rotation", 90);
+            camera.setParameters(params);
+
+            randoSurfaceView = new com.github.randoapp.view.RandoSurfaceView(getApplicationContext(), camera);
+
+            preview = (FrameLayout) findViewById(R.id.camera_preview);
+            preview.removeAllViews();
+            preview.addView(randoSurfaceView);
+        } else {
+            //TODO: Handle camera not available.
+        }
     }
 
-    private void setFlashLightButtonListener() {
-        flashLightButton = (ImageView) findViewById(R.id.flash_button);
-        flashLightButton.setOnClickListener(new ImageView.OnClickListener() {
+    private void showUploadButton() {
+        findViewById(R.id.capture_button).setVisibility(View.GONE);
+        findViewById(R.id.flash_button).setVisibility(View.GONE);
+        uploadPictureButton.setEnabled(true);
+        findViewById(R.id.upload_button).setVisibility(VISIBLE);
+        findViewById(R.id.circle_mask).setVisibility(View.GONE);
+    }
 
-            @Override
-            public void onClick(View arg0) {
-                Camera.Parameters params = camera.getParameters();
-                String flashMode = params.getFlashMode();
-
-                if (Camera.Parameters.FLASH_MODE_AUTO.equals(flashMode)) {
-                    flashLightButton.setImageResource(R.drawable.flash_disable);
-                    flashMode = Camera.Parameters.FLASH_MODE_OFF;
-                } else if (Camera.Parameters.FLASH_MODE_OFF.equals(flashMode)) {
-                    flashLightButton.setImageResource(R.drawable.flash_background);
-                    flashMode = Camera.Parameters.FLASH_MODE_ON;
-                } else if (Camera.Parameters.FLASH_MODE_ON.equals(flashMode)) {
-                    flashLightButton.setImageResource(R.drawable.flash_auto);
-                    flashMode = Camera.Parameters.FLASH_MODE_AUTO;
-                }
-                params.setFlashMode(flashMode);
-
-                camera.setParameters(params);
-            }
-        });
+    private void hideUploadButton() {
+        findViewById(R.id.capture_button).setVisibility(VISIBLE);
+        findViewById(R.id.flash_button).setVisibility(VISIBLE);
+        findViewById(R.id.upload_button).setVisibility(View.GONE);
+        findViewById(R.id.circle_mask).setVisibility(VISIBLE);
     }
 
     @Override
@@ -222,6 +235,32 @@ public class CameraActivity extends BaseActivity {
         });
     }
 
+    private void setFlashLightButtonListener() {
+        flashLightButton = (ImageView) findViewById(R.id.flash_button);
+        flashLightButton.setOnClickListener(new ImageView.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                Camera.Parameters params = camera.getParameters();
+                String flashMode = params.getFlashMode();
+
+                if (Camera.Parameters.FLASH_MODE_AUTO.equals(flashMode)) {
+                    flashLightButton.setImageResource(R.drawable.flash_disable);
+                    flashMode = Camera.Parameters.FLASH_MODE_OFF;
+                } else if (Camera.Parameters.FLASH_MODE_OFF.equals(flashMode)) {
+                    flashLightButton.setImageResource(R.drawable.flash_background);
+                    flashMode = Camera.Parameters.FLASH_MODE_ON;
+                } else if (Camera.Parameters.FLASH_MODE_ON.equals(flashMode)) {
+                    flashLightButton.setImageResource(R.drawable.flash_auto);
+                    flashMode = Camera.Parameters.FLASH_MODE_AUTO;
+                }
+                params.setFlashMode(flashMode);
+
+                camera.setParameters(params);
+            }
+        });
+    }
+
     private void setTakePictureButtonListener() {
         ImageView takePictureButton = (ImageView) findViewById(R.id.capture_button);
         takePictureButton.setOnClickListener(new ImageView.OnClickListener() {
@@ -235,7 +274,6 @@ public class CameraActivity extends BaseActivity {
         });
     }
 
-
     private void setUploadButtonListener() {
         uploadPictureButton = (ImageView) findViewById(R.id.upload_button);
         uploadPictureButton.setOnClickListener(new ImageView.OnClickListener() {
@@ -245,9 +283,10 @@ public class CameraActivity extends BaseActivity {
                 if (picFileName != null) {
                     showProgressbar("uploading...");
                     uploadPictureButton.setEnabled(false);
-                    new RandoUploadTask(picFileName).onOk(new OnOk() {
+                    new UploadTask(picFileName).onOk(new OnOk() {
                         @Override
                         public void onOk(Map<String, Object> data) {
+                            picFileName = null;
                             SyncService.run();
                             hideProgressbar();
                             Toast.makeText(CameraActivity.this,
@@ -274,46 +313,6 @@ public class CameraActivity extends BaseActivity {
         });
     }
 
-    private void createCameraPreview() {
-        camera = getCameraInstance();
-
-        if (camera != null) {
-
-            Camera.Parameters params = camera.getParameters();
-            //disable flashlight button if flash_background light not supported
-            if (params.getFlashMode() == null) {
-                flashLightButton.setEnabled(false);
-                flashLightButton.setImageResource(R.drawable.flash_disable);
-            }
-            params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-            params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
-            params.setPictureFormat(JPEG);
-            params.setJpegQuality(JPEG_QUALITY);
-            params.set("jpeg-quality", JPEG_QUALITY);
-            params.setRotation(90);
-            params.set("orientation", "portrait");
-            params.set("rotation", 90);
-            camera.setParameters(params);
-
-            randoSurfaceView = new com.github.randoapp.view.RandoSurfaceView(getApplicationContext(), camera);
-
-            preview = (FrameLayout) findViewById(R.id.camera_preview);
-            preview.removeAllViews();
-            preview.addView(randoSurfaceView);
-
-        } else {
-            //TODO: Handle camera not available.
-        }
-    }
-
-    public int getStatusBarHeight() {
-        int statusBarId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (statusBarId > 0) {
-            return getResources().getDimensionPixelSize(statusBarId);
-        }
-        return 0;
-    }
-
     private void updateLocation() {
         LocationUpdater.LocationResult locationResult = new LocationUpdater.LocationResult() {
             @Override
@@ -322,19 +321,6 @@ public class CameraActivity extends BaseActivity {
             }
         };
         locationUpdater.getLocation(getApplicationContext(), locationResult);
-    }
-
-    private void showUploadButton() {
-        findViewById(R.id.capture_button).setVisibility(View.GONE);
-        findViewById(R.id.flash_button).setVisibility(View.GONE);
-        uploadPictureButton.setEnabled(true);
-        findViewById(R.id.upload_button).setVisibility(VISIBLE);
-    }
-
-    private void hideUploadButton() {
-        findViewById(R.id.capture_button).setVisibility(VISIBLE);
-        findViewById(R.id.flash_button).setVisibility(VISIBLE);
-        findViewById(R.id.upload_button).setVisibility(View.GONE);
     }
 
     /**
@@ -385,6 +371,4 @@ public class CameraActivity extends BaseActivity {
         releaseCamera();
         locationUpdater.cancelTimer();
     }
-
 }
-
