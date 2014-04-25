@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import com.makeramen.RoundedImageView;
 
 import com.github.randoapp.R;
 import com.github.randoapp.log.Log;
@@ -36,7 +37,9 @@ public class RandoMapSwitcherAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         RelativeLayout layout = new RelativeLayout(container.getContext());
 
-        ImageView imageView = new ImageView(container.getContext());
+        RoundedImageView imageView = new RoundedImageView(container.getContext());
+        imageView.setOval(true);
+
         imageView.setPadding(0, 0, 0, 0);
         imageView.setOnClickListener(imageListener);
 
@@ -52,11 +55,9 @@ public class RandoMapSwitcherAdapter extends PagerAdapter {
 
         View view = new View(container.getContext());
         view.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        view.setBackgroundDrawable(container.getContext().getResources().getDrawable(R.drawable.white_circle));
 
         layout.addView(view);
         container.addView(layout, 0);
-
 
         return layout;
     }

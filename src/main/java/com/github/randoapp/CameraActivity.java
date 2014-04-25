@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.hardware.Camera;
 import android.location.Location;
 import android.net.Uri;
@@ -35,6 +36,7 @@ import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.BitmapUtil;
 import com.github.randoapp.util.FileUtil;
 import com.github.randoapp.util.LocationUpdater;
+import com.makeramen.RoundedImageView;
 
 import java.util.Map;
 
@@ -166,7 +168,6 @@ public class CameraActivity extends BaseActivity {
         setFlashLightButtonListener();
         setTakePictureButtonListener();
         setUploadButtonListener();
-        normalizeCameraPreview();
     }
 
     private void setFlashLightButtonListener() {
@@ -303,29 +304,6 @@ public class CameraActivity extends BaseActivity {
         } else {
             //TODO: Handle camera not available.
         }
-    }
-
-    private void normalizeCameraPreview() {
-        WindowManager windowManager = (WindowManager) App.context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
-
-        int actionBarHeight = getResources().getDimensionPixelSize(android.support.v7.appcompat.R.dimen.abc_action_bar_default_height);
-        int cameraPreviewHeight = display.getWidth();
-        int statusBarHeight = getStatusBarHeight();
-
-        LinearLayout bottomBlackPanel = (LinearLayout) findViewById(R.id.bottom_black_panel);
-        RelativeLayout.LayoutParams bottomBlackPanelParams = (RelativeLayout.LayoutParams) bottomBlackPanel.getLayoutParams();
-
-        int bottomToolbarHeight = display.getHeight() - statusBarHeight - actionBarHeight - cameraPreviewHeight;
-        bottomBlackPanelParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
-        bottomBlackPanelParams.height = bottomToolbarHeight;
-
-        View circle = findViewById(R.id.circle_mask);
-        ViewGroup.LayoutParams circleParams = circle.getLayoutParams();
-        int size = Math.min(display.getHeight(), display.getWidth());
-        circleParams.height = size;
-        circleParams.width = size;
-        circle.setLayoutParams(circleParams);
     }
 
     public int getStatusBarHeight() {
