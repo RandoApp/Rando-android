@@ -1,7 +1,7 @@
 package com.github.randoapp.task;
 
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
@@ -46,7 +46,7 @@ public class BonAppetitTask extends BaseTask {
                 .onDone(new OnDone() {
                     @Override
                     public void onDone(Map<String, Object> data) {
-                        FragmentManager fragmentManager = ((ActionBarActivity) MainActivity.activity).getSupportFragmentManager();
+                        FragmentManager fragmentManager = ((FragmentActivity) MainActivity.activity).getSupportFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.main_screen, new AuthFragment()).commit();
                     }
                 })

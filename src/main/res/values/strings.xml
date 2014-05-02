@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Rando</string>
+    <string name="app_name">Rando [New]</string>
     <string name="email">Email:</string>
     <string name="password">Password:</string>
     <string name="facebook">Facebook</string>
-    <string name="signup">Sign up</string>
+    <string name="signup">Sign in | Sign up</string>
     <string name="skip">Skip…</string>
     <string name="action_settings">Settings</string>
 
@@ -39,6 +39,6 @@
     <string name="sync_service_name">Rando Sync Service</string>
     <string name="log_service_name">Rando log sender service</string>
 
-    <string name="crash_toast_text">Ooooops ! I crashed, but a report has been sent to my developer to help fix the issue !</string>
+    <string name="crash_toast_text">Ooooops! I crashed, but a report has been sent to my developer to help fix the issue!</string>
 
 </resources>

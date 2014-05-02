@@ -48,7 +48,7 @@ import static com.android.volley.Request.Priority;
 public class RandoPairsAdapter extends BaseAdapter {
 
     private List<RandoPair> randoPairs;
-    private int randoImageSize;
+    private int imageSize;
 
     private int size;
 
@@ -72,7 +72,7 @@ public class RandoPairsAdapter extends BaseAdapter {
         Display display = windowManager.getDefaultDisplay();
         int displayWidth = display.getWidth();
         int orientation = context.getResources().getConfiguration().orientation;
-        randoImageSize = getRandoImageSize(orientation, displayWidth);
+        imageSize = getRandoImageSize(orientation, displayWidth);
         initData();
     }
 
@@ -100,7 +100,7 @@ public class RandoPairsAdapter extends BaseAdapter {
             LayoutInflater inflater = (LayoutInflater) container.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.rando_item, container, false);
             holder = createHolder(convertView);
-            addListenersToHolder(holder);
+            addListenersToHolder(container.getContext(), holder);
         }
 
         recycle(holder, randoPair);
@@ -117,21 +117,26 @@ public class RandoPairsAdapter extends BaseAdapter {
 
         holder.viewSwitcher = (ViewSwitcher) convertView.findViewWithTag("viewSwitcher");
 
-        holder.stranger.randoPager = (ViewPager) convertView.findViewWithTag("stranger");
-        holder.user.randoPager = (ViewPager) convertView.findViewWithTag("user");
+        holder.imagePager = (ViewPager) convertView.findViewWithTag("image");
+        holder.mapPager = (ViewPager) convertView.findViewWithTag("map");
 
-        ViewSwitcher.LayoutParams randoImagesLayout= new ViewSwitcher.LayoutParams(randoImageSize, randoImageSize);
-        holder.stranger.randoPager.setLayoutParams(randoImagesLayout);
-        holder.user.randoPager.setLayoutParams(randoImagesLayout);
+        ViewSwitcher.LayoutParams randoImagesLayout = new ViewSwitcher.LayoutParams(imageSize, imageSize);
+        holder.imagePager.setLayoutParams(randoImagesLayout);
+        holder.mapPager.setLayoutParams(randoImagesLayout);
 
-        holder.user.randoMapPagerAdatper = new RandoMapSwitcherAdapter(holder.user);
-        holder.user.randoPager.setAdapter(holder.user.randoMapPagerAdatper);
+        holder.imagePagerAdapter = new ImagePagerAdapter(holder, imageSize);
+        holder.imagePager.setAdapter(holder.imagePagerAdapter);
 
-        holder.stranger.randoMapPagerAdatper = new RandoMapSwitcherAdapter(holder.stranger);
-        holder.stranger.randoPager.setAdapter(holder.stranger.randoMapPagerAdatper);
+        RandoPagerListener randoPagerListener = new RandoPagerListener(holder);
+        holder.imagePager.setOnPageChangeListener(randoPagerListener);
+        holder.mapPager.setOnPageChangeListener(randoPagerListener);
+
+        holder.mapPagerAdapter  = new MapPagerAdapter(holder, imageSize);
+        holder.mapPager.setAdapter(holder.mapPagerAdapter);
 
         holder.dateTimeView = (TextView) convertView.findViewWithTag("date_time");
-        holder.homeIconSwitcher = (ViewSwitcher) convertView.findViewWithTag("home_ic_switcher");
+
+        holder.homeIcon = (ViewSwitcher) convertView.findViewWithTag("home_ic_switcher");
 
         createReportDialog(convertView, holder);
 
@@ -146,17 +151,17 @@ public class RandoPairsAdapter extends BaseAdapter {
         int reportButtonHeight = convertView.getResources().getDimensionPixelSize(R.dimen.report_button_height);
 
         LinearLayout.LayoutParams reportButtonParams = new LinearLayout.LayoutParams(reportButtonWidth, reportButtonHeight);
-        int marginCenter = randoImageSize / 2;
+        int marginCenter = imageSize / 2;
         reportButtonParams.topMargin = marginCenter - reportButtonHeight / 2;
         reportButtonParams.leftMargin = marginCenter - reportButtonWidth / 2;
         reportButton.setLayoutParams(reportButtonParams);
-        holder.reportDialog.setLayoutParams(new RelativeLayout.LayoutParams(randoImageSize, randoImageSize));
+        holder.reportDialog.setLayoutParams(new RelativeLayout.LayoutParams(imageSize, imageSize));
     }
 
-    private void addListenersToHolder(final ViewHolder holder) {
-        View.OnClickListener randoOnClickListener = createRandoOnClickListener(holder);
-        holder.user.randoMapPagerAdatper.setOnClickListener(randoOnClickListener);
-        holder.stranger.randoMapPagerAdatper.setOnClickListener(randoOnClickListener);
+    private void addListenersToHolder(Context context, final ViewHolder holder) {
+        View.OnClickListener randoOnClickListener = createRandoOnClickListener(context, holder);
+        holder.imagePagerAdapter.setOnClickListener(randoOnClickListener);
+        holder.mapPagerAdapter.setOnClickListener(randoOnClickListener);
         holder.reportDialog.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -180,18 +185,16 @@ public class RandoPairsAdapter extends BaseAdapter {
         });
     }
 
-    private View.OnClickListener createRandoOnClickListener(final ViewHolder holder) {
+    private View.OnClickListener createRandoOnClickListener(final Context context, final ViewHolder holder) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (holder.animationInProgress) return;
 
-                int imageOrMapItem = ((ViewPager) holder.viewSwitcher.getCurrentView()).getCurrentItem();
+                int strangerOrUserItem = ((ViewPager) holder.viewSwitcher.getCurrentView()).getCurrentItem();
                 holder.viewSwitcher.showNext();
                 ViewPager randoMapView = (ViewPager) holder.viewSwitcher.getCurrentView();
-                randoMapView.setCurrentItem(imageOrMapItem);
-
-                holder.homeIconSwitcher.showNext();
+                randoMapView.setCurrentItem(strangerOrUserItem);
             }
         };
     }
@@ -205,8 +208,6 @@ public class RandoPairsAdapter extends BaseAdapter {
         recycleViewSwitcher(holder.viewSwitcher);
         recycleViewPager(holder);
 
-        holder.homeIconSwitcher.setDisplayedChild(0);
-
         holder.dateTimeView.setText(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
                 .format(holder.randoPair.user.date) + " "); //1 space for fix italic cutting off issue
 
@@ -215,11 +216,8 @@ public class RandoPairsAdapter extends BaseAdapter {
             return;
         }
 
-        if (holder.stranger.randoImage != null && holder.user.randoImage != null
-                && holder.stranger.mapImage != null && holder.user.mapImage != null) {
-            holder.user.randoMapPagerAdatper.recycle(holder.user.randoImage, holder.user.mapImage);
-            holder.stranger.randoMapPagerAdatper.recycle(holder.stranger.randoImage, holder.stranger.mapImage);
-        }
+        holder.imagePagerAdapter.recycle();
+        holder.mapPagerAdapter.recycle();
 
         holder.reportDialog.setVisibility(View.GONE);
     }
@@ -251,8 +249,8 @@ public class RandoPairsAdapter extends BaseAdapter {
     }
 
     private void recycleViewPager(ViewHolder holder) {
-        holder.user.randoPager.setCurrentItem(0);
-        holder.stranger.randoPager.setCurrentItem(0);
+        holder.imagePager.setCurrentItem(0);
+        holder.mapPager.setCurrentItem(0);
     }
 
     private int getRandoImageSize(int orientation, int displayWidth) {
@@ -264,8 +262,8 @@ public class RandoPairsAdapter extends BaseAdapter {
     }
 
     private void setAnimations(final ViewHolder holder) {
-        final Animation[] leftToRightAnimation = AnimationFactory.flipAnimation(randoImageSize, AnimationFactory.FlipDirection.LEFT_RIGHT, 600, null);
-        final Animation[] rightToLeftAnimation = AnimationFactory.flipAnimation(randoImageSize, AnimationFactory.FlipDirection.RIGHT_LEFT, 600, null);
+        final Animation[] leftToRightAnimation = AnimationFactory.flipAnimation(imageSize, AnimationFactory.FlipDirection.LEFT_RIGHT, 600, null);
+        final Animation[] rightToLeftAnimation = AnimationFactory.flipAnimation(imageSize, AnimationFactory.FlipDirection.RIGHT_LEFT, 600, null);
 
         holder.viewSwitcher.setOutAnimation(leftToRightAnimation[0]);
         holder.viewSwitcher.setInAnimation(leftToRightAnimation[1]);
@@ -298,16 +296,16 @@ public class RandoPairsAdapter extends BaseAdapter {
     }
 
     private void loadImages(final ViewHolder holder, final RandoPair randoPair) {
-        loadImage(holder.stranger, RandoPairUtil.getUrlByImageSize(randoImageSize, randoPair.stranger.imageURLSize), Priority.HIGH);
-        loadImage(holder.user, RandoPairUtil.getUrlByImageSize(randoImageSize, randoPair.user.imageURLSize), Priority.LOW);
-        loadMapImage(holder.stranger, RandoPairUtil.getUrlByImageSize(randoImageSize, randoPair.stranger.mapURLSize), Priority.NORMAL);
-        loadMapImage(holder.user, RandoPairUtil.getUrlByImageSize(randoImageSize, randoPair.user.mapURLSize), Priority.LOW);
+        loadImage(holder.stranger, RandoPairUtil.getUrlByImageSize(imageSize, randoPair.stranger.imageURLSize), Priority.HIGH);
+        loadImage(holder.user, RandoPairUtil.getUrlByImageSize(imageSize, randoPair.user.imageURLSize), Priority.LOW);
+        loadMapImage(holder.stranger, RandoPairUtil.getUrlByImageSize(imageSize, randoPair.stranger.mapURLSize), Priority.NORMAL);
+        loadMapImage(holder.user, RandoPairUtil.getUrlByImageSize(imageSize, randoPair.user.mapURLSize), Priority.LOW);
     }
 
     private void loadImage(final ViewHolder.UserHolder userHolder, final String url, Priority priority) {
         if (TextUtils.isEmpty(url)) {
-            if (userHolder.randoImage != null) {
-                userHolder.randoImage.setImageResource(R.drawable.pair);
+            if (userHolder.image != null) {
+                userHolder.image.setImageResource(R.drawable.rando_pairing);
             } else {
                 userHolder.needSetPairing = true;
             }
@@ -315,24 +313,24 @@ public class RandoPairsAdapter extends BaseAdapter {
         }
 
         if (URLUtil.isValidUrl(url)) {
-            Log.d(RandoPairsAdapter.class, "rando url: ", url);
+            Log.d(RandoPairsAdapter.class, "image url: ", url);
             userHolder.randoContainer = VolleySingleton.getInstance().getImageLoader().get(url, priority, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                    if (userHolder.randoImage != null && response.getBitmap() != null) {
-                        userHolder.randoImage.setImageBitmap(response.getBitmap());
-                    } else if (userHolder.randoImage == null && response.getBitmap() != null) {
-                        userHolder.randoBitmap = response.getBitmap();
-                    } else if (userHolder.randoImage != null && response.getBitmap() == null) {
-                        userHolder.randoImage.setImageResource(R.drawable.image_wait);
+                    if (userHolder.image != null && response.getBitmap() != null) {
+                        userHolder.image.setImageBitmap(response.getBitmap());
+                    } else if (userHolder.image == null && response.getBitmap() != null) {
+                        userHolder.imageBitmap = response.getBitmap();
+                    } else if (userHolder.image != null && response.getBitmap() == null) {
+                        userHolder.image.setImageResource(R.drawable.rando_loading);
                     }
                 }
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.e(RandoPairsAdapter.class, "VolleyError when load rando image: ", url , "with randoImageSize = ", String.valueOf(randoImageSize), " , because ", error.getMessage());
-                    if (userHolder.randoImage != null) {
-                        userHolder.randoImage.setImageResource(R.drawable.image_error);
+                    Log.e(RandoPairsAdapter.class, "VolleyError when load rando image: ", url , "with imageSize = ", String.valueOf(imageSize), " , because ", error.getMessage());
+                    if (userHolder.image != null) {
+                        userHolder.image.setImageResource(R.drawable.rando_error);
                     } else {
                         userHolder.needSetImageError = true;
                     }
@@ -340,8 +338,8 @@ public class RandoPairsAdapter extends BaseAdapter {
             });
         } else {
             Log.e(RandoPairsAdapter.class, "Ignore rando image because url: ", url, " incorrect");
-            if (userHolder.randoImage != null) {
-                userHolder.randoImage.setImageResource(R.drawable.image_error);
+            if (userHolder.image != null) {
+                userHolder.image.setImageResource(R.drawable.rando_error);
             } else {
                 userHolder.needSetImageError = true;
             }
@@ -354,20 +352,20 @@ public class RandoPairsAdapter extends BaseAdapter {
             userHolder.mapContainer = VolleySingleton.getInstance().getImageLoader().get(url, priority, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                    if (userHolder.mapImage != null && response.getBitmap() != null) {
-                        userHolder.mapImage.setImageBitmap(response.getBitmap());
-                    } else if (userHolder.mapImage == null && response.getBitmap() != null) {
+                    if (userHolder.map != null && response.getBitmap() != null) {
+                        userHolder.map.setImageBitmap(response.getBitmap());
+                    } else if (userHolder.map == null && response.getBitmap() != null) {
                         userHolder.mapBitmap = response.getBitmap();
-                    } else if (userHolder.mapImage != null && response.getBitmap() == null) {
-                        userHolder.mapImage.setImageResource(R.drawable.map_wait);
+                    } else if (userHolder.map != null && response.getBitmap() == null) {
+                        userHolder.map.setImageResource(R.drawable.rando_loading);
                     }
                 }
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.e(RandoPairsAdapter.class, "VolleyError when load map image: ", url , "with randoImageSize = ", String.valueOf(randoImageSize), " , because ", error.getMessage());
-                    if (userHolder.mapImage != null) {
-                        userHolder.mapImage.setImageResource(R.drawable.map_error);
+                    Log.e(RandoPairsAdapter.class, "VolleyError when load map image: ", url , "with imageSize = ", String.valueOf(imageSize), " , because ", error.getMessage());
+                    if (userHolder.map != null) {
+                        userHolder.map.setImageResource(R.drawable.rando_error);
                     } else {
                         userHolder.needSetMapError = true;
                     }
@@ -375,8 +373,8 @@ public class RandoPairsAdapter extends BaseAdapter {
             });
         } else {
             Log.e(RandoPairsAdapter.class, "Ignore map image because url: ", url, " incorrect");
-            if (userHolder.mapImage != null) {
-                userHolder.mapImage.setImageResource(R.drawable.map_error);
+            if (userHolder.map != null) {
+                userHolder.map.setImageResource(R.drawable.rando_error);
             } else {
                 userHolder.needSetMapError = true;
             }
@@ -395,14 +393,17 @@ public class RandoPairsAdapter extends BaseAdapter {
         public UserHolder user;
         public UserHolder stranger;
         public LinearLayout reportDialog;
-        public ViewSwitcher homeIconSwitcher;
+
+        public RandoPagerAdapter imagePagerAdapter;
+        public ViewPager imagePager;
+        public RandoPagerAdapter mapPagerAdapter;
+        public ViewPager mapPager;
+        public ViewSwitcher homeIcon;
+
 
         public static class UserHolder {
-            public ViewPager randoPager;
-            public RandoMapSwitcherAdapter randoMapPagerAdatper;
-
-            public ImageView randoImage;
-            public ImageView mapImage;
+            public ImageView image;
+            public ImageView map;
 
             public ImageLoader.ImageContainer randoContainer;
             public ImageLoader.ImageContainer mapContainer;
@@ -412,7 +413,7 @@ public class RandoPairsAdapter extends BaseAdapter {
 
             public boolean needSetPairing = false;
 
-            public Bitmap randoBitmap;
+            public Bitmap imageBitmap;
             public Bitmap mapBitmap;
         }
     }

@@ -21,13 +21,13 @@
     <color name="empty_home_message">#BB000000</color>
     <color name="empty_home_message_shadow">#CCCCCC</color>
 
-
-
     <color name="rando_red">#ffe93229</color>
     <color name="rando_red_pressed">#ffbf2a22</color>
     <color name="rando_grey">#ffe1e1e1</color>
     <color name="rando_dark_grey">#ff5a5a5a</color>
     <color name="rando_light_grey">#ff8f8f8f</color>
+    <color name="rando_pairing_green">#ff1ea45e</color>
+    <color name="rando_red_error">#ff8f2921</color>
     <color name="general_text_grey">#ff8f8f8f</color>
     <color name="button_text">#ff5a5a5a</color>
     <color name="overview_info_text">#ffc7c7c7</color>

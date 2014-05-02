@@ -49,7 +49,8 @@
     <dimen name="empty_home_message_width">0dp</dimen>
 
     <dimen name="ic_home_size">35dp</dimen>
-    <dimen name="ic_home_margin_top">2dp</dimen>
+    <dimen name="ic_home_margin_top">15dp</dimen>
+    <dimen name="ic_home_margin_right">8dp</dimen>
 
 </resources>
 
