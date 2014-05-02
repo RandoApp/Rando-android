@@ -9,8 +9,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,7 +26,7 @@ import com.github.randoapp.menu.LogoutMenu;
 import com.github.randoapp.menu.ReportMenu;
 import com.github.randoapp.preferences.Preferences;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends FragmentActivity {
 
     public static Activity activity;
 
@@ -41,6 +41,7 @@ public class MainActivity extends ActionBarActivity {
             Bundle extra = intent.getExtras();
             int randoPairsNumber = (Integer) extra.get(Constants.RANDO_PAIRS_NUMBER);
             if (randoPairsNumber == 0 && emptyHome != null) {
+
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.main_screen, new EmptyHomeWallFragment()).commit();
             }
@@ -56,27 +57,12 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         activity = this;
 
-        setAppTitle();
-
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.main_screen, getFragment())
                     .commit();
-        }
-    }
-
-    //Just for alpha testers. Remove when release.
-    private void setAppTitle() {
-        try {
-            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            String name = getResources().getString(R.string.app_name);
-            String version = packageInfo.versionName;
-            String codeVersion = String.valueOf(packageInfo.versionCode);
-            setTitle(name + " " + version + " [build: " + codeVersion + "]");
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(MainActivity.class, "Can't set app title, because: ", e.getMessage());
         }
     }
 

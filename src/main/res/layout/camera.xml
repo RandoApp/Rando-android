@@ -41,25 +41,11 @@
         android:layout_below="@+id/top_toolbar"
         android:layout_gravity="center_horizontal" />
 
-    <View
+    <com.github.randoapp.view.CircleMaskView
         android:id="@+id/circle_mask"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/abc_action_bar_default_height"
-        android:background="@drawable/black_circle" />
-
-    <!-- Height will be overridden programmatically -->
-    <LinearLayout
-        android:id="@+id/bottom_black_panel"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_alignBottom="@+id/camera_preview"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_centerHorizontal="true"
-        android:background="@android:color/black"
-        android:gravity="center"
-        android:orientation="horizontal"></LinearLayout>
+        android:layout_marginTop="@dimen/abc_action_bar_default_height"></com.github.randoapp.view.CircleMaskView>
 
     <ImageView
         android:id="@+id/upload_button"
