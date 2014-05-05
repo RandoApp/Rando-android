@@ -20,7 +20,7 @@ android {
         release {
             storeFile file(System.getenv("HOME") + "/.android/rando.keystore")
             storePassword keyStorePassword
-            keyAlias 'alias_name'
+            keyAlias 'rando'
             keyPassword keyStorePassword
         }
     }
@@ -50,7 +50,6 @@ android {
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
     }
-
 }
 
 dependencies {

@@ -83,10 +83,9 @@ public class ImagePagerAdapter extends RandoPagerAdapter {
     @Override
     protected void setRightBitmapFromCache(ImageView view) {
         Log.d(ImagePagerAdapter.class, "Bitmap of user image found in memory cache");
-        view.setImageBitmap(holder.user.mapBitmap);
+        view.setImageBitmap(holder.user.imageBitmap);
         holder.user.imageBitmap = null;
         holder.user.needSetImageError = false;
     }
-
 
 }

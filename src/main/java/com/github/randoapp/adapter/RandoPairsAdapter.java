@@ -297,8 +297,8 @@ public class RandoPairsAdapter extends BaseAdapter {
 
     private void loadImages(final ViewHolder holder, final RandoPair randoPair) {
         loadImage(holder.stranger, RandoPairUtil.getUrlByImageSize(imageSize, randoPair.stranger.imageURLSize), Priority.HIGH);
-        loadImage(holder.user, RandoPairUtil.getUrlByImageSize(imageSize, randoPair.user.imageURLSize), Priority.LOW);
-        loadMapImage(holder.stranger, RandoPairUtil.getUrlByImageSize(imageSize, randoPair.stranger.mapURLSize), Priority.NORMAL);
+        loadImage(holder.user, RandoPairUtil.getUrlByImageSize(imageSize, randoPair.user.imageURLSize), Priority.NORMAL);
+        loadMapImage(holder.stranger, RandoPairUtil.getUrlByImageSize(imageSize, randoPair.stranger.mapURLSize), Priority.LOW);
         loadMapImage(holder.user, RandoPairUtil.getUrlByImageSize(imageSize, randoPair.user.mapURLSize), Priority.LOW);
     }
 
