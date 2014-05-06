@@ -22,9 +22,9 @@ public class Log {
         StorableLog.add(clazz.getName() + ": " + concatenate(msgs));
     }
 
-    public static void e(Class clazz, Throwable throwable) {
-        android.util.Log.e(clazz.getName(), "error:", throwable);
-        StorableLog.add(clazz.getName() + " error: " + throwable.getMessage());
+    public static void e(Class clazz, String comment, Throwable throwable) {
+        android.util.Log.e(clazz.getName(), comment + " error:", throwable);
+        StorableLog.add(clazz.getName() + comment + " error: " + throwable.getMessage());
     }
 
     public static void v(Class clazz, String... msgs) {

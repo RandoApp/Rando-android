@@ -215,14 +215,14 @@ public class API {
                     }
                     listener.onFetch(randos);
                 } catch (JSONException e) {
-                    Log.e(API.class, e);
+                    Log.e(API.class, "onResponse method", e);
                 }
             }
         }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError e) {
-                Log.e(API.class, e);
+                Log.e(API.class, " onErrorResponse method", e);
             }
         }
         ));
@@ -400,9 +400,7 @@ public class API {
     }
 
     private static Exception processError(Exception exc) {
-        Log.e(API.class, exc);
-        Exception resExc;
-       // if(exc instanceof )
+        Log.e(API.class, "processError method", exc);
         return new Exception(App.context.getResources().getString(R.string.error_unknown_err));
     }
 
