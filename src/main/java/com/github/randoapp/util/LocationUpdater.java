@@ -49,10 +49,18 @@ public class LocationUpdater {
 
     LocationListener locationListenerGps = new LocationListener() {
         public void onLocationChanged(Location location) {
-            timer.cancel();
-            locationResult.gotLocation(location);
-            lm.removeUpdates(this);
-            lm.removeUpdates(locationListenerNetwork);
+            if (timer != null) {
+                timer.cancel();
+            }
+
+            if (locationResult != null) {
+                locationResult.gotLocation(location);
+            }
+
+            if (lm != null) {
+                lm.removeUpdates(this);
+                lm.removeUpdates(locationListenerNetwork);
+            }
         }
 
         public void onProviderDisabled(String provider) {
@@ -67,10 +75,18 @@ public class LocationUpdater {
 
     LocationListener locationListenerNetwork = new LocationListener() {
         public void onLocationChanged(Location location) {
-            timer.cancel();
-            locationResult.gotLocation(location);
-            lm.removeUpdates(this);
-            lm.removeUpdates(locationListenerGps);
+            if (timer != null) {
+                timer.cancel();
+            }
+
+            if (locationResult != null) {
+                locationResult.gotLocation(location);
+            }
+
+            if (lm != null) {
+                lm.removeUpdates(this);
+                lm.removeUpdates(locationListenerGps);
+            }
         }
 
         public void onProviderDisabled(String provider) {
@@ -86,8 +102,14 @@ public class LocationUpdater {
     class GetLastLocation extends TimerTask {
         @Override
         public void run() {
-            lm.removeUpdates(locationListenerGps);
-            lm.removeUpdates(locationListenerNetwork);
+            if (lm != null) {
+                lm.removeUpdates(locationListenerGps);
+                lm.removeUpdates(locationListenerNetwork);
+            }
+
+            if (locationResult == null) {
+                return;
+            }
 
             Location net_loc = null, gps_loc = null;
             if (gps_enabled)
@@ -117,9 +139,14 @@ public class LocationUpdater {
     }
 
     public void cancelTimer() {
-        timer.cancel();
-        lm.removeUpdates(locationListenerGps);
-        lm.removeUpdates(locationListenerNetwork);
+        if (timer != null) {
+            timer.cancel();
+        }
+
+        if (lm != null) {
+            lm.removeUpdates(locationListenerGps);
+            lm.removeUpdates(locationListenerNetwork);
+        }
     }
 
     public static abstract class LocationResult {

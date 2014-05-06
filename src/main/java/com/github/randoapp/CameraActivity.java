@@ -170,12 +170,17 @@ public class CameraActivity extends BaseActivity {
         if (camera != null) {
             Camera.Parameters params = camera.getParameters();
             //disable flashlight button if flash_background light not supported
-            if (params.getFlashMode() == null) {
+            if (params.getFlashMode() != null) {
+                params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+            } else {
                 flashLightButton.setEnabled(false);
                 flashLightButton.setImageResource(R.drawable.flash_disable);
             }
-            params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-            params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+
+            if (params.getFocusMode() != null) {
+                params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+            }
+
             params.setPictureFormat(JPEG);
             params.setJpegQuality(JPEG_QUALITY);
             params.set("jpeg-quality", JPEG_QUALITY);
@@ -248,7 +253,7 @@ public class CameraActivity extends BaseActivity {
                     flashLightButton.setImageResource(R.drawable.flash_disable);
                     flashMode = Camera.Parameters.FLASH_MODE_OFF;
                 } else if (Camera.Parameters.FLASH_MODE_OFF.equals(flashMode)) {
-                    flashLightButton.setImageResource(R.drawable.flash_background);
+                    flashLightButton.setImageResource(R.drawable.flash);
                     flashMode = Camera.Parameters.FLASH_MODE_ON;
                 } else if (Camera.Parameters.FLASH_MODE_ON.equals(flashMode)) {
                     flashLightButton.setImageResource(R.drawable.flash_auto);
