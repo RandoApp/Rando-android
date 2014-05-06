@@ -401,6 +401,8 @@ public class API {
 
     private static Exception processError(Exception exc) {
         Log.e(API.class, exc);
+        Exception resExc;
+       // if(exc instanceof )
         return new Exception(App.context.getResources().getString(R.string.error_unknown_err));
     }
 
