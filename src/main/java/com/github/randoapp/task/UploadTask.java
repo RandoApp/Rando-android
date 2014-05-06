@@ -11,17 +11,17 @@ import com.github.randoapp.log.Log;
 
 import java.io.File;
 
-public class RandoUploadTask extends BaseTask {
+public class UploadTask extends BaseTask {
 
     private String fileToUpload;
 
-    public RandoUploadTask(String fileToUpload) {
+    public UploadTask(String fileToUpload) {
         this.fileToUpload = fileToUpload;
     }
 
     @Override
     public Integer run() {
-        Log.d(RandoUploadTask.class, "run");
+        Log.d(UploadTask.class, "run");
 
         if (fileToUpload == null || TextUtils.isEmpty(fileToUpload)) {
             return ERROR;
@@ -29,12 +29,12 @@ public class RandoUploadTask extends BaseTask {
 
         PowerManager pm = (PowerManager) App.context.getSystemService(Context.POWER_SERVICE);
         PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                RandoUploadTask.class.getName());
+                UploadTask.class.getName());
         wl.acquire();
         try {
             API.uploadImage(new File(fileToUpload), CameraActivity.currentLocation);
         } catch (Exception e) {
-            Log.w(RandoUploadTask.class, "File failed to upload. File=", fileToUpload);
+            Log.w(UploadTask.class, "File failed to upload. File=", fileToUpload);
             return ERROR;
         } finally {
             wl.release();

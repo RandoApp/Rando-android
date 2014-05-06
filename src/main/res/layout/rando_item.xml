@@ -24,6 +24,7 @@
                 android:gravity="right"
                 android:tag="date_time"
                 android:textSize="14sp"
+                android:visibility="gone"
                 android:textStyle="italic" />
         </LinearLayout>
 
@@ -37,12 +38,12 @@
             <android.support.v4.view.ViewPager
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:tag="stranger"></android.support.v4.view.ViewPager>
+                android:tag="image"></android.support.v4.view.ViewPager>
 
             <android.support.v4.view.ViewPager
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:tag="user"></android.support.v4.view.ViewPager>
+                android:tag="map"></android.support.v4.view.ViewPager>
 
         </ViewSwitcher>
 
@@ -50,10 +51,13 @@
     </LinearLayout>
 
     <ViewSwitcher
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inAnimation="@anim/fade_in"
-        android:outAnimation="@anim/fade_out"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/ic_home_margin_top"
+        android:layout_marginRight="@dimen/ic_home_margin_right"
         android:tag="home_ic_switcher">
 
         <View
@@ -64,9 +68,6 @@
         <ImageView
             android:layout_width="@dimen/ic_home_size"
             android:layout_height="@dimen/ic_home_size"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="@dimen/ic_home_margin_top"
             android:src="@drawable/ic_home"
             android:tag="ic_home" />
     </ViewSwitcher>

@@ -1,8 +1,8 @@
 package com.github.randoapp.menu;
 
 import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 
 import com.github.randoapp.App;
@@ -28,7 +28,7 @@ public class LogoutMenu extends Menu {
             .onDone(new OnDone() {
                 @Override
                 public void onDone(Map<String, Object> data) {
-                    FragmentManager fragmentManager = ((ActionBarActivity) activity).getSupportFragmentManager();
+                    FragmentManager fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.main_screen, new AuthFragment()).commit();
                     Progress.hide();
                 }

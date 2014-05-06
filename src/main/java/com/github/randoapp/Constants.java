@@ -42,7 +42,7 @@ public class Constants {
     public static final int SIZE_MEDIUM = 800;
     public static final int SIZE_LARGE = 1200;
 
-    public static final String SERVER_HOST = "95.85.19.94";
+    public static final String SERVER_HOST = "rando4.me";
     public static final String SERVER_URL = "http://" + SERVER_HOST;
 
     public static final int CONNECTION_TIMEOUT = 6000;
@@ -116,5 +116,4 @@ public class Constants {
 
     private static final int NUMBER_OF_IMAGES_IN_ONE_SET = 4; //stranger's + user's images and maps
     public static final int NUMBER_OF_IMAGES_FOR_CACHING = NUMBER_OF_IMAGES_IN_ONE_SET * 2; //2 visible image sets per screen
-
 }
