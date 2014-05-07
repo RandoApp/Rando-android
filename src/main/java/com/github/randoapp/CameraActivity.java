@@ -171,7 +171,7 @@ public class CameraActivity extends BaseActivity {
         if (camera != null) {
             Camera.Parameters params = camera.getParameters();
             //disable flashlight button if flash_background light not supported
-            if (params.getFlashMode() != null) {
+            if (params.getFlashMode() != null && params.getSupportedFlashModes().size() > 1) {
                 //don't set to default state if Flash mode was already set
                 if (flashModeState.isEmpty()) {
                     params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
@@ -182,6 +182,7 @@ public class CameraActivity extends BaseActivity {
 
             } else {
                 flashLightButton.setEnabled(false);
+                flashLightButton.setOnClickListener(null);
                 flashLightButton.setImageResource(R.drawable.flash_off);
             }
 
