@@ -23,6 +23,7 @@
     <string name="select_account">Chooise account</string>
 
     <string name="error_unknown_err">Oops, Something wrong...</string>
+    <string name="error_no_network">Please check your Internet connection or try again later.</string>
 
     <string name="get_started">To get started, log in using Facebook</string>
 
@@ -39,6 +40,6 @@
     <string name="sync_service_name">Rando Sync Service</string>
     <string name="log_service_name">Rando log sender service</string>
 
-    <string name="crash_toast_text">Ooooops! I crashed, but a report has been sent to my developer to help fix the issue!</string>
+    <string name="crash_toast_text">Ooooops! I\'ve crashed, but bug report has been sent to my developers to help fix the issue!</string>
 
 </resources>
