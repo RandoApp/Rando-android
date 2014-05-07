@@ -29,7 +29,7 @@
             android:layout_height="@dimen/abc_action_bar_default_height"
             android:background="@drawable/flash_background"
             android:scaleType="center"
-            android:src="@drawable/flash" />
+            android:src="@drawable/flash_off" />
 
     </LinearLayout>
 
