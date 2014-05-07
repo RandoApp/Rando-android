@@ -11,6 +11,7 @@ import android.os.IBinder;
 import com.github.randoapp.App;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.task.SendLogTask;
+import com.github.randoapp.util.ConnectionUtil;
 
 import static com.github.randoapp.Constants.LOG_SRVICE_INTERVAL;
 
@@ -41,7 +42,10 @@ public class LogService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(LogService.class, "LogService wakeup and start command");
-        new SendLogTask().execute();
+        //we don't want service to run without Internet connection
+        if (ConnectionUtil.isOnline(getApplicationContext())) {
+            new SendLogTask().execute();
+        }
         return Service.START_NOT_STICKY;
     }
 

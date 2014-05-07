@@ -36,6 +36,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -215,14 +217,14 @@ public class API {
                     }
                     listener.onFetch(randos);
                 } catch (JSONException e) {
-                    Log.e(API.class, e);
+                    Log.e(API.class, "onResponse method", e);
                 }
             }
         }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError e) {
-                Log.e(API.class, e);
+                Log.e(API.class, " onErrorResponse method", e);
             }
         }
         ));
@@ -400,7 +402,12 @@ public class API {
     }
 
     private static Exception processError(Exception exc) {
-        Log.e(API.class, exc);
+        //We don't want to log Connectivity exceptions
+        if(exc instanceof UnknownHostException
+                || exc instanceof ConnectException){
+            return new Exception(App.context.getResources().getString(R.string.error_no_network));
+        }
+        Log.e(API.class, "processError method", exc);
         return new Exception(App.context.getResources().getString(R.string.error_unknown_err));
     }
 
