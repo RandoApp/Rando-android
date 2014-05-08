@@ -30,19 +30,19 @@
 
 
         <ViewSwitcher
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:tag="viewSwitcher">
 
 
             <android.support.v4.view.ViewPager
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:tag="image"></android.support.v4.view.ViewPager>
 
             <android.support.v4.view.ViewPager
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:tag="map"></android.support.v4.view.ViewPager>
 
         </ViewSwitcher>
@@ -74,8 +74,8 @@
 
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@color/fader"
         android:tag="report_dialog"
         android:visibility="gone">

@@ -14,8 +14,12 @@ import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.github.randoapp.auth.GoogleAuth;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.fragment.AuthFragment;
 import com.github.randoapp.fragment.EmptyHomeWallFragment;
@@ -138,4 +142,5 @@ public class MainActivity extends FragmentActivity {
         super.onPostResume();
         registerReceiver(receiver, new IntentFilter(Constants.SYNC_SERVICE_BROADCAST));
     }
+
 }

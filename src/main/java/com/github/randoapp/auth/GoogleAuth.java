@@ -15,6 +15,7 @@ import com.github.randoapp.task.callback.OnError;
 import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.AccountUtil;
 import com.github.randoapp.view.Progress;
+import com.google.android.gms.auth.UserRecoverableAuthException;
 
 import java.util.Map;
 
@@ -54,7 +55,7 @@ public class GoogleAuth extends BaseAuth implements View.OnTouchListener {
 
     private void fetchUserToken(String email) {
         Progress.showLoading();
-        new GoogleAuthTask(email)
+        new GoogleAuthTask(email, authFragment)
             .onOk(new OnOk() {
                 @Override
                 public void onOk(Map<String, Object> data) {
@@ -67,7 +68,7 @@ public class GoogleAuth extends BaseAuth implements View.OnTouchListener {
                     Progress.hide();
                     String error = (String) data.get("error");
                     if (error != null) {
-                        Toast.makeText(authFragment.getActivity(), error, Toast.LENGTH_LONG).show();
+                            Toast.makeText(authFragment.getActivity(), error, Toast.LENGTH_LONG).show();
                     }
                 }
             })

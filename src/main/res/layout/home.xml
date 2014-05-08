@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/top_panel"/>
 
     <com.jess.ui.TwoWayGridView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/main_grid"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_marginTop="@dimen/top_panel_height"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:numRows="auto_fit"
         app:scrollDirectionLandscape="vertical"
         app:scrollDirectionPortrait="vertical" />

@@ -116,4 +116,6 @@ public class Constants {
 
     private static final int NUMBER_OF_IMAGES_IN_ONE_SET = 4; //stranger's + user's images and maps
     public static final int NUMBER_OF_IMAGES_FOR_CACHING = NUMBER_OF_IMAGES_IN_ONE_SET * 2; //2 visible image sets per screen
+
+    public static final int GOOGLE_ACTIVITYS_AUTH_REQUEST_CODE = 483; //value is not matter
 }
