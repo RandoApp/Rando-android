@@ -49,6 +49,7 @@ public class CameraActivity extends BaseActivity {
     public static String picFileName = null;
     private ImageView uploadPictureButton;
     private ImageView flashLightButton;
+    private String flashModeState = "";
 
     private Camera.PictureCallback pictureCallback = new Camera.PictureCallback() {
 
@@ -87,7 +88,7 @@ public class CameraActivity extends BaseActivity {
 
         updateLocation();
         setBackButtonListener();
-        setFlashLightButtonListener();
+        //setFlashLightButtonListener();
         setTakePictureButtonListener();
         setUploadButtonListener();
     }
@@ -170,26 +171,31 @@ public class CameraActivity extends BaseActivity {
         if (camera != null) {
             Camera.Parameters params = camera.getParameters();
             //disable flashlight button if flash_background light not supported
-            if (params.getFlashMode() != null) {
-                params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+            /*if (params.getFlashMode() != null && params.getSupportedFlashModes().size() > 1) {
+                //don't set to default state if Flash mode was already set
+                if (flashModeState.isEmpty()) {
+                    params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                    flashModeState = Camera.Parameters.FLASH_MODE_OFF;
+                } else {
+                    params.setFlashMode(flashModeState);
+                }
+
             } else {
                 flashLightButton.setEnabled(false);
-                flashLightButton.setImageResource(R.drawable.flash_disable);
+                flashLightButton.setOnClickListener(null);
+                flashLightButton.setImageResource(R.drawable.flash_off);
             }
 
             if (params.getFocusMode() != null) {
                 params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
             }
-
+            */
             params.setPictureFormat(JPEG);
             params.setJpegQuality(JPEG_QUALITY);
-            params.set("jpeg-quality", JPEG_QUALITY);
             params.setRotation(90);
-            params.set("orientation", "portrait");
-            params.set("rotation", 90);
             camera.setParameters(params);
 
-            randoSurfaceView = new com.github.randoapp.view.RandoSurfaceView(getApplicationContext(), camera);
+            randoSurfaceView = new RandoSurfaceView(getApplicationContext(), camera);
 
             preview = (FrameLayout) findViewById(R.id.camera_preview);
             preview.removeAllViews();
@@ -250,17 +256,18 @@ public class CameraActivity extends BaseActivity {
                 String flashMode = params.getFlashMode();
 
                 if (Camera.Parameters.FLASH_MODE_AUTO.equals(flashMode)) {
-                    flashLightButton.setImageResource(R.drawable.flash_disable);
+                    flashLightButton.setImageResource(R.drawable.flash_off);
                     flashMode = Camera.Parameters.FLASH_MODE_OFF;
                 } else if (Camera.Parameters.FLASH_MODE_OFF.equals(flashMode)) {
-                    flashLightButton.setImageResource(R.drawable.flash);
+                    flashLightButton.setImageResource(R.drawable.flash_on);
                     flashMode = Camera.Parameters.FLASH_MODE_ON;
                 } else if (Camera.Parameters.FLASH_MODE_ON.equals(flashMode)) {
                     flashLightButton.setImageResource(R.drawable.flash_auto);
                     flashMode = Camera.Parameters.FLASH_MODE_AUTO;
                 }
                 params.setFlashMode(flashMode);
-
+                //store flash mode for recover onResume
+                flashModeState = flashMode;
                 camera.setParameters(params);
             }
         });

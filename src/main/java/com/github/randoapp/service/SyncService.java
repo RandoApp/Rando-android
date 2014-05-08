@@ -16,6 +16,7 @@ import com.github.randoapp.db.model.RandoPair;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.task.SyncTask;
+import com.github.randoapp.util.ConnectionUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -51,26 +52,28 @@ public class SyncService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(SyncService.class, "onStartCommand");
-
-        API.fetchUserAsync(new OnFetchUser() {
-            @Override
-            public void onFetch(final List<RandoPair> randoPairs) {
-                Log.i(SyncService.class, "Fetched ", String.valueOf(randoPairs.size()), " randoPairs");
-                new SyncTask(randoPairs)
-                        .onOk(new OnOk() {
-                            @Override
-                            public void onOk(Map<String, Object> data) {
-                                if (data.get(NEED_NOTIFICATION) != null) {
-                                    sendNotification(randoPairs.size());
+        if (ConnectionUtil.isOnline(getApplicationContext())) {
+            API.fetchUserAsync(new OnFetchUser() {
+                @Override
+                public void onFetch(final List<RandoPair> randoPairs) {
+                    Log.i(SyncService.class, "Fetched ", String.valueOf(randoPairs.size()), " randoPairs");
+                    new SyncTask(randoPairs)
+                            .onOk(new OnOk() {
+                                @Override
+                                public void onOk(Map<String, Object> data) {
+                                    if (data.get(NEED_NOTIFICATION) != null) {
+                                        sendNotification(randoPairs.size());
+                                    }
+                                    if ((Integer) data.get(NOT_PAIRED_RANDO_PAIRS_NUMBER) > 0)
+                                        setTimeout(System.currentTimeMillis() + SERVICE_SHORT_PAUSE);
                                 }
-                                if ((Integer) data.get(NOT_PAIRED_RANDO_PAIRS_NUMBER) > 0)
-                                    setTimeout(System.currentTimeMillis() + SERVICE_SHORT_PAUSE);
-                            }
-                        })
-                        .execute();
-            }
-        });
-
+                            })
+                            .execute();
+                }
+            });
+        } else {
+            Log.i(SyncService.class, "onStartCommand", "no internet connection => not fetching.");
+        }
         return Service.START_NOT_STICKY;
     }
 
