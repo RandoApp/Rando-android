@@ -10,7 +10,7 @@ import android.widget.ImageView;
 
 import com.github.randoapp.CameraActivity;
 import com.github.randoapp.R;
-import com.github.randoapp.util.AccountUtil;
+import com.github.randoapp.util.RandoUtil;
 
 public class EmptyHomeWallFragment extends Fragment {
 
@@ -27,7 +27,7 @@ public class EmptyHomeWallFragment extends Fragment {
             }
         });
 
-        AccountUtil.updateTopPanel(this);
+        RandoUtil.initMenuButton(rootView, getActivity());
         return rootView;
     }
 }

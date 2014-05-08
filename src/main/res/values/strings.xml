@@ -42,7 +42,6 @@
 
     <string name="crash_toast_text">Ooooops! I\'ve crashed, but bug report has been sent to my developers to help fix the issue!</string>
 
-    <string name="top_panel_prefix">Rando</string>
-    <string name="top_panel_postfix">[test mode]</string>
+    <string name="top_panel_text">Rando in the testing mode</string>
 
 </resources>

@@ -17,7 +17,7 @@ import com.github.randoapp.R;
 import com.github.randoapp.adapter.RandoPairsAdapter;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.notification.Notification;
-import com.github.randoapp.util.AccountUtil;
+import com.github.randoapp.util.RandoUtil;
 import com.jess.ui.TwoWayGridView;
 
 import static com.github.randoapp.Constants.BON_APPETIT_BUTTON_SIZE;
@@ -93,7 +93,7 @@ public class HomeWallFragment extends Fragment {
             }
         });
 
-        AccountUtil.updateTopPanel(this);
+        RandoUtil.initMenuButton(rootView, getActivity());
         return rootView;
     }
 
