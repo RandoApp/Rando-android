@@ -88,7 +88,7 @@ public class CameraActivity extends BaseActivity {
 
         updateLocation();
         setBackButtonListener();
-        setFlashLightButtonListener();
+        //setFlashLightButtonListener();
         setTakePictureButtonListener();
         setUploadButtonListener();
     }
@@ -171,7 +171,7 @@ public class CameraActivity extends BaseActivity {
         if (camera != null) {
             Camera.Parameters params = camera.getParameters();
             //disable flashlight button if flash_background light not supported
-            if (params.getFlashMode() != null && params.getSupportedFlashModes().size() > 1) {
+            /*if (params.getFlashMode() != null && params.getSupportedFlashModes().size() > 1) {
                 //don't set to default state if Flash mode was already set
                 if (flashModeState.isEmpty()) {
                     params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
@@ -189,13 +189,10 @@ public class CameraActivity extends BaseActivity {
             if (params.getFocusMode() != null) {
                 params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
             }
-
+            */
             params.setPictureFormat(JPEG);
             params.setJpegQuality(JPEG_QUALITY);
-            params.set("jpeg-quality", JPEG_QUALITY);
             params.setRotation(90);
-            params.set("orientation", "portrait");
-            params.set("rotation", 90);
             camera.setParameters(params);
 
             randoSurfaceView = new RandoSurfaceView(getApplicationContext(), camera);
