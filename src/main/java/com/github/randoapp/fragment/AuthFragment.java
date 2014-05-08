@@ -8,10 +8,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.github.randoapp.MainActivity;
 import com.github.randoapp.R;
 import com.github.randoapp.auth.EmailAndPasswordAuth;
 import com.github.randoapp.auth.GoogleAuth;
 import com.github.randoapp.auth.SkipAuth;
+import com.github.randoapp.util.AccountUtil;
 
 public class AuthFragment extends Fragment {
 
@@ -28,6 +30,7 @@ public class AuthFragment extends Fragment {
 
         createGoogleAuthButton(rootView);
 
+        AccountUtil.updateTopPanel(this);
 
         return rootView;
     }

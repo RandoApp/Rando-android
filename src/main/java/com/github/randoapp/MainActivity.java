@@ -14,7 +14,9 @@ import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.fragment.AuthFragment;
@@ -63,6 +65,28 @@ public class MainActivity extends FragmentActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.main_screen, getFragment())
                     .commit();
+        }
+    }
+
+    public void updateTopPanel() {
+        try {
+            findViewById(R.id.menu_button).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openOptionsMenu();
+                }
+            });
+
+            String name = getResources().getString(R.string.top_panel_prefix);
+            String mode = getResources().getString(R.string.top_panel_postfix);
+            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            String version = packageInfo.versionName;
+            String codeVersion = String.valueOf(packageInfo.versionCode);
+            String topPanelText = name + " " + version + ":" + codeVersion + " " + mode;
+            TextView topPanelTextView = (TextView) findViewById(R.id.top_panel_text);
+            topPanelTextView.setText(topPanelText);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(MainActivity.class, "Can't init top panel, because: ", e.getMessage());
         }
     }
 
@@ -138,4 +162,6 @@ public class MainActivity extends FragmentActivity {
         super.onPostResume();
         registerReceiver(receiver, new IntentFilter(Constants.SYNC_SERVICE_BROADCAST));
     }
+
+
 }

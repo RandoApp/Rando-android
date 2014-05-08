@@ -7,12 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.randoapp.R;
+import com.github.randoapp.util.AccountUtil;
 
 public class TrainingHomeFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.training_home, container, false);
+
+        AccountUtil.updateTopPanel(this);
         return rootView;
     }
 }
