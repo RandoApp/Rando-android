@@ -48,8 +48,6 @@ public class CameraActivity extends BaseActivity {
     public static Location currentLocation;
     public static String picFileName = null;
     private ImageView uploadPictureButton;
-    private ImageView flashLightButton;
-    private String flashModeState = "";
 
     private Camera.PictureCallback pictureCallback = new Camera.PictureCallback() {
 
@@ -88,7 +86,6 @@ public class CameraActivity extends BaseActivity {
 
         updateLocation();
         setBackButtonListener();
-        //setFlashLightButtonListener();
         setTakePictureButtonListener();
         setUploadButtonListener();
     }
@@ -170,26 +167,6 @@ public class CameraActivity extends BaseActivity {
 
         if (camera != null) {
             Camera.Parameters params = camera.getParameters();
-            //disable flashlight button if flash_background light not supported
-            /*if (params.getFlashMode() != null && params.getSupportedFlashModes().size() > 1) {
-                //don't set to default state if Flash mode was already set
-                if (flashModeState.isEmpty()) {
-                    params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                    flashModeState = Camera.Parameters.FLASH_MODE_OFF;
-                } else {
-                    params.setFlashMode(flashModeState);
-                }
-
-            } else {
-                flashLightButton.setEnabled(false);
-                flashLightButton.setOnClickListener(null);
-                flashLightButton.setImageResource(R.drawable.flash_off);
-            }
-
-            if (params.getFocusMode() != null) {
-                params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-            }
-            */
             params.setPictureFormat(JPEG);
             params.setJpegQuality(JPEG_QUALITY);
             params.setRotation(90);
@@ -207,7 +184,6 @@ public class CameraActivity extends BaseActivity {
 
     private void showUploadButton() {
         findViewById(R.id.capture_button).setVisibility(View.GONE);
-        findViewById(R.id.flash_button).setVisibility(View.GONE);
         uploadPictureButton.setEnabled(true);
         findViewById(R.id.upload_button).setVisibility(VISIBLE);
         findViewById(R.id.circle_mask).setVisibility(View.GONE);
@@ -215,7 +191,6 @@ public class CameraActivity extends BaseActivity {
 
     private void hideUploadButton() {
         findViewById(R.id.capture_button).setVisibility(VISIBLE);
-        findViewById(R.id.flash_button).setVisibility(VISIBLE);
         findViewById(R.id.upload_button).setVisibility(View.GONE);
         findViewById(R.id.circle_mask).setVisibility(VISIBLE);
     }
@@ -242,33 +217,6 @@ public class CameraActivity extends BaseActivity {
                     hideUploadButton();
                     createCameraPreview();
                 }
-            }
-        });
-    }
-
-    private void setFlashLightButtonListener() {
-        flashLightButton = (ImageView) findViewById(R.id.flash_button);
-        flashLightButton.setOnClickListener(new ImageView.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                Camera.Parameters params = camera.getParameters();
-                String flashMode = params.getFlashMode();
-
-                if (Camera.Parameters.FLASH_MODE_AUTO.equals(flashMode)) {
-                    flashLightButton.setImageResource(R.drawable.flash_off);
-                    flashMode = Camera.Parameters.FLASH_MODE_OFF;
-                } else if (Camera.Parameters.FLASH_MODE_OFF.equals(flashMode)) {
-                    flashLightButton.setImageResource(R.drawable.flash_on);
-                    flashMode = Camera.Parameters.FLASH_MODE_ON;
-                } else if (Camera.Parameters.FLASH_MODE_ON.equals(flashMode)) {
-                    flashLightButton.setImageResource(R.drawable.flash_auto);
-                    flashMode = Camera.Parameters.FLASH_MODE_AUTO;
-                }
-                params.setFlashMode(flashMode);
-                //store flash mode for recover onResume
-                flashModeState = flashMode;
-                camera.setParameters(params);
             }
         });
     }
