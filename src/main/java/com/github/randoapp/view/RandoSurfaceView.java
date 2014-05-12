@@ -63,11 +63,14 @@ public class RandoSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         Camera.Parameters params = camera.getParameters();
 
         Camera.Size cameraSize;
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+      /*  if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             cameraSize = CameraUtil.getBestPictureSizeForOldDevices(params.getSupportedPictureSizes());
         } else {
             cameraSize = CameraUtil.getBestPictureSize(params.getSupportedPictureSizes());
-        }
+        }*/
+        //we want small picture size for all devices
+        cameraSize = CameraUtil.getBestPictureSizeForOldDevices(params.getSupportedPictureSizes());
+
         params.setPictureSize(cameraSize.width, cameraSize.height);
 
         Camera.Size previewSize = CameraUtil.getBestPreviewSize(params.getSupportedPreviewSizes(), width, height);
