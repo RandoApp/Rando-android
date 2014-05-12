@@ -110,22 +110,18 @@ public class APITest extends AndroidTestCase {
         assertThat(randos.get(0).user.randoId, is("ddddcwef3242f32f"));
         assertThat(randos.get(0).user.imageURL, is("http://rando4.me/image/dddd/ddddcwef3242f32f.jpg"));
         assertThat(randos.get(0).user.mapURL, is("http://rando4.me/map/eeee/eeeewef3242f32f.jpg"));
-        assertThat(randos.get(0).user.bonAppetit, is(0));
         assertThat(randos.get(0).user.date.compareTo(new Date(1383690800877l)), is(0));
         assertThat(randos.get(0).stranger.randoId, is("abcwef3242f32f"));
         assertThat(randos.get(0).stranger.imageURL, is("http://rando4.me/image/abc/abcwef3242f32f.jpg"));
         assertThat(randos.get(0).stranger.mapURL, is("http://rando4.me/map/azca/azcacwef3242f32f.jpg"));
-        assertThat(randos.get(0).stranger.bonAppetit, is(1));
 
         assertThat(randos.get(1).user.randoId, is("abcdw0ef3242f32f"));
         assertThat(randos.get(1).user.imageURL, is("http://rando4.me/image/abcd/abcdw0ef3242f32f.jpg"));
         assertThat(randos.get(1).user.mapURL, is("http://rando4.me/map/bcde/bcdecwef3242f32f.jpg"));
-        assertThat(randos.get(1).user.bonAppetit, is(1));
         assertThat(randos.get(1).user.date.compareTo(new Date(1383670400877l)), is(0));
         assertThat(randos.get(1).stranger.randoId, is("abcd3cwef3242f32f"));
         assertThat(randos.get(1).stranger.imageURL, is("http://rando4.me/image/abcd/abcd3cwef3242f32f.jpg"));
         assertThat(randos.get(1).stranger.mapURL, is("http://rando4.me/map/abcd/abcd5wef3242f32f.jpg"));
-        assertThat(randos.get(1).stranger.bonAppetit, is(0));
     }
 
     @SmallTest
@@ -185,37 +181,6 @@ public class APITest extends AndroidTestCase {
 
         try {
             API.report("2222");
-            fail();
-        } catch (Exception e) {
-            assertThat(e.getMessage(), is("Internal Server Error"));
-        }
-    }
-
-    @SmallTest
-    public void testBonAppetit() throws Exception {
-        VolleySingleton.getInstance().httpClient = mock(HttpClient.class);
-        StatusLine statusLineMock = mock(StatusLine.class);
-        when(statusLineMock.getStatusCode()).thenReturn(HttpStatus.SC_OK);
-        HttpResponse responseMock = mock(HttpResponse.class);
-        when(responseMock.getStatusLine()).thenReturn(statusLineMock);
-        when(VolleySingleton.getInstance().httpClient.execute(isA(HttpUriRequest.class))).thenReturn(responseMock);
-        ArgumentCaptor<HttpPost> captor = ArgumentCaptor.forClass(HttpPost.class);
-
-        API.bonAppetit("3333");
-
-        verify(VolleySingleton.getInstance().httpClient).execute(captor.capture());
-
-        assertThat(captor.getValue().getURI().toString().contains(Constants.BON_APPETIT_URL + "3333"), is(true));
-    }
-
-
-
-    @SmallTest
-    public void testBonAppetitWithError() throws Exception {
-        APITestHelper.mockAPIWithError();
-
-        try {
-            API.bonAppetit("3333");
             fail();
         } catch (Exception e) {
             assertThat(e.getMessage(), is("Internal Server Error"));

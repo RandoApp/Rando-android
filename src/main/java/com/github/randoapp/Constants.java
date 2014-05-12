@@ -42,7 +42,7 @@ public class Constants {
     public static final int SIZE_MEDIUM = 800;
     public static final int SIZE_LARGE = 1200;
 
-    public static final String SERVER_HOST = "rando4.me";
+    public static final String SERVER_HOST = "192.168.1.104:8888";
     public static final String SERVER_URL = "http://" + SERVER_HOST;
 
     public static final int CONNECTION_TIMEOUT = 6000;
@@ -66,7 +66,6 @@ public class Constants {
     public static final String GOOGLE_TOKEN_PARAM = "token";
     public static final String GOOGLE_FAMILY_NAME_PARAM = "family_name";
     public static final String ANONYMOUS_ID_PARAM = "id";
-    public static final String BON_APPETIT_PARAM = "bonAppetit";
     public static final String IMAGE_URL_PARAM = "imageURL";
     public static final String IMAGE_URL_SIZES_PARAM = "imageSizeURL";
     public static final String MAP_URL_SIZES_PARAM = "mapSizeURL";

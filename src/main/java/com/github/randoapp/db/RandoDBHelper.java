@@ -14,7 +14,6 @@ public class RandoDBHelper extends SQLiteOpenHelper {
     public static String COLUMN_USER_RANDO_URL_MEDIUM = "USER_RANDO_URL_MEDIUM";
     public static String COLUMN_USER_RANDO_URL_LARGE = "USER_RANDO_URL_LARGE";
     public static String COLUMN_USER_RANDO_DATE = "USER_RANDO_DATE";
-    public static String COLUMN_USER_BON_APPETIT = "USER_BON_APPETIT";
     public static String COLUMN_USER_MAP_URL = "USER_MAP_URL";
     public static String COLUMN_USER_MAP_URL_SMALL = "USER_MAP_URL_SMALL";
     public static String COLUMN_USER_MAP_URL_MEDIUM = "USER_MAP_URL_MEDIUM";
@@ -26,13 +25,12 @@ public class RandoDBHelper extends SQLiteOpenHelper {
     public static String COLUMN_STRANGER_RANDO_URL_MEDIUM = "STRANGER_RANDO_URL_MEDIUM";
     public static String COLUMN_STRANGER_RANDO_URL_LARGE = "STRANGER_RANDO_URL_LARGE";
     public static String COLUMN_STRANGER_RANDO_DATE = "STRANGER_RANDO_DATE";
-    public static String COLUMN_STRANGER_BON_APPETIT = "STRANGER_BON_APPETIT";
     public static String COLUMN_STRANGER_MAP_URL = "STRANGER_MAP_URL";
     public static String COLUMN_STRANGER_MAP_URL_SMALL = "STRANGER_MAP_URL_SMALL";
     public static String COLUMN_STRANGER_MAP_URL_MEDIUM = "STRANGER_MAP_URL_MEDIUM";
     public static String COLUMN_STRANGER_MAP_URL_LARGE = "STRANGER_MAP_URL_LARGE";
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     public static final String TABLE_RANDO = "rando";
     private static final String DATABASE_NAME = "rando.db";
@@ -44,7 +42,6 @@ public class RandoDBHelper extends SQLiteOpenHelper {
             COLUMN_USER_RANDO_URL_MEDIUM + " text," +
             COLUMN_USER_RANDO_URL_LARGE + " text," +
             COLUMN_USER_RANDO_DATE + " integer," +
-            COLUMN_USER_BON_APPETIT + " integer not null," +
             COLUMN_USER_MAP_URL + " text," +
             COLUMN_USER_MAP_URL_SMALL + " text," +
             COLUMN_USER_MAP_URL_MEDIUM + " text," +
@@ -55,7 +52,6 @@ public class RandoDBHelper extends SQLiteOpenHelper {
             COLUMN_STRANGER_RANDO_URL_MEDIUM + " text," +
             COLUMN_STRANGER_RANDO_URL_LARGE + " text," +
             COLUMN_STRANGER_RANDO_DATE + " integer," +
-            COLUMN_STRANGER_BON_APPETIT + " integer not null," +
             COLUMN_STRANGER_MAP_URL + " text," +
             COLUMN_STRANGER_MAP_URL_SMALL + " text," +
             COLUMN_STRANGER_MAP_URL_MEDIUM + " text," +

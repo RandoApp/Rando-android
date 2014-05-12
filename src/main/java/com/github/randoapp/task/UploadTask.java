@@ -34,7 +34,8 @@ public class UploadTask extends BaseTask {
         try {
             API.uploadImage(new File(fileToUpload), CameraActivity.currentLocation);
         } catch (Exception e) {
-            Log.w(UploadTask.class, "File failed to upload. File=", fileToUpload);
+            data.put("error", e.getMessage());
+            Log.w(UploadTask.class, "File failed to upload. File=", fileToUpload, " because: ", e.getMessage());
             return ERROR;
         } finally {
             wl.release();

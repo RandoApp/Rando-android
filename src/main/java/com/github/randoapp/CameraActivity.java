@@ -259,8 +259,13 @@ public class CameraActivity extends BaseActivity {
                         @Override
                         public void onError(Map<String, Object> data) {
                             hideProgressbar();
-                            Toast.makeText(CameraActivity.this, R.string.photo_upload_failed,
-                                    Toast.LENGTH_LONG).show();
+                            String error = (String) data.get("error");
+                            if (error != null) {
+                                Toast.makeText(CameraActivity.this, error, Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(CameraActivity.this, R.string.photo_upload_failed,
+                                        Toast.LENGTH_LONG).show();
+                            }
 
                             if (uploadPictureButton != null) {
                                 uploadPictureButton.setEnabled(true);
