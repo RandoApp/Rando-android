@@ -21,6 +21,7 @@ public class Constants {
 
     public static final String ERROR = "error";
     public static final int UNAUTHORIZED_CODE = 400;
+    public static final int FORBIDDEN_CODE = 411;
 
     public static final int PAGE_SIZE = 1;
 
@@ -42,7 +43,7 @@ public class Constants {
     public static final int SIZE_MEDIUM = 800;
     public static final int SIZE_LARGE = 1200;
 
-    public static final String SERVER_HOST = "192.168.1.104:8888";
+    public static final String SERVER_HOST = "rando4.me";
     public static final String SERVER_URL = "http://" + SERVER_HOST;
 
     public static final int CONNECTION_TIMEOUT = 6000;

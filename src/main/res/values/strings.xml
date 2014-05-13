@@ -36,7 +36,9 @@
     <string name="report_message">Report</string>
     <string name="loadig_progress">Loading...</string>
     <string name="logout_progress">Logout...</string>
+
     <string name="error_400">You are not authorized. Please, signup.</string>
+    <string name="error_411">You are temporarily blocked, because of big amount of images sent in a row. Please, try again later:</string>
 
     <string name="sync_service_name">Rando Sync Service</string>
     <string name="log_service_name">Rando log sender service</string>

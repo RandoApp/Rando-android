@@ -38,9 +38,12 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.github.randoapp.Constants.ANONYMOUS_ID_PARAM;
 import static com.github.randoapp.Constants.ANONYMOUS_URL;
@@ -51,6 +54,7 @@ import static com.github.randoapp.Constants.FACEBOOK_ID_PARAM;
 import static com.github.randoapp.Constants.FACEBOOK_TOKEN_PARAM;
 import static com.github.randoapp.Constants.FACEBOOK_URL;
 import static com.github.randoapp.Constants.FETCH_USER_URL;
+import static com.github.randoapp.Constants.FORBIDDEN_CODE;
 import static com.github.randoapp.Constants.GOOGLE_EMAIL_PARAM;
 import static com.github.randoapp.Constants.GOOGLE_FAMILY_NAME_PARAM;
 import static com.github.randoapp.Constants.GOOGLE_TOKEN_PARAM;
@@ -371,6 +375,21 @@ public class API {
             switch (json.getInt(ERROR_CODE_PARAM)) {
                 case UNAUTHORIZED_CODE:
                     return new AuthenticationException(App.context.getResources().getString(R.string.error_400));
+                case FORBIDDEN_CODE: {
+                    String resetTime = "";
+                    try {
+                        String message = json.getString("message");
+                        Matcher matcher = Pattern.compile("\\d+").matcher(message);
+                        if (matcher.find()) {
+                            long resetTimeUnix = Long.parseLong(matcher.group());
+                            resetTime = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(new Date(resetTimeUnix));
+                        }
+                    } catch (Exception e) {
+                        Log.w(API.class, "Error when try build ban message for user: ", e.getMessage());
+                    }
+
+                    return new Exception(App.context.getResources().getString(R.string.error_411) + " " + resetTime);
+                }
             }
             //TODO: implement all code handling in switch and replace server "message" with default value.
             return new Exception(json.getString("message"));
