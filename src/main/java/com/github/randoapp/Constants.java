@@ -21,6 +21,7 @@ public class Constants {
 
     public static final String ERROR = "error";
     public static final int UNAUTHORIZED_CODE = 400;
+    public static final int FORBIDDEN_CODE = 411;
 
     public static final int PAGE_SIZE = 1;
 
@@ -66,7 +67,6 @@ public class Constants {
     public static final String GOOGLE_TOKEN_PARAM = "token";
     public static final String GOOGLE_FAMILY_NAME_PARAM = "family_name";
     public static final String ANONYMOUS_ID_PARAM = "id";
-    public static final String BON_APPETIT_PARAM = "bonAppetit";
     public static final String IMAGE_URL_PARAM = "imageURL";
     public static final String IMAGE_URL_SIZES_PARAM = "imageSizeURL";
     public static final String MAP_URL_SIZES_PARAM = "mapSizeURL";

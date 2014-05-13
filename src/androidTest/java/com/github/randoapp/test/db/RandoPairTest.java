@@ -66,43 +66,6 @@ public class RandoPairTest extends AndroidTestCase {
         RandoPairTestHelper.checkListNaturalOrder(RandoPairs);
     }
 
-    //isBonAppetit Tests
-    @SmallTest
-    public void testIsBonAppetit0() {
-        RandoPair RandoPair = new RandoPair();
-        RandoPair.user.bonAppetit = 0;
-        RandoPair.stranger.bonAppetit = 0;
-        assertThat(RandoPair.user.isBonAppetit(), is(false));
-        assertThat(RandoPair.stranger.isBonAppetit(), is(false));
-    }
-
-    @SmallTest
-    public void testIsBonAppetit1() {
-        RandoPair RandoPair = new RandoPair();
-        RandoPair.user.bonAppetit = 1;
-        RandoPair.stranger.bonAppetit = 1;
-        assertThat(RandoPair.user.isBonAppetit(), is(true));
-        assertThat(RandoPair.stranger.isBonAppetit(), is(true));
-    }
-
-    @SmallTest
-    public void testIsBonAppetitDifferentVals() {
-        RandoPair RandoPair = new RandoPair();
-        RandoPair.user.bonAppetit = 0;
-        RandoPair.stranger.bonAppetit = 1;
-        assertThat(RandoPair.user.isBonAppetit(), is(false));
-        assertThat(RandoPair.stranger.isBonAppetit(), is(true));
-    }
-
-    @SmallTest
-    public void testIsBonAppetitDifferentVals2() {
-        RandoPair RandoPair = new RandoPair();
-        RandoPair.user.bonAppetit = 1;
-        RandoPair.stranger.bonAppetit = 0;
-        assertThat(RandoPair.user.isBonAppetit(), is(true));
-        assertThat(RandoPair.stranger.isBonAppetit(), is(false));
-    }
-
     // getRandoFileName Tests
     @SmallTest
     public void testUsergetRandoFileName() {

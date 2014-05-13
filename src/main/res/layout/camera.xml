@@ -18,20 +18,6 @@
             android:layout_gravity="center"
             android:background="@drawable/ic_back_button" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1"></View>
-
-<!--        <ImageView
-            android:id="@+id/flash_button"
-            android:layout_width="@dimen/abc_action_bar_default_height"
-            android:layout_height="@dimen/abc_action_bar_default_height"
-            android:background="@drawable/flash_background"
-            android:scaleType="center"
-            android:src="@drawable/flash_off"
-            android:visibility="gone"/>-->
-
     </LinearLayout>
 
 

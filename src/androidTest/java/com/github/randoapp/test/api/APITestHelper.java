@@ -43,28 +43,24 @@ public class APITestHelper {
                 "'randoId': 'ddddcwef3242f32f'," +
                 "'imageURL': 'http://rando4.me/image/dddd/ddddcwef3242f32f.jpg', " +
                 "'creation': '1383690800877'," +
-                "'mapURL': 'http://rando4.me/map/eeee/eeeewef3242f32f.jpg'," +
-                "'bonAppetit': '0'" +
+                "'mapURL': 'http://rando4.me/map/eeee/eeeewef3242f32f.jpg'" +
                 "}," +
                 "'stranger': {" +
                 "'randoId': 'abcwef3242f32f'," +
                 "'imageURL': 'http://rando4.me/image/abc/abcwef3242f32f.jpg', " +
-                "'mapURL': 'http://rando4.me/map/azca/azcacwef3242f32f.jpg'," +
-                "'bonAppetit': '1'" +
+                "'mapURL': 'http://rando4.me/map/azca/azcacwef3242f32f.jpg'" +
                 "}" +
                 "},{" +
                 "'user': {" +
                 "'randoId': 'abcdw0ef3242f32f'," +
                 "'imageURL': 'http://rando4.me/image/abcd/abcdw0ef3242f32f.jpg', " +
                 "'creation': '1383670400877'," +
-                "'mapURL': 'http://rando4.me/map/bcde/bcdecwef3242f32f.jpg'," +
-                "'bonAppetit': '1'" +
+                "'mapURL': 'http://rando4.me/map/bcde/bcdecwef3242f32f.jpg'" +
                 "}," +
                 "'stranger': {" +
                 "'randoId': 'abcd3cwef3242f32f'," +
                 "'imageURL': 'http://rando4.me/image/abcd/abcd3cwef3242f32f.jpg', " +
-                "'mapURL': 'http://rando4.me/map/abcd/abcd5wef3242f32f.jpg'," +
-                "'bonAppetit': '0'" +
+                "'mapURL': 'http://rando4.me/map/abcd/abcd5wef3242f32f.jpg'" +
                 "}" +
                 "}]}");
     }

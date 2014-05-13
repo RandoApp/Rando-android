@@ -81,7 +81,6 @@ public class RandoPair implements Serializable {
         public String imageURL;
         public UrlSize imageURLSize = new UrlSize();
         public Date date;
-        public int bonAppetit;
         public String mapURL;
         public UrlSize mapURLSize = new UrlSize();
 
@@ -93,7 +92,6 @@ public class RandoPair implements Serializable {
 
             User user = (User) o;
 
-            if (bonAppetit != user.bonAppetit) return false;
             if (date != null ? !date.equals(user.date) : user.date != null)
                 return false;
             if (randoId != null ? !randoId.equals(user.randoId) : user.randoId != null) return false;
@@ -114,15 +112,9 @@ public class RandoPair implements Serializable {
             result = 31 * result + (imageURL != null ? imageURL.hashCode() : 0);
             result = 31 * result + (imageURLSize != null ? imageURLSize.hashCode() : 0);
             result = 31 * result + (date != null ? date.hashCode() : 0);
-            result = 31 * result + bonAppetit;
             result = 31 * result + (mapURL != null ? mapURL.hashCode() : 0);
             result = 31 * result + (mapURLSize != null ? mapURLSize.hashCode() : 0);
             return result;
-        }
-
-
-        public boolean isBonAppetit() {
-            return bonAppetit > 0;
         }
 
         public String getRandoFileName() {
@@ -142,7 +134,6 @@ public class RandoPair implements Serializable {
                     ", imageURLSize.medium='" + imageURLSize.medium + '\'' +
                     ", imageURLSize.large='" + imageURLSize.large + '\'' +
                     ", date=" + date +
-                    ", bonAppetit=" + bonAppetit +
                     ", mapURL='" + mapURL + '\'' +
                     ", mapURLSize.small='" + mapURLSize.small + '\'' +
                     ", mapURLSize.medium='" + mapURLSize.medium + '\'' +

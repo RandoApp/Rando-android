@@ -38,14 +38,15 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.github.randoapp.Constants.ANONYMOUS_ID_PARAM;
 import static com.github.randoapp.Constants.ANONYMOUS_URL;
-import static com.github.randoapp.Constants.BON_APPETIT_PARAM;
-import static com.github.randoapp.Constants.BON_APPETIT_URL;
 import static com.github.randoapp.Constants.CREATION_PARAM;
 import static com.github.randoapp.Constants.ERROR_CODE_PARAM;
 import static com.github.randoapp.Constants.FACEBOOK_EMAIL_PARAM;
@@ -53,15 +54,14 @@ import static com.github.randoapp.Constants.FACEBOOK_ID_PARAM;
 import static com.github.randoapp.Constants.FACEBOOK_TOKEN_PARAM;
 import static com.github.randoapp.Constants.FACEBOOK_URL;
 import static com.github.randoapp.Constants.FETCH_USER_URL;
-import static com.github.randoapp.Constants.RANDOS_PARAM;
-import static com.github.randoapp.Constants.RANDO_ID_PARAM;
-import static com.github.randoapp.Constants.IMAGE_URL_PARAM;
-import static com.github.randoapp.Constants.IMAGE_URL_SIZES_PARAM;
+import static com.github.randoapp.Constants.FORBIDDEN_CODE;
 import static com.github.randoapp.Constants.GOOGLE_EMAIL_PARAM;
 import static com.github.randoapp.Constants.GOOGLE_FAMILY_NAME_PARAM;
 import static com.github.randoapp.Constants.GOOGLE_TOKEN_PARAM;
 import static com.github.randoapp.Constants.GOOGLE_URL;
 import static com.github.randoapp.Constants.IMAGE_PARAM;
+import static com.github.randoapp.Constants.IMAGE_URL_PARAM;
+import static com.github.randoapp.Constants.IMAGE_URL_SIZES_PARAM;
 import static com.github.randoapp.Constants.LARGE_PARAM;
 import static com.github.randoapp.Constants.LATITUDE_PARAM;
 import static com.github.randoapp.Constants.LOGOUT_URL;
@@ -70,6 +70,8 @@ import static com.github.randoapp.Constants.LONGITUDE_PARAM;
 import static com.github.randoapp.Constants.MAP_URL_PARAM;
 import static com.github.randoapp.Constants.MAP_URL_SIZES_PARAM;
 import static com.github.randoapp.Constants.MEDIUM_PARAM;
+import static com.github.randoapp.Constants.RANDOS_PARAM;
+import static com.github.randoapp.Constants.RANDO_ID_PARAM;
 import static com.github.randoapp.Constants.REPORT_URL;
 import static com.github.randoapp.Constants.SIGNUP_EMAIL_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_PASSWORD_PARAM;
@@ -80,6 +82,7 @@ import static com.github.randoapp.Constants.ULOAD_RANDO_URL;
 import static com.github.randoapp.Constants.UNAUTHORIZED_CODE;
 import static com.github.randoapp.Constants.USER_PARAM;
 import static org.apache.http.HttpStatus.SC_OK;
+import static org.apache.http.HttpStatus.SC_REQUEST_TOO_LONG;
 
 public class API {
 
@@ -164,7 +167,7 @@ public class API {
         }
     }
 
-    public static void  fetchUserAsync(final OnFetchUser listener) {
+    public static void fetchUserAsync(final OnFetchUser listener) {
         Log.i(API.class, "API.fetchUser");
 
         VolleySingleton.getInstance().getRequestQueue().add(new JsonObjectRequest(Request.Method.GET, getUrl(FETCH_USER_URL), null, new Response.Listener<JSONObject>() {
@@ -197,7 +200,6 @@ public class API {
                         rando.user.mapURLSize.medium = userMapUrlSizes.getString(MEDIUM_PARAM);
                         rando.user.mapURLSize.large = userMapUrlSizes.getString(LARGE_PARAM);
 
-                        rando.user.bonAppetit = user.getInt(BON_APPETIT_PARAM);
                         rando.user.date = new Date(user.getLong(CREATION_PARAM));
 
                         rando.stranger.randoId = stranger.getString(RANDO_ID_PARAM);
@@ -210,8 +212,6 @@ public class API {
                         rando.stranger.mapURLSize.small = strangerMapUrlSizes.getString(SMALL_PARAM);
                         rando.stranger.mapURLSize.medium = strangerMapUrlSizes.getString(MEDIUM_PARAM);
                         rando.stranger.mapURLSize.large = strangerMapUrlSizes.getString(LARGE_PARAM);
-
-                        rando.stranger.bonAppetit = stranger.getInt(BON_APPETIT_PARAM);
 
                         randos.add(rando);
                     }
@@ -250,13 +250,11 @@ public class API {
                     rando.user.randoId = user.getString(RANDO_ID_PARAM);
                     rando.user.imageURL = user.getString(IMAGE_URL_PARAM);
                     rando.user.mapURL = user.getString(MAP_URL_PARAM);
-                    rando.user.bonAppetit = user.getInt(BON_APPETIT_PARAM);
                     rando.user.date = new Date(user.getLong(CREATION_PARAM));
 
                     rando.stranger.randoId = stranger.getString(RANDO_ID_PARAM);
                     rando.stranger.imageURL = stranger.getString(IMAGE_URL_PARAM);
                     rando.stranger.mapURL = stranger.getString(MAP_URL_PARAM);
-                    rando.stranger.bonAppetit = stranger.getInt(BON_APPETIT_PARAM);
 
                     randos.add(rando);
                 }
@@ -296,6 +294,8 @@ public class API {
                 randoPair.user.imageURL = json.getString(IMAGE_URL_PARAM);
                 randoPair.user.date = new Date(json.getLong(CREATION_PARAM));
                 return randoPair;
+            } else if (response.getStatusLine().getStatusCode() == SC_REQUEST_TOO_LONG) {
+                throw new Exception(App.context.getResources().getString(R.string.error_image_too_big));
             } else {
                 throw processServerError(readJSON(response));
             }
@@ -334,24 +334,6 @@ public class API {
             throw processError(e);
         }
     }
-
-    public static void bonAppetit(String id) throws AuthenticationException, Exception {
-        try {
-            HttpPost request = new HttpPost(getUrl(BON_APPETIT_URL + id));
-            HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
-
-            if (response.getStatusLine().getStatusCode() != SC_OK) {
-                throw processServerError(readJSON(response));
-            }
-        } catch (UnsupportedEncodingException e) {
-            throw processError(e);
-        } catch (ClientProtocolException e) {
-            throw processError(e);
-        } catch (IOException e) {
-            throw processError(e);
-        }
-    }
-
 
 
     private static void addParamsToRequest(HttpPost request, String... args) throws UnsupportedEncodingException {
@@ -393,6 +375,21 @@ public class API {
             switch (json.getInt(ERROR_CODE_PARAM)) {
                 case UNAUTHORIZED_CODE:
                     return new AuthenticationException(App.context.getResources().getString(R.string.error_400));
+                case FORBIDDEN_CODE: {
+                    String resetTime = "";
+                    try {
+                        String message = json.getString("message");
+                        Matcher matcher = Pattern.compile("\\d+").matcher(message);
+                        if (matcher.find()) {
+                            long resetTimeUnix = Long.parseLong(matcher.group());
+                            resetTime = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(new Date(resetTimeUnix));
+                        }
+                    } catch (Exception e) {
+                        Log.w(API.class, "Error when try build ban message for user: ", e.getMessage());
+                    }
+
+                    return new Exception(App.context.getResources().getString(R.string.error_411) + " " + resetTime);
+                }
             }
             //TODO: implement all code handling in switch and replace server "message" with default value.
             return new Exception(json.getString("message"));

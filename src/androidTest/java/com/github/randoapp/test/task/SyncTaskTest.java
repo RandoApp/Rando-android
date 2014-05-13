@@ -119,22 +119,18 @@ public class SyncTaskTest extends AndroidTestCase {
         RandoPair1.user.imageURL = "http://rando4.me/image/dddd/ddddcwef3242f32f.jpg";
         RandoPair1.user.date = new Date(1383690800877l);
         RandoPair1.user.mapURL = "http://rando4.me/map/eeee/eeeewef3242f32f.jpg";
-        RandoPair1.user.bonAppetit = 0;
         RandoPair1.stranger.randoId = "abcwef3242f32f";
         RandoPair1.stranger.imageURL = "http://rando4.me/image/abc/abcwef3242f32f.jpg";
         RandoPair1.stranger.mapURL = "http://rando4.me/map/azca/azcacwef3242f32f.jpg";
-        RandoPair1.stranger.bonAppetit = 1;
 
         RandoPair RandoPair2 = new RandoPair();
         RandoPair2.user.randoId = "abcdw0ef3242f32f";
         RandoPair2.user.imageURL = "http://rando4.me/image/abcd/abcdw0ef3242f32f.jpg";
         RandoPair2.user.date = new Date(1383670400877l);
         RandoPair2.user.mapURL = "http://rando4.me/map/bcde/bcdecwef3242f32f.jpg'";
-        RandoPair2.user.bonAppetit = 1;
         RandoPair2.stranger.randoId = "abcd3cwef3242f32f";
         RandoPair2.stranger.imageURL = "http://rando4.me/image/abcd/abcd3cwef3242f32f.jpg";
         RandoPair2.stranger.mapURL = "http://rando4.me/map/abcd/abcd5wef3242f32f.jpg";
-        RandoPair2.stranger.bonAppetit = 0;
 
         List<RandoPair> RandoPairs = new ArrayList<RandoPair>();
         RandoPairs.add(RandoPair1);

@@ -63,7 +63,6 @@ public class RandoDAOTest extends AndroidTestCase {
 
         randoPair.user.imageURL = null;
         randoPair.user.mapURL = "blaFile";
-        randoPair.user.bonAppetit = 0;
         randoPair.user.date = new Date();
 
         int count = randoDAO.getRandoPairsNumber();
@@ -93,7 +92,6 @@ public class RandoDAOTest extends AndroidTestCase {
 
         randoPair.user.imageURL = null;
         randoPair.user.mapURL = "blaFile";
-        randoPair.user.bonAppetit = 0;
         randoPair.user.date = new Date();
 
         int count = randoDAO.getRandoPairsNumber();
@@ -116,12 +114,10 @@ public class RandoDAOTest extends AndroidTestCase {
         RandoPair randoPair = new RandoPair();
         randoPair.user.imageURL = "blaURL";
         randoPair.user.mapURL = "blaFile";
-        randoPair.user.bonAppetit = 0;
         randoPair.user.date = new Date();
 
         randoPair.stranger.imageURL = "Bla2URL";
         randoPair.stranger.mapURL = "LocalFileStranger";
-        randoPair.stranger.bonAppetit = 0;
         randoPair.stranger.date = new Date();
 
         RandoPair newRandoPair = randoDAO.createRandoPair(randoPair);

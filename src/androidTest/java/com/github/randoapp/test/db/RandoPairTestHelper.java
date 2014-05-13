@@ -36,7 +36,6 @@ public class RandoPairTestHelper {
             RandoPair.user.mapURLSize.small  = "blaURL" + i;
             RandoPair.user.mapURLSize.medium = "blaURL" + i;
             RandoPair.user.mapURLSize.large = "blaURL" + i;
-            RandoPair.user.bonAppetit = 0;
             RandoPair.user.date = userDate;
 
             Date strangerDate = new Date();
@@ -50,7 +49,6 @@ public class RandoPairTestHelper {
             RandoPair.stranger.mapURLSize.small = "Bla2URL" + i;
             RandoPair.stranger.mapURLSize.medium = "Bla2URL" + i;
             RandoPair.stranger.mapURLSize.large = "Bla2URL" + i;
-            RandoPair.stranger.bonAppetit = 0;
             RandoPair.stranger.date = strangerDate;
             RandoPairs.add(RandoPair);
         }
@@ -74,7 +72,6 @@ public class RandoPairTestHelper {
         RandoPair.user.mapURLSize.small = "blaURL";
         RandoPair.user.mapURLSize.medium = "blaURL";
         RandoPair.user.mapURLSize.large = "blaURL";
-        RandoPair.user.bonAppetit = 0;
         RandoPair.user.date = userDate;
 
         Date strangerDate = new Date();
@@ -88,7 +85,6 @@ public class RandoPairTestHelper {
         RandoPair.stranger.mapURLSize.small = "Bla2URL";
         RandoPair.stranger.mapURLSize.medium = "Bla2URL";
         RandoPair.stranger.mapURLSize.large = "Bla2URL";
-        RandoPair.stranger.bonAppetit = 0;
         RandoPair.stranger.date = strangerDate;
         return RandoPair;
     }
@@ -109,7 +105,6 @@ public class RandoPairTestHelper {
         RandoPair.user.mapURLSize.small = "blaURL";
         RandoPair.user.mapURLSize.medium = "blaURL";
         RandoPair.user.mapURLSize.large = "blaURL";
-        RandoPair.user.bonAppetit = 0;
         RandoPair.user.date = userDate;
 
         return RandoPair;
