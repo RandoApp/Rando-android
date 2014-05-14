@@ -29,7 +29,7 @@ public class VolleySingleton {
         HttpParams httpParams = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout(httpParams, CONNECTION_TIMEOUT);
         HttpConnectionParams.setSoTimeout(httpParams, CONNECTION_TIMEOUT);
-        
+
         httpClient = new DefaultHttpClient(httpParams);
         ClientConnectionManager mgr = httpClient.getConnectionManager();
         HttpParams params = httpClient.getParams();
