@@ -8,7 +8,9 @@ import com.github.randoapp.App;
 import com.github.randoapp.cache.LruMemCache;
 
 import org.apache.http.client.HttpClient;
+import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -27,7 +29,12 @@ public class VolleySingleton {
         HttpParams httpParams = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout(httpParams, CONNECTION_TIMEOUT);
         HttpConnectionParams.setSoTimeout(httpParams, CONNECTION_TIMEOUT);
+
         httpClient = new DefaultHttpClient(httpParams);
+        ClientConnectionManager mgr = httpClient.getConnectionManager();
+        HttpParams params = httpClient.getParams();
+        httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(params,
+                    mgr.getSchemeRegistry()), params);
 
         requestQueue = Volley.newRequestQueue(App.context, new HttpClientStack(httpClient));
         imageLoader = new ImageLoader(this.requestQueue, new LruMemCache());
