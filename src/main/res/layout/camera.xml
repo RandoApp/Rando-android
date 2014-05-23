@@ -29,11 +29,11 @@
         android:layout_gravity="center_horizontal" >
         </FrameLayout>
 
-   <!-- <com.github.randoapp.view.CircleMaskView
+   <com.github.randoapp.view.CircleMaskView
         android:id="@+id/circle_mask"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/abc_action_bar_default_height"></com.github.randoapp.view.CircleMaskView>-->
+        android:layout_marginTop="@dimen/abc_action_bar_default_height"></com.github.randoapp.view.CircleMaskView>
 
     <!--<ImageView
         android:id="@+id/upload_button"
