@@ -1,4 +1,4 @@
-package com.github.randoapp.view;
+package com.github.randoapp.camera;
 
 import android.content.Context;
 import android.hardware.Camera;

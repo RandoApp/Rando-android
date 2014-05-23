@@ -1,15 +1,13 @@
-package com.github.randoapp.fragment;
+package com.github.randoapp.camera;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.commonsware.cwac.camera.CameraHost;
 import com.commonsware.cwac.camera.PictureTransaction;
 import com.commonsware.cwac.camera.SimpleCameraHost;

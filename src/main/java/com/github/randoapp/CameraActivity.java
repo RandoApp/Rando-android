@@ -1,8 +1,6 @@
 package com.github.randoapp;
 
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -14,33 +12,24 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.commonsware.cwac.camera.CameraView;
 import com.github.randoapp.activity.BaseActivity;
-import com.github.randoapp.fragment.RandoCameraFragment;
+import com.github.randoapp.camera.RandoCameraFragment;
 import com.github.randoapp.log.Log;
-import com.github.randoapp.service.SyncService;
 import com.github.randoapp.task.CropImageTask;
-import com.github.randoapp.task.UploadTask;
 import com.github.randoapp.task.callback.OnDone;
 import com.github.randoapp.task.callback.OnError;
 import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.BitmapUtil;
 import com.github.randoapp.util.FileUtil;
 import com.github.randoapp.util.LocationUpdater;
-import com.github.randoapp.view.RandoCameraHost;
 import com.github.randoapp.view.RandoSurfaceView;
 import com.makeramen.RoundedImageView;
 
 import java.util.Map;
-
-import static android.graphics.ImageFormat.JPEG;
-import static android.view.View.VISIBLE;
-import static com.github.randoapp.Constants.JPEG_QUALITY;
 
 public class CameraActivity extends BaseActivity {
     private RandoSurfaceView randoSurfaceView;
@@ -107,8 +96,8 @@ public class CameraActivity extends BaseActivity {
         setContentView(R.layout.camera);
         updateLocation();
         setBackButtonListener();
-        setTakePictureButtonListener();
-        setUploadButtonListener();
+//        setTakePictureButtonListener();
+//        setUploadButtonListener();
 
       /*  FrameLayout preview = (FrameLayout)findViewById(R.id.camera_preview);
         CameraView cameraView = new CameraView(getBaseContext());
