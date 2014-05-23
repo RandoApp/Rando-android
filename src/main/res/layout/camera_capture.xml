@@ -1,0 +1,21 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.commonsware.cwac.camera.CameraView
+        android:id="@+id/camera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <ImageView
+        android:id="@+id/capture_button"
+        android:layout_width="@dimen/rando_button_size"
+        android:layout_height="@dimen/rando_button_size"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/camera_button_margin_bottom"
+        android:background="@drawable/capture_image_background"
+        android:scaleType="center"
+        android:src="@drawable/capture" />
+
+</RelativeLayout>

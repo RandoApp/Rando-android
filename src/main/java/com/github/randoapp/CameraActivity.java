@@ -1,7 +1,7 @@
 package com.github.randoapp;
 
 
-import android.content.BroadcastReceiver;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,16 +12,18 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.commonsware.cwac.camera.CameraHost;
+import com.commonsware.cwac.camera.CameraHostProvider;
+import com.commonsware.cwac.camera.PictureTransaction;
+import com.commonsware.cwac.camera.SimpleCameraHost;
 import com.github.randoapp.activity.BaseActivity;
 import com.github.randoapp.camera.RandoCameraFragment;
-import com.github.randoapp.fragment.HomeWallFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.task.CropImageTask;
 import com.github.randoapp.task.callback.OnDone;
@@ -35,7 +37,8 @@ import com.makeramen.RoundedImageView;
 
 import java.util.Map;
 
-public class CameraActivity extends BaseActivity {
+public class CameraActivity extends BaseActivity implements
+        CameraHostProvider {
     private RandoSurfaceView randoSurfaceView;
     //private Camera camera;
     private FrameLayout preview;
@@ -93,14 +96,6 @@ public class CameraActivity extends BaseActivity {
         setTakePictureButtonListener();
         setUploadButtonListener();
     }*/
-
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.camera_screen, new HomeWallFragment()).commit();
-        }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -402,4 +397,11 @@ public class CameraActivity extends BaseActivity {
         releaseCamera();
         locationUpdater.cancelTimer();
     }
+
+    @Override
+    public CameraHost getCameraHost() {
+        return (new SimpleCameraHost(this));
+    }
+
+
 }

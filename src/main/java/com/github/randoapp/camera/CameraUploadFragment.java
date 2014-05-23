@@ -25,6 +25,6 @@ public class CameraUploadFragment extends SherlockFragment {
             }
         });
         RandoUtil.initMenuButton(rootView, getActivity());
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return rootView;
     }
 }
