@@ -152,5 +152,6 @@ public class RandoCameraFragment extends CameraFragment {
 
             //takePictureItem.setEnabled(true);
         }
+
     }
 }
