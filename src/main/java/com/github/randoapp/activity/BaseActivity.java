@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 
-public class BaseActivity extends Activity {
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+
+public class BaseActivity extends SherlockFragmentActivity {
 
     private ProgressDialog progress;
 

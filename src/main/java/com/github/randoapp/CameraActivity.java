@@ -1,6 +1,7 @@
 package com.github.randoapp;
 
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,11 +14,14 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.commonsware.cwac.camera.CameraView;
 import com.github.randoapp.activity.BaseActivity;
+import com.github.randoapp.fragment.RandoCameraFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.service.SyncService;
 import com.github.randoapp.task.CropImageTask;
@@ -28,6 +32,7 @@ import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.BitmapUtil;
 import com.github.randoapp.util.FileUtil;
 import com.github.randoapp.util.LocationUpdater;
+import com.github.randoapp.view.RandoCameraHost;
 import com.github.randoapp.view.RandoSurfaceView;
 import com.makeramen.RoundedImageView;
 
@@ -39,7 +44,7 @@ import static com.github.randoapp.Constants.JPEG_QUALITY;
 
 public class CameraActivity extends BaseActivity {
     private RandoSurfaceView randoSurfaceView;
-    private Camera camera;
+    //private Camera camera;
     private FrameLayout preview;
 
     private static final int REQ_CODE_SELECT_PHOTO = 100;
@@ -48,6 +53,12 @@ public class CameraActivity extends BaseActivity {
     public static Location currentLocation;
     public static String picFileName = null;
     private ImageView uploadPictureButton;
+
+    private boolean hasTwoCameras=(Camera.getNumberOfCameras() > 1);
+    private boolean singleShot=false;
+    private boolean isLockedToLandscape=false;
+
+    private RandoCameraFragment current=null;
 
     private Camera.PictureCallback pictureCallback = new Camera.PictureCallback() {
 
@@ -79,7 +90,7 @@ public class CameraActivity extends BaseActivity {
         }
     };
 
-    @Override
+    /*@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.camera);
@@ -88,7 +99,45 @@ public class CameraActivity extends BaseActivity {
         setBackButtonListener();
         setTakePictureButtonListener();
         setUploadButtonListener();
+    }*/
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.camera);
+        updateLocation();
+        setBackButtonListener();
+        setTakePictureButtonListener();
+        setUploadButtonListener();
+
+      /*  FrameLayout preview = (FrameLayout)findViewById(R.id.camera_preview);
+        CameraView cameraView = new CameraView(getBaseContext());
+        cameraView.setHost(new RandoCameraHost(this));
+        preview.addView(cameraView);*/
+
+/*        if (hasTwoCameras) {
+            final ActionBar actionBar=getSupportActionBar();
+
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+
+            *//*ArrayAdapter<CharSequence> adapter=
+                    ArrayAdapter.createFromResource(actionBar.getThemedContext(),
+                            R.array.nav,
+                            android.R.layout.simple_list_item_1);*//*
+
+            *//*actionBar.setListNavigationCallbacks(adapter, this);*//*
+        }
+        else {*/
+            current = RandoCameraFragment.newInstance(false);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.camera_preview, current)
+                    .commit();
+        //}
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -163,7 +212,14 @@ public class CameraActivity extends BaseActivity {
     }
 
     private void createCameraPreview() {
-        camera = getCameraInstance();
+
+        /*preview = (FrameLayout) findViewById(R.id.camera_preview);
+        preview.removeAllViews();
+        CameraView cameraView = new CameraView(getBaseContext());
+        cameraView.setHost(new RandoCameraHost(this));
+        preview.addView(cameraView);*/
+
+        /*camera = getCameraInstance();
 
         if (camera != null) {
             Camera.Parameters params = camera.getParameters();
@@ -179,20 +235,20 @@ public class CameraActivity extends BaseActivity {
             preview.addView(randoSurfaceView);
         } else {
             //TODO: Handle camera not available.
-        }
+        }*/
     }
 
     private void showUploadButton() {
-        findViewById(R.id.capture_button).setVisibility(View.GONE);
+       /* findViewById(R.id.capture_button).setVisibility(View.GONE);
         uploadPictureButton.setEnabled(true);
         findViewById(R.id.upload_button).setVisibility(VISIBLE);
-        findViewById(R.id.circle_mask).setVisibility(View.GONE);
+        findViewById(R.id.circle_mask).setVisibility(View.GONE);*/
     }
 
     private void hideUploadButton() {
-        findViewById(R.id.capture_button).setVisibility(VISIBLE);
+        /*findViewById(R.id.capture_button).setVisibility(VISIBLE);
         findViewById(R.id.upload_button).setVisibility(View.GONE);
-        findViewById(R.id.circle_mask).setVisibility(VISIBLE);
+        findViewById(R.id.circle_mask).setVisibility(VISIBLE);*/
     }
 
     @Override
@@ -221,7 +277,7 @@ public class CameraActivity extends BaseActivity {
         });
     }
 
-    private void setTakePictureButtonListener() {
+    /*private void setTakePictureButtonListener() {
         ImageView takePictureButton = (ImageView) findViewById(R.id.capture_button);
         takePictureButton.setOnClickListener(new ImageView.OnClickListener() {
             @Override
@@ -229,7 +285,7 @@ public class CameraActivity extends BaseActivity {
                 Log.i(CropImageTask.class, "TOTAL 0:" + Runtime.getRuntime().totalMemory() / (1024 * 1024));
                 Log.i(CropImageTask.class, "0:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
                 showProgressbar("processing...");
-                camera.takePicture(null, null, pictureCallback);
+                //camera.takePicture(null, null, pictureCallback);
             }
         });
     }
@@ -276,7 +332,7 @@ public class CameraActivity extends BaseActivity {
                 }
             }
         });
-    }
+    }*/
 
     private void updateLocation() {
         LocationUpdater.LocationResult locationResult = new LocationUpdater.LocationResult() {
@@ -302,13 +358,13 @@ public class CameraActivity extends BaseActivity {
     }
 
     private void releaseCamera() {
-        if (preview != null) {
+/*        if (preview != null) {
             preview.removeAllViews();
         }
         if (camera != null) {
             camera.release();        // release the camera for other applications
             camera = null;
-        }
+        }*/
     }
 
     private void resumeUploadScreenIfNeed() {
@@ -320,8 +376,9 @@ public class CameraActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         createCameraPreview();
-        resumeUploadScreenIfNeed();
+        /*resumeUploadScreenIfNeed();*/
     }
 
     @Override
