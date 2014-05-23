@@ -5,7 +5,12 @@
     <com.commonsware.cwac.camera.CameraView
         android:id="@+id/camera"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
+
+    <com.github.randoapp.view.CircleMaskView
+        android:id="@+id/circle_mask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></com.github.randoapp.view.CircleMaskView>
 
     <ImageView
         android:id="@+id/capture_button"
