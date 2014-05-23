@@ -1,6 +1,8 @@
 package com.github.randoapp;
 
 
+import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -16,6 +18,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.commonsware.cwac.camera.CameraHost;
+import com.commonsware.cwac.camera.CameraHostProvider;
+import com.commonsware.cwac.camera.PictureTransaction;
+import com.commonsware.cwac.camera.SimpleCameraHost;
 import com.github.randoapp.activity.BaseActivity;
 import com.github.randoapp.camera.RandoCameraFragment;
 import com.github.randoapp.log.Log;
@@ -31,7 +37,8 @@ import com.makeramen.RoundedImageView;
 
 import java.util.Map;
 
-public class CameraActivity extends BaseActivity {
+public class CameraActivity extends BaseActivity implements
+        CameraHostProvider {
     private RandoSurfaceView randoSurfaceView;
     //private Camera camera;
     private FrameLayout preview;
@@ -93,9 +100,17 @@ public class CameraActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.camera);
-        updateLocation();
-        setBackButtonListener();
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.camera_screen, RandoCameraFragment.newInstance(false))
+                    .commit();
+        }
+
+//        updateLocation();
+//        setBackButtonListener();
 //        setTakePictureButtonListener();
 //        setUploadButtonListener();
 
@@ -118,11 +133,11 @@ public class CameraActivity extends BaseActivity {
             *//*actionBar.setListNavigationCallbacks(adapter, this);*//*
         }
         else {*/
-            current = RandoCameraFragment.newInstance(false);
-
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.camera_preview, current)
-                    .commit();
+//            current = RandoCameraFragment.newInstance(false);
+//
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.camera_preview, current)
+//                    .commit();
         //}
     }
 
@@ -239,32 +254,32 @@ public class CameraActivity extends BaseActivity {
         findViewById(R.id.upload_button).setVisibility(View.GONE);
         findViewById(R.id.circle_mask).setVisibility(VISIBLE);*/
     }
-
-    @Override
-    public void onBackPressed() {
-        picFileName = null;
-        releaseCamera();
-        super.onBackPressed();
-    }
-
-    private void setBackButtonListener() {
-        ImageView backButton = (ImageView) findViewById(R.id.back_button);
-        backButton.setOnClickListener(new ImageView.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                setResult(RESULT_CANCELED);
-                if (TextUtils.isEmpty(picFileName)) {
-                    finish();
-                } else {
-                    picFileName = null;
-                    releaseCamera();
-                    hideUploadButton();
-                    createCameraPreview();
-                }
-            }
-        });
-    }
+//
+//    @Override
+//    public void onBackPressed() {
+//        picFileName = null;
+//        releaseCamera();
+//        super.onBackPressed();
+//    }
+//
+//    private void setBackButtonListener() {
+//        ImageView backButton = (ImageView) findViewById(R.id.back_button);
+//        backButton.setOnClickListener(new ImageView.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View arg0) {
+//                setResult(RESULT_CANCELED);
+//                if (TextUtils.isEmpty(picFileName)) {
+//                    finish();
+//                } else {
+//                    picFileName = null;
+//                    releaseCamera();
+//                    hideUploadButton();
+//                    createCameraPreview();
+//                }
+//            }
+//        });
+//    }
 
     /*private void setTakePictureButtonListener() {
         ImageView takePictureButton = (ImageView) findViewById(R.id.capture_button);
@@ -382,4 +397,11 @@ public class CameraActivity extends BaseActivity {
         releaseCamera();
         locationUpdater.cancelTimer();
     }
+
+    @Override
+    public CameraHost getCameraHost() {
+        return (new SimpleCameraHost(this));
+    }
+
+
 }
