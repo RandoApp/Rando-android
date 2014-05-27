@@ -12,6 +12,10 @@ public class Constants {
     public static final String RANDO_PAIRS_NUMBER = "RANDO_PAIRS_NUMBER";
     public static final String NOT_PAIRED_RANDO_PAIRS_NUMBER = "NOT_PAIRED_RANDO_PAIRS_NUMBER";
 
+    public static final String CAMERA_BROADCAST_EVENT = "RANDO_CAMERA_EVENT";
+
+    public static final String RANDO_PHOTO_PATH = "RANDO_PHOTO_PATH";
+
     public static final String IMAGE_FILTER = "image/*";
     public static final String IMAGE_PREFIX = "IMG_";
     public static final String IMAGE_POSTFIX = ".jpg";
@@ -118,4 +122,5 @@ public class Constants {
     public static final int NUMBER_OF_IMAGES_FOR_CACHING = NUMBER_OF_IMAGES_IN_ONE_SET * 2; //2 visible image sets per screen
 
     public static final int GOOGLE_ACTIVITYS_AUTH_REQUEST_CODE = 483; //value is not matter
+
 }
