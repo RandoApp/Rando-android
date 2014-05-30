@@ -18,6 +18,7 @@ import com.github.randoapp.CameraActivity;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.service.SyncService;
+import com.github.randoapp.task.CropImageTask;
 import com.github.randoapp.task.UploadTask;
 import com.github.randoapp.task.callback.OnDone;
 import com.github.randoapp.task.callback.OnError;
@@ -31,28 +32,60 @@ import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 public class CameraUploadFragment extends SherlockFragment {
 
     private String picFileName;
+    private ImageView preview;
     private ImageView uploadPictureButton;
+    private int displayWidth;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.camera_upload, container, false);
 
-        ImageView preview = (ImageView) rootView.findViewById(R.id.preview);
+        preview = (ImageView) rootView.findViewById(R.id.preview);
         Bundle bundle = getArguments();
-        picFileName = bundle.getString(Constants.FILEPATH);
+        String fileToCrop = bundle.getString(Constants.FILEPATH);
 
         WindowManager windowManager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
-        int displayWidth = display.getWidth();
+        displayWidth = display.getWidth();
 
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(displayWidth, displayWidth);
         preview.setLayoutParams(layoutParams);
 
-        preview.setImageBitmap(BitmapUtil.decodeSampledBitmap(picFileName, displayWidth, displayWidth));
+        prepareForUpload(fileToCrop);
 
         uploadPictureButton = (ImageView) rootView.findViewById(R.id.upload_button);
         uploadPictureButton.setOnClickListener(new UploadButtonListner());
         return rootView;
+    }
+
+
+    private void prepareForUpload(String fileToCrop) {
+        ((CameraActivity) getActivity()).showProgressbar("Cropping...");
+        new CropImageTask(fileToCrop)
+                .onOk(new OnOk() {
+                    @Override
+                    public void onOk(Map<String, Object> data) {
+                        picFileName = (String) data.get(Constants.FILEPATH);
+                        preview.setImageBitmap(BitmapUtil.decodeSampledBitmap(picFileName, displayWidth, displayWidth));
+
+                    }
+                })
+                .onError(new OnError() {
+                    @Override
+                    public void onError(Map<String, Object> data) {
+                        Toast.makeText(getActivity(), "Crop Failed.",
+                                Toast.LENGTH_LONG).show();
+                    }
+                })
+                .onDone(new OnDone() {
+                    @Override
+                    public void onDone(Map<String, Object> data) {
+                        ((CameraActivity) getActivity()).hideProgressbar();
+
+                    }
+                })
+                .execute();
     }
 
     private class UploadButtonListner implements View.OnClickListener {
