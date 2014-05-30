@@ -17,18 +17,11 @@ import com.commonsware.cwac.camera.CameraView;
 import com.commonsware.cwac.camera.PictureTransaction;
 import com.commonsware.cwac.camera.SimpleCameraHost;
 import com.commonsware.cwac.camera.acl.CameraFragment;
-import com.github.randoapp.CameraActivity;
-import com.github.randoapp.Constants;
 import com.github.randoapp.R;
-import com.github.randoapp.task.CropImageTask;
-import com.github.randoapp.task.callback.OnDone;
-import com.github.randoapp.task.callback.OnError;
-import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.CameraUtil;
 import com.github.randoapp.util.FileUtil;
 
 import java.io.File;
-import java.util.Map;
 
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.JPEG_QUALITY;
