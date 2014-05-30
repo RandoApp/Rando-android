@@ -31,13 +31,9 @@ public class CropImageTask extends BaseTask {
         }
 
         try {
-            Log.i(CropImageTask.class, "1:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeFile(srcFile, options);
-            Log.i(CropImageTask.class, "1.1:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
-
-            Log.i(CropImageTask.class, "2:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
 
             File file = FileUtil.getOutputMediaFile();
             if (file == null) {
@@ -51,18 +47,12 @@ public class CropImageTask extends BaseTask {
                 int size = Math.min(options.outWidth, options.outHeight);
 
                 BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(srcFile, false);
-                Log.i(CropImageTask.class, "3:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
-
                 Bitmap bitmap = decoder.decodeRegion(new Rect(0, 0, size, size), null);
 
-                Log.i(CropImageTask.class, "4:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
-
                 FileOutputStream out = new FileOutputStream(file);
-                Log.i(CropImageTask.class, "6:" + Runtime.getRuntime().freeMemory());
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, out);
                 out.close();
             }
-            Log.i(CropImageTask.class, "7:" + Runtime.getRuntime().freeMemory());
             data = new HashMap<String, Object>();
 
             FileUtil.scanImage(App.context, file.getAbsolutePath());
