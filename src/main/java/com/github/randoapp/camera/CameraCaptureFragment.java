@@ -17,18 +17,11 @@ import com.commonsware.cwac.camera.CameraView;
 import com.commonsware.cwac.camera.PictureTransaction;
 import com.commonsware.cwac.camera.SimpleCameraHost;
 import com.commonsware.cwac.camera.acl.CameraFragment;
-import com.github.randoapp.CameraActivity;
-import com.github.randoapp.Constants;
 import com.github.randoapp.R;
-import com.github.randoapp.task.CropImageTask;
-import com.github.randoapp.task.callback.OnDone;
-import com.github.randoapp.task.callback.OnError;
-import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.CameraUtil;
 import com.github.randoapp.util.FileUtil;
 
 import java.io.File;
-import java.util.Map;
 
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.JPEG_QUALITY;
@@ -85,6 +78,11 @@ public class CameraCaptureFragment extends CameraFragment {
         }
 
         @Override
+        public Camera.Size getPreviewSize(int displayOrientation, int width, int height, Camera.Parameters parameters) {
+            return CameraUtil.getBestPreviewSize(parameters.getSupportedPreviewSizes(), width, height);
+        }
+
+        @Override
         protected File getPhotoDirectory() {
             return FileUtil.getOutputMediaDir();
         }
@@ -120,37 +118,9 @@ public class CameraCaptureFragment extends CameraFragment {
         @Override
         public void saveImage(PictureTransaction xact, byte[] image) {
             final String tmpFile = FileUtil.writeImageToTempFile(image);
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ((CameraActivity) getActivity()).showProgressbar("Cropping...");
-                    new CropImageTask(tmpFile)
-                            .onOk(new OnOk() {
-                                @Override
-                                public void onOk(Map<String, Object> data) {
-                                    String picFileName = (String) data.get(Constants.FILEPATH);
-                                    Intent intent = new Intent(CAMERA_BROADCAST_EVENT);
-                                    intent.putExtra(RANDO_PHOTO_PATH, picFileName);
-                                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-                                }
-                            })
-                            .onError(new OnError() {
-                                @Override
-                                public void onError(Map<String, Object> data) {
-                                    Toast.makeText(getActivity(), "Crop Failed.",
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            })
-                            .onDone(new OnDone() {
-                                @Override
-                                public void onDone(Map<String, Object> data) {
-                                    ((CameraActivity) getActivity()).hideProgressbar();
-
-                                }
-                            })
-                            .execute();
-                }
-            });
+            Intent intent = new Intent(CAMERA_BROADCAST_EVENT);
+            intent.putExtra(RANDO_PHOTO_PATH, tmpFile);
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
         }
     }
 }
