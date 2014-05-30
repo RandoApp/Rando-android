@@ -61,20 +61,19 @@ public class CameraUploadFragment extends SherlockFragment {
 
 
     private void prepareForUpload(String fileToCrop) {
-        ((CameraActivity) getActivity()).showProgressbar("Cropping...");
+        ((CameraActivity) getActivity()).showProgressbar(getResources().getString(R.string.cropping_progress));
         new CropImageTask(fileToCrop)
                 .onOk(new OnOk() {
                     @Override
                     public void onOk(Map<String, Object> data) {
                         picFileName = (String) data.get(Constants.FILEPATH);
                         preview.setImageBitmap(BitmapUtil.decodeSampledBitmap(picFileName, displayWidth, displayWidth));
-
                     }
                 })
                 .onError(new OnError() {
                     @Override
                     public void onError(Map<String, Object> data) {
-                        Toast.makeText(getActivity(), "Crop Failed.",
+                        Toast.makeText(getActivity(), R.string.crop_failed,
                                 Toast.LENGTH_LONG).show();
                     }
                 })
@@ -93,7 +92,7 @@ public class CameraUploadFragment extends SherlockFragment {
         @Override
         public void onClick(View v) {
             if (picFileName != null) {
-                ((CameraActivity) getActivity()).showProgressbar("Uploading...");
+                ((CameraActivity) getActivity()).showProgressbar(getResources().getString(R.string.uploading_progress));
                 uploadPictureButton.setEnabled(false);
                 new UploadTask(picFileName).onOk(new OnOk() {
                     @Override
