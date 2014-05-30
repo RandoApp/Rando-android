@@ -1,6 +1,7 @@
 package com.github.randoapp;
 
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,14 +19,13 @@ import com.github.randoapp.camera.CameraCaptureFragment;
 import com.github.randoapp.camera.CameraUploadFragment;
 import com.github.randoapp.util.LocationUpdater;
 
-import java.io.File;
-
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 
 public class CameraActivity extends BaseActivity implements CameraHostProvider {
 
     private LocationUpdater locationUpdater = new LocationUpdater();
     public static Location currentLocation;
+    private ProgressDialog progress;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -35,8 +35,14 @@ public class CameraActivity extends BaseActivity implements CameraHostProvider {
             if (extra != null) {
                 String photoPath = (String) extra.get(Constants.RANDO_PHOTO_PATH);
                 if (photoPath != null) {
+
+                    CameraUploadFragment uploadFragment = new CameraUploadFragment();
+                    Bundle args = new Bundle();
+                    args.putString(Constants.FILEPATH, photoPath);
+                    uploadFragment.setArguments(args);
+
                     FragmentManager fragmentManager = getSupportFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.camera_screen, new CameraUploadFragment(new File(photoPath))).commit();
+                    fragmentManager.beginTransaction().replace(R.id.camera_screen, uploadFragment).commit();
                     return;
                 }
             }
@@ -47,7 +53,7 @@ public class CameraActivity extends BaseActivity implements CameraHostProvider {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        updateLocation();
         setContentView(R.layout.activity_camera);
 
         if (savedInstanceState == null) {
@@ -90,6 +96,25 @@ public class CameraActivity extends BaseActivity implements CameraHostProvider {
     protected void onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         super.onDestroy();
+    }
+
+    public void showProgressbar(String message) {
+        if (progress != null) {
+            progress.hide();
+        }
+
+        progress = new ProgressDialog(this, R.style.RandoTheme);
+        progress.setMessage(message);
+        progress.setIndeterminate(true);
+        progress.setCanceledOnTouchOutside(false);
+        progress.show();
+
+    }
+
+    public void hideProgressbar() {
+        if (progress != null) {
+            progress.hide();
+        }
     }
 
 }

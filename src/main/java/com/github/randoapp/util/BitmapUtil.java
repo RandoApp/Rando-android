@@ -1,10 +1,11 @@
 package com.github.randoapp.util;
 
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 public class BitmapUtil {
 
-    public static int calculateInSampleSize(
+    private static int calculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
@@ -25,5 +26,20 @@ public class BitmapUtil {
         }
 
         return inSampleSize;
+    }
+
+    public static Bitmap decodeSampledBitmap(String file, int reqWidth, int reqHeight) {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(file, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(file, options);
     }
 }
