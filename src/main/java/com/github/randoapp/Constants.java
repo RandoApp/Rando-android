@@ -19,7 +19,7 @@ public class Constants {
     public static final String IMAGE_FILTER = "image/*";
     public static final String IMAGE_PREFIX = "IMG_";
     public static final String IMAGE_POSTFIX = ".jpg";
-    public static final int JPEG_QUALITY = 80;
+    public static final int JPEG_QUALITY = 75;
 
     public static final int LOCATION_PERIOD = 20000;
 
@@ -43,6 +43,7 @@ public class Constants {
     public static final int RANDO_PADDING_LANDSCAPE_COLUMN_TOP = 15;
     public static final int RANDO_PADDING_LANDSCAPE_COLUMN_BOTTOM = 5;
 
+    public static final int CAMERA_MIN_SIZE = 1200;
     public static final int SIZE_SMALL = 480;
     public static final int SIZE_MEDIUM = 800;
     public static final int SIZE_LARGE = 1200;
@@ -85,8 +86,6 @@ public class Constants {
     public static final String RANDOS_PARAM = "randos";
     public static final String LATITUDE_PARAM = "latitude";
     public static final String LONGITUDE_PARAM = "longitude";
-
-    public static final int CAMERA_MIN_SIZE = 1200;
 
     public static final String ERROR_MESSAGE_PARAM = "message";
     public static final String ERROR_CODE_PARAM = "code";

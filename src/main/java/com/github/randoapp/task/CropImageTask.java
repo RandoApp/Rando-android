@@ -50,7 +50,7 @@ public class CropImageTask extends BaseTask {
                 Bitmap bitmap = decoder.decodeRegion(new Rect(0, 0, size, size), null);
 
                 FileOutputStream out = new FileOutputStream(file);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, out);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, Constants.JPEG_QUALITY, out);
                 out.close();
             }
             data = new HashMap<String, Object>();

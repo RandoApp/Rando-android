@@ -31,6 +31,7 @@ import java.io.File;
 import java.util.Map;
 
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
+import static com.github.randoapp.Constants.JPEG_QUALITY;
 import static com.github.randoapp.Constants.RANDO_PHOTO_PATH;
 
 public class CameraCaptureFragment extends CameraFragment {
@@ -108,6 +109,13 @@ public class CameraCaptureFragment extends CameraFragment {
             super.onAutoFocus(success, camera);
             captureButton.setEnabled(true);
         }
+
+        @Override
+        public Camera.Parameters adjustPictureParameters(PictureTransaction xact, Camera.Parameters parameters) {
+            parameters.setJpegQuality(JPEG_QUALITY);
+            return parameters;
+        }
+
 
         @Override
         public void saveImage(PictureTransaction xact, byte[] image) {
