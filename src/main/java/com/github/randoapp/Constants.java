@@ -48,7 +48,7 @@ public class Constants {
     public static final int SIZE_MEDIUM = 800;
     public static final int SIZE_LARGE = 1200;
 
-    public static final String SERVER_HOST = "192.168.1.103:8888";
+    public static final String SERVER_HOST = "rando4.me";
     public static final String SERVER_URL = "http://" + SERVER_HOST;
 
     public static final int CONNECTION_TIMEOUT = 6000;

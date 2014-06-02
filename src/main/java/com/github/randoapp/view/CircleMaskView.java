@@ -37,8 +37,6 @@ public class CircleMaskView extends View {
         int width = display.getWidth();
         int height = display.getHeight();
 
-        int size = Math.min(width, height);
-
         bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         bitmap.eraseColor(Color.TRANSPARENT);
 
