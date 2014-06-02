@@ -54,6 +54,7 @@
     <color name="rando_edit_mode_overlay">#bbffffff</color>
 
     <color name="bla">#00ffffff</color>
+    <color name="black">#000000</color>
 
 
 </resources>
