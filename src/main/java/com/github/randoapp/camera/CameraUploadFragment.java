@@ -24,6 +24,7 @@ import com.github.randoapp.task.callback.OnDone;
 import com.github.randoapp.task.callback.OnError;
 import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.BitmapUtil;
+import com.makeramen.RoundedImageView;
 
 import java.util.Map;
 
@@ -41,7 +42,8 @@ public class CameraUploadFragment extends SherlockFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.camera_upload, container, false);
 
-        preview = (ImageView) rootView.findViewById(R.id.preview);
+        preview = (RoundedImageView) rootView.findViewById(R.id.preview);
+
         Bundle bundle = getArguments();
         String fileToCrop = bundle.getString(Constants.FILEPATH);
 
@@ -61,7 +63,6 @@ public class CameraUploadFragment extends SherlockFragment {
 
 
     private void prepareForUpload(String fileToCrop) {
-        ((CameraActivity) getActivity()).showProgressbar(getResources().getString(R.string.cropping_progress));
         new CropImageTask(fileToCrop)
                 .onOk(new OnOk() {
                     @Override
@@ -73,14 +74,11 @@ public class CameraUploadFragment extends SherlockFragment {
                 .onError(new OnError() {
                     @Override
                     public void onError(Map<String, Object> data) {
-                        Toast.makeText(getActivity(), R.string.crop_failed,
-                                Toast.LENGTH_LONG).show();
                     }
                 })
                 .onDone(new OnDone() {
                     @Override
                     public void onDone(Map<String, Object> data) {
-                        ((CameraActivity) getActivity()).hideProgressbar();
 
                     }
                 })
@@ -92,16 +90,12 @@ public class CameraUploadFragment extends SherlockFragment {
         @Override
         public void onClick(View v) {
             if (picFileName != null) {
-                ((CameraActivity) getActivity()).showProgressbar(getResources().getString(R.string.uploading_progress));
                 uploadPictureButton.setEnabled(false);
                 new UploadTask(picFileName).onOk(new OnOk() {
                     @Override
                     public void onOk(Map<String, Object> data) {
                         picFileName = null;
                         SyncService.run();
-                        Toast.makeText(getActivity(),
-                                R.string.photo_upload_ok,
-                                Toast.LENGTH_LONG).show();
                     }
                 }).onError(new OnError() {
                     @Override
@@ -121,7 +115,6 @@ public class CameraUploadFragment extends SherlockFragment {
                 }).onDone(new OnDone() {
                     @Override
                     public void onDone(Map<String, Object> data) {
-                        ((CameraActivity) getActivity()).hideProgressbar();
                         Intent intent = new Intent(CAMERA_BROADCAST_EVENT);
                         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
                     }
