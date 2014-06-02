@@ -140,10 +140,6 @@ public class CameraCaptureFragment extends CameraFragment {
             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
         }
 
-        @Override
-        public float maxPictureCleanupHeapUsage() {
-            return 0.0f;
-        }
 
         @Override
         protected boolean useFrontFacingCamera() {

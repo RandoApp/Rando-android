@@ -1,7 +1,6 @@
 package com.github.randoapp;
 
 
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,21 +10,20 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.commonsware.cwac.camera.CameraHost;
 import com.commonsware.cwac.camera.CameraHostProvider;
 import com.commonsware.cwac.camera.SimpleCameraHost;
-import com.github.randoapp.activity.BaseActivity;
 import com.github.randoapp.camera.CameraCaptureFragment;
 import com.github.randoapp.camera.CameraUploadFragment;
 import com.github.randoapp.util.LocationUpdater;
 
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 
-public class CameraActivity extends BaseActivity implements CameraHostProvider {
+public class CameraActivity extends SherlockFragmentActivity implements CameraHostProvider {
 
     private LocationUpdater locationUpdater = new LocationUpdater();
     public static Location currentLocation;
-    private ProgressDialog progress;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -96,25 +94,6 @@ public class CameraActivity extends BaseActivity implements CameraHostProvider {
     protected void onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         super.onDestroy();
-    }
-
-    public void showProgressbar(String message) {
-        if (progress != null) {
-            progress.hide();
-        }
-
-        progress = new ProgressDialog(this, R.style.RandoTheme);
-        progress.setMessage(message);
-        progress.setIndeterminate(true);
-        progress.setCanceledOnTouchOutside(false);
-        progress.show();
-
-    }
-
-    public void hideProgressbar() {
-        if (progress != null) {
-            progress.hide();
-        }
     }
 
 }
