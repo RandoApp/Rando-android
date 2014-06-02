@@ -78,11 +78,6 @@ public class CameraCaptureFragment extends CameraFragment {
         }
 
         @Override
-        public Camera.Size getPreviewSize(int displayOrientation, int width, int height, Camera.Parameters parameters) {
-            return CameraUtil.getBestPreviewSize(parameters.getSupportedPreviewSizes(), width, height);
-        }
-
-        @Override
         protected File getPhotoDirectory() {
             return FileUtil.getOutputMediaDir();
         }
@@ -114,7 +109,6 @@ public class CameraCaptureFragment extends CameraFragment {
             return parameters;
         }
 
-
         @Override
         public void saveImage(PictureTransaction xact, byte[] image) {
             final String tmpFile = FileUtil.writeImageToTempFile(image);
@@ -122,5 +116,16 @@ public class CameraCaptureFragment extends CameraFragment {
             intent.putExtra(RANDO_PHOTO_PATH, tmpFile);
             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
         }
+
+        @Override
+        public float maxPictureCleanupHeapUsage() {
+            return 0.0f;
+        }
+
+        @Override
+        protected boolean useFrontFacingCamera() {
+            return false;
+        }
+
     }
 }
