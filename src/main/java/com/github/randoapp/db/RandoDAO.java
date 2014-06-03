@@ -19,9 +19,6 @@ public class RandoDAO {
     // Database fields
     private SQLiteDatabase database;
     private RandoDBHelper randoDBHelper;
-    private String[] allColumns = {RandoDBHelper.COLUMN_ID,
-            RandoDBHelper.COLUMN_USER_RANDO_ID, RandoDBHelper.COLUMN_USER_RANDO_URL, RandoDBHelper.COLUMN_USER_RANDO_URL_SMALL, RandoDBHelper.COLUMN_USER_RANDO_URL_MEDIUM, RandoDBHelper.COLUMN_USER_RANDO_URL_LARGE, RandoDBHelper.COLUMN_USER_RANDO_DATE, RandoDBHelper.COLUMN_USER_MAP_URL, RandoDBHelper.COLUMN_USER_MAP_URL_SMALL, RandoDBHelper.COLUMN_USER_MAP_URL_MEDIUM, RandoDBHelper.COLUMN_USER_MAP_URL_LARGE,
-            RandoDBHelper.COLUMN_STRANGER_RANDO_ID, RandoDBHelper.COLUMN_STRANGER_RANDO_URL, RandoDBHelper.COLUMN_STRANGER_RANDO_URL_SMALL, RandoDBHelper.COLUMN_STRANGER_RANDO_URL_MEDIUM, RandoDBHelper.COLUMN_STRANGER_RANDO_URL_LARGE, RandoDBHelper.COLUMN_STRANGER_RANDO_DATE, RandoDBHelper.COLUMN_STRANGER_MAP_URL, RandoDBHelper.COLUMN_STRANGER_MAP_URL_SMALL, RandoDBHelper.COLUMN_STRANGER_MAP_URL_MEDIUM, RandoDBHelper.COLUMN_STRANGER_MAP_URL_LARGE};
 
     public RandoDAO(Context context) {
         randoDBHelper = new RandoDBHelper(context);
@@ -40,26 +37,26 @@ public class RandoDAO {
         }
 
         ContentValues values = new ContentValues();
-        values.put(RandoDBHelper.COLUMN_FILE, file);
-        values.put(RandoDBHelper.COLUMN_LATITUDE, latitude);
-        values.put(RandoDBHelper.COLUMN_LONGITUDE, longitude);
+        values.put(RandoDBHelper.RandoUploadTable.COLUMN_FILE, file);
+        values.put(RandoDBHelper.RandoUploadTable.COLUMN_LATITUDE, latitude);
+        values.put(RandoDBHelper.RandoUploadTable.COLUMN_LONGITUDE, longitude);
 
-        database.insert(RandoDBHelper.TABLE_RANDO_UPLOAD, null, values);
+        database.insert(RandoDBHelper.RandoUploadTable.NAME, null, values);
     }
 
+    //TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public List<RandoUpload> getAllRandosToUpload() {
         List<RandoUpload> randos = new ArrayList<RandoUpload>();
 
-        //TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        Cursor cursor = database.query(RandoDBHelper.TABLE_RANDO_UPLOAD,
-                allColumns, null, null, null, null, RandoDBHelper.COLUMN_USER_RANDO_DATE + " DESC", null);
+        Cursor cursor = database.query(RandoDBHelper.RandoUploadTable.NAME,
+                RandoDBHelper.RandoUploadTable.ALL_COLUMNS, null, null, null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             RandoUpload rando = new RandoUpload();
-            rando.file = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_FILE));
-            rando.latitude = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_LATITUDE));
-            rando.longitude = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_LONGITUDE));
+            rando.file = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_FILE));
+            rando.latitude = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_LATITUDE));
+            rando.longitude = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_LONGITUDE));
             randos.add(rando);
             cursor.moveToNext();
         }
@@ -80,7 +77,7 @@ public class RandoDAO {
             return null;
         }
         ContentValues values = randoPairToContentValues(randoPair);
-        long insertId = database.insert(RandoDBHelper.TABLE_RANDO, null,
+        long insertId = database.insert(RandoDBHelper.RandoTable.NAME, null,
                 values);
         return getRandoPairById(insertId);
     }
@@ -93,8 +90,8 @@ public class RandoDAO {
      */
 
     public RandoPair getRandoPairById(long id) {
-        Cursor cursor = database.query(RandoDBHelper.TABLE_RANDO,
-                allColumns, RandoDBHelper.COLUMN_ID + " = " + id, null,
+        Cursor cursor = database.query(RandoDBHelper.RandoTable.NAME,
+                RandoDBHelper.RandoTable.ALL_COLUMNS, RandoDBHelper.RandoTable.COLUMN_ID + " = " + id, null,
                 null, null, null);
         cursor.moveToFirst();
         RandoPair newRandoPair = cursorToRandoPair(cursor);
@@ -109,7 +106,7 @@ public class RandoDAO {
      */
     public void deleteRandoPair(RandoPair randoPair) {
         long id = randoPair.id;
-        database.delete(RandoDBHelper.TABLE_RANDO, RandoDBHelper.COLUMN_ID
+        database.delete(RandoDBHelper.RandoTable.NAME, RandoDBHelper.RandoTable.COLUMN_ID
                 + " = " + id, null);
         Log.i(RandoDAO.class, "RandoPair deleted with id: ", String.valueOf(id));
     }
@@ -118,7 +115,7 @@ public class RandoDAO {
      * clear rando pairs Table in DB.
      */
     public void clearRandoPairs() {
-        database.delete(RandoDBHelper.TABLE_RANDO, "", null);
+        database.delete(RandoDBHelper.RandoTable.NAME, "", null);
         Log.i(RandoDAO.class, "RandoPairs cleared");
     }
 
@@ -133,8 +130,7 @@ public class RandoDAO {
 
         ContentValues values = randoPairToContentValues(randoPair);
 
-        database.update(RandoDBHelper.TABLE_RANDO, values, RandoDBHelper.COLUMN_ID
-                + " = " + id, null);
+        database.update(RandoDBHelper.RandoTable.NAME, values, RandoDBHelper.RandoTable.COLUMN_ID + " = " + id, null);
         Log.w(RandoDAO.class, "RandoPair updated with id: ", String.valueOf(id));
     }
 
@@ -145,8 +141,8 @@ public class RandoDAO {
     public List<RandoPair> getAllRandoPairs() {
         List<RandoPair> randoPairs = new ArrayList<RandoPair>();
 
-        Cursor cursor = database.query(RandoDBHelper.TABLE_RANDO,
-                allColumns, null, null, null, null, RandoDBHelper.COLUMN_USER_RANDO_DATE + " DESC", null);
+        Cursor cursor = database.query(RandoDBHelper.RandoTable.NAME,
+                RandoDBHelper.RandoTable.ALL_COLUMNS, null, null, null, null, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE + " DESC", null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -178,8 +174,8 @@ public class RandoDAO {
      * @return randos amount in DB
      */
     public int getRandoPairsNumber() {
-        Cursor cursor = database.query(RandoDBHelper.TABLE_RANDO,
-                allColumns, null, null, null, null, null);
+        Cursor cursor = database.query(RandoDBHelper.RandoTable.NAME,
+                RandoDBHelper.RandoTable.ALL_COLUMNS, null, null, null, null, null);
         int result = cursor.getCount();
         cursor.close();
         return result;
@@ -192,9 +188,10 @@ public class RandoDAO {
      * @return not paired randos amount in DB
      */
     public int getNotPairedRandosNumber() {
-        Cursor cursor = database.query(RandoDBHelper.TABLE_RANDO,
-                allColumns, RandoDBHelper.COLUMN_STRANGER_RANDO_ID
-                + " is null or " + RandoDBHelper.COLUMN_STRANGER_RANDO_ID + " = ''", null, null, null, null);
+        Cursor cursor = database.query(RandoDBHelper.RandoTable.NAME,
+                RandoDBHelper.RandoTable.ALL_COLUMNS, RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_ID
+                        + " is null or " + RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_ID + " = ''", null, null, null, null
+        );
         int result = cursor.getCount();
         cursor.close();
         return result;
@@ -208,8 +205,8 @@ public class RandoDAO {
     public List<RandoPair> getRandoPairsForPage(int page) {
         List<RandoPair> randoPairs = new ArrayList<RandoPair>();
 
-        Cursor cursor = database.query(RandoDBHelper.TABLE_RANDO,
-                allColumns, null, null, null, null, RandoDBHelper.COLUMN_USER_RANDO_DATE + " DESC", Constants.PAGE_SIZE * page + ", " + Constants.PAGE_SIZE);
+        Cursor cursor = database.query(RandoDBHelper.RandoTable.NAME,
+                RandoDBHelper.RandoTable.ALL_COLUMNS, null, null, null, null, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE + " DESC", Constants.PAGE_SIZE * page + ", " + Constants.PAGE_SIZE);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -277,31 +274,31 @@ public class RandoDAO {
             return null;
         } else {
             RandoPair randoPair = new RandoPair();
-            randoPair.id = cursor.getInt(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_ID));
+            randoPair.id = cursor.getInt(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_ID));
 
-            randoPair.user.randoId = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_USER_RANDO_ID));
-            randoPair.user.imageURL = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_USER_RANDO_URL));
-            randoPair.user.imageURLSize.small = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_USER_RANDO_URL_SMALL));
-            randoPair.user.imageURLSize.medium = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_USER_RANDO_URL_MEDIUM));
-            randoPair.user.imageURLSize.large = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_USER_RANDO_URL_LARGE));
-            long userDate = cursor.getLong(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_USER_RANDO_DATE));
+            randoPair.user.randoId = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_ID));
+            randoPair.user.imageURL = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL));
+            randoPair.user.imageURLSize.small = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL_SMALL));
+            randoPair.user.imageURLSize.medium = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL_MEDIUM));
+            randoPair.user.imageURLSize.large = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL_LARGE));
+            long userDate = cursor.getLong(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE));
             randoPair.user.date = userDate != 0 ? new Date(userDate) : null;
-            randoPair.user.mapURL = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_USER_MAP_URL));
-            randoPair.user.mapURLSize.small = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_USER_MAP_URL_SMALL));
-            randoPair.user.mapURLSize.medium = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_USER_MAP_URL_MEDIUM));
-            randoPair.user.mapURLSize.large = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_USER_MAP_URL_LARGE));
+            randoPair.user.mapURL = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL));
+            randoPair.user.mapURLSize.small = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_SMALL));
+            randoPair.user.mapURLSize.medium = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_MEDIUM));
+            randoPair.user.mapURLSize.large = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_LARGE));
 
-            randoPair.stranger.randoId = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_STRANGER_RANDO_ID));
-            randoPair.stranger.imageURL = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_STRANGER_RANDO_URL));
-            randoPair.stranger.imageURLSize.small = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_STRANGER_RANDO_URL_SMALL));
-            randoPair.stranger.imageURLSize.medium = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_STRANGER_RANDO_URL_MEDIUM));
-            randoPair.stranger.imageURLSize.large = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_STRANGER_RANDO_URL_LARGE));
-            long strangerDate = cursor.getLong(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_STRANGER_RANDO_DATE));
+            randoPair.stranger.randoId = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_ID));
+            randoPair.stranger.imageURL = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_URL));
+            randoPair.stranger.imageURLSize.small = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_URL_SMALL));
+            randoPair.stranger.imageURLSize.medium = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_URL_MEDIUM));
+            randoPair.stranger.imageURLSize.large = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_URL_LARGE));
+            long strangerDate = cursor.getLong(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_DATE));
             randoPair.stranger.date = strangerDate != 0 ? new Date(strangerDate) : null;
-            randoPair.stranger.mapURL = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_STRANGER_MAP_URL));
-            randoPair.stranger.mapURLSize.small = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_STRANGER_MAP_URL_SMALL));
-            randoPair.stranger.mapURLSize.medium = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_STRANGER_MAP_URL_MEDIUM));
-            randoPair.stranger.mapURLSize.large = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_STRANGER_MAP_URL_LARGE));
+            randoPair.stranger.mapURL = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_STRANGER_MAP_URL));
+            randoPair.stranger.mapURLSize.small = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_STRANGER_MAP_URL_SMALL));
+            randoPair.stranger.mapURLSize.medium = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_STRANGER_MAP_URL_MEDIUM));
+            randoPair.stranger.mapURLSize.large = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_STRANGER_MAP_URL_LARGE));
 
             return randoPair;
         }
@@ -316,27 +313,27 @@ public class RandoDAO {
     private ContentValues randoPairToContentValues(RandoPair randoPair) {
         ContentValues values = new ContentValues();
 
-        values.put(RandoDBHelper.COLUMN_USER_RANDO_ID, randoPair.user.randoId);
-        values.put(RandoDBHelper.COLUMN_USER_RANDO_URL, randoPair.user.imageURL);
-        values.put(RandoDBHelper.COLUMN_USER_RANDO_URL_SMALL, randoPair.user.imageURLSize.small);
-        values.put(RandoDBHelper.COLUMN_USER_RANDO_URL_MEDIUM, randoPair.user.imageURLSize.medium);
-        values.put(RandoDBHelper.COLUMN_USER_RANDO_URL_LARGE, randoPair.user.imageURLSize.large);
-        values.put(RandoDBHelper.COLUMN_USER_RANDO_DATE, randoPair.user.date.getTime());
-        values.put(RandoDBHelper.COLUMN_USER_MAP_URL, randoPair.user.mapURL);
-        values.put(RandoDBHelper.COLUMN_USER_MAP_URL_SMALL, randoPair.user.mapURLSize.small);
-        values.put(RandoDBHelper.COLUMN_USER_MAP_URL_MEDIUM, randoPair.user.mapURLSize.medium);
-        values.put(RandoDBHelper.COLUMN_USER_MAP_URL_LARGE, randoPair.user.mapURLSize.large);
+        values.put(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_ID, randoPair.user.randoId);
+        values.put(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL, randoPair.user.imageURL);
+        values.put(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL_SMALL, randoPair.user.imageURLSize.small);
+        values.put(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL_MEDIUM, randoPair.user.imageURLSize.medium);
+        values.put(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL_LARGE, randoPair.user.imageURLSize.large);
+        values.put(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE, randoPair.user.date.getTime());
+        values.put(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL, randoPair.user.mapURL);
+        values.put(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_SMALL, randoPair.user.mapURLSize.small);
+        values.put(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_MEDIUM, randoPair.user.mapURLSize.medium);
+        values.put(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_LARGE, randoPair.user.mapURLSize.large);
 
-        values.put(RandoDBHelper.COLUMN_STRANGER_RANDO_ID, randoPair.stranger.randoId);
-        values.put(RandoDBHelper.COLUMN_STRANGER_RANDO_URL, randoPair.stranger.imageURL);
-        values.put(RandoDBHelper.COLUMN_STRANGER_RANDO_URL_SMALL, randoPair.stranger.imageURLSize.small);
-        values.put(RandoDBHelper.COLUMN_STRANGER_RANDO_URL_MEDIUM, randoPair.stranger.imageURLSize.medium);
-        values.put(RandoDBHelper.COLUMN_STRANGER_RANDO_URL_LARGE, randoPair.stranger.imageURLSize.large);
-        values.put(RandoDBHelper.COLUMN_STRANGER_RANDO_DATE, randoPair.stranger.date != null ? randoPair.stranger.date.getTime() : null);
-        values.put(RandoDBHelper.COLUMN_STRANGER_MAP_URL, randoPair.stranger.mapURL);
-        values.put(RandoDBHelper.COLUMN_STRANGER_MAP_URL_SMALL, randoPair.stranger.mapURLSize.small);
-        values.put(RandoDBHelper.COLUMN_STRANGER_MAP_URL_MEDIUM, randoPair.stranger.mapURLSize.medium);
-        values.put(RandoDBHelper.COLUMN_STRANGER_MAP_URL_LARGE, randoPair.stranger.mapURLSize.large);
+        values.put(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_ID, randoPair.stranger.randoId);
+        values.put(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_URL, randoPair.stranger.imageURL);
+        values.put(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_URL_SMALL, randoPair.stranger.imageURLSize.small);
+        values.put(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_URL_MEDIUM, randoPair.stranger.imageURLSize.medium);
+        values.put(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_URL_LARGE, randoPair.stranger.imageURLSize.large);
+        values.put(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_DATE, randoPair.stranger.date != null ? randoPair.stranger.date.getTime() : null);
+        values.put(RandoDBHelper.RandoTable.COLUMN_STRANGER_MAP_URL, randoPair.stranger.mapURL);
+        values.put(RandoDBHelper.RandoTable.COLUMN_STRANGER_MAP_URL_SMALL, randoPair.stranger.mapURLSize.small);
+        values.put(RandoDBHelper.RandoTable.COLUMN_STRANGER_MAP_URL_MEDIUM, randoPair.stranger.mapURLSize.medium);
+        values.put(RandoDBHelper.RandoTable.COLUMN_STRANGER_MAP_URL_LARGE, randoPair.stranger.mapURLSize.large);
 
         return values;
     }
