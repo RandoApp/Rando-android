@@ -11,15 +11,11 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import com.github.randoapp.CameraActivity;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
-import com.github.randoapp.service.SyncService;
 import com.github.randoapp.task.CropImageTask;
-import com.github.randoapp.task.UploadTask;
 import com.github.randoapp.task.callback.OnDone;
 import com.github.randoapp.task.callback.OnError;
 import com.github.randoapp.task.callback.OnOk;
@@ -89,37 +85,9 @@ public class CameraUploadFragment extends SherlockFragment {
 
         @Override
         public void onClick(View v) {
-            if (picFileName != null) {
-                uploadPictureButton.setEnabled(false);
-                new UploadTask(picFileName).onOk(new OnOk() {
-                    @Override
-                    public void onOk(Map<String, Object> data) {
-                        picFileName = null;
-                        SyncService.run();
-                    }
-                }).onError(new OnError() {
-                    @Override
-                    public void onError(Map<String, Object> data) {
-                        String error = (String) data.get("error");
-                        if (error != null) {
-                            Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(getActivity(), R.string.photo_upload_failed,
-                                    Toast.LENGTH_LONG).show();
-                        }
-
-                        if (uploadPictureButton != null) {
-                            uploadPictureButton.setEnabled(true);
-                        }
-                    }
-                }).onDone(new OnDone() {
-                    @Override
-                    public void onDone(Map<String, Object> data) {
-                        Intent intent = new Intent(CAMERA_BROADCAST_EVENT);
-                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-                    }
-                }).execute();
-            }
+            //TODO: return to Home screen and start UploadService;
+            Intent intent = new Intent(CAMERA_BROADCAST_EVENT);
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
         }
     }
 }

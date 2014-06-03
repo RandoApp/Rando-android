@@ -8,6 +8,7 @@ import android.os.IBinder;
 import com.github.randoapp.api.API;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.RandoUpload;
+import com.github.randoapp.log.Log;
 
 import java.io.File;
 import java.util.List;
@@ -37,9 +38,9 @@ public class UploadService extends Service {
             try {
                 API.uploadImage(new File(randoUpload.file), getLocation(randoUpload));
             } catch (Exception e) {
-
-                //TODO: Sleep, can't upload image now.
-                e.printStackTrace();
+                Log.w(UploadService.class, "Can not upload image, because: ", e.getMessage());
+                sleep();
+                return;
             }
         }
     }
@@ -49,6 +50,10 @@ public class UploadService extends Service {
         location.setLatitude(Double.parseDouble(randoUpload.latitude));
         location.setLongitude(Double.parseDouble(randoUpload.longitude));
         return location;
+    }
+
+    private void sleep() {
+        //TODO: implement sleep method
     }
 
 }
