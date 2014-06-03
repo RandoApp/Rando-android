@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.github.randoapp"
-    android:versionCode="10"
-    android:versionName="1.0.6">
+    android:versionCode="12"
+    android:versionName="1.0.7">
 
 <uses-sdk
-        android:minSdkVersion="10"
+        android:minSdkVersion="9"
         android:targetSdkVersion="19" />
 
     <application
@@ -27,7 +27,7 @@
             android:label="@string/take_picture_screen_label"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
+            android:theme="@style/RandoTheme" />
 
         <meta-data
             android:name="com.google.android.gms.version"

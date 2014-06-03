@@ -1,281 +1,69 @@
 package com.github.randoapp;
 
 
-import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.hardware.Camera;
+import android.content.IntentFilter;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.Toast;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 
-import com.github.randoapp.activity.BaseActivity;
-import com.github.randoapp.log.Log;
-import com.github.randoapp.service.SyncService;
-import com.github.randoapp.task.CropImageTask;
-import com.github.randoapp.task.UploadTask;
-import com.github.randoapp.task.callback.OnDone;
-import com.github.randoapp.task.callback.OnError;
-import com.github.randoapp.task.callback.OnOk;
-import com.github.randoapp.util.BitmapUtil;
-import com.github.randoapp.util.FileUtil;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.commonsware.cwac.camera.CameraHost;
+import com.commonsware.cwac.camera.CameraHostProvider;
+import com.commonsware.cwac.camera.SimpleCameraHost;
+import com.github.randoapp.camera.CameraCaptureFragment;
+import com.github.randoapp.camera.CameraUploadFragment;
 import com.github.randoapp.util.LocationUpdater;
-import com.github.randoapp.view.RandoSurfaceView;
-import com.makeramen.RoundedImageView;
 
-import java.util.Map;
+import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 
-import static android.graphics.ImageFormat.JPEG;
-import static android.view.View.VISIBLE;
-import static com.github.randoapp.Constants.JPEG_QUALITY;
+public class CameraActivity extends SherlockFragmentActivity implements CameraHostProvider {
 
-public class CameraActivity extends BaseActivity {
-    private RandoSurfaceView randoSurfaceView;
-    private Camera camera;
-    private FrameLayout preview;
-
-    private static final int REQ_CODE_SELECT_PHOTO = 100;
     private LocationUpdater locationUpdater = new LocationUpdater();
-
     public static Location currentLocation;
-    public static String picFileName = null;
-    private ImageView uploadPictureButton;
 
-    private Camera.PictureCallback pictureCallback = new Camera.PictureCallback() {
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
 
         @Override
-        public void onPictureTaken(byte[] data, Camera camera) {
-            String tmpFile = FileUtil.writeImageToTempFile(data);
-            new CropImageTask(tmpFile)
-                    .onOk(new OnOk() {
-                        @Override
-                        public void onOk(Map<String, Object> data) {
-                            picFileName = (String) data.get(Constants.FILEPATH);
-                            showUploadScreen();
-                        }
-                    })
-                    .onError(new OnError() {
-                        @Override
-                        public void onError(Map<String, Object> data) {
-                            Toast.makeText(CameraActivity.this, "Crop Failed.",
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    })
-                    .onDone(new OnDone() {
-                        @Override
-                        public void onDone(Map<String, Object> data) {
-                            hideProgressbar();
-                        }
-                    })
-                    .execute();
+        public void onReceive(Context context, Intent intent) {
+            Bundle extra = intent.getExtras();
+            if (extra != null) {
+                String photoPath = (String) extra.get(Constants.RANDO_PHOTO_PATH);
+                if (photoPath != null) {
+
+                    CameraUploadFragment uploadFragment = new CameraUploadFragment();
+                    Bundle args = new Bundle();
+                    args.putString(Constants.FILEPATH, photoPath);
+                    uploadFragment.setArguments(args);
+
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.camera_screen, uploadFragment).commit();
+                    return;
+                }
+            }
+            CameraActivity.this.finish();
         }
     };
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.camera);
-
         updateLocation();
-        setBackButtonListener();
-        setTakePictureButtonListener();
-        setUploadButtonListener();
-    }
+        setContentView(R.layout.activity_camera);
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQ_CODE_SELECT_PHOTO:
-                if (resultCode == RESULT_OK) {
-                    showProgressbar("Processing...");
-                    Uri selectedImage = data.getData();
-                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                    Cursor cursor = getContentResolver().query(
-                            selectedImage, filePathColumn, null, null, null);
-                    if (cursor == null) {
-                        Log.w(CameraActivity.class, "Selecting from Album failed.");
-                        break;
-                    }
-                    cursor.moveToFirst();
-                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    String filePath = cursor.getString(columnIndex);
-                    cursor.close();
-                    new CropImageTask(filePath)
-                            .onOk(new OnOk() {
-                                @Override
-                                public void onOk(Map<String, Object> data) {
-                                    picFileName = (String) data.get(Constants.FILEPATH);
-                                    showUploadScreen();
-                                }
-                            })
-                            .onError(new OnError() {
-                                @Override
-                                public void onError(Map<String, Object> data) {
-                                    Toast.makeText(CameraActivity.this, "Crop Failed.",
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            })
-                            .onDone(new OnDone() {
-                                @Override
-                                public void onDone(Map<String, Object> data) {
-                                    hideProgressbar();
-                                }
-                            })
-                            .execute();
-                }
-                break;
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.camera_screen, CameraCaptureFragment.newInstance(false))
+                    .commit();
         }
     }
 
-    private void showUploadScreen() {
-        showUploadButton();
-        showPictureOnPreview();
-    }
-
-    private void showPictureOnPreview() {
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(picFileName, options);
-
-        // Calculate inSampleSize
-        options.inSampleSize = BitmapUtil.calculateInSampleSize(options, preview.getWidth(), preview.getWidth());
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        Bitmap bitmap = BitmapFactory.decodeFile(picFileName, options);
-        preview.removeAllViews();
-
-        RoundedImageView imagePreview = new RoundedImageView(getApplicationContext());
-        imagePreview.setOval(true);
-        imagePreview.setImageBitmap(bitmap);
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(preview.getWidth(), preview.getWidth());
-        imagePreview.setLayoutParams(layoutParams);
-        preview.addView(imagePreview);
-    }
-
-    private void createCameraPreview() {
-        camera = getCameraInstance();
-
-        if (camera != null) {
-            Camera.Parameters params = camera.getParameters();
-            params.setPictureFormat(JPEG);
-            params.setJpegQuality(JPEG_QUALITY);
-            params.setRotation(90);
-            camera.setParameters(params);
-
-            randoSurfaceView = new RandoSurfaceView(getApplicationContext(), camera);
-
-            preview = (FrameLayout) findViewById(R.id.camera_preview);
-            preview.removeAllViews();
-            preview.addView(randoSurfaceView);
-        } else {
-            //TODO: Handle camera not available.
-        }
-    }
-
-    private void showUploadButton() {
-        findViewById(R.id.capture_button).setVisibility(View.GONE);
-        uploadPictureButton.setEnabled(true);
-        findViewById(R.id.upload_button).setVisibility(VISIBLE);
-        findViewById(R.id.circle_mask).setVisibility(View.GONE);
-    }
-
-    private void hideUploadButton() {
-        findViewById(R.id.capture_button).setVisibility(VISIBLE);
-        findViewById(R.id.upload_button).setVisibility(View.GONE);
-        findViewById(R.id.circle_mask).setVisibility(VISIBLE);
-    }
-
     @Override
-    public void onBackPressed() {
-        picFileName = null;
-        releaseCamera();
-        super.onBackPressed();
-    }
-
-    private void setBackButtonListener() {
-        ImageView backButton = (ImageView) findViewById(R.id.back_button);
-        backButton.setOnClickListener(new ImageView.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                setResult(RESULT_CANCELED);
-                if (TextUtils.isEmpty(picFileName)) {
-                    finish();
-                } else {
-                    picFileName = null;
-                    releaseCamera();
-                    hideUploadButton();
-                    createCameraPreview();
-                }
-            }
-        });
-    }
-
-    private void setTakePictureButtonListener() {
-        ImageView takePictureButton = (ImageView) findViewById(R.id.capture_button);
-        takePictureButton.setOnClickListener(new ImageView.OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                Log.i(CropImageTask.class, "TOTAL 0:" + Runtime.getRuntime().totalMemory() / (1024 * 1024));
-                Log.i(CropImageTask.class, "0:" + Runtime.getRuntime().freeMemory() / (1024 * 1024));
-                showProgressbar("processing...");
-                camera.takePicture(null, null, pictureCallback);
-            }
-        });
-    }
-
-    private void setUploadButtonListener() {
-        uploadPictureButton = (ImageView) findViewById(R.id.upload_button);
-        uploadPictureButton.setOnClickListener(new ImageView.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                if (picFileName != null) {
-                    showProgressbar("uploading...");
-                    uploadPictureButton.setEnabled(false);
-                    new UploadTask(picFileName).onOk(new OnOk() {
-                        @Override
-                        public void onOk(Map<String, Object> data) {
-                            picFileName = null;
-                            SyncService.run();
-                            hideProgressbar();
-                            Toast.makeText(CameraActivity.this,
-                                    R.string.photo_upload_ok,
-                                    Toast.LENGTH_LONG).show();
-                            CameraActivity.this.setResult(Activity.RESULT_OK);
-                            CameraActivity.this.finish();
-                        }
-                    }).onError(new OnError() {
-                        @Override
-                        public void onError(Map<String, Object> data) {
-                            hideProgressbar();
-                            String error = (String) data.get("error");
-                            if (error != null) {
-                                Toast.makeText(CameraActivity.this, error, Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(CameraActivity.this, R.string.photo_upload_failed,
-                                        Toast.LENGTH_LONG).show();
-                            }
-
-                            if (uploadPictureButton != null) {
-                                uploadPictureButton.setEnabled(true);
-                            }
-                        }
-                    }).execute();
-
-                }
-            }
-        });
+    public CameraHost getCameraHost() {
+        return (new SimpleCameraHost(this));
     }
 
     private void updateLocation() {
@@ -288,52 +76,24 @@ public class CameraActivity extends BaseActivity {
         locationUpdater.getLocation(getApplicationContext(), locationResult);
     }
 
-    /**
-     * A safe way to get an instance of the Camera object.
-     */
-    private Camera getCameraInstance() {
-        Camera c = null;
-        try {
-            c = Camera.open(); // attempt to get a Camera instance
-        } catch (Exception e) {
-            // Camera is not available (in use or does not exist)
-        }
-        return c; // returns null if camera is unavailable
-    }
-
-    private void releaseCamera() {
-        if (preview != null) {
-            preview.removeAllViews();
-        }
-        if (camera != null) {
-            camera.release();        // release the camera for other applications
-            camera = null;
-        }
-    }
-
-    private void resumeUploadScreenIfNeed() {
-        if (!TextUtils.isEmpty(picFileName)) {
-            showUploadScreen();
-        }
-    }
-
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
-        createCameraPreview();
-        resumeUploadScreenIfNeed();
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(CAMERA_BROADCAST_EVENT));
     }
 
     @Override
     protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         super.onPause();
-        releaseCamera();
     }
 
+
+    //TODO: onDestroy vs onPause: Do we really need unregisterReceiver on Destroy event?
     @Override
     protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         super.onDestroy();
-        releaseCamera();
-        locationUpdater.cancelTimer();
     }
+
 }

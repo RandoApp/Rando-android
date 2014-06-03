@@ -36,6 +36,10 @@
     <string name="report_message">Report</string>
     <string name="loadig_progress">Loading...</string>
     <string name="logout_progress">Logout...</string>
+    <string name="cropping_progress">Prepairing to Upload...</string>
+    <string name="uploading_progress">Uploading...</string>
+
+    <string name="crop_failed">Crop Failed.</string>
 
     <string name="error_400">You are not authorized. Please, signup.</string>
     <string name="error_411">You are temporarily blocked, because of big amount of images sent in a row. Please, try again later:</string>
@@ -43,7 +47,7 @@
     <string name="sync_service_name">Rando Sync Service</string>
     <string name="log_service_name">Rando log sender service</string>
 
-    <string name="crash_toast_text">Ooooops! I\'ve crashed, but bug report has been sent to my developers to help fix the issue!</string>
+    <string name="crash_toast_text">Ooooops! I\'ve crashed, but bug report has been sent to my developers to help them to fix the issue!</string>
 
     <string name="top_panel_text">Rando in the testing mode</string>
 
