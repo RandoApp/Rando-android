@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.github.randoapp.Constants;
 import com.github.randoapp.db.model.RandoPair;
+import com.github.randoapp.db.model.RandoUpload;
 import com.github.randoapp.log.Log;
 
 import java.util.ArrayList;
@@ -31,6 +32,41 @@ public class RandoDAO {
         database.close();
         randoDBHelper.close();
     }
+
+    //TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public void addToUpload(String file, String latitude, String longitude) {
+        if (file == null || latitude == null || longitude == null) {
+            return;
+        }
+
+        ContentValues values = new ContentValues();
+        values.put(RandoDBHelper.COLUMN_FILE, file);
+        values.put(RandoDBHelper.COLUMN_LATITUDE, latitude);
+        values.put(RandoDBHelper.COLUMN_LONGITUDE, longitude);
+
+        database.insert(RandoDBHelper.TABLE_RANDO_UPLOAD, null, values);
+    }
+
+    public List<RandoUpload> getAllRandosToUpload() {
+        List<RandoUpload> randos = new ArrayList<RandoUpload>();
+
+        //TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        Cursor cursor = database.query(RandoDBHelper.TABLE_RANDO_UPLOAD,
+                allColumns, null, null, null, null, RandoDBHelper.COLUMN_USER_RANDO_DATE + " DESC", null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            RandoUpload rando = new RandoUpload();
+            rando.file = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_FILE));
+            rando.latitude = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_LATITUDE));
+            rando.longitude = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.COLUMN_LONGITUDE));
+            randos.add(rando);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return randos;
+    }
+
 
     /**
      * Creates randoPair and returns instance of created randoPair.
@@ -119,6 +155,20 @@ public class RandoDAO {
             cursor.moveToNext();
         }
         cursor.close();
+
+
+        //TODO: NEED TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+        List<RandoUpload> randosToUpload = getAllRandosToUpload();
+        for (RandoUpload randoUpload : randosToUpload) {
+            RandoPair randoPair = new RandoPair();
+            randoPair.user.randoId = "0";
+            randoPair.user.date = new Date();
+            randoPair.user.imageURL = randoUpload.file;
+            randoPair.user.imageURLSize.small = randoUpload.file;
+            randoPair.user.imageURLSize.medium = randoUpload.file;
+            randoPair.user.imageURLSize.large = randoUpload.file;
+            randoPairs.add(randoPair);
+        }
         return randoPairs;
     }
 
