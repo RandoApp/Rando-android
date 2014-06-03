@@ -3,7 +3,6 @@ package com.github.randoapp;
 import android.app.Application;
 import android.content.Context;
 
-import com.github.randoapp.service.LogService;
 import com.github.randoapp.service.SyncService;
 
 import org.acra.ACRA;
@@ -38,10 +37,6 @@ public class App extends Application {
         //App onCreate called twice. Prevent double service run, if it is already created
         if (!SyncService.isRunning()) {
             SyncService.run();
-        }
-
-        if (!LogService.isRunning()) {
-            LogService.run();
         }
     }
 
