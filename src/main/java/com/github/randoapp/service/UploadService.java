@@ -10,7 +10,6 @@ import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.RandoUpload;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class UploadService extends Service {
@@ -27,18 +26,29 @@ public class UploadService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        uploadFiles();
         return Service.START_NOT_STICKY;
     }
 
-    private void getFilesToUpload() {
+    private void uploadFiles() {
         RandoDAO randoDAO = new RandoDAO(getApplicationContext());
         List<RandoUpload> randosToUpload = randoDAO.getAllRandosToUpload();
         for (RandoUpload randoUpload: randosToUpload) {
-            Location location = new Location();
-            API.uploadImage(new File(randoUpload.file, );
-        }
+            try {
+                API.uploadImage(new File(randoUpload.file), getLocation(randoUpload));
+            } catch (Exception e) {
 
-        //Run SyncService
+                //TODO: Sleep, can't upload image now.
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private Location getLocation(RandoUpload randoUpload) {
+        Location location = new Location("Rando4Me.UploadService");
+        location.setLatitude(Double.parseDouble(randoUpload.latitude));
+        location.setLongitude(Double.parseDouble(randoUpload.longitude));
+        return location;
     }
 
 }
