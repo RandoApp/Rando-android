@@ -53,17 +53,17 @@ public class CameraCaptureFragment extends CameraFragment {
         cameraView = (CameraView) rootView.findViewById(R.id.camera);
         cameraView.setHost(new RandoCameraHost(getActivity().getBaseContext()));
 
-        WindowManager windowManager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
-        int displayWidth = display.getWidth();
+         WindowManager windowManager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+         Display display = windowManager.getDefaultDisplay();
+         int displayWidth = display.getWidth();
 
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(displayWidth, display.getHeight());
-        cameraView.setLayoutParams(layoutParams);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        //cameraView.setLayoutParams(layoutParams);
+
         setCameraView(cameraView);
 
         captureButton = (ImageView) rootView.findViewById(R.id.capture_button);
         captureButton.setOnClickListener(new CaptureButtonListener());
-
 
         return rootView;
     }
@@ -76,6 +76,9 @@ public class CameraCaptureFragment extends CameraFragment {
     }
 
     class RandoCameraHost extends SimpleCameraHost {
+
+        private Camera.Size pictureSize;
+
         public RandoCameraHost(Context _ctxt) {
             super(_ctxt);
         }
@@ -87,16 +90,24 @@ public class CameraCaptureFragment extends CameraFragment {
 
         @Override
         public Camera.Size getPictureSize(PictureTransaction xact, Camera.Parameters parameters) {
-            Camera.Size size = CameraUtil.getBestPictureSizeForOldDevices(parameters.getSupportedPictureSizes());
-            Log.i(CameraCaptureFragment.class, "Previev size:", String.valueOf(size.height), "x", String.valueOf(size.width));
-            return size;
+            /*Camera.Size size = CameraUtil.getBestPictureSizeForOldDevices(parameters.getSupportedPictureSizes());
+            Log.i(CameraCaptureFragment.class, "Previev picture size:", String.valueOf(size.height), "x", String.valueOf(size.width));*/
+            return pictureSize;
         }
 
         @Override
         public Camera.Size getPreviewSize(int displayOrientation, int width, int height, Camera.Parameters parameters) {
-            Camera.Size size = CameraUtils.getBestAspectPreviewSize(displayOrientation, width, height, parameters);
-            Log.i(CameraCaptureFragment.class, "Previev screen size:", String.valueOf(height), "x", String.valueOf(width));
-            Log.i(CameraCaptureFragment.class, "Previev size:", String.valueOf(size.height), "x", String.valueOf(size.width));
+
+            pictureSize = CameraUtil.getBestPictureSizeForOldDevices(parameters.getSupportedPictureSizes());
+
+            Log.i(CameraCaptureFragment.class, "Previev picture size:", String.valueOf(pictureSize.height), "x", String.valueOf(pictureSize.width));
+
+            cameraView.setClipToPadding(true);
+
+            Camera.Size size = CameraUtils.getBestAspectPreviewSize(displayOrientation, pictureSize.width, pictureSize.height, parameters);//CameraUtils.getBestAspectPreviewSize(displayOrientation, width, height, parameters);
+
+            Log.i(CameraCaptureFragment.class, "Previev screen size:", String.valueOf(height), "x", String.valueOf(width), "display orientation: ", String.valueOf(displayOrientation));
+            Log.i(CameraCaptureFragment.class, "Previev camera size:", String.valueOf(size.height), "x", String.valueOf(size.width));
             return size;
         }
 
@@ -149,6 +160,16 @@ public class CameraCaptureFragment extends CameraFragment {
         @Override
         public boolean useFullBleedPreview() {
             return false;
+        }
+
+        @Override
+        public RecordingHint getRecordingHint() {
+            return RecordingHint.STILL_ONLY;
+        }
+
+        @Override
+        public Camera.Parameters adjustPreviewParameters(Camera.Parameters parameters) {
+            return super.adjustPreviewParameters(parameters);
         }
     }
 }
