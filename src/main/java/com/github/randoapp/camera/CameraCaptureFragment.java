@@ -1,6 +1,5 @@
 package com.github.randoapp.camera;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;
@@ -25,8 +24,6 @@ import com.github.randoapp.R;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.util.CameraUtil;
 import com.github.randoapp.util.FileUtil;
-
-import java.io.File;
 
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.JPEG_QUALITY;
