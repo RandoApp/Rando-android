@@ -52,6 +52,8 @@ public class RandoPairsAdapter extends BaseAdapter {
 
     private int size;
 
+    private Context context;
+
     @Override
     public int getCount() {
         return size;
@@ -72,6 +74,7 @@ public class RandoPairsAdapter extends BaseAdapter {
         Display display = windowManager.getDefaultDisplay();
         int displayWidth = display.getWidth();
         int orientation = context.getResources().getConfiguration().orientation;
+        this.context=context;
         imageSize = getRandoImageSize(orientation, displayWidth);
         initData();
     }
@@ -255,7 +258,7 @@ public class RandoPairsAdapter extends BaseAdapter {
 
     private int getRandoImageSize(int orientation, int displayWidth) {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            return displayWidth / 2 - (Constants.RANDO_PADDING_LANDSCAPE_COLUMN_LEFT + Constants.RANDO_PADDING_LANDSCAPE_COLUMN_RIGHT);
+            return displayWidth / 2 - (context.getResources().getDimensionPixelSize(R.dimen.rando_padding_landscape_column_left) + context.getResources().getDimensionPixelSize(R.dimen.rando_padding_landscape_column_right));
         } else {
             return displayWidth - Constants.RANDO_MARGIN_PORTRAIT;
         }
