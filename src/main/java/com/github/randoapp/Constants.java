@@ -47,6 +47,7 @@ public class Constants {
     public static final int SIZE_SMALL = 480;
     public static final int SIZE_MEDIUM = 800;
     public static final int SIZE_LARGE = 1200;
+    public static final double PICTURE_DESIRED_ASPECT_RATIO = 0.75;
 
     public static final String SERVER_HOST = "rando4.me";
     public static final String SERVER_URL = "http://" + SERVER_HOST;
