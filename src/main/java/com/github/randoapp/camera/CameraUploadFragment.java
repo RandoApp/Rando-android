@@ -1,20 +1,16 @@
 package com.github.randoapp.camera;
 
-import android.content.Context;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import com.github.randoapp.CameraActivity;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.service.SyncService;
@@ -82,6 +78,15 @@ public class CameraUploadFragment extends SherlockFragment {
         public void onClick(View v) {
             if (picFileName != null) {
                 uploadPictureButton.setEnabled(false);
+
+                /*TODO: REMOVE THIS AFTER IMPLEMENTATION OF BACKGROUND UPLOAD */
+                final ProgressDialog progress = new ProgressDialog(getActivity(), R.style.RandoTheme);
+                progress.setTitle("Please wait...");
+                progress.setMessage(getResources().getString(R.string.uploading_progress));
+                progress.setIndeterminate(true);
+                progress.setCanceledOnTouchOutside(false);
+                progress.show();
+                /* TODO: END */
                 new UploadTask(picFileName).onOk(new OnOk() {
                     @Override
                     public void onOk(Map<String, Object> data) {
@@ -106,6 +111,9 @@ public class CameraUploadFragment extends SherlockFragment {
                 }).onDone(new OnDone() {
                     @Override
                     public void onDone(Map<String, Object> data) {
+                        /*TODO: REMOVE THIS AFTER IMPLEMENTATION OF BACKGROUND UPLOAD */
+                        progress.hide();
+                        /* TODO: END */
                         Intent intent = new Intent(CAMERA_BROADCAST_EVENT);
                         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
                     }
