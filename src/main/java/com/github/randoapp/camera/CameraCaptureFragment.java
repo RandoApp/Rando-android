@@ -66,6 +66,7 @@ public class CameraCaptureFragment extends CameraFragment {
     private class CaptureButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+            captureButton.setEnabled(false);
             cameraView.takePicture(false, true);
         }
     }
