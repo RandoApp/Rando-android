@@ -130,5 +130,10 @@ public class CameraCaptureFragment extends CameraFragment {
         public boolean useFullBleedPreview() {
             return false;
         }
+
+        @Override
+        public RecordingHint getRecordingHint() {
+            return RecordingHint.STILL_ONLY;
+        }
     }
 }
