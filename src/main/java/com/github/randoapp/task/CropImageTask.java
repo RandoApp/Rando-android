@@ -47,6 +47,7 @@ public class CropImageTask extends BaseTask {
                 int size = Math.min(options.outWidth, options.outHeight);
                 //We need to crop square image from the center of the image
                 int topY = (Math.max(options.outWidth, options.outHeight)-size)/2;
+                Log.i(CropImageTask.class, "Orig W:",String.valueOf(options.outWidth), "Orig H:",String.valueOf(options.outHeight), "Size: ", String.valueOf(size),"Top Y: ", String.valueOf(topY));
 
                 BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(srcFile, false);
                 Bitmap bitmap = decoder.decodeRegion(new Rect(0, topY, size, size+topY), null);

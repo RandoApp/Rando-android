@@ -16,21 +16,24 @@
 
     <dimen name="actionbar_button_ring_thickness">2dp</dimen>
 
-
     <dimen name="camera_button_height">80dp</dimen>
     <dimen name="camera_button_width">80dp</dimen>
     <dimen name="camera_button_margin_bottom">15dp</dimen>
 
+    <dimen name="rando_padding_portrait_column_left">7.5dp</dimen>
+    <dimen name="rando_padding_portrait_column_right">2.5dp</dimen>
+    <dimen name="rando_padding_portrait_column_top">7.5dp</dimen>
+    <dimen name="rando_padding_portrait_column_bottom">2.5dp</dimen>
 
+    <dimen name="rando_padding_landscape_column_left">5dp</dimen>
+    <dimen name="rando_padding_landscape_column_right">2.5dp</dimen>
+    <dimen name="rando_padding_landscape_column_top">7.5dp</dimen>
+    <dimen name="rando_padding_landscape_column_bottom">2.5dp</dimen>
 
     <dimen name="takepicture_bottom_panel_with_buttons_min_height">144dp</dimen>
     <dimen name="simple_camera_button_size">144dp</dimen>
     <dimen name="takepicture_default_button_size">96dp</dimen>
     <dimen name="takepicture_close_button_size">48dp</dimen>
-
-    <dimen name="rando_margin_portrait_column_top">15dp</dimen>
-    <dimen name="rando_margin_portrait_column_left">15dp</dimen>
-    <dimen name="rando_margin_portrait_column_right">15dp</dimen>
 
     <dimen name="relative_layout_margin_top">5dp</dimen>
     <dimen name="rando_pair_padding_bottom">20dp</dimen>

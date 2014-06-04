@@ -33,10 +33,8 @@ import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 public class CameraUploadFragment extends SherlockFragment {
 
     private String picFileName;
-    private ImageView preview;
+    private RoundedImageView preview;
     private ImageView uploadPictureButton;
-    private int displayWidth;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,13 +44,6 @@ public class CameraUploadFragment extends SherlockFragment {
 
         Bundle bundle = getArguments();
         String fileToCrop = bundle.getString(Constants.FILEPATH);
-
-        WindowManager windowManager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
-        displayWidth = display.getWidth();
-
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(displayWidth, displayWidth);
-        preview.setLayoutParams(layoutParams);
 
         prepareForUpload(fileToCrop);
 
@@ -68,7 +59,7 @@ public class CameraUploadFragment extends SherlockFragment {
                     @Override
                     public void onOk(Map<String, Object> data) {
                         picFileName = (String) data.get(Constants.FILEPATH);
-                        preview.setImageBitmap(BitmapUtil.decodeSampledBitmap(picFileName, displayWidth, displayWidth));
+                        preview.setImageBitmap(BitmapUtil.decodeSampledBitmap(picFileName, preview.getWidth(), preview.getWidth()));
                     }
                 })
                 .onError(new OnError() {

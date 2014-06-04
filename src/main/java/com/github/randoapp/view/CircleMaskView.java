@@ -51,7 +51,7 @@ public class CircleMaskView extends View {
 
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.BLACK);
-        canvas.drawCircle(radius, heightCenter, radius-context.getResources().getDimensionPixelSize(R.dimen.ic_home_margin_right), eraser);
+        canvas.drawCircle(radius, heightCenter, radius-context.getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left), eraser);
     }
 
     @Override
