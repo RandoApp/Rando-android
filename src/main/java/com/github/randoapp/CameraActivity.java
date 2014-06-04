@@ -42,7 +42,7 @@ public class CameraActivity extends SherlockFragmentActivity implements CameraHo
                     uploadFragment.setArguments(args);
 
                     FragmentManager fragmentManager = getSupportFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.camera_screen, uploadFragment).commit();
+                    fragmentManager.beginTransaction().addToBackStack("CameraCaptureFragment").replace(R.id.camera_screen, uploadFragment).commit();
                     return;
                 }
             }
