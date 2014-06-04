@@ -127,57 +127,6 @@ public class RandoDAOTest extends AndroidTestCase {
     }
 
     @MediumTest
-    public void testGetFirstPage() throws SQLException {
-        insertNRandomRandoPairs(55);
-
-        List<RandoPair> randoPairs = randoDAO.getAllRandoPairs();
-
-        List<RandoPair> firstPage = randoDAO.getRandoPairsForPage(0);
-
-        assertThat("Returned page size is 0 size", firstPage.size(), greaterThan(0));
-        assertThat("Returned page size is greater PAGE_SIZE=" + Constants.PAGE_SIZE, firstPage.size(), lessThanOrEqualTo(Constants.PAGE_SIZE));
-
-        RandoPairTestHelper.checkListNaturalOrder(randoPairs);
-
-        for (int i = 0; i < firstPage.size(); i++) {
-            assertThat(firstPage.get(i), is(randoPairs.get(i)));
-        }
-    }
-
-    @MediumTest
-    public void testGetLastPage() throws SQLException {
-        insertNRandomRandoPairs(55);
-
-        List<RandoPair> randoPairs = randoDAO.getAllRandoPairs();
-
-        List<RandoPair> lastPage = randoDAO.getRandoPairsForPage(randoDAO.getPagesNumber() - 1);
-        assertThat("Returned page size is 0 size", lastPage.size(), greaterThan(0));
-        assertThat("Returned page size is greater PAGE_SIZE=" + Constants.PAGE_SIZE, lastPage.size(), lessThanOrEqualTo(Constants.PAGE_SIZE));
-
-        RandoPairTestHelper.checkListNaturalOrder(randoPairs);
-
-        int pagesNumber = randoDAO.getPagesNumber();
-
-        int count = 0;
-        for (int i = 0; i < lastPage.size(); i++) {
-            int posInList = (pagesNumber - 1) * Constants.PAGE_SIZE + i;
-            assertThat(lastPage.get(i), is(randoPairs.get(posInList)));
-            count++;
-        }
-        assertThat(count, is(lastPage.size()));
-    }
-
-    @MediumTest
-    public void testGetPagesNumber() throws SQLException {
-        insertNRandomRandoPairs(55);
-        List<RandoPair> randoPairs = randoDAO.getAllRandoPairs();
-        int number = randoDAO.getPagesNumber();
-        int result = randoPairs.size() - (number - 1) * Constants.PAGE_SIZE;
-        assertThat(result, greaterThan(0));
-        assertThat(result, lessThanOrEqualTo(Constants.PAGE_SIZE));
-    }
-
-    @MediumTest
     public void testReturnOrder() throws SQLException {
         insertNRandomRandoPairs(55);
         List<RandoPair> randoPairs = randoDAO.getAllRandoPairs();

@@ -15,8 +15,8 @@ public class SyncTask extends BaseTask {
 
     private List<RandoPair> randoPairs;
 
-    public SyncTask(List<RandoPair> randoPairs1) {
-        this.randoPairs = randoPairs1;
+    public SyncTask(List<RandoPair> randoPairs) {
+        this.randoPairs = randoPairs;
     }
 
     @Override
@@ -24,12 +24,23 @@ public class SyncTask extends BaseTask {
         Log.v(SyncTask.class, "OnFetchUser");
         RandoDAO randoDAO = new RandoDAO(App.context);
 
-        if (randoPairs.size() != randoDAO.getRandoPairsNumber()) {
+        if (!isConsistent(randoDAO)) {
             randoDAO.clearRandoPairs();
             randoDAO.insertRandoPairs(randoPairs);
+            randoDAO.close();
+
             data.put(NEED_NOTIFICATION, true);
+            return OK;
         }
 
+        return checkEachRandoIfChanged(randoDAO);
+    }
+
+    private boolean isConsistent(RandoDAO randoDAO) {
+        return randoPairs.size() == randoDAO.getRandoPairsNumber();
+    }
+
+    private Integer checkEachRandoIfChanged(RandoDAO randoDAO) {
         try {
             List<RandoPair> dbRandoPairs = randoDAO.getAllRandoPairs();
             Collections.sort(randoPairs, new RandoPair.DateComparator());
@@ -44,9 +55,10 @@ public class SyncTask extends BaseTask {
             }
 
             data.put(NOT_PAIRED_RANDO_PAIRS_NUMBER, randoDAO.getNotPairedRandosNumber());
-            randoDAO.close();
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            Log.e(SyncTask.class, "Sync task error: ", e.getMessage());
+        } finally {
+            randoDAO.close();
         }
         return OK;
     }

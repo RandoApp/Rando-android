@@ -10,6 +10,8 @@ import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.api.callback.OnFetchUser;
+import com.github.randoapp.api.exception.ForbiddenException;
+import com.github.randoapp.api.exception.RequestTooLongException;
 import com.github.randoapp.db.model.RandoPair;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
@@ -295,7 +297,7 @@ public class API {
                 randoPair.user.date = new Date(json.getLong(CREATION_PARAM));
                 return randoPair;
             } else if (response.getStatusLine().getStatusCode() == SC_REQUEST_TOO_LONG) {
-                throw new Exception(App.context.getResources().getString(R.string.error_image_too_big));
+                throw new RequestTooLongException(App.context.getResources().getString(R.string.error_image_too_big));
             } else {
                 throw processServerError(readJSON(response));
             }
@@ -303,20 +305,6 @@ public class API {
             throw processError(e);
         }
     }
-
-    public static void uploadLog(String logs) throws AuthenticationException, Exception {
-        Log.i(API.class, "uploadLog");
-        try {
-            HttpPost request = new HttpPost(getUrl(LOG_URL));
-            request.setHeader("Content-Type", "application/json");
-            request.setEntity(new StringEntity(logs, "UTF-8"));
-            VolleySingleton.getInstance().getHttpClient().execute(request);
-        } catch (IOException e) {
-            Log.e(API.class, "Can not upload logs, because: ", e.getMessage());
-        }
-    }
-
-
 
     public static void report(String id) throws AuthenticationException, Exception {
         try {
@@ -387,8 +375,7 @@ public class API {
                     } catch (Exception e) {
                         Log.w(API.class, "Error when try build ban message for user: ", e.getMessage());
                     }
-
-                    return new Exception(App.context.getResources().getString(R.string.error_411) + " " + resetTime);
+                    return new ForbiddenException(App.context.getResources().getString(R.string.error_411) + " " + resetTime);
                 }
             }
             //TODO: implement all code handling in switch and replace server "message" with default value.

@@ -42,6 +42,12 @@
             android:process=":sync_process"
             android:enabled="true"
             android:label="@string/sync_service_name" />
+        <service
+            android:name=".service.UploadService"
+            android:icon="@drawable/ic_launcher"
+            android:process=":upload_process"
+            android:enabled="true"
+            android:label="@string/upload_service_name" />
     </application>
 
     <uses-feature android:name="android.hardware.camera" />

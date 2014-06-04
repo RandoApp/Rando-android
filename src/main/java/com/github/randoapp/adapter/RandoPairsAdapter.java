@@ -3,6 +3,7 @@ package com.github.randoapp.adapter;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.Display;
@@ -78,7 +79,7 @@ public class RandoPairsAdapter extends BaseAdapter {
 
     private void initData() {
         RandoDAO randoDAO = new RandoDAO(App.context);
-        randoPairs = randoDAO.getAllRandoPairs();
+        randoPairs = randoDAO.getAllRandos();
         randoDAO.close();
         size = randoPairs.size();
     }
@@ -296,10 +297,27 @@ public class RandoPairsAdapter extends BaseAdapter {
     }
 
     private void loadImages(final ViewHolder holder, final RandoPair randoPair) {
+        if (URLUtil.isFileUrl(randoPair.user.imageURLSize.small)) {
+            loadFile(holder, randoPair.user.imageURL);
+            return;
+        }
+
         loadImage(holder.stranger, RandoPairUtil.getUrlByImageSize(imageSize, randoPair.stranger.imageURLSize), Priority.HIGH);
         loadImage(holder.user, RandoPairUtil.getUrlByImageSize(imageSize, randoPair.user.imageURLSize), Priority.NORMAL);
         loadMapImage(holder.stranger, RandoPairUtil.getUrlByImageSize(imageSize, randoPair.stranger.mapURLSize), Priority.LOW);
         loadMapImage(holder.user, RandoPairUtil.getUrlByImageSize(imageSize, randoPair.user.mapURLSize), Priority.LOW);
+    }
+
+    private void loadFile(final ViewHolder holder, final String filePath) {
+        if (holder.user.image != null) {
+            holder.user.image.setImageBitmap(BitmapFactory.decodeFile(filePath));
+        } else if (holder.user.image == null) {
+            holder.user.imageBitmap = BitmapFactory.decodeFile(filePath);
+        }
+
+        holder.user.map.setImageResource(R.drawable.rando_pairing);
+        holder.stranger.image.setImageResource(R.drawable.rando_pairing);
+        holder.stranger.map.setImageResource(R.drawable.rando_pairing);
     }
 
     private void loadImage(final ViewHolder.UserHolder userHolder, final String url, Priority priority) {

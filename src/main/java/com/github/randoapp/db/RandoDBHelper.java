@@ -107,9 +107,9 @@ public class RandoDBHelper extends SQLiteOpenHelper {
 
         private static final String CREATE_TABLE_SQL = "CREATE TABLE " + RandoUploadTable.NAME +
                 " (" + COLUMN_ID + " integer primary key autoincrement, " +
-                " (" + COLUMN_FILE + " text," +
-                " (" + COLUMN_LATITUDE + " text," +
-                " (" + COLUMN_LONGITUDE + " text," +
+                COLUMN_FILE + " text," +
+                COLUMN_LATITUDE + " text," +
+                COLUMN_LONGITUDE + " text" +
                 ");";
     }
 }

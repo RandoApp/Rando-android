@@ -1,6 +1,7 @@
 package com.github.randoapp;
 
 import android.app.AlarmManager;
+import android.content.Context;
 
 public class Constants {
 
@@ -13,6 +14,7 @@ public class Constants {
     public static final String NOT_PAIRED_RANDO_PAIRS_NUMBER = "NOT_PAIRED_RANDO_PAIRS_NUMBER";
 
     public static final String CAMERA_BROADCAST_EVENT = "RANDO_CAMERA_EVENT";
+    public static final String UPLOAD_SERVICE_EVENT = "RANDO_UPLOAD_EVENT";
 
     public static final String RANDO_PHOTO_PATH = "RANDO_PHOTO_PATH";
 
@@ -48,13 +50,22 @@ public class Constants {
     public static final int SIZE_MEDIUM = 800;
     public static final int SIZE_LARGE = 1200;
 
-    public static final String SERVER_HOST = "rando4.me";
+    public static final String SERVER_HOST = "192.168.1.103:8888";
     public static final String SERVER_URL = "http://" + SERVER_HOST;
 
     public static final int CONNECTION_TIMEOUT = 6000;
 
     public static final long SERVICE_SHORT_PAUSE = 30 * 1000;
     public static final long SERVICE_LONG_PAUSE = AlarmManager.INTERVAL_HALF_HOUR;
+
+    public static final long UPLOAD_SERVICE_INTERVAL = AlarmManager.INTERVAL_DAY;
+
+    public static final int UPLOAD_SERVICE_ATTEMPTS_FAIL = 5;
+    public static final int UPLOAD_SERVICE_MANY_ATTEMPTS_FAIL = 15;
+    public static final long UPLOAD_SERVICE_SHORT_PAUSE = 30 * 1000;
+    public static final long UPLOAD_SERVICE_LONG_PAUSE = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
+    public static final long UPLOAD_SERVICE_VERY_LONG_PAUSE = AlarmManager.INTERVAL_HOUR * 3;
+    public static final long UPLOAD_SERVICE_FORBIDDEN_PAUSE = AlarmManager.INTERVAL_HOUR * 6;
 
 
     //Shared Preferences
@@ -106,7 +117,8 @@ public class Constants {
     public static final String LOG_URL = SERVER_URL + "/log";
 
     public static final String REPORT_BROADCAST = "Report";
-    public static final String SYNC_SERVICE_BROADCAST = "SyncService";
+    public static final String SYNC_SERVICE_BROADCAST = "Rando4MeSyncService";
+    public static final String UPLOAD_SERVICE_BROADCAST = "Rando4MeUploadService";
 
     public static final String NEED_NOTIFICATION = "Notification";
 

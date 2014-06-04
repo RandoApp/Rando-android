@@ -14,6 +14,7 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
 
 import static com.github.randoapp.Constants.CONNECTION_TIMEOUT;
 
@@ -35,6 +36,8 @@ public class VolleySingleton {
         HttpParams params = httpClient.getParams();
         httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(params,
                     mgr.getSchemeRegistry()), params);
+
+        HttpProtocolParams.setUseExpectContinue(httpClient.getParams(), false);
 
         requestQueue = Volley.newRequestQueue(App.context, new HttpClientStack(httpClient));
         imageLoader = new ImageLoader(this.requestQueue, new LruMemCache());

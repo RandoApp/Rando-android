@@ -31,6 +31,7 @@ import static com.github.randoapp.Constants.RANDO_PADDING_PORTRAIT_COLUMN_RIGHT;
 import static com.github.randoapp.Constants.RANDO_PADDING_PORTRAIT_COLUMN_TOP;
 import static com.github.randoapp.Constants.REPORT_BROADCAST;
 import static com.github.randoapp.Constants.SYNC_SERVICE_BROADCAST;
+import static com.github.randoapp.Constants.UPLOAD_SERVICE_BROADCAST;
 
 public class HomeWallFragment extends Fragment {
 

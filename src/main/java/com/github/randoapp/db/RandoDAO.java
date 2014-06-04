@@ -31,15 +31,15 @@ public class RandoDAO {
     }
 
     //TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    public void addToUpload(String file, String latitude, String longitude) {
-        if (file == null || latitude == null || longitude == null) {
+    public void addToUpload(String file, double latitude, double longitude) {
+        if (file == null) {
             return;
         }
 
         ContentValues values = new ContentValues();
         values.put(RandoDBHelper.RandoUploadTable.COLUMN_FILE, file);
-        values.put(RandoDBHelper.RandoUploadTable.COLUMN_LATITUDE, latitude);
-        values.put(RandoDBHelper.RandoUploadTable.COLUMN_LONGITUDE, longitude);
+        values.put(RandoDBHelper.RandoUploadTable.COLUMN_LATITUDE, String.valueOf(latitude));
+        values.put(RandoDBHelper.RandoUploadTable.COLUMN_LONGITUDE, String.valueOf(longitude));
 
         database.insert(RandoDBHelper.RandoUploadTable.NAME, null, values);
     }
@@ -54,6 +54,7 @@ public class RandoDAO {
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             RandoUpload rando = new RandoUpload();
+            rando.id = cursor.getInt(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_ID));
             rando.file = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_FILE));
             rando.latitude = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_LATITUDE));
             rando.longitude = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_LONGITUDE));
@@ -62,6 +63,13 @@ public class RandoDAO {
         }
         cursor.close();
         return randos;
+    }
+
+    //TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public void deleteRandoToUpload(RandoUpload rando) {
+        String id = String.valueOf(rando.id);
+        database.delete(RandoDBHelper.RandoUploadTable.NAME, RandoDBHelper.RandoUploadTable.COLUMN_ID + " = " + id, null);
+        Log.i(RandoDAO.class, "Rando to upload deleted with id: ", String.valueOf(id));
     }
 
 
@@ -134,6 +142,24 @@ public class RandoDAO {
         Log.w(RandoDAO.class, "RandoPair updated with id: ", String.valueOf(id));
     }
 
+    //TODO: NEED TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+    public List<RandoPair> getAllRandos() {
+        List<RandoPair> randos = getAllRandoPairs();
+
+        List<RandoUpload> randosToUpload = getAllRandosToUpload();
+        for (RandoUpload randoUpload : randosToUpload) {
+            RandoPair randoPair = new RandoPair();
+            randoPair.user.randoId = "0";
+            randoPair.user.date = new Date();
+            randoPair.user.imageURL = randoUpload.file;
+            randoPair.user.imageURLSize.small = randoUpload.file;
+            randoPair.user.imageURLSize.medium = randoUpload.file;
+            randoPair.user.imageURLSize.large = randoUpload.file;
+            randos.add(randoPair);
+        }
+
+        return randos;
+    }
 
     /**
      * @return all rando instances found in DB
@@ -152,19 +178,6 @@ public class RandoDAO {
         }
         cursor.close();
 
-
-        //TODO: NEED TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
-        List<RandoUpload> randosToUpload = getAllRandosToUpload();
-        for (RandoUpload randoUpload : randosToUpload) {
-            RandoPair randoPair = new RandoPair();
-            randoPair.user.randoId = "0";
-            randoPair.user.date = new Date();
-            randoPair.user.imageURL = randoUpload.file;
-            randoPair.user.imageURLSize.small = randoUpload.file;
-            randoPair.user.imageURLSize.medium = randoUpload.file;
-            randoPair.user.imageURLSize.large = randoUpload.file;
-            randoPairs.add(randoPair);
-        }
         return randoPairs;
     }
 
@@ -195,38 +208,6 @@ public class RandoDAO {
         int result = cursor.getCount();
         cursor.close();
         return result;
-    }
-
-    /**
-     * First page is a 0 page!!
-     *
-     * @return randos of current Page
-     */
-    public List<RandoPair> getRandoPairsForPage(int page) {
-        List<RandoPair> randoPairs = new ArrayList<RandoPair>();
-
-        Cursor cursor = database.query(RandoDBHelper.RandoTable.NAME,
-                RandoDBHelper.RandoTable.ALL_COLUMNS, null, null, null, null, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE + " DESC", Constants.PAGE_SIZE * page + ", " + Constants.PAGE_SIZE);
-
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            RandoPair randoPair = cursorToRandoPair(cursor);
-            randoPairs.add(randoPair);
-            cursor.moveToNext();
-        }
-        cursor.close();
-        return randoPairs;
-    }
-
-    /**
-     * First page is a 0 page!!
-     *
-     * @return randos of current Page
-     */
-    public int getPagesNumber() {
-        double randoPairsNumber = getRandoPairsNumber();
-
-        return (int) Math.ceil(randoPairsNumber / Constants.PAGE_SIZE);
     }
 
     /**

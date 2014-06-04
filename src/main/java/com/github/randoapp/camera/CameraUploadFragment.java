@@ -2,6 +2,7 @@ package com.github.randoapp.camera;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Display;
@@ -13,10 +14,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.github.randoapp.App;
+import com.github.randoapp.CameraActivity;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
+import com.github.randoapp.db.RandoDAO;
+import com.github.randoapp.log.Log;
+import com.github.randoapp.service.UploadService;
 import com.github.randoapp.task.CropImageTask;
-import com.github.randoapp.task.callback.OnDone;
 import com.github.randoapp.task.callback.OnError;
 import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.BitmapUtil;
@@ -30,7 +35,7 @@ public class CameraUploadFragment extends SherlockFragment {
 
     private String picFileName;
     private ImageView preview;
-    private ImageView uploadPictureButton;
+    private ImageView uploadButton;
     private int displayWidth;
 
 
@@ -52,8 +57,8 @@ public class CameraUploadFragment extends SherlockFragment {
 
         prepareForUpload(fileToCrop);
 
-        uploadPictureButton = (ImageView) rootView.findViewById(R.id.upload_button);
-        uploadPictureButton.setOnClickListener(new UploadButtonListner());
+        uploadButton = (ImageView) rootView.findViewById(R.id.upload_button);
+        uploadButton.setOnClickListener(new UploadButtonListner());
         return rootView;
     }
 
@@ -70,12 +75,7 @@ public class CameraUploadFragment extends SherlockFragment {
                 .onError(new OnError() {
                     @Override
                     public void onError(Map<String, Object> data) {
-                    }
-                })
-                .onDone(new OnDone() {
-                    @Override
-                    public void onDone(Map<String, Object> data) {
-
+                        Log.e(CropImageTask.class, "Can not crop image");
                     }
                 })
                 .execute();
@@ -85,7 +85,18 @@ public class CameraUploadFragment extends SherlockFragment {
 
         @Override
         public void onClick(View v) {
-            //TODO: return to Home screen and start UploadService;
+            if (picFileName == null) {
+                return;
+            }
+            
+            Context appContext = getActivity().getApplicationContext();
+
+            RandoDAO randoDAO = new RandoDAO(appContext);
+            Location location = CameraActivity.currentLocation;
+            randoDAO.addToUpload(picFileName, location.getLatitude(), location.getLongitude());
+
+            appContext.startService(new Intent(appContext, UploadService.class));
+
             Intent intent = new Intent(CAMERA_BROADCAST_EVENT);
             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
         }
