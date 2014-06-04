@@ -23,7 +23,7 @@ public class CameraUtilTest extends AndroidTestCase {
                 640, 480,
                 400, 400));
 
-        assertThat(actual.width + ":" + actual.height, actual, is(createSize(1900, CAMERA_MIN_SIZE)));
+        assertThat(actual.width + ":" + actual.height, actual, is(createSize(640, 480)));
     }
 
     public void testGetCameraMinSizeRectangle() throws Exception {
@@ -34,7 +34,7 @@ public class CameraUtilTest extends AndroidTestCase {
                 640, 480,
                 400, 400));
 
-        assertThat(actual.width + ":" + actual.height, actual, is(createSize(CAMERA_MIN_SIZE, CAMERA_MIN_SIZE)));
+        assertThat(actual.width + ":" + actual.height, actual, is(createSize(640, 480)));
     }
 
     public void testGetMinSizeIfAllSizesAreHuge() throws Exception {
