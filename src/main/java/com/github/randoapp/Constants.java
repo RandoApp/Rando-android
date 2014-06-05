@@ -114,5 +114,6 @@ public class Constants {
     public static final int GOOGLE_ACTIVITYS_AUTH_REQUEST_CODE = 483; //value is not matter
 
     public static final int CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE = 628;
+    public static final int CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE = 623;
 
 }

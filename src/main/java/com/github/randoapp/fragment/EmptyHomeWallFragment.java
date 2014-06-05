@@ -1,5 +1,6 @@
 package com.github.randoapp.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -27,7 +28,7 @@ public class EmptyHomeWallFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(rootView.getContext(), CameraActivity.class);
-                startActivityForResult(intent, 100);
+                startActivityForResult(intent, Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE);
             }
         });
 
@@ -41,6 +42,7 @@ public class EmptyHomeWallFragment extends Fragment {
 
         if (resultCode == Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE) {
             Intent intent = new Intent(EMPTY_HOME_BROADCAST_EVENT);
+            Activity activity = getActivity();
             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
         }
     }

@@ -77,12 +77,12 @@ public class HomeWallFragment extends Fragment {
                     getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right),
                     getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));
         }
-        //TODO: delta is a height of space which should be added to the end of dataGrid to allow all buttons to be visible.
+
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(rootView.getContext(), CameraActivity.class);
-                startActivityForResult(intent, 100);
+                startActivityForResult(intent, Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE);
             }
         });
 

@@ -24,6 +24,9 @@ import com.github.randoapp.menu.LogoutMenu;
 import com.github.randoapp.menu.ReportMenu;
 import com.github.randoapp.preferences.Preferences;
 
+import static com.github.randoapp.Constants.EMPTY_HOME_BROADCAST_EVENT;
+import static com.github.randoapp.Constants.SYNC_SERVICE_BROADCAST_EVENT;
+
 public class MainActivity extends FragmentActivity {
 
     public static Activity activity;
@@ -34,13 +37,13 @@ public class MainActivity extends FragmentActivity {
         public void onReceive(Context context, Intent intent) {
             Log.i(android.content.BroadcastReceiver.class, "Recieved Update request.");
 
-            if (intent.getAction() == Constants.EMPTY_HOME_BROADCAST_EVENT) {
+            if (EMPTY_HOME_BROADCAST_EVENT.equals(intent.getAction())) {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
                 return;
             }
 
-            if (intent.getAction() == Constants.SYNC_SERVICE_BROADCAST_EVENT) {
+            if (SYNC_SERVICE_BROADCAST_EVENT.equals(intent.getAction())) {
                 RelativeLayout emptyHome = (RelativeLayout) findViewById(R.id.empty_home);
                 Bundle extra = intent.getExtras();
                 int randoPairsNumber = (Integer) extra.get(Constants.RANDO_PAIRS_NUMBER);
@@ -141,7 +144,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        registerReceiver(receiver, new IntentFilter(Constants.SYNC_SERVICE_BROADCAST_EVENT));
+        registerReceiver(receiver, new IntentFilter(SYNC_SERVICE_BROADCAST_EVENT));
     }
 
 }
