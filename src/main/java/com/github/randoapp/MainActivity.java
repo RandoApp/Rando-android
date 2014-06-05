@@ -5,8 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -14,12 +12,8 @@ import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.github.randoapp.auth.GoogleAuth;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.fragment.AuthFragment;
 import com.github.randoapp.fragment.EmptyHomeWallFragment;
@@ -40,18 +34,25 @@ public class MainActivity extends FragmentActivity {
         public void onReceive(Context context, Intent intent) {
             Log.i(android.content.BroadcastReceiver.class, "Recieved Update request.");
 
-            RelativeLayout emptyHome = (RelativeLayout) findViewById(R.id.empty_home);
-
-            Bundle extra = intent.getExtras();
-            int randoPairsNumber = (Integer) extra.get(Constants.RANDO_PAIRS_NUMBER);
-            if (randoPairsNumber == 0 && emptyHome != null) {
-
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.main_screen, new EmptyHomeWallFragment()).commit();
-            }
-            if (randoPairsNumber > 0 && emptyHome != null) {
+            if (intent.getAction() == Constants.EMPTY_HOME_BROADCAST_EVENT) {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
+                return;
+            }
+
+            if (intent.getAction() == Constants.SYNC_SERVICE_BROADCAST_EVENT) {
+                RelativeLayout emptyHome = (RelativeLayout) findViewById(R.id.empty_home);
+                Bundle extra = intent.getExtras();
+                int randoPairsNumber = (Integer) extra.get(Constants.RANDO_PAIRS_NUMBER);
+                if (randoPairsNumber == 0 && emptyHome != null) {
+
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.main_screen, new EmptyHomeWallFragment()).commit();
+                }
+                if (randoPairsNumber > 0 && emptyHome != null) {
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
+                }
             }
         }
     };
@@ -140,7 +141,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        registerReceiver(receiver, new IntentFilter(Constants.SYNC_SERVICE_BROADCAST));
+        registerReceiver(receiver, new IntentFilter(Constants.SYNC_SERVICE_BROADCAST_EVENT));
     }
 
 }

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.github.randoapp.CameraActivity;
+import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.adapter.RandoPairsAdapter;
 import com.github.randoapp.log.Log;
@@ -20,7 +21,6 @@ import com.github.randoapp.notification.Notification;
 import com.github.randoapp.util.RandoUtil;
 import com.jess.ui.TwoWayGridView;
 
-import static com.github.randoapp.Constants.BON_APPETIT_BUTTON_SIZE;
 import static com.github.randoapp.Constants.RANDO_PADDING_LANDSCAPE_COLUMN_BOTTOM;
 import static com.github.randoapp.Constants.RANDO_PADDING_LANDSCAPE_COLUMN_LEFT;
 import static com.github.randoapp.Constants.RANDO_PADDING_LANDSCAPE_COLUMN_RIGHT;
@@ -30,8 +30,7 @@ import static com.github.randoapp.Constants.RANDO_PADDING_PORTRAIT_COLUMN_LEFT;
 import static com.github.randoapp.Constants.RANDO_PADDING_PORTRAIT_COLUMN_RIGHT;
 import static com.github.randoapp.Constants.RANDO_PADDING_PORTRAIT_COLUMN_TOP;
 import static com.github.randoapp.Constants.REPORT_BROADCAST;
-import static com.github.randoapp.Constants.SYNC_SERVICE_BROADCAST;
-import static com.github.randoapp.Constants.UPLOAD_SERVICE_BROADCAST;
+import static com.github.randoapp.Constants.SYNC_SERVICE_BROADCAST_EVENT;
 
 public class HomeWallFragment extends Fragment {
 
@@ -44,7 +43,7 @@ public class HomeWallFragment extends Fragment {
             Log.i(BroadcastReceiver.class, "Recieved Update request");
             if (REPORT_BROADCAST.equals(intent.getAction())) {
                 toggleReportMode();
-            } else if (SYNC_SERVICE_BROADCAST.equals(intent.getAction())) {
+            } else if (SYNC_SERVICE_BROADCAST_EVENT.equals(intent.getAction())) {
                 showNotification();
             }
         }
@@ -72,18 +71,14 @@ public class HomeWallFragment extends Fragment {
         randoPairsAdapter = new RandoPairsAdapter(container.getContext());
         gridView.setAdapter(randoPairsAdapter);
 
-        int delta;
         ImageView takePictureButton = (ImageView) rootView.findViewById(R.id.camera_button);
-        int takePictureButtonHeight = takePictureButton.getHeight();
 
         if (container.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             gridView.setPadding(RANDO_PADDING_LANDSCAPE_COLUMN_LEFT, RANDO_PADDING_LANDSCAPE_COLUMN_TOP, RANDO_PADDING_LANDSCAPE_COLUMN_RIGHT, RANDO_PADDING_LANDSCAPE_COLUMN_BOTTOM);
-            delta = takePictureButtonHeight;
             gridView.setNumColumns(2);
         } else {
             gridView.setNumColumns(1);
             gridView.setPadding(RANDO_PADDING_PORTRAIT_COLUMN_LEFT, RANDO_PADDING_PORTRAIT_COLUMN_TOP, RANDO_PADDING_PORTRAIT_COLUMN_RIGHT, RANDO_PADDING_PORTRAIT_COLUMN_BOTTOM);
-            delta = takePictureButtonHeight - BON_APPETIT_BUTTON_SIZE;
         }
         //TODO: delta is a height of space which should be added to the end of dataGrid to allow all buttons to be visible.
         takePictureButton.setOnClickListener(new View.OnClickListener() {
@@ -107,8 +102,16 @@ public class HomeWallFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().registerReceiver(receiver, new IntentFilter(SYNC_SERVICE_BROADCAST));
+        getActivity().registerReceiver(receiver, new IntentFilter(SYNC_SERVICE_BROADCAST_EVENT));
         getActivity().registerReceiver(receiver, new IntentFilter(REPORT_BROADCAST));
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE) {
+            randoPairsAdapter.notifyDataSetChanged();
+        }
+    }
 }

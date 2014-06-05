@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.github.randoapp.Constants;
 import com.github.randoapp.db.model.RandoPair;
 import com.github.randoapp.db.model.RandoUpload;
 import com.github.randoapp.log.Log;
@@ -144,7 +143,7 @@ public class RandoDAO {
 
     //TODO: NEED TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
     public List<RandoPair> getAllRandos() {
-        List<RandoPair> randos = getAllRandoPairs();
+        List<RandoPair> randos = new ArrayList<RandoPair>();
 
         List<RandoUpload> randosToUpload = getAllRandosToUpload();
         for (RandoUpload randoUpload : randosToUpload) {
@@ -157,7 +156,7 @@ public class RandoDAO {
             randoPair.user.imageURLSize.large = randoUpload.file;
             randos.add(randoPair);
         }
-
+        randos.addAll(randos);
         return randos;
     }
 

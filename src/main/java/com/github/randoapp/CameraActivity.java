@@ -18,6 +18,7 @@ import com.github.randoapp.camera.CameraCaptureFragment;
 import com.github.randoapp.camera.CameraUploadFragment;
 import com.github.randoapp.util.LocationUpdater;
 
+import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 
 public class CameraActivity extends SherlockFragmentActivity implements CameraHostProvider {
@@ -44,6 +45,8 @@ public class CameraActivity extends SherlockFragmentActivity implements CameraHo
                     return;
                 }
             }
+
+            CameraActivity.this.setResult(CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE);
             CameraActivity.this.finish();
         }
     };

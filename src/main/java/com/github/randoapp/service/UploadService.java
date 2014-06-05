@@ -7,10 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.IBinder;
-import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
-import com.github.randoapp.Constants;
 import com.github.randoapp.api.API;
 import com.github.randoapp.api.exception.ForbiddenException;
 import com.github.randoapp.api.exception.RequestTooLongException;
@@ -24,9 +22,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_ATTEMPTS_FAIL;
-import static com.github.randoapp.Constants.UPLOAD_SERVICE_EVENT;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_FORBIDDEN_PAUSE;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_INTERVAL;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_LONG_PAUSE;
