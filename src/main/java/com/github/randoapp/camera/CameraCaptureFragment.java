@@ -3,6 +3,7 @@ package com.github.randoapp.camera;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Display;
@@ -95,6 +96,17 @@ public class CameraCaptureFragment extends CameraFragment {
             Log.i(CameraCaptureFragment.class, "Available Preview screen size:", String.valueOf(height), "x", String.valueOf(width), "display orientation: ", String.valueOf(displayOrientation));
             Log.i(CameraCaptureFragment.class, "Selected preview camera size:", String.valueOf(size.height), "x", String.valueOf(size.width));
             return size;
+        }
+
+        @Override
+        public Camera.Parameters adjustPreviewParameters(Camera.Parameters parameters) {
+            int currentAPIVersion = android.os.Build.VERSION.SDK_INT;
+            if (currentAPIVersion >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            } else {
+                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+            }
+            return parameters;
         }
 
         @Override
