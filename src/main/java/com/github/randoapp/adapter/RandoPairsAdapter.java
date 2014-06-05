@@ -36,6 +36,7 @@ import com.github.randoapp.log.Log;
 import com.github.randoapp.menu.ReportMenu;
 import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.service.SyncService;
+import com.github.randoapp.util.BitmapUtil;
 import com.github.randoapp.util.RandoPairUtil;
 
 import org.apache.http.auth.AuthenticationException;
@@ -313,9 +314,9 @@ public class RandoPairsAdapter extends BaseAdapter {
 
     private void loadFile(final ViewHolder holder, final String filePath) {
         if (holder.user.image != null) {
-            holder.user.image.setImageBitmap(BitmapFactory.decodeFile(filePath));
+            holder.user.image.setImageBitmap(BitmapUtil.decodeSampledBitmap(filePath, imageSize, imageSize));
         } else if (holder.user.image == null) {
-            holder.user.imageBitmap = BitmapFactory.decodeFile(filePath);
+            holder.user.imageBitmap = BitmapUtil.decodeSampledBitmap(filePath, imageSize, imageSize);
         }
 
         holder.user.map.setImageResource(R.drawable.rando_pairing);

@@ -11,7 +11,6 @@ public class Constants {
     public static final String NOT_PAIRED_RANDO_PAIRS_NUMBER = "NOT_PAIRED_RANDO_PAIRS_NUMBER";
 
     public static final String CAMERA_BROADCAST_EVENT = "RANDO_CAMERA_EVENT";
-    public static final String EMPTY_HOME_BROADCAST_EVENT = "RANDO_EMPTY_HOME_EVENT";
     public static final String SYNC_SERVICE_BROADCAST_EVENT = "Rando4MeSyncService";
     public static final String UPLOAD_SERVICE_BROADCAST_EVENT = "Rando4MeUploadService";
 

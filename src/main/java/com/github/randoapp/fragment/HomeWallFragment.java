@@ -103,12 +103,4 @@ public class HomeWallFragment extends Fragment {
         getActivity().registerReceiver(receiver, new IntentFilter(REPORT_BROADCAST));
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE) {
-            randoPairsAdapter.notifyDataSetChanged();
-        }
-    }
 }

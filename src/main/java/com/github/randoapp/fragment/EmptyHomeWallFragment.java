@@ -1,21 +1,18 @@
 package com.github.randoapp.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.github.randoapp.CameraActivity;
-import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.util.RandoUtil;
 
-import static com.github.randoapp.Constants.EMPTY_HOME_BROADCAST_EVENT;
+import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE;
 
 public class EmptyHomeWallFragment extends Fragment {
 
@@ -28,7 +25,7 @@ public class EmptyHomeWallFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(rootView.getContext(), CameraActivity.class);
-                startActivityForResult(intent, Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE);
+                startActivityForResult(intent, CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE);
             }
         });
 
@@ -36,14 +33,4 @@ public class EmptyHomeWallFragment extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE) {
-            Intent intent = new Intent(EMPTY_HOME_BROADCAST_EVENT);
-            Activity activity = getActivity();
-            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-        }
-    }
 }

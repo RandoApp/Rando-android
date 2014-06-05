@@ -24,8 +24,9 @@ import com.github.randoapp.menu.LogoutMenu;
 import com.github.randoapp.menu.ReportMenu;
 import com.github.randoapp.preferences.Preferences;
 
-import static com.github.randoapp.Constants.EMPTY_HOME_BROADCAST_EVENT;
+import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
 import static com.github.randoapp.Constants.SYNC_SERVICE_BROADCAST_EVENT;
+import static com.github.randoapp.Constants.UPLOAD_SERVICE_BROADCAST_EVENT;
 
 public class MainActivity extends FragmentActivity {
 
@@ -36,12 +37,6 @@ public class MainActivity extends FragmentActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.i(android.content.BroadcastReceiver.class, "Recieved Update request.");
-
-            if (EMPTY_HOME_BROADCAST_EVENT.equals(intent.getAction())) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
-                return;
-            }
 
             if (SYNC_SERVICE_BROADCAST_EVENT.equals(intent.getAction())) {
                 RelativeLayout emptyHome = (RelativeLayout) findViewById(R.id.empty_home);
@@ -144,7 +139,21 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        registerReceiver(receiver, new IntentFilter(SYNC_SERVICE_BROADCAST_EVENT));
+        registerReceivers();
     }
 
+    private void registerReceivers() {
+        registerReceiver(receiver, new IntentFilter(SYNC_SERVICE_BROADCAST_EVENT));
+        registerReceiver(receiver, new IntentFilter(UPLOAD_SERVICE_BROADCAST_EVENT));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
+        }
+    }
 }

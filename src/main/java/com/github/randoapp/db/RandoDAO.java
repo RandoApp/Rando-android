@@ -156,7 +156,8 @@ public class RandoDAO {
             randoPair.user.imageURLSize.large = randoUpload.file;
             randos.add(randoPair);
         }
-        randos.addAll(randos);
+        List<RandoPair> randoPairs = getAllRandoPairs();
+        randos.addAll(randoPairs);
         return randos;
     }
 
