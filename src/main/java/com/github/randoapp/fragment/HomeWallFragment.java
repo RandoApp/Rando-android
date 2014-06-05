@@ -20,15 +20,6 @@ import com.github.randoapp.log.Log;
 import com.github.randoapp.notification.Notification;
 import com.github.randoapp.util.RandoUtil;
 import com.jess.ui.TwoWayGridView;
-
-import static com.github.randoapp.Constants.RANDO_PADDING_LANDSCAPE_COLUMN_BOTTOM;
-import static com.github.randoapp.Constants.RANDO_PADDING_LANDSCAPE_COLUMN_LEFT;
-import static com.github.randoapp.Constants.RANDO_PADDING_LANDSCAPE_COLUMN_RIGHT;
-import static com.github.randoapp.Constants.RANDO_PADDING_LANDSCAPE_COLUMN_TOP;
-import static com.github.randoapp.Constants.RANDO_PADDING_PORTRAIT_COLUMN_BOTTOM;
-import static com.github.randoapp.Constants.RANDO_PADDING_PORTRAIT_COLUMN_LEFT;
-import static com.github.randoapp.Constants.RANDO_PADDING_PORTRAIT_COLUMN_RIGHT;
-import static com.github.randoapp.Constants.RANDO_PADDING_PORTRAIT_COLUMN_TOP;
 import static com.github.randoapp.Constants.REPORT_BROADCAST;
 import static com.github.randoapp.Constants.SYNC_SERVICE_BROADCAST_EVENT;
 
@@ -74,11 +65,17 @@ public class HomeWallFragment extends Fragment {
         ImageView takePictureButton = (ImageView) rootView.findViewById(R.id.camera_button);
 
         if (container.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            gridView.setPadding(RANDO_PADDING_LANDSCAPE_COLUMN_LEFT, RANDO_PADDING_LANDSCAPE_COLUMN_TOP, RANDO_PADDING_LANDSCAPE_COLUMN_RIGHT, RANDO_PADDING_LANDSCAPE_COLUMN_BOTTOM);
+            gridView.setPadding(getResources().getDimensionPixelSize(R.dimen.rando_padding_landscape_column_left),
+                    getResources().getDimensionPixelSize(R.dimen.rando_padding_landscape_column_top),
+                    getResources().getDimensionPixelSize(R.dimen.rando_padding_landscape_column_right),
+                    getResources().getDimensionPixelSize(R.dimen.rando_padding_landscape_column_bottom));
             gridView.setNumColumns(2);
         } else {
             gridView.setNumColumns(1);
-            gridView.setPadding(RANDO_PADDING_PORTRAIT_COLUMN_LEFT, RANDO_PADDING_PORTRAIT_COLUMN_TOP, RANDO_PADDING_PORTRAIT_COLUMN_RIGHT, RANDO_PADDING_PORTRAIT_COLUMN_BOTTOM);
+            gridView.setPadding(getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left),
+                    getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
+                    getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right),
+                    getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));
         }
         //TODO: delta is a height of space which should be added to the end of dataGrid to allow all buttons to be visible.
         takePictureButton.setOnClickListener(new View.OnClickListener() {

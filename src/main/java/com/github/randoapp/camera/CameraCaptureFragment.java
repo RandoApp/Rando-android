@@ -1,27 +1,29 @@
 package com.github.randoapp.camera;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.commonsware.cwac.camera.CameraHost;
+import com.commonsware.cwac.camera.CameraUtils;
 import com.commonsware.cwac.camera.CameraView;
 import com.commonsware.cwac.camera.PictureTransaction;
 import com.commonsware.cwac.camera.SimpleCameraHost;
 import com.commonsware.cwac.camera.acl.CameraFragment;
+import com.github.randoapp.Constants;
 import com.github.randoapp.R;
+import com.github.randoapp.log.Log;
 import com.github.randoapp.util.CameraUtil;
 import com.github.randoapp.util.FileUtil;
-
-import java.io.File;
 
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.JPEG_QUALITY;
@@ -32,6 +34,7 @@ public class CameraCaptureFragment extends CameraFragment {
 
     private CameraView cameraView;
     private ImageView captureButton;
+    private int displayWidth;
 
     public static CameraCaptureFragment newInstance(boolean useFFC) {
         CameraCaptureFragment fragment = new CameraCaptureFragment();
@@ -47,6 +50,11 @@ public class CameraCaptureFragment extends CameraFragment {
 
         cameraView = (CameraView) rootView.findViewById(R.id.camera);
         cameraView.setHost(new RandoCameraHost(getActivity().getBaseContext()));
+
+        WindowManager windowManager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        displayWidth = display.getWidth();
+
         setCameraView(cameraView);
 
         captureButton = (ImageView) rootView.findViewById(R.id.capture_button);
@@ -58,13 +66,15 @@ public class CameraCaptureFragment extends CameraFragment {
     private class CaptureButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+            captureButton.setEnabled(false);
             cameraView.takePicture(false, true);
         }
     }
 
     class RandoCameraHost extends SimpleCameraHost {
-        public RandoCameraHost(Context _ctxt) {
-            super(_ctxt);
+
+        public RandoCameraHost(Context _ctx) {
+            super(_ctx);
         }
 
         @Override
@@ -74,33 +84,25 @@ public class CameraCaptureFragment extends CameraFragment {
 
         @Override
         public Camera.Size getPictureSize(PictureTransaction xact, Camera.Parameters parameters) {
-            return CameraUtil.getBestPictureSizeForOldDevices(parameters.getSupportedPictureSizes());
+            Camera.Size size = CameraUtil.getBestPictureSizeForOldDevices(parameters.getSupportedPictureSizes());
+            Log.i(CameraCaptureFragment.class, "Selected picture size:", String.valueOf(size.height), "x", String.valueOf(size.width));
+            return size;
         }
 
         @Override
-        protected File getPhotoDirectory() {
-            return FileUtil.getOutputMediaDir();
-        }
-
-        @Override
-        public Camera.ShutterCallback getShutterCallback() {
-            return super.getShutterCallback();
+        public Camera.Size getPreviewSize(int displayOrientation, int width, int height, Camera.Parameters parameters) {
+            Camera.Size size = CameraUtils.getBestAspectPreviewSize(displayOrientation, displayWidth, (int) (displayWidth / Constants.PICTURE_DESIRED_ASPECT_RATIO), parameters);
+            Log.i(CameraCaptureFragment.class, "Available Preview screen size:", String.valueOf(height), "x", String.valueOf(width), "display orientation: ", String.valueOf(displayOrientation));
+            Log.i(CameraCaptureFragment.class, "Selected preview camera size:", String.valueOf(size.height), "x", String.valueOf(size.width));
+            return size;
         }
 
         @Override
         public void onCameraFail(CameraHost.FailureReason reason) {
             super.onCameraFail(reason);
-
             Toast.makeText(getActivity(),
                     "Sorry, but you cannot use the camera now!",
                     Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        @TargetApi(16)
-        public void onAutoFocus(boolean success, Camera camera) {
-            super.onAutoFocus(success, camera);
-            captureButton.setEnabled(true);
         }
 
         @Override
@@ -117,11 +119,19 @@ public class CameraCaptureFragment extends CameraFragment {
             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
         }
 
-
         @Override
         protected boolean useFrontFacingCamera() {
             return false;
         }
 
+        @Override
+        public boolean useFullBleedPreview() {
+            return false;
+        }
+
+        @Override
+        public RecordingHint getRecordingHint() {
+            return RecordingHint.STILL_ONLY;
+        }
     }
 }

@@ -2,11 +2,13 @@ package com.github.randoapp.util;
 
 import android.hardware.Camera;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import static com.github.randoapp.Constants.CAMERA_MIN_SIZE;
+import static com.github.randoapp.Constants.PICTURE_DESIRED_ASPECT_RATIO;
 
 public class CameraUtil {
 
@@ -15,7 +17,20 @@ public static Camera.Size getBestPictureSize(List<Camera.Size> cameraSizes) {
     }
 
     public static Camera.Size getBestPictureSizeForOldDevices(List<Camera.Size> cameraSizes) {
-        Collections.sort(cameraSizes, new Comparator<Camera.Size>() {
+
+        List<Camera.Size> filteredList = new ArrayList<Camera.Size>();
+        for (Camera.Size size : cameraSizes){
+            double ratio=(double)size.height / size.width;
+            if (Math.abs(ratio - PICTURE_DESIRED_ASPECT_RATIO) < 0.05){
+                filteredList.add(size);
+            }
+        }
+
+        if (filteredList.size() == 0){
+            filteredList = cameraSizes;
+        }
+
+        Collections.sort(filteredList, new Comparator<Camera.Size>() {
             @Override
             public int compare(Camera.Size cameraSize1, Camera.Size cameraSize2) {
                 int cameraMinSize1 = Math.min(cameraSize1.height, cameraSize1.width);
@@ -27,7 +42,7 @@ public static Camera.Size getBestPictureSize(List<Camera.Size> cameraSizes) {
                 return compareSizeIncludeResolution(cameraSize2, cameraSize1);
             }
         });
-        return cameraSizes.get(0);
+        return filteredList.get(0);
     }
 
     public static Camera.Size getBestPreviewSize(List<Camera.Size> cameraSizes, final int screenWidth, final int screenHeight) {

@@ -30,20 +30,11 @@ public class Constants {
 
     public static final int RANDO_MARGIN_PORTRAIT = 30;
 
-    public static final int RANDO_PADDING_PORTRAIT_COLUMN_LEFT = 15;
-    public static final int RANDO_PADDING_PORTRAIT_COLUMN_RIGHT = 5;
-    public static final int RANDO_PADDING_PORTRAIT_COLUMN_TOP = 15;
-    public static final int RANDO_PADDING_PORTRAIT_COLUMN_BOTTOM = 5;
-
-    public static final int RANDO_PADDING_LANDSCAPE_COLUMN_LEFT = 10;
-    public static final int RANDO_PADDING_LANDSCAPE_COLUMN_RIGHT = 5;
-    public static final int RANDO_PADDING_LANDSCAPE_COLUMN_TOP = 15;
-    public static final int RANDO_PADDING_LANDSCAPE_COLUMN_BOTTOM = 5;
-
     public static final int CAMERA_MIN_SIZE = 1200;
     public static final int SIZE_SMALL = 480;
     public static final int SIZE_MEDIUM = 800;
     public static final int SIZE_LARGE = 1200;
+    public static final double PICTURE_DESIRED_ASPECT_RATIO = 0.75;
 
     public static final String SERVER_HOST = "192.168.1.103:8888";
     public static final String SERVER_URL = "http://" + SERVER_HOST;

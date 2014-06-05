@@ -5,16 +5,12 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import com.github.randoapp.App;
 import com.github.randoapp.CameraActivity;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
@@ -34,10 +30,8 @@ import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 public class CameraUploadFragment extends SherlockFragment {
 
     private String picFileName;
-    private ImageView preview;
+    private RoundedImageView preview;
     private ImageView uploadButton;
-    private int displayWidth;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,13 +41,6 @@ public class CameraUploadFragment extends SherlockFragment {
 
         Bundle bundle = getArguments();
         String fileToCrop = bundle.getString(Constants.FILEPATH);
-
-        WindowManager windowManager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
-        displayWidth = display.getWidth();
-
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(displayWidth, displayWidth);
-        preview.setLayoutParams(layoutParams);
 
         prepareForUpload(fileToCrop);
 
@@ -69,7 +56,7 @@ public class CameraUploadFragment extends SherlockFragment {
                     @Override
                     public void onOk(Map<String, Object> data) {
                         picFileName = (String) data.get(Constants.FILEPATH);
-                        preview.setImageBitmap(BitmapUtil.decodeSampledBitmap(picFileName, displayWidth, displayWidth));
+                        preview.setImageBitmap(BitmapUtil.decodeSampledBitmap(picFileName, preview.getWidth(), preview.getWidth()));
                     }
                 })
                 .onError(new OnError() {

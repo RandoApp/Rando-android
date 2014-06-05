@@ -12,6 +12,8 @@ import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.github.randoapp.R;
+
 public class CircleMaskView extends View {
 
     private Bitmap bitmap;
@@ -41,6 +43,7 @@ public class CircleMaskView extends View {
         bitmap.eraseColor(Color.TRANSPARENT);
 
         int radius = Math.min(width, height) / 2;
+        int heightCenter = height / 2;
 
         Paint eraser = new Paint();
         eraser.setColor(0xFFFFFFFF);
@@ -48,7 +51,7 @@ public class CircleMaskView extends View {
 
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.BLACK);
-        canvas.drawCircle(radius, radius, radius, eraser);
+        canvas.drawCircle(radius, heightCenter, radius-context.getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left), eraser);
     }
 
     @Override

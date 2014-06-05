@@ -45,9 +45,17 @@ public class CropImageTask extends BaseTask {
             } else {
 
                 int size = Math.min(options.outWidth, options.outHeight);
+                //We need to crop square image from the center of the image
+                int indent = (Math.max(options.outWidth, options.outHeight)-size)/2;
+                Log.i(CropImageTask.class, "Orig W:",String.valueOf(options.outWidth), "Orig H:",String.valueOf(options.outHeight), "Size: ", String.valueOf(size),"Indent: ", String.valueOf(indent));
 
                 BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(srcFile, false);
-                Bitmap bitmap = decoder.decodeRegion(new Rect(0, 0, size, size), null);
+                Bitmap bitmap;
+                if (options.outHeight >= options.outWidth) {
+                    bitmap = decoder.decodeRegion(new Rect(0, indent, size, size + indent), null);
+                } else{
+                    bitmap = decoder.decodeRegion(new Rect(indent, 0, size + indent, size), null);
+                }
 
                 FileOutputStream out = new FileOutputStream(file);
                 bitmap.compress(Bitmap.CompressFormat.JPEG, Constants.JPEG_QUALITY, out);

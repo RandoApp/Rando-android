@@ -30,14 +30,13 @@ public class VolleySingleton {
         HttpParams httpParams = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout(httpParams, CONNECTION_TIMEOUT);
         HttpConnectionParams.setSoTimeout(httpParams, CONNECTION_TIMEOUT);
+        HttpProtocolParams.setUseExpectContinue(httpParams, false);
 
         httpClient = new DefaultHttpClient(httpParams);
         ClientConnectionManager mgr = httpClient.getConnectionManager();
         HttpParams params = httpClient.getParams();
         httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(params,
                     mgr.getSchemeRegistry()), params);
-
-        HttpProtocolParams.setUseExpectContinue(httpClient.getParams(), false);
 
         requestQueue = Volley.newRequestQueue(App.context, new HttpClientStack(httpClient));
         imageLoader = new ImageLoader(this.requestQueue, new LruMemCache());
