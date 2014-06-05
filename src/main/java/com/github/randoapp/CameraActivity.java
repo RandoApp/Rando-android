@@ -54,9 +54,6 @@ public class CameraActivity extends SherlockFragmentActivity implements CameraHo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateLocation();
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_camera);
 
         if (savedInstanceState == null) {
@@ -92,7 +89,6 @@ public class CameraActivity extends SherlockFragmentActivity implements CameraHo
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         super.onPause();
     }
-
 
     //TODO: onDestroy vs onPause: Do we really need unregisterReceiver on Destroy event?
     @Override
