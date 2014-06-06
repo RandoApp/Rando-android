@@ -17,11 +17,14 @@ import com.github.randoapp.db.model.RandoUpload;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.util.ConnectionUtil;
 
+import org.apache.http.auth.AuthenticationException;
+
 import java.io.File;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.github.randoapp.Constants.SERVICE_SHORT_PAUSE;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_ATTEMPTS_FAIL;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_FORBIDDEN_PAUSE;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_INTERVAL;
@@ -67,29 +70,51 @@ public class UploadService extends Service {
 
         Toast.makeText(getApplicationContext(), "Upload service upload randos: " + randosToUpload.size(), Toast.LENGTH_LONG).show();
 
+        boolean isNeedSync = false;
         for (RandoUpload rando : randosToUpload) {
             boolean isUploaded = uploadFile(rando);
-            if (!isUploaded) {
+            if (isUploaded) {
+                isNeedSync = true;
+            } else {
+                //Upload failed. Next uploads have a big probability to fail too. Save battery and try uploads later
                 break;
             }
         }
+
+        syncIfNeed(isNeedSync);
+
         Toast.makeText(getApplicationContext(), "Upload service FINISH", Toast.LENGTH_LONG).show();
+    }
+
+    private void syncIfNeed(boolean isNeedSync) {
+        if (isNeedSync) {
+            //Get server time to pairing and sync after that
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    SyncService.run();
+                }
+            }, SERVICE_SHORT_PAUSE);
+        }
+    }
+
+    private boolean tryUpload(RandoUpload rando) throws Exception {
+        Toast.makeText(getApplicationContext(), "Upload service try upload", Toast.LENGTH_LONG).show();
+
+        Location location = getLocation(rando);
+        File image = new File(rando.file);
+        API.uploadImage(image, location);
+        deleteRando(rando);
+        uploadAttemptsFail = 0;
+
+        Toast.makeText(getApplicationContext(), "Upload service UPLOADED", Toast.LENGTH_LONG).show();
+        return true;
     }
 
     private boolean uploadFile(RandoUpload rando) {
         try {
-            Toast.makeText(getApplicationContext(), "Upload service try upload", Toast.LENGTH_LONG).show();
-            Location location = getLocation(rando);
-            File image = new File(rando.file);
-            API.uploadImage(image, location);
-            deleteRando(rando);
-            uploadAttemptsFail = 0;
-
-            Toast.makeText(getApplicationContext(), "Upload service UPLOADED", Toast.LENGTH_LONG).show();
-
-
-
-            return true;
+            return tryUpload(rando);
         } catch (RequestTooLongException e) {
             //TODO: say user, that his image too long and delete this image from DB
             Toast.makeText(getApplicationContext(), "too long request", Toast.LENGTH_LONG).show();

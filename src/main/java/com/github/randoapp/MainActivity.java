@@ -117,7 +117,7 @@ public class MainActivity extends FragmentActivity {
         }
 
         RandoDAO randoDAO = new RandoDAO(getApplicationContext());
-        int randoCount = randoDAO.getRandoPairsNumber();
+        int randoCount = randoDAO.getAllRandosNumber();
         randoDAO.close();
         if (randoCount == 0) {
             return new EmptyHomeWallFragment();
@@ -132,8 +132,8 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onPause() {
-        super.onPause();
         unregisterReceiver(receiver);
+        super.onPause();
     }
 
     @Override

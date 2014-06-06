@@ -39,6 +39,7 @@ public class RandoDAO {
         values.put(RandoDBHelper.RandoUploadTable.COLUMN_FILE, file);
         values.put(RandoDBHelper.RandoUploadTable.COLUMN_LATITUDE, String.valueOf(latitude));
         values.put(RandoDBHelper.RandoUploadTable.COLUMN_LONGITUDE, String.valueOf(longitude));
+        values.put(RandoDBHelper.RandoUploadTable.COLUMN_DATE, new Date().getTime());
 
         database.insert(RandoDBHelper.RandoUploadTable.NAME, null, values);
     }
@@ -48,7 +49,7 @@ public class RandoDAO {
         List<RandoUpload> randos = new ArrayList<RandoUpload>();
 
         Cursor cursor = database.query(RandoDBHelper.RandoUploadTable.NAME,
-                RandoDBHelper.RandoUploadTable.ALL_COLUMNS, null, null, null, null, null, null);
+                RandoDBHelper.RandoUploadTable.ALL_COLUMNS, null, null, null, null, RandoDBHelper.RandoUploadTable.COLUMN_DATE + " DESC", null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -57,6 +58,12 @@ public class RandoDAO {
             rando.file = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_FILE));
             rando.latitude = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_LATITUDE));
             rando.longitude = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_LONGITUDE));
+            long userDate = cursor.getLong(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_DATE));
+            if (userDate > 0) {
+                rando.date = new Date(userDate);
+            } else {
+                rando.date = new Date();
+            }
             randos.add(rando);
             cursor.moveToNext();
         }
@@ -148,8 +155,8 @@ public class RandoDAO {
         List<RandoUpload> randosToUpload = getAllRandosToUpload();
         for (RandoUpload randoUpload : randosToUpload) {
             RandoPair randoPair = new RandoPair();
-            randoPair.user.randoId = "0";
-            randoPair.user.date = new Date();
+            randoPair.user.randoId = String.valueOf(randoUpload.id);
+            randoPair.user.date = randoUpload.date;
             randoPair.user.imageURL = randoUpload.file;
             randoPair.user.imageURLSize.small = randoUpload.file;
             randoPair.user.imageURLSize.medium = randoUpload.file;
@@ -159,6 +166,23 @@ public class RandoDAO {
         List<RandoPair> randoPairs = getAllRandoPairs();
         randos.addAll(randoPairs);
         return randos;
+    }
+
+
+    //TODO: NEED TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+    public int getAllRandosNumber() {
+        int randoPairsNumber = getRandoPairsNumber();
+        int randoToUploads = getRandosToUploadNumber();
+        return randoPairsNumber + randoToUploads;
+    }
+
+    //TODO: NEED TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+    public int getRandosToUploadNumber() {
+        Cursor cursor = database.query(RandoDBHelper.RandoUploadTable.NAME,
+                RandoDBHelper.RandoUploadTable.ALL_COLUMNS, null, null, null, null, null);
+        int result = cursor.getCount();
+        cursor.close();
+        return result;
     }
 
     /**

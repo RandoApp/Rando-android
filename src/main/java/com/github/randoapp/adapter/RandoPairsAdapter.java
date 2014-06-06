@@ -301,7 +301,7 @@ public class RandoPairsAdapter extends BaseAdapter {
     }
 
     private void loadImages(final ViewHolder holder, final RandoPair randoPair) {
-        if (URLUtil.isFileUrl(randoPair.user.imageURLSize.small)) {
+        if (!URLUtil.isNetworkUrl(randoPair.user.imageURLSize.small) && !randoPair.user.imageURLSize.small.isEmpty()) {
             loadFile(holder, randoPair.user.imageURL);
             return;
         }
@@ -319,9 +319,23 @@ public class RandoPairsAdapter extends BaseAdapter {
             holder.user.imageBitmap = BitmapUtil.decodeSampledBitmap(filePath, imageSize, imageSize);
         }
 
-        holder.user.map.setImageResource(R.drawable.rando_pairing);
-        holder.stranger.image.setImageResource(R.drawable.rando_pairing);
-        holder.stranger.map.setImageResource(R.drawable.rando_pairing);
+        if (holder.user.map != null) {
+            holder.user.map.setImageResource(R.drawable.rando_pairing);
+        } else {
+            holder.user.needSetPairing = true;
+        }
+
+        if (holder.stranger.image != null) {
+            holder.stranger.image.setImageResource(R.drawable.rando_pairing);
+        } else {
+            holder.stranger.needSetPairing = true;
+        }
+
+        if (holder.stranger.map != null) {
+            holder.stranger.map.setImageResource(R.drawable.rando_pairing);
+        } else {
+            holder.stranger.needSetPairing = true;
+        }
     }
 
     private void loadImage(final ViewHolder.UserHolder userHolder, final String url, Priority priority) {
