@@ -17,4 +17,8 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="RandoThemeFullScreen" parent="@style/Theme.Sherlock.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
 </resources>
