@@ -26,6 +26,8 @@ import com.github.randoapp.log.Log;
 import com.github.randoapp.util.CameraUtil;
 import com.github.randoapp.util.FileUtil;
 
+import java.util.List;
+
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.JPEG_QUALITY;
 import static com.github.randoapp.Constants.RANDO_PHOTO_PATH;
@@ -100,10 +102,10 @@ public class CameraCaptureFragment extends CameraFragment {
 
         @Override
         public Camera.Parameters adjustPreviewParameters(Camera.Parameters parameters) {
-            int currentAPIVersion = android.os.Build.VERSION.SDK_INT;
-            if (currentAPIVersion >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            List<String> focusModes = parameters.getSupportedFocusModes();
+            if (focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
                 parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-            } else {
+            } else if (focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
                 parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
             }
             return parameters;

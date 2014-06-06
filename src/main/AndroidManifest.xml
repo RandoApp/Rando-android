@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.github.randoapp"
-    android:versionCode="14"
+    android:versionCode="15"
     android:versionName="1.0.8">
 
 <uses-sdk
@@ -27,7 +27,7 @@
             android:label="@string/take_picture_screen_label"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+            android:theme="@style/RandoThemeFullScreen" />
 
         <meta-data
             android:name="com.google.android.gms.version"
