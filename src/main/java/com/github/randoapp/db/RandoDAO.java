@@ -20,7 +20,7 @@ public class RandoDAO {
     private RandoDBHelper randoDBHelper;
 
     public RandoDAO(Context context) {
-        randoDBHelper = new RandoDBHelper(context);
+        randoDBHelper = RandoDBHelper.getInstance(context);
         database = randoDBHelper.getWritableDatabase();
     }
 

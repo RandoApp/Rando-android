@@ -10,8 +10,17 @@ public class RandoDBHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 7;
     private static final String DATABASE_NAME = "rando.db";
 
-    RandoDBHelper(Context context) {
+    private static RandoDBHelper instance;
+
+    private RandoDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    public static synchronized RandoDBHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new RandoDBHelper(context);
+        }
+        return instance;
     }
 
     @Override
