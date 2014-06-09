@@ -41,8 +41,8 @@ public class SyncTask extends BaseTask {
     private Integer checkEachRandoIfChanged(RandoDAO randoDAO) {
         try {
             List<RandoPair> dbRandoPairs = randoDAO.getAllRandoPairs();
-            for (int i = 0; i < randoPairs.size(); i++) {
-                if (!dbRandoPairs.contains(randoPairs.get(i))) {
+            for (RandoPair randoPair : randoPairs) {
+                if (!dbRandoPairs.contains(randoPair)) {
                     randoDAO.clearRandoPairs();
                     randoDAO.insertRandoPairs(randoPairs);
                     data.put(NEED_NOTIFICATION, true);
