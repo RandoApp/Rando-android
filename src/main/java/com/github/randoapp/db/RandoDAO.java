@@ -29,22 +29,20 @@ public class RandoDAO {
         randoDBHelper.close();
     }
 
-    //TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    public void addToUpload(String file, double latitude, double longitude) {
-        if (file == null) {
+    public void addToUpload(RandoUpload randoUpload) {
+        if (randoUpload.file == null || randoUpload.date == null) {
             return;
         }
 
         ContentValues values = new ContentValues();
-        values.put(RandoDBHelper.RandoUploadTable.COLUMN_FILE, file);
-        values.put(RandoDBHelper.RandoUploadTable.COLUMN_LATITUDE, String.valueOf(latitude));
-        values.put(RandoDBHelper.RandoUploadTable.COLUMN_LONGITUDE, String.valueOf(longitude));
-        values.put(RandoDBHelper.RandoUploadTable.COLUMN_DATE, new Date().getTime());
+        values.put(RandoDBHelper.RandoUploadTable.COLUMN_FILE, randoUpload.file);
+        values.put(RandoDBHelper.RandoUploadTable.COLUMN_LATITUDE, randoUpload.latitude);
+        values.put(RandoDBHelper.RandoUploadTable.COLUMN_LONGITUDE, randoUpload.longitude);
+        values.put(RandoDBHelper.RandoUploadTable.COLUMN_DATE, randoUpload.date.getTime());
 
         database.insert(RandoDBHelper.RandoUploadTable.NAME, null, values);
     }
 
-    //TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public List<RandoUpload> getAllRandosToUpload() {
         List<RandoUpload> randos = new ArrayList<RandoUpload>();
 
@@ -71,13 +69,16 @@ public class RandoDAO {
         return randos;
     }
 
-    //TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public void deleteRandoToUpload(RandoUpload rando) {
         String id = String.valueOf(rando.id);
         database.delete(RandoDBHelper.RandoUploadTable.NAME, RandoDBHelper.RandoUploadTable.COLUMN_ID + " = " + id, null);
         Log.i(RandoDAO.class, "Rando to upload deleted with id: ", String.valueOf(id));
     }
 
+    public void clearRandoToUpload() {
+        database.delete(RandoDBHelper.RandoUploadTable.NAME, "", null);
+        Log.i(RandoDAO.class, "RandosToUpload cleared");
+    }
 
     /**
      * Creates randoPair and returns instance of created randoPair.

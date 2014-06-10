@@ -27,6 +27,7 @@ public class SyncTaskTest extends AndroidTestCase {
         super.setUp();
         randoDAO = new RandoDAO(getContext());
         randoDAO.clearRandoPairs();
+        randoDAO.clearRandoToUpload();
     }
 
     @Override

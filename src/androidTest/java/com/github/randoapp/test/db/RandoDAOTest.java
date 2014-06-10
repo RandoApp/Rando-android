@@ -6,7 +6,9 @@ import android.test.suitebuilder.annotation.MediumTest;
 import com.github.randoapp.Constants;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.RandoPair;
+import com.github.randoapp.db.model.RandoUpload;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -209,10 +211,77 @@ public class RandoDAOTest extends AndroidTestCase {
         assertThat("count NOT paired randos failed", randoDAO.getNotPairedRandosNumber(), is(6));
     }
 
+    public void testAddToUploadSuccessfulAdd() {
+        randoDAO.addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
+
+        RandoUpload randoUpload = new RandoUpload();
+        randoUpload.file = "/path/to/file2";
+        randoUpload.longitude = "24.44";
+        randoUpload.latitude = "22.55";
+        randoUpload.date = new Date();
+
+        randoDAO.addToUpload(randoUpload);
+        randoDAO.addToUpload(new RandoUpload("/path/to/file3", 13.33, 14.44, new Date()));
+        assertThat("Miss one of rando to upload", randoDAO.getRandosToUploadNumber(), is(3));
+    }
+
+    public void testAddToUploadEmptyRandoUpload() {
+        randoDAO.addToUpload(new RandoUpload());
+        assertThat("Empty rando to upload created something in DB", randoDAO.getRandosToUploadNumber(), is(0));
+    }
+
+    public void testGetAllRandosToUploadReturnCorrectOrder() {
+        randoDAO.addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date(10)));
+        randoDAO.addToUpload(new RandoUpload("/path/to/file2", 23.33, 24.44, new Date(50)));
+        randoDAO.addToUpload(new RandoUpload("/path/to/file3", 33.33, 34.44, new Date(300)));
+
+        List<RandoUpload> randos = randoDAO.getAllRandosToUpload();
+        for (int i = 0; i < randos.size(); i++) {
+            assertThat("Rando order is not correct", randos.get(i).file, is("/path/to/file" + (3 - i)));
+        }
+        assertThat("Rando number is not correct", randos.size(), is(3));
+    }
+
+    public void testGetAllRandosToUploadReturnEmptyCollectionIfTableIsEmpty() {
+        List<RandoUpload> randos = randoDAO.getAllRandosToUpload();
+        assertThat("RandoUpload table is not empty", randos.size(), is(0));
+    }
+
+    public void testDeleteRandoToUploadSuccessfulDelete() {
+        assertThat("Initial RandoUpload table is not empty", randoDAO.getRandosToUploadNumber(), is(0));
+
+        randoDAO.addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date(100)));
+        randoDAO.addToUpload(new RandoUpload("/path/to/file2", 13.33, 14.44, new Date(200)));
+        randoDAO.addToUpload(new RandoUpload("/path/to/file3", 33.33, 44.44, new Date(300)));
+
+
+        RandoUpload randoUpload = randoDAO.getAllRandosToUpload().get(1);
+        assertThat("Unexpected second rando", randoUpload.file, is("/path/to/file2"));
+
+        randoDAO.deleteRandoToUpload(randoUpload);
+        assertThat("After delete rando to upload number is not correct", randoDAO.getRandosToUploadNumber(), is(2));
+    }
+
+    public void testDeleteRandoToUploadEmptyTableDetele() {
+        assertThat("Initial RandoUpload table is not empty", randoDAO.getRandosToUploadNumber(), is(0));
+        RandoUpload randoUpload = new RandoUpload("/path/to/file2", 13.33, 14.44, new Date());
+        randoDAO.deleteRandoToUpload(randoUpload);
+        assertThat("After delete rando to upload number is not correct", randoDAO.getRandosToUploadNumber(), is(0));
+    }
+
+    public void testDeleteRandoToUploadDeleteNotExistsRando() {
+        randoDAO.addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
+        randoDAO.addToUpload(new RandoUpload("/path/to/file3", 33.33, 44.44, new Date()));
+        assertThat("Initial delete rando to upload number is not correct", randoDAO.getRandosToUploadNumber(), is(2));
+
+        RandoUpload randoUpload = new RandoUpload("/path/to/file2", 23.33, 24.44, new Date());
+        randoDAO.deleteRandoToUpload(randoUpload);
+        assertThat("After delete rando to upload number is not correct", randoDAO.getRandosToUploadNumber(), is(2));
+    }
+
 
     private void insertNRandomRandoPairs(int n) {
         randoDAO.insertRandoPairs(RandoPairTestHelper.getNRandomRandoPairs(n));
     }
-
 
 }

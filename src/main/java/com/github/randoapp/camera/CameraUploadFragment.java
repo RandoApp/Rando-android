@@ -15,6 +15,7 @@ import com.github.randoapp.CameraActivity;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.db.RandoDAO;
+import com.github.randoapp.db.model.RandoUpload;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.service.UploadService;
 import com.github.randoapp.task.CropImageTask;
@@ -23,6 +24,7 @@ import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.BitmapUtil;
 import com.makeramen.RoundedImageView;
 
+import java.util.Date;
 import java.util.Map;
 
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
@@ -79,8 +81,9 @@ public class CameraUploadFragment extends SherlockFragment {
             Context appContext = getActivity().getApplicationContext();
 
             Location location = CameraActivity.currentLocation;
+
             RandoDAO randoDAO = new RandoDAO(appContext);
-            randoDAO.addToUpload(picFileName, location.getLatitude(), location.getLongitude());
+            randoDAO.addToUpload(new RandoUpload(picFileName, location.getLatitude(), location.getLongitude(), new Date()));
             randoDAO.close();
 
             appContext.startService(new Intent(appContext, UploadService.class));
