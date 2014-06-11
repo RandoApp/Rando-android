@@ -149,7 +149,6 @@ public class RandoDAO {
         Log.w(RandoDAO.class, "RandoPair updated with id: ", String.valueOf(id));
     }
 
-    //TODO: NEED TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
     public List<RandoPair> getAllRandos() {
         List<RandoPair> randos = new ArrayList<RandoPair>();
 
@@ -169,15 +168,12 @@ public class RandoDAO {
         return randos;
     }
 
-
-    //TODO: NEED TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
     public int getAllRandosNumber() {
         int randoPairsNumber = getRandoPairsNumber();
         int randoToUploads = getRandosToUploadNumber();
         return randoPairsNumber + randoToUploads;
     }
 
-    //TODO: NEED TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
     public int getRandosToUploadNumber() {
         Cursor cursor = database.query(RandoDBHelper.RandoUploadTable.NAME,
                 RandoDBHelper.RandoUploadTable.ALL_COLUMNS, null, null, null, null, null);
