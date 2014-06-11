@@ -42,7 +42,7 @@ public class SyncTaskTest extends AndroidTestCase {
         randoDAO.insertRandoPairs(RandoPairs);
 
         SyncTask syncTask = new SyncTask(RandoPairs);
-        syncTask.run();
+        syncTask.executeSync();
 
         RandoPairTestHelper.checkListsEqual(randoDAO.getAllRandoPairs(), RandoPairs);
     }
@@ -57,7 +57,7 @@ public class SyncTaskTest extends AndroidTestCase {
         randoDAO.insertRandoPairs(RandoPairsInDB);
 
         SyncTask syncTask = new SyncTask(RandoPairs);
-        syncTask.run();
+        syncTask.executeSync();
 
         RandoPairTestHelper.checkListsEqual(randoDAO.getAllRandoPairs(), RandoPairs);
     }
@@ -70,7 +70,7 @@ public class SyncTaskTest extends AndroidTestCase {
         randoDAO.insertRandoPairs(forDBList);
 
         SyncTask syncTask = new SyncTask(RandoPairs);
-        syncTask.run();
+        syncTask.executeSync();
 
         RandoPairTestHelper.checkListsEqual(randoDAO.getAllRandoPairs(), RandoPairs);
     }
@@ -83,7 +83,7 @@ public class SyncTaskTest extends AndroidTestCase {
         randoDAO.insertRandoPairs(forDBList);
 
         SyncTask syncTask = new SyncTask(RandoPairs);
-        syncTask.run();
+        syncTask.executeSync();
 
         RandoPairTestHelper.checkListsEqual(randoDAO.getAllRandoPairs(), RandoPairs);
     }

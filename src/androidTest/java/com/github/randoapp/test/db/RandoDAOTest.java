@@ -2,14 +2,11 @@ package com.github.randoapp.test.db;
 
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
-import android.widget.ListView;
 
-import com.github.randoapp.Constants;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.RandoPair;
 import com.github.randoapp.db.model.RandoUpload;
 
-import java.io.File;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -19,7 +16,6 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
 public class RandoDAOTest extends AndroidTestCase {
 
@@ -39,7 +35,6 @@ public class RandoDAOTest extends AndroidTestCase {
         super.tearDown();
         randoDAO.endTransaction();
         randoDAO.close();
-        randoDAO = null;
     }
 
     @MediumTest

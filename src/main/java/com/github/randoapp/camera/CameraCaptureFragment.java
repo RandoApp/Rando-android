@@ -3,6 +3,7 @@ package com.github.randoapp.camera;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Display;
@@ -24,6 +25,8 @@ import com.github.randoapp.R;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.util.CameraUtil;
 import com.github.randoapp.util.FileUtil;
+
+import java.util.List;
 
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.JPEG_QUALITY;
@@ -95,6 +98,17 @@ public class CameraCaptureFragment extends CameraFragment {
             Log.i(CameraCaptureFragment.class, "Available Preview screen size:", String.valueOf(height), "x", String.valueOf(width), "display orientation: ", String.valueOf(displayOrientation));
             Log.i(CameraCaptureFragment.class, "Selected preview camera size:", String.valueOf(size.height), "x", String.valueOf(size.width));
             return size;
+        }
+
+        @Override
+        public Camera.Parameters adjustPreviewParameters(Camera.Parameters parameters) {
+            List<String> focusModes = parameters.getSupportedFocusModes();
+            if (focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            } else if (focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
+                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+            }
+            return parameters;
         }
 
         @Override
