@@ -64,9 +64,7 @@ public class UploadService extends Service {
             return;
         }
 
-        RandoDAO randoDAO = new RandoDAO(getApplicationContext());
-        List<RandoUpload> randosToUpload = randoDAO.getAllRandosToUpload();
-        randoDAO.close();
+        List<RandoUpload> randosToUpload = RandoDAO.getAllRandosToUpload();
 
         Toast.makeText(getApplicationContext(), "Upload service upload randos: " + randosToUpload.size(), Toast.LENGTH_LONG).show();
 
@@ -135,9 +133,7 @@ public class UploadService extends Service {
     }
 
     private void deleteRando(RandoUpload rando) {
-        RandoDAO randoDAO = new RandoDAO(getApplicationContext());
-        randoDAO.deleteRandoToUpload(rando);
-        randoDAO.close();
+        RandoDAO.deleteRandoToUpload(rando);
 
         File image = new File(rando.file);
         image.delete();
