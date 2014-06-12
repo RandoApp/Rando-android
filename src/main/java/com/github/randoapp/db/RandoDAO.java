@@ -26,7 +26,6 @@ public class RandoDAO {
 
     public void close() {
         database.close();
-        randoDBHelper.close();
     }
 
     public void addToUpload(RandoUpload randoUpload) {
