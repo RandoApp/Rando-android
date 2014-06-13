@@ -3,6 +3,7 @@ package com.github.randoapp.adapter;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.Display;
@@ -35,6 +36,7 @@ import com.github.randoapp.log.Log;
 import com.github.randoapp.menu.ReportMenu;
 import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.service.SyncService;
+import com.github.randoapp.util.BitmapUtil;
 import com.github.randoapp.util.RandoPairUtil;
 
 import org.apache.http.auth.AuthenticationException;
@@ -80,9 +82,7 @@ public class RandoPairsAdapter extends BaseAdapter {
     }
 
     private void initData() {
-        RandoDAO randoDAO = new RandoDAO(App.context);
-        randoPairs = randoDAO.getAllRandoPairs();
-        randoDAO.close();
+        randoPairs = RandoDAO.getAllRandos();
         size = randoPairs.size();
     }
 
@@ -299,10 +299,41 @@ public class RandoPairsAdapter extends BaseAdapter {
     }
 
     private void loadImages(final ViewHolder holder, final RandoPair randoPair) {
+        if (!URLUtil.isNetworkUrl(randoPair.user.imageURLSize.small) && !randoPair.user.imageURLSize.small.isEmpty()) {
+            loadFile(holder, randoPair.user.imageURL);
+            return;
+        }
+
         loadImage(holder.stranger, RandoPairUtil.getUrlByImageSize(imageSize, randoPair.stranger.imageURLSize), Priority.HIGH);
         loadImage(holder.user, RandoPairUtil.getUrlByImageSize(imageSize, randoPair.user.imageURLSize), Priority.NORMAL);
         loadMapImage(holder.stranger, RandoPairUtil.getUrlByImageSize(imageSize, randoPair.stranger.mapURLSize), Priority.LOW);
         loadMapImage(holder.user, RandoPairUtil.getUrlByImageSize(imageSize, randoPair.user.mapURLSize), Priority.LOW);
+    }
+
+    private void loadFile(final ViewHolder holder, final String filePath) {
+        if (holder.user.image != null) {
+            holder.user.image.setImageBitmap(BitmapUtil.decodeSampledBitmap(filePath, imageSize, imageSize));
+        } else if (holder.user.image == null) {
+            holder.user.imageBitmap = BitmapUtil.decodeSampledBitmap(filePath, imageSize, imageSize);
+        }
+
+        if (holder.user.map != null) {
+            holder.user.map.setImageResource(R.drawable.rando_pairing);
+        } else {
+            holder.user.needSetPairing = true;
+        }
+
+        if (holder.stranger.image != null) {
+            holder.stranger.image.setImageResource(R.drawable.rando_pairing);
+        } else {
+            holder.stranger.needSetPairing = true;
+        }
+
+        if (holder.stranger.map != null) {
+            holder.stranger.map.setImageResource(R.drawable.rando_pairing);
+        } else {
+            holder.stranger.needSetPairing = true;
+        }
     }
 
     private void loadImage(final ViewHolder.UserHolder userHolder, final String url, Priority priority) {

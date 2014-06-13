@@ -13,10 +13,8 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
-import android.view.WindowManager;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Window;
 import com.commonsware.cwac.camera.CameraHost;
 import com.commonsware.cwac.camera.CameraHostProvider;
 import com.commonsware.cwac.camera.SimpleCameraHost;
@@ -25,6 +23,7 @@ import com.github.randoapp.camera.CameraUploadFragment;
 import com.github.randoapp.util.LocationHelper;
 import com.github.randoapp.util.LocationUpdater;
 
+import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 
 public class CameraActivity extends SherlockFragmentActivity implements CameraHostProvider {
@@ -51,6 +50,8 @@ public class CameraActivity extends SherlockFragmentActivity implements CameraHo
                     return;
                 }
             }
+
+            CameraActivity.this.setResult(CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE);
             CameraActivity.this.finish();
         }
     };

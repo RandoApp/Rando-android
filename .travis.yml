@@ -33,8 +33,8 @@ before_install:
   - cd $DOWNLOADS_HOME
   #check what do we have in downloads folder
   - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch > /dev/null; fi
-  - if [ ! -f android-sdk_r22.3-linux.tgz ]; then wget http://dl.google.com/android/android-sdk_r22.3-linux.tgz > /dev/null; fi
-  - tar xzf android-sdk_r22.3-linux.tgz >/dev/null 2>&1
+  - if [ ! -f android-sdk_r22.6.2-linux.tgz ]; then wget http://dl.google.com/android/android-sdk_r22.6.2-linux.tgz > /dev/null; fi
+  - tar xzf android-sdk_r22.6.2-linux.tgz >/dev/null 2>&1
   - export ANDROID_HOME=$PWD/android-sdk-linux
   - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
 
@@ -45,9 +45,12 @@ before_install:
   - export PATH=$GRADLE_HOME/bin:$PATH
 
   # Install android build tools
+  - if [ ! -f build-tools_r19.1-linux.zip ]; then wget https://dl-ssl.google.com/android/repository/build-tools_r19.1-linux.zip > /dev/null; fi
+  - unzip build-tools_r19.1-linux.zip -d $ANDROID_HOME
+  - mkdir -p $ANDROID_HOME/build-tools/
+  - mv $ANDROID_HOME/android-4.4.2 $ANDROID_HOME/build-tools/19.1.0
   - if [ ! -f build-tools_r19.0.3-linux.zip ]; then wget https://dl-ssl.google.com/android/repository/build-tools_r19.0.3-linux.zip > /dev/null; fi
   - unzip build-tools_r19.0.3-linux.zip -d $ANDROID_HOME
-  - mkdir -p $ANDROID_HOME/build-tools/
   - mv $ANDROID_HOME/android-4.4.2 $ANDROID_HOME/build-tools/19.0.3
   - if [ ! -f build-tools_r19-linux.zip ]; then wget https://dl-ssl.google.com/android/repository/build-tools_r19-linux.zip > /dev/null; fi
   - unzip build-tools_r19-linux.zip -d $ANDROID_HOME
@@ -97,5 +100,5 @@ script:
   - gradle assembleRelease
 
 after_script:
-    - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "put Rando-android/build/apk/Rando-android-release.apk; bye"; fi
+    - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "put Rando-android/build/outputs/apk/Rando-android-release.apk; bye"; fi
 

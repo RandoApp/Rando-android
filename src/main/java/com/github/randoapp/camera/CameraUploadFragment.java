@@ -1,27 +1,30 @@
 package com.github.randoapp.camera;
 
-import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.github.randoapp.CameraActivity;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
-import com.github.randoapp.service.SyncService;
+import com.github.randoapp.db.RandoDAO;
+import com.github.randoapp.db.model.RandoUpload;
+import com.github.randoapp.log.Log;
+import com.github.randoapp.service.UploadService;
 import com.github.randoapp.task.CropImageTask;
-import com.github.randoapp.task.UploadTask;
-import com.github.randoapp.task.callback.OnDone;
 import com.github.randoapp.task.callback.OnError;
 import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.BitmapUtil;
 import com.makeramen.RoundedImageView;
 
+import java.util.Date;
 import java.util.Map;
 
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
@@ -30,7 +33,7 @@ public class CameraUploadFragment extends SherlockFragment {
 
     private String picFileName;
     private RoundedImageView preview;
-    private ImageView uploadPictureButton;
+    private ImageView uploadButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,8 +46,8 @@ public class CameraUploadFragment extends SherlockFragment {
 
         prepareForUpload(fileToCrop);
 
-        uploadPictureButton = (ImageView) rootView.findViewById(R.id.upload_button);
-        uploadPictureButton.setOnClickListener(new UploadButtonListner());
+        uploadButton = (ImageView) rootView.findViewById(R.id.upload_button);
+        uploadButton.setOnClickListener(new UploadButtonListner());
         return rootView;
     }
 
@@ -61,12 +64,7 @@ public class CameraUploadFragment extends SherlockFragment {
                 .onError(new OnError() {
                     @Override
                     public void onError(Map<String, Object> data) {
-                    }
-                })
-                .onDone(new OnDone() {
-                    @Override
-                    public void onDone(Map<String, Object> data) {
-
+                        Log.e(CropImageTask.class, "Can not crop image");
                     }
                 })
                 .execute();
@@ -76,49 +74,17 @@ public class CameraUploadFragment extends SherlockFragment {
 
         @Override
         public void onClick(View v) {
-            if (picFileName != null) {
-                uploadPictureButton.setEnabled(false);
-
-                /*TODO: REMOVE THIS AFTER IMPLEMENTATION OF BACKGROUND UPLOAD */
-                final ProgressDialog progress = new ProgressDialog(getActivity(), R.style.RandoTheme);
-                progress.setTitle("Please wait...");
-                progress.setMessage(getResources().getString(R.string.uploading_progress));
-                progress.setIndeterminate(true);
-                progress.setCanceledOnTouchOutside(false);
-                progress.show();
-                /* TODO: END */
-                new UploadTask(picFileName).onOk(new OnOk() {
-                    @Override
-                    public void onOk(Map<String, Object> data) {
-                        picFileName = null;
-                        SyncService.run();
-                    }
-                }).onError(new OnError() {
-                    @Override
-                    public void onError(Map<String, Object> data) {
-                        String error = (String) data.get("error");
-                        if (error != null) {
-                            Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(getActivity(), R.string.photo_upload_failed,
-                                    Toast.LENGTH_LONG).show();
-                        }
-
-                        if (uploadPictureButton != null) {
-                            uploadPictureButton.setEnabled(true);
-                        }
-                    }
-                }).onDone(new OnDone() {
-                    @Override
-                    public void onDone(Map<String, Object> data) {
-                        /*TODO: REMOVE THIS AFTER IMPLEMENTATION OF BACKGROUND UPLOAD */
-                        progress.hide();
-                        /* TODO: END */
-                        Intent intent = new Intent(CAMERA_BROADCAST_EVENT);
-                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-                    }
-                }).execute();
+            if (picFileName == null) {
+                return;
             }
+
+            Context context = getActivity().getApplicationContext();
+            Location location = CameraActivity.currentLocation;
+            RandoDAO.addToUpload(new RandoUpload(picFileName, location.getLatitude(), location.getLongitude(), new Date()));
+            context.startService(new Intent(context, UploadService.class));
+
+            Intent intent = new Intent(CAMERA_BROADCAST_EVENT);
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
         }
     }
 }

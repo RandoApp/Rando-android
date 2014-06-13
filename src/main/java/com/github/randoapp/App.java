@@ -2,8 +2,10 @@ package com.github.randoapp;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 
 import com.github.randoapp.service.SyncService;
+import com.github.randoapp.service.UploadService;
 
 import org.acra.ACRA;
 import org.acra.ReportField;
@@ -26,17 +28,18 @@ public class App extends Application {
         super.onCreate();
         context = getApplicationContext();
         startLogging();
-        startService();
+        startServices();
     }
 
     public static App getInstance(Context context) {
         return (App) context.getApplicationContext();
     }
 
-    private void startService() {
+    private void startServices() {
         //App onCreate called twice. Prevent double service run, if it is already created
         if (!SyncService.isRunning()) {
             SyncService.run();
+            startService(new Intent(context, UploadService.class));
         }
     }
 

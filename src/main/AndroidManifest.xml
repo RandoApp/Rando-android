@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.github.randoapp"
-    android:versionCode="15"
-    android:versionName="1.0.8">
+    android:versionCode="16"
+    android:versionName="1.0.9">
 
 <uses-sdk
         android:minSdkVersion="9"
@@ -42,6 +42,12 @@
             android:process=":sync_process"
             android:enabled="true"
             android:label="@string/sync_service_name" />
+        <service
+            android:name=".service.UploadService"
+            android:icon="@drawable/ic_launcher"
+            android:process=":upload_process"
+            android:enabled="true"
+            android:label="@string/upload_service_name" />
     </application>
 
     <uses-feature android:name="android.hardware.camera" />

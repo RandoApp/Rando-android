@@ -5,8 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -14,12 +12,8 @@ import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.github.randoapp.auth.GoogleAuth;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.fragment.AuthFragment;
 import com.github.randoapp.fragment.EmptyHomeWallFragment;
@@ -29,6 +23,10 @@ import com.github.randoapp.log.Log;
 import com.github.randoapp.menu.LogoutMenu;
 import com.github.randoapp.menu.ReportMenu;
 import com.github.randoapp.preferences.Preferences;
+
+import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
+import static com.github.randoapp.Constants.SYNC_SERVICE_BROADCAST_EVENT;
+import static com.github.randoapp.Constants.UPLOAD_SERVICE_BROADCAST_EVENT;
 
 public class MainActivity extends FragmentActivity {
 
@@ -40,18 +38,19 @@ public class MainActivity extends FragmentActivity {
         public void onReceive(Context context, Intent intent) {
             Log.i(android.content.BroadcastReceiver.class, "Recieved Update request.");
 
-            RelativeLayout emptyHome = (RelativeLayout) findViewById(R.id.empty_home);
+            if (SYNC_SERVICE_BROADCAST_EVENT.equals(intent.getAction())) {
+                RelativeLayout emptyHome = (RelativeLayout) findViewById(R.id.empty_home);
+                Bundle extra = intent.getExtras();
+                int randoPairsNumber = (Integer) extra.get(Constants.RANDO_PAIRS_NUMBER);
+                if (randoPairsNumber == 0 && emptyHome != null) {
 
-            Bundle extra = intent.getExtras();
-            int randoPairsNumber = (Integer) extra.get(Constants.RANDO_PAIRS_NUMBER);
-            if (randoPairsNumber == 0 && emptyHome != null) {
-
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.main_screen, new EmptyHomeWallFragment()).commit();
-            }
-            if (randoPairsNumber > 0 && emptyHome != null) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.main_screen, new EmptyHomeWallFragment()).commit();
+                }
+                if (randoPairsNumber > 0 && emptyHome != null) {
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
+                }
             }
         }
     };
@@ -117,9 +116,7 @@ public class MainActivity extends FragmentActivity {
             return new TrainingHomeFragment();
         }
 
-        RandoDAO randoDAO = new RandoDAO(getApplicationContext());
-        int randoCount = randoDAO.getRandoPairsNumber();
-        randoDAO.close();
+        int randoCount = RandoDAO.getAllRandosNumber();
         if (randoCount == 0) {
             return new EmptyHomeWallFragment();
         } else {
@@ -133,14 +130,28 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onPause() {
-        super.onPause();
         unregisterReceiver(receiver);
+        super.onPause();
     }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        registerReceiver(receiver, new IntentFilter(Constants.SYNC_SERVICE_BROADCAST));
+        registerReceivers();
     }
 
+    private void registerReceivers() {
+        registerReceiver(receiver, new IntentFilter(SYNC_SERVICE_BROADCAST_EVENT));
+        registerReceiver(receiver, new IntentFilter(UPLOAD_SERVICE_BROADCAST_EVENT));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
+        }
+    }
 }

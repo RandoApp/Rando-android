@@ -10,13 +10,16 @@ import com.github.randoapp.cache.LruMemCache;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 
 import static com.github.randoapp.Constants.CONNECTION_TIMEOUT;
+import static com.github.randoapp.Constants.ESTABLISH_CONNECTION_TIMEOUT;
 
 public class VolleySingleton {
 
@@ -28,7 +31,7 @@ public class VolleySingleton {
 
     private VolleySingleton() {
         HttpParams httpParams = new BasicHttpParams();
-        HttpConnectionParams.setConnectionTimeout(httpParams, CONNECTION_TIMEOUT);
+        HttpConnectionParams.setConnectionTimeout(httpParams, ESTABLISH_CONNECTION_TIMEOUT);
         HttpConnectionParams.setSoTimeout(httpParams, CONNECTION_TIMEOUT);
         HttpProtocolParams.setUseExpectContinue(httpParams, false);
 
