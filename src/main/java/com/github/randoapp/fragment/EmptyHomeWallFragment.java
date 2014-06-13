@@ -12,6 +12,8 @@ import com.github.randoapp.CameraActivity;
 import com.github.randoapp.R;
 import com.github.randoapp.util.RandoUtil;
 
+import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE;
+
 public class EmptyHomeWallFragment extends Fragment {
 
     @Override
@@ -23,11 +25,12 @@ public class EmptyHomeWallFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(rootView.getContext(), CameraActivity.class);
-                startActivityForResult(intent, 100);
+                startActivityForResult(intent, CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE);
             }
         });
 
         RandoUtil.initMenuButton(rootView, getActivity());
         return rootView;
     }
+
 }

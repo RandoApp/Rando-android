@@ -5,14 +5,14 @@ import android.app.AlarmManager;
 public class Constants {
 
     public static final String ALBUM_NAME = "Rando";
-    public static final String CACHE_FOLDER = "com.github.randoapp";
 
     public static final String FILEPATH = "FILEPATH";
-    public static final String RANDO_PAIR = "randoPair";
     public static final String RANDO_PAIRS_NUMBER = "RANDO_PAIRS_NUMBER";
     public static final String NOT_PAIRED_RANDO_PAIRS_NUMBER = "NOT_PAIRED_RANDO_PAIRS_NUMBER";
 
     public static final String CAMERA_BROADCAST_EVENT = "RANDO_CAMERA_EVENT";
+    public static final String SYNC_SERVICE_BROADCAST_EVENT = "Rando4MeSyncService";
+    public static final String UPLOAD_SERVICE_BROADCAST_EVENT = "Rando4MeUploadService";
 
     public static final String RANDO_PHOTO_PATH = "RANDO_PHOTO_PATH";
 
@@ -27,10 +27,6 @@ public class Constants {
     public static final int UNAUTHORIZED_CODE = 400;
     public static final int FORBIDDEN_CODE = 411;
 
-    public static final int PAGE_SIZE = 1;
-
-    public static final int BON_APPETIT_BUTTON_SIZE = 100;
-
     public static final int RANDO_MARGIN_PORTRAIT = 30;
 
     public static final int CAMERA_MIN_SIZE = 1200;
@@ -41,11 +37,20 @@ public class Constants {
 
     public static final String SERVER_HOST = "rando4.me";
     public static final String SERVER_URL = "http://" + SERVER_HOST;
-
-    public static final int CONNECTION_TIMEOUT = 6000;
+    public static final int ESTABLISH_CONNECTION_TIMEOUT = 5 * 60 * 1000;
+    public static final int CONNECTION_TIMEOUT = 60 * 60 * 1000;
 
     public static final long SERVICE_SHORT_PAUSE = 30 * 1000;
     public static final long SERVICE_LONG_PAUSE = AlarmManager.INTERVAL_HALF_HOUR;
+
+    public static final long UPLOAD_SERVICE_INTERVAL = AlarmManager.INTERVAL_HOUR * 3;
+
+    public static final int UPLOAD_SERVICE_ATTEMPTS_FAIL = 10;
+    public static final int UPLOAD_SERVICE_MANY_ATTEMPTS_FAIL = 25;
+    public static final long UPLOAD_SERVICE_SHORT_PAUSE = 30 * 1000;
+    public static final long UPLOAD_SERVICE_LONG_PAUSE = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
+    public static final long UPLOAD_SERVICE_VERY_LONG_PAUSE = AlarmManager.INTERVAL_HOUR * 3;
+    public static final long UPLOAD_SERVICE_FORBIDDEN_PAUSE = AlarmManager.INTERVAL_HOUR * 6;
 
 
     //Shared Preferences
@@ -82,7 +87,6 @@ public class Constants {
     public static final String ERROR_CODE_PARAM = "code";
 
     public static final String IMAGE_PARAM = "image";
-    public static final String LOG_PARAM = "log";
 
     public static final String IMAGE_MIME_TYPE = "image/jpeg";
     public static final String SIGNUP_URL = SERVER_URL + "/user";
@@ -93,24 +97,27 @@ public class Constants {
     public static final String FETCH_USER_URL = SERVER_URL + "/user";
     public static final String ULOAD_RANDO_URL = SERVER_URL + "/image";
     public static final String REPORT_URL = SERVER_URL + "/report/";
-    public static final String BON_APPETIT_URL = SERVER_URL + "/bonappetit/";
     public static final String LOG_URL = SERVER_URL + "/log";
 
     public static final String REPORT_BROADCAST = "Report";
-    public static final String SYNC_SERVICE_BROADCAST = "SyncService";
+
 
     public static final String NEED_NOTIFICATION = "Notification";
 
     public static final String GOOGLE_AUTH_SCOPE = "oauth2:https://www.googleapis.com/auth/userinfo.profile";
     public static final String GOOGLE_USER_INFO_URL = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=";
 
-    public static final String LOG_FILE_NAME = "rando.log";
-    public static final int LOG_BUFFER_SIZE = 1024;
-    public static final long LOG_SRVICE_INTERVAL = AlarmManager.INTERVAL_DAY;
-
     private static final int NUMBER_OF_IMAGES_IN_ONE_SET = 4; //stranger's + user's images and maps
     public static final int NUMBER_OF_IMAGES_FOR_CACHING = NUMBER_OF_IMAGES_IN_ONE_SET * 2; //2 visible image sets per screen
 
     public static final int GOOGLE_ACTIVITYS_AUTH_REQUEST_CODE = 483; //value is not matter
+
+    public static final int CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE = 628;
+    public static final int CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE = 623;
+
+    public static final String FORBIDDEN_ERROR = "ForbiddenException";
+    public static final String FILE_NOT_FOUND_ERROR = "FileNotFound";
+    public static final String REQUEST_TOO_LONG_ERROR = "RequestTooLongException";
+    public static final String INCORRECT_ARGS_ERROR = "IncorrectArgs";
 
 }

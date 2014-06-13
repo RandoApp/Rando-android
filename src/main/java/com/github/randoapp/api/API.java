@@ -10,6 +10,8 @@ import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.api.callback.OnFetchUser;
+import com.github.randoapp.api.exception.ForbiddenException;
+import com.github.randoapp.api.exception.RequestTooLongException;
 import com.github.randoapp.db.model.RandoPair;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
@@ -17,12 +19,15 @@ import com.github.randoapp.preferences.Preferences;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.NoHttpResponseException;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.RedirectException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
+import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.conn.ConnectionPoolTimeoutException;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
@@ -33,10 +38,12 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -65,7 +72,6 @@ import static com.github.randoapp.Constants.IMAGE_URL_SIZES_PARAM;
 import static com.github.randoapp.Constants.LARGE_PARAM;
 import static com.github.randoapp.Constants.LATITUDE_PARAM;
 import static com.github.randoapp.Constants.LOGOUT_URL;
-import static com.github.randoapp.Constants.LOG_URL;
 import static com.github.randoapp.Constants.LONGITUDE_PARAM;
 import static com.github.randoapp.Constants.MAP_URL_PARAM;
 import static com.github.randoapp.Constants.MAP_URL_SIZES_PARAM;
@@ -295,28 +301,33 @@ public class API {
                 randoPair.user.date = new Date(json.getLong(CREATION_PARAM));
                 return randoPair;
             } else if (response.getStatusLine().getStatusCode() == SC_REQUEST_TOO_LONG) {
-                throw new Exception(App.context.getResources().getString(R.string.error_image_too_big));
+                throw new RequestTooLongException(App.context.getResources().getString(R.string.error_image_too_big));
             } else {
                 throw processServerError(readJSON(response));
             }
+        } catch (SocketTimeoutException e) {
+            Log.w(API.class, "No response from server. Timeout exception.");
+            throw e;
+        } catch (ConnectionPoolTimeoutException e) {
+            Log.w(API.class, "Connection manager fails to obtain a free connection from the connection pool within the given period of time");
+            throw e;
+        } catch (ConnectTimeoutException e) {
+            Log.w(API.class, "Unable to establish a connection with the server");
+            throw e;
+        } catch (FileNotFoundException e) {
+            Log.w(API.class, "File to upload not found");
+            throw new FileNotFoundException("Image to upload not found");
+        } catch (NoHttpResponseException e) {
+            Log.w(API.class, "Unable to establish a connection with the server");
+            throw e;
+        } catch (RedirectException e) {
+            Log.w(API.class, "HTTP specification caused by an invalid redirect response");
+            throw e;
         } catch (IOException e) {
-            throw processError(e);
+            Log.w(API.class, "Unknown exception ", e.getMessage());
+            throw e;
         }
     }
-
-    public static void uploadLog(String logs) throws AuthenticationException, Exception {
-        Log.i(API.class, "uploadLog");
-        try {
-            HttpPost request = new HttpPost(getUrl(LOG_URL));
-            request.setHeader("Content-Type", "application/json");
-            request.setEntity(new StringEntity(logs, "UTF-8"));
-            VolleySingleton.getInstance().getHttpClient().execute(request);
-        } catch (IOException e) {
-            Log.e(API.class, "Can not upload logs, because: ", e.getMessage());
-        }
-    }
-
-
 
     public static void report(String id) throws AuthenticationException, Exception {
         try {
@@ -387,8 +398,7 @@ public class API {
                     } catch (Exception e) {
                         Log.w(API.class, "Error when try build ban message for user: ", e.getMessage());
                     }
-
-                    return new Exception(App.context.getResources().getString(R.string.error_411) + " " + resetTime);
+                    return new ForbiddenException(App.context.getResources().getString(R.string.error_411) + " " + resetTime);
                 }
             }
             //TODO: implement all code handling in switch and replace server "message" with default value.

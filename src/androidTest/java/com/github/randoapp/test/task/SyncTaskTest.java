@@ -20,30 +20,30 @@ import static org.mockito.Mockito.verify;
 
 public class SyncTaskTest extends AndroidTestCase {
 
-    private RandoDAO randoDAO;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        randoDAO = new RandoDAO(getContext());
-        randoDAO.clearRandoPairs();
+        RandoDAO.clearRandoPairs();
+        RandoDAO.clearRandoToUpload();
     }
 
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-        randoDAO.close();
+        RandoDAO.clearRandoPairs();
+        RandoDAO.clearRandoToUpload();
     }
 
     public void testNotChanged() throws Exception {
         List<RandoPair> RandoPairs = createRandoPairs();
 
-        randoDAO.insertRandoPairs(RandoPairs);
+        RandoDAO.insertRandoPairs(RandoPairs);
 
         SyncTask syncTask = new SyncTask(RandoPairs);
-        syncTask.run();
+        syncTask.executeSync();
 
-        RandoPairTestHelper.checkListsEqual(randoDAO.getAllRandoPairs(), RandoPairs);
+        RandoPairTestHelper.checkListsEqual(RandoDAO.getAllRandoPairs(), RandoPairs);
     }
 
     public void testRandoPairUpdated() throws Exception {
@@ -53,12 +53,12 @@ public class SyncTaskTest extends AndroidTestCase {
         RandoPairsInDB.get(0).user.imageURL = "!BLAAAAA!!!!!!!!";
         RandoPairsInDB.get(0).user.mapURL = "!BLAAAAA!!!!!!!!";
 
-        randoDAO.insertRandoPairs(RandoPairsInDB);
+        RandoDAO.insertRandoPairs(RandoPairsInDB);
 
         SyncTask syncTask = new SyncTask(RandoPairs);
-        syncTask.run();
+        syncTask.executeSync();
 
-        RandoPairTestHelper.checkListsEqual(randoDAO.getAllRandoPairs(), RandoPairs);
+        RandoPairTestHelper.checkListsEqual(RandoDAO.getAllRandoPairs(), RandoPairs);
     }
 
     public void testRandoPairAdded() throws Exception {
@@ -66,12 +66,12 @@ public class SyncTaskTest extends AndroidTestCase {
         List<RandoPair> forDBList = createRandoPairs();
         forDBList.remove(0);
 
-        randoDAO.insertRandoPairs(forDBList);
+        RandoDAO.insertRandoPairs(forDBList);
 
         SyncTask syncTask = new SyncTask(RandoPairs);
-        syncTask.run();
+        syncTask.executeSync();
 
-        RandoPairTestHelper.checkListsEqual(randoDAO.getAllRandoPairs(), RandoPairs);
+        RandoPairTestHelper.checkListsEqual(RandoDAO.getAllRandoPairs(), RandoPairs);
     }
 
     public void testRandoPairRemoved() throws Exception {
@@ -79,12 +79,12 @@ public class SyncTaskTest extends AndroidTestCase {
         List<RandoPair> forDBList = createRandoPairs();
 
         forDBList.add(RandoPairTestHelper.getRandomRandoPair());
-        randoDAO.insertRandoPairs(forDBList);
+        RandoDAO.insertRandoPairs(forDBList);
 
         SyncTask syncTask = new SyncTask(RandoPairs);
-        syncTask.run();
+        syncTask.executeSync();
 
-        RandoPairTestHelper.checkListsEqual(randoDAO.getAllRandoPairs(), RandoPairs);
+        RandoPairTestHelper.checkListsEqual(RandoDAO.getAllRandoPairs(), RandoPairs);
     }
 
     public void testOkCallbackIsTriggeredWhenDBUpdated() throws Exception {

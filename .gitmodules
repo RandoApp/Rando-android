@@ -6,4 +6,4 @@
 	url = https://github.com/xp-vit/two-way-gridview.git
 [submodule "modules/facebook"]
 	path = modules/facebook
-	url = https://github.com/facebook/facebook-android-sdk.git
+	url = https://github.com/xp-vit/facebook-android-sdk.git

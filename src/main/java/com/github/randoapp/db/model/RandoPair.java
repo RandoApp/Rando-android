@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class RandoPair implements Serializable {
 
-    public long id;
+    public int id;
     //user RandoPair props
     public User user = new User();
     //stranger RandoPair props
