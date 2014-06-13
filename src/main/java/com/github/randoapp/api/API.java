@@ -324,7 +324,7 @@ public class API {
         } catch (RedirectException e) {
             Log.w(API.class, "HTTP specification caused by an invalid redirect response");
             throw e;
-        } catch (Exception e) {
+        } catch (IOException e) {
             Log.w(API.class, "Unknown exception");
             throw processError(e);
         }
