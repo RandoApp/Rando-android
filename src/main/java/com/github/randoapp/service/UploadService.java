@@ -5,22 +5,19 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.os.IBinder;
-import android.widget.Toast;
 
-import com.github.randoapp.api.API;
-import com.github.randoapp.api.exception.ForbiddenException;
-import com.github.randoapp.api.exception.RequestTooLongException;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.RandoUpload;
 import com.github.randoapp.log.Log;
+import com.github.randoapp.task.UploadTask;
+import com.github.randoapp.task.callback.OnError;
+import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.ConnectionUtil;
-
-import org.apache.http.auth.AuthenticationException;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -44,21 +41,22 @@ public class UploadService extends Service {
 
     @Override
     public void onCreate() {
+        Log.d(UploadService.class, "Upload service created");
         super.onCreate();
         setInterval(UPLOAD_SERVICE_INTERVAL);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        uploadFiles();
+        upload();
         return Service.START_NOT_STICKY;
     }
 
-    private void uploadFiles() {
-        Toast.makeText(getApplicationContext(), "Upload service", Toast.LENGTH_LONG).show();
+    private void upload() {
+        Log.d(UploadService.class, "Upload service try upload next file");
 
         if (!ConnectionUtil.isOnline(getApplicationContext())) {
-            Toast.makeText(getApplicationContext(), "No network", Toast.LENGTH_LONG).show();
+            Log.d(UploadService.class, "No network. sleep.");
             uploadAttemptsFail++;
             sleep();
             return;
@@ -67,74 +65,59 @@ public class UploadService extends Service {
         RandoDAO randoDAO = new RandoDAO(getApplicationContext());
         List<RandoUpload> randosToUpload = randoDAO.getAllRandosToUpload();
         randoDAO.close();
+        Log.d(UploadService.class, "Need upload ", String.valueOf(randosToUpload.size()), " randos");
+        if (randosToUpload.size() > 0) {
+            uploadFile(randosToUpload.get(0));
+        }
+    }
 
-        Toast.makeText(getApplicationContext(), "Upload service upload randos: " + randosToUpload.size(), Toast.LENGTH_LONG).show();
-
-        boolean isNeedSync = false;
-        for (RandoUpload rando : randosToUpload) {
-            boolean isUploaded = uploadFile(rando);
-            if (isUploaded) {
-                isNeedSync = true;
-            } else {
-                //Upload failed. Next uploads have a big probability to fail too. Save battery and try uploads later
-                break;
+    private void sync() {
+        //Get server time to pairing and sync after that
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                SyncService.run();
             }
-        }
-
-        syncIfNeed(isNeedSync);
-
-        Toast.makeText(getApplicationContext(), "Upload service FINISH", Toast.LENGTH_LONG).show();
+        }, SERVICE_SHORT_PAUSE);
     }
 
-    private void syncIfNeed(boolean isNeedSync) {
-        if (isNeedSync) {
-            //Get server time to pairing and sync after that
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    SyncService.run();
+    private void uploadFile(final RandoUpload rando) {
+        new UploadTask(rando)
+                .onOk(new OnOk() {
+                    @Override
+                    public void onOk(Map<String, Object> data) {
+                        deleteRando(rando);
+                        uploadAttemptsFail = 0;
+                        sync();
+                        setTimeout(0);
+                    }
+                }).onError(new OnError() {
+            @Override
+            public void onError(Map<String, Object> data) {
+                String error = (String) data.get("error");
+                if ("FileNotFound".equals(error)) {
+                    Log.d(UploadService.class, "Can not upload image, because file not found");
+                    deleteRando(rando);
+                    setTimeout(UPLOAD_SERVICE_SHORT_PAUSE);
+                } else if ("ForbiddenException".equals(error)) {
+                    Log.d(UploadService.class, "Can not upload image, because forbidden");
+                    setTimeout(UPLOAD_SERVICE_FORBIDDEN_PAUSE);
+                } else if ("RequestTooLongException".equals(error) || "IncorrectArgs".equals(error)) {
+                    Log.d(UploadService.class, "Can not upload image, because request is too long");
+                    deleteRando(rando);
+                    setTimeout(UPLOAD_SERVICE_SHORT_PAUSE);
+                } else {
+                    Log.w(UploadService.class, "Can not upload image, because: ", error);
+                    uploadAttemptsFail++;
+                    sleep();
                 }
-            }, SERVICE_SHORT_PAUSE);
-        }
-    }
-
-    private boolean tryUpload(RandoUpload rando) throws Exception {
-        Toast.makeText(getApplicationContext(), "Upload service try upload", Toast.LENGTH_LONG).show();
-
-        Location location = getLocation(rando);
-        File image = new File(rando.file);
-        API.uploadImage(image, location);
-        deleteRando(rando);
-        uploadAttemptsFail = 0;
-
-        Toast.makeText(getApplicationContext(), "Upload service UPLOADED", Toast.LENGTH_LONG).show();
-        return true;
-    }
-
-    private boolean uploadFile(RandoUpload rando) {
-        try {
-            return tryUpload(rando);
-        } catch (RequestTooLongException e) {
-            //TODO: say user, that his image too long and delete this image from DB
-            Toast.makeText(getApplicationContext(), "too long request", Toast.LENGTH_LONG).show();
-            deleteRando(rando);
-            setTimeout(UPLOAD_SERVICE_SHORT_PAUSE);
-        } catch (ForbiddenException e) {
-            //TODO: say user that his banned
-            Toast.makeText(getApplicationContext(), "Forbidden", Toast.LENGTH_LONG).show();
-            setTimeout(UPLOAD_SERVICE_FORBIDDEN_PAUSE);
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "Can not upload image", Toast.LENGTH_LONG).show();
-            Log.w(UploadService.class, "Can not upload image, because: ", e.getMessage());
-            uploadAttemptsFail++;
-            sleep();
-        }
-
-        return false;
+            }
+        }).execute();
     }
 
     private void deleteRando(RandoUpload rando) {
+        Log.d(UploadService.class, "Delete rando");
         RandoDAO randoDAO = new RandoDAO(getApplicationContext());
         randoDAO.deleteRandoToUpload(rando);
         randoDAO.close();
@@ -143,27 +126,21 @@ public class UploadService extends Service {
         image.delete();
     }
 
-    private Location getLocation(RandoUpload randoUpload) {
-        Location location = new Location("Rando4Me.UploadService");
-        location.setLatitude(Double.parseDouble(randoUpload.latitude));
-        location.setLongitude(Double.parseDouble(randoUpload.longitude));
-        return location;
-    }
-
     private void sleep() {
+        Log.d(UploadService.class, "Sleep: ", String.valueOf(uploadAttemptsFail));
         if (uploadAttemptsFail >= UPLOAD_SERVICE_MANY_ATTEMPTS_FAIL) {
-            Toast.makeText(getApplicationContext(), "attempts: " + String.valueOf(uploadAttemptsFail)  + " very long sleep", Toast.LENGTH_LONG).show();
+            Log.d(UploadService.class, "Very long sleep");
             setTimeout(UPLOAD_SERVICE_VERY_LONG_PAUSE);
             return;
         }
 
         if (uploadAttemptsFail >= UPLOAD_SERVICE_ATTEMPTS_FAIL) {
-            Toast.makeText(getApplicationContext(), "attempts: " + String.valueOf(uploadAttemptsFail)  + "  long sleep", Toast.LENGTH_LONG).show();
+            Log.d(UploadService.class, "Long sleep");
             setTimeout(UPLOAD_SERVICE_LONG_PAUSE);
             return;
         }
 
-        Toast.makeText(getApplicationContext(), "attempts: " + String.valueOf(uploadAttemptsFail)  + " shot sleep", Toast.LENGTH_LONG).show();
+        Log.d(UploadService.class, "Shot sleep");
         setTimeout(UPLOAD_SERVICE_SHORT_PAUSE);
     }
 
@@ -188,4 +165,9 @@ public class UploadService extends Service {
         return pendingIntent;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(UploadService.class, "Service destroy");
+    }
 }

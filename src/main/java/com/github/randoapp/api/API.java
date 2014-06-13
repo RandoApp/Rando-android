@@ -19,11 +19,15 @@ import com.github.randoapp.preferences.Preferences;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.NoHttpResponseException;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.RedirectException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.conn.ConnectionPoolTimeoutException;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
@@ -34,15 +38,18 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -299,7 +306,26 @@ public class API {
             } else {
                 throw processServerError(readJSON(response));
             }
-        } catch (IOException e) {
+        } catch (SocketTimeoutException e) {
+            Log.w(API.class, "No response from server. Timeout exception.");
+            throw e;
+        } catch (ConnectionPoolTimeoutException e) {
+            Log.w(API.class, "Connection manager fails to obtain a free connection from the connection pool within the given period of time");
+            throw e;
+        } catch (ConnectTimeoutException e) {
+            Log.w(API.class, "Unable to establish a connection with the server");
+            throw e;
+        } catch (FileNotFoundException e) {
+            Log.w(API.class, "File to upload not found");
+            throw new FileNotFoundException("Image to upload not found");
+        } catch (NoHttpResponseException e) {
+            Log.w(API.class, "Unable to establish a connection with the server");
+            throw e;
+        } catch (RedirectException e) {
+            Log.w(API.class, "HTTP specification caused by an invalid redirect response");
+            throw e;
+        } catch (Exception e) {
+            Log.w(API.class, "Unknown exception");
             throw processError(e);
         }
     }

@@ -37,13 +37,13 @@ public class Constants {
 
     public static final String SERVER_HOST = "192.168.1.103:8888";
     public static final String SERVER_URL = "http://" + SERVER_HOST;
-
-    public static final int CONNECTION_TIMEOUT = 6000;
+    public static final int ESTABLISH_CONNECTION_TIMEOUT = 5 * 60 * 1000;
+    public static final int CONNECTION_TIMEOUT = 60 * 60 * 1000;
 
     public static final long SERVICE_SHORT_PAUSE = 30 * 1000;
     public static final long SERVICE_LONG_PAUSE = AlarmManager.INTERVAL_HALF_HOUR;
 
-    public static final long UPLOAD_SERVICE_INTERVAL = AlarmManager.INTERVAL_DAY;
+    public static final long UPLOAD_SERVICE_INTERVAL = AlarmManager.INTERVAL_HOUR * 3;
 
     public static final int UPLOAD_SERVICE_ATTEMPTS_FAIL = 5;
     public static final int UPLOAD_SERVICE_MANY_ATTEMPTS_FAIL = 15;
