@@ -100,5 +100,7 @@ script:
   - gradle assembleRelease
 
 after_script:
+    - cd /home/travis
+    - ls -R | grep ':$' | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/ /' -e 's/-/|/'
     - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "put Rando-android/build/apk/Rando-android-release.apk; bye"; fi
 
