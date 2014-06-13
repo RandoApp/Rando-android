@@ -82,9 +82,7 @@ public class RandoPairsAdapter extends BaseAdapter {
     }
 
     private void initData() {
-        RandoDAO randoDAO = new RandoDAO(App.context);
-        randoPairs = randoDAO.getAllRandos();
-        randoDAO.close();
+        randoPairs = RandoDAO.getAllRandos();
         size = randoPairs.size();
     }
 

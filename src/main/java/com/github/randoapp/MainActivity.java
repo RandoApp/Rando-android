@@ -116,9 +116,7 @@ public class MainActivity extends FragmentActivity {
             return new TrainingHomeFragment();
         }
 
-        RandoDAO randoDAO = new RandoDAO(getApplicationContext());
-        int randoCount = randoDAO.getAllRandosNumber();
-        randoDAO.close();
+        int randoCount = RandoDAO.getAllRandosNumber();
         if (randoCount == 0) {
             return new EmptyHomeWallFragment();
         } else {
