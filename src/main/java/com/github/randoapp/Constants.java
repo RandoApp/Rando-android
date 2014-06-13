@@ -115,4 +115,9 @@ public class Constants {
     public static final int CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE = 628;
     public static final int CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE = 623;
 
+    public static final String FORBIDDEN_ERROR = "ForbiddenException";
+    public static final String FILE_NOT_FOUND_ERROR = "FileNotFound";
+    public static final String REQUEST_TOO_LONG_ERROR = "RequestTooLongException";
+    public static final String INCORRECT_ARGS_ERROR = "IncorrectArgs";
+
 }

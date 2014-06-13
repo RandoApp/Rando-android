@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 
+import com.github.randoapp.Constants;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.RandoUpload;
 import com.github.randoapp.log.Log;
@@ -21,6 +22,10 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.github.randoapp.Constants.FILE_NOT_FOUND_ERROR;
+import static com.github.randoapp.Constants.FORBIDDEN_ERROR;
+import static com.github.randoapp.Constants.INCORRECT_ARGS_ERROR;
+import static com.github.randoapp.Constants.REQUEST_TOO_LONG_ERROR;
 import static com.github.randoapp.Constants.SERVICE_SHORT_PAUSE;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_ATTEMPTS_FAIL;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_FORBIDDEN_PAUSE;
@@ -94,15 +99,15 @@ public class UploadService extends Service {
             @Override
             public void onError(Map<String, Object> data) {
                 String error = (String) data.get("error");
-                if ("FileNotFound".equals(error)) {
+                if (FILE_NOT_FOUND_ERROR.equals(error)) {
                     Log.d(UploadService.class, "Can not upload image, because file not found");
                     deleteRando(rando);
                     setTimeout(UPLOAD_SERVICE_SHORT_PAUSE);
-                } else if ("ForbiddenException".equals(error)) {
+                } else if (FORBIDDEN_ERROR.equals(error)) {
                     Log.d(UploadService.class, "Can not upload image, because forbidden");
                     setTimeout(UPLOAD_SERVICE_FORBIDDEN_PAUSE);
-                } else if ("RequestTooLongException".equals(error) || "IncorrectArgs".equals(error)) {
-                    Log.d(UploadService.class, "Can not upload image, because request is too long");
+                } else if (REQUEST_TOO_LONG_ERROR.equals(error) || INCORRECT_ARGS_ERROR.equals(error)) {
+                    Log.d(UploadService.class, "Can not upload image, because request is too long or incorrect args");
                     deleteRando(rando);
                     setTimeout(UPLOAD_SERVICE_SHORT_PAUSE);
                 } else {

@@ -49,7 +49,6 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -325,8 +324,8 @@ public class API {
             Log.w(API.class, "HTTP specification caused by an invalid redirect response");
             throw e;
         } catch (IOException e) {
-            Log.w(API.class, "Unknown exception");
-            throw processError(e);
+            Log.w(API.class, "Unknown exception ", e.getMessage());
+            throw e;
         }
     }
 
