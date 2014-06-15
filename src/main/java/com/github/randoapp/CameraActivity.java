@@ -20,8 +20,13 @@ import com.commonsware.cwac.camera.CameraHostProvider;
 import com.commonsware.cwac.camera.SimpleCameraHost;
 import com.github.randoapp.camera.CameraCaptureFragment;
 import com.github.randoapp.camera.CameraUploadFragment;
+import com.github.randoapp.preferences.Preferences;
+import com.github.randoapp.task.LocationUpdateTask;
+import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.LocationHelper;
 import com.github.randoapp.util.LocationUpdater;
+
+import java.util.Map;
 
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
@@ -59,7 +64,6 @@ public class CameraActivity extends SherlockFragmentActivity implements CameraHo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        updateLocation();
         setContentView(R.layout.activity_camera);
 
         if (savedInstanceState == null) {
@@ -75,57 +79,44 @@ public class CameraActivity extends SherlockFragmentActivity implements CameraHo
     }
 
     private void updateLocation() {
-        // get location providers
-            int locationMode = Settings.Secure.getInt(getContentResolver(),
-                    Settings.Secure.LOCATION_MODE, 0);
-            if (locationMode == Settings.Secure.LOCATION_MODE_OFF) {
-
-                // build a new alert dialog to inform the user that they have no
-                // location services enabled
-                new AlertDialog.Builder(this)
-
-                        //set the message to display to the user
-                        .setMessage("No Location Services Enabled")
-
-                                // add the 'positive button' to the dialog and give it a
-                                // click listener
-                        .setPositiveButton("Enable Location Services",
-                                new DialogInterface.OnClickListener() {
-                                    // setup what to do when clicked
-                                    public void onClick(DialogInterface dialog,
-                                                        int id) {
-                                        // start the settings menu on the correct
-                                        // screen for the user
-                                        startActivity(new Intent(
-                                                Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                                    }
-
-                                    // add the 'negative button' to the dialog and
-                                    // give it a click listener
+        int locationMode = Settings.Secure.getInt(getContentResolver(),
+                Settings.Secure.LOCATION_MODE, 0);
+        if (locationMode == Settings.Secure.LOCATION_MODE_OFF) {
+            new AlertDialog.Builder(this)
+                    .setMessage(getResources().getString(R.string.no_location_services))
+                    .setPositiveButton(getResources().getString(R.string.enable_location_services),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int id) {
+                                    startActivity(new Intent(
+                                            Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                                 }
-                        )
-                        .setNegativeButton("Close",
-                                new DialogInterface.OnClickListener() {
-                                    // setup what to do when clicked
-                                    public void onClick(DialogInterface dialog,
-                                                        int id) {
-                                        // remove the dialog
-                                        dialog.cancel();
-                                    }
-
-                                    // finish creating the dialog and show to the
-                                    // user
+                            }
+                    )
+                    .setNegativeButton(getResources().getString(R.string.close_dialog),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int id) {
+                                    dialog.cancel();
                                 }
-                        ).create().show();
-            }
-        locationHelper = new LocationHelper(this);
-        LocationWorker locationTask = new LocationWorker();
-        locationTask .execute();
+                            }
+                    ).create().show();
+        } else {
+            locationHelper = new LocationHelper(this);
+            new LocationUpdateTask(locationHelper).onOk(new OnOk() {
+                @Override
+                public void onOk(Map<String, Object> data) {
+                    currentLocation = locationHelper.getLocation();
+                    Preferences.setLocation(currentLocation);
+                }
+            }).execute();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        updateLocation();
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(CAMERA_BROADCAST_EVENT));
     }
 
@@ -142,31 +133,4 @@ public class CameraActivity extends SherlockFragmentActivity implements CameraHo
         super.onDestroy();
     }
 
-
-    /***
-     * This task waits for the Location Services helper to acquire a location in a worker thread
-     * so that we don't lock the UI thread whilst waiting.
-     *
-     * @author Scott Helme
-     */
-    class LocationWorker extends AsyncTask<Boolean, Integer, Boolean> {
-
-        @Override
-        protected void onPreExecute() {}
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-		    currentLocation = locationHelper.getLocation();
-        }
-
-        @Override
-        protected Boolean doInBackground(Boolean... params) {
-
-            //while the location helper has not got a lock
-            while(locationHelper.gotLocation() == false){
-                //do nothing, just wait
-            }
-            return true;
-        }
-    }
 }

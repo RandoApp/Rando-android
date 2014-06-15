@@ -80,6 +80,7 @@ public class Constants {
     public static final String USER_PARAM = "user";
     public static final String STRANGER_PARAM = "stranger";
     public static final String RANDOS_PARAM = "randos";
+    public static final String LOCATION = "location";
     public static final String LATITUDE_PARAM = "latitude";
     public static final String LONGITUDE_PARAM = "longitude";
 

@@ -51,4 +51,8 @@
 
     <string name="top_panel_text">Rando in the testing mode</string>
 
+    <string name="no_location_services">No Location Services Enabled</string>
+    <string name="enable_location_services">Enable Location Services</string>
+    <string name="close_dialog">Close</string>
+
 </resources>

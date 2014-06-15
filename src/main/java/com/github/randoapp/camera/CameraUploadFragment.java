@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.github.randoapp.CameraActivity;
@@ -17,6 +18,7 @@ import com.github.randoapp.R;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.RandoUpload;
 import com.github.randoapp.log.Log;
+import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.service.UploadService;
 import com.github.randoapp.task.CropImageTask;
 import com.github.randoapp.task.callback.OnError;
@@ -79,7 +81,14 @@ public class CameraUploadFragment extends SherlockFragment {
             }
 
             Context context = getActivity().getApplicationContext();
-            Location location = CameraActivity.currentLocation;
+            Location location;
+            if (CameraActivity.currentLocation == null ||
+                    (CameraActivity.currentLocation.getLatitude() == 0  && CameraActivity.currentLocation.getLongitude() == 0)){
+                location = Preferences.getLocation();
+            } else {
+                location = CameraActivity.currentLocation;
+            }
+
             RandoDAO.addToUpload(new RandoUpload(picFileName, location.getLatitude(), location.getLongitude(), new Date()));
             context.startService(new Intent(context, UploadService.class));
 

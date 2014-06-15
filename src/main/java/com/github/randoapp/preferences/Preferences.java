@@ -2,15 +2,18 @@ package com.github.randoapp.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
 
 import com.github.randoapp.App;
 
 import static com.github.randoapp.Constants.AUTH_TOKEN;
+import static com.github.randoapp.Constants.LATITUDE_PARAM;
+import static com.github.randoapp.Constants.LOCATION;
+import static com.github.randoapp.Constants.LONGITUDE_PARAM;
 import static com.github.randoapp.Constants.PREFERENCES_FILE_NAME;
 import static com.github.randoapp.Constants.TRAINING_FRAGMENT_SHOWN;
 
 public class Preferences {
-
     public static final String AUTH_TOKEN_DEFAULT_VALUE = "";
 
     public static String getAuthToken() {
@@ -25,6 +28,27 @@ public class Preferences {
 
     public static void removeAuthToken() {
         getSharedPreferences().edit().remove(AUTH_TOKEN).commit();
+    }
+
+    public static Location getLocation() {
+        double lat = Double.valueOf(getSharedPreferences().getString(LATITUDE_PARAM, "0"));
+        double lon = Double.valueOf(getSharedPreferences().getString(LONGITUDE_PARAM, "0"));
+        Location location = new Location(LOCATION);
+        location.setLatitude(lat);
+        location.setLongitude(lon);
+        return location;
+    }
+
+    public static void setLocation(Location location) {
+        if (location != null) {
+            getSharedPreferences().edit().putString(LONGITUDE_PARAM, String.valueOf(location.getLongitude())).commit();
+            getSharedPreferences().edit().putString(LATITUDE_PARAM, String.valueOf(location.getLatitude())).commit();
+        }
+    }
+
+    public static void removeLocation() {
+        getSharedPreferences().edit().remove(LATITUDE_PARAM).commit();
+        getSharedPreferences().edit().remove(LONGITUDE_PARAM).commit();
     }
 
     public static boolean isTrainingFragmentShown() {
