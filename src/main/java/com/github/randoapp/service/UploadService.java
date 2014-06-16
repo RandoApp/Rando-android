@@ -74,12 +74,13 @@ public class UploadService extends Service {
         }
     }
 
-    private void sync() {
+    private void deleteAndSync(final RandoUpload rando) {
         //Get server time to pairing and sync after that
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+                deleteRando(rando);
                 SyncService.run();
             }
         }, SERVICE_SHORT_PAUSE);
@@ -90,10 +91,9 @@ public class UploadService extends Service {
                 .onOk(new OnOk() {
                     @Override
                     public void onOk(Map<String, Object> data) {
-                        deleteRando(rando);
                         uploadAttemptsFail = 0;
-                        sync();
-                        setTimeout(0);
+                        deleteAndSync(rando);
+                        setTimeout(0);  //go to next rando to upload immediately
                     }
                 }).onError(new OnError() {
             @Override
