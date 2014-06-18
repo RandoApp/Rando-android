@@ -80,15 +80,8 @@ public class CameraUploadFragment extends SherlockFragment {
                 return;
             }
 
+            Location location = Preferences.getLocation();
             Context context = getActivity().getApplicationContext();
-            Location location;
-            if (CameraActivity.currentLocation == null ||
-                    (CameraActivity.currentLocation.getLatitude() == 0  && CameraActivity.currentLocation.getLongitude() == 0)){
-                location = Preferences.getLocation();
-            } else {
-                location = CameraActivity.currentLocation;
-            }
-
             RandoDAO.addToUpload(new RandoUpload(picFileName, location.getLatitude(), location.getLongitude(), new Date()));
             context.startService(new Intent(context, UploadService.class));
 

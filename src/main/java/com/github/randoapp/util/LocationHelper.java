@@ -1,40 +1,43 @@
 package com.github.randoapp.util;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.text.TextUtils;
 
-/***
+import com.github.randoapp.preferences.Preferences;
+
+/**
  * Location Helper Class.
  * Handles creation of the Location Manager and Location Listener.
  *
  * @author Scott Helme
  */
-public class LocationHelper{
-
-    //variables to store lat and long
-    private float latitude  = 0.0f;
-    private float longitude = 0.0f;
-    private Location location;
-
-    //flag for when we have co-ords
-    private boolean gotLocation = false;
+public class LocationHelper {
 
     //my location manager and listener
-    private LocationManager    locationManager;
+    private LocationManager locationManager;
     private MyLocationListener locationListener;
+
+    private Context context;
 
     /**
      * Constructor.
      *
      * @param context - The context of the calling activity.
      */
-    public LocationHelper(Context context){
+    public LocationHelper(Context context) {
+        this.context = context;
+    }
 
+    public void updateLocationAsync(){
         //setup the location manager
-        locationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         //create the location listener
         locationListener = new MyLocationListener();
 
@@ -44,7 +47,7 @@ public class LocationHelper{
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
     }
 
-    /***
+    /**
      * Used to receive notifications from the Location Manager when they are sent. These methods are called when
      * the Location Manager is registered with the Location Service and a state changes.
      *
@@ -54,67 +57,60 @@ public class LocationHelper{
 
         //called when the location service reports a change in location
         public void onLocationChanged(Location location) {
-
-            //store lat and long and location itself
-            latitude = (float) location.getLatitude();
-            longitude = (float) location.getLongitude();
-            LocationHelper.this.location = location;
-
+            Preferences.setLocation(location);
             //now we have our location we can stop the service from sending updates
             //comment out this line if you want the service to continue updating the users location
             locationManager.removeUpdates(locationListener);
-
-            //change the flag to indicate we now have a location
-            gotLocation = true;
         }
 
         //called when the provider is disabled
-        public void onProviderDisabled(String provider) {}
+        public void onProviderDisabled(String provider) {
+        }
+
         //called when the provider is enabled
-        public void onProviderEnabled(String provider) {}
+        public void onProviderEnabled(String provider) {
+        }
+
         //called when the provider changes state
-        public void onStatusChanged(String provider, int status, Bundle extras) {}
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
     }
 
-    /***
+    /**
      * Stop updates from the Location Service.
      */
-    public void killLocationServices(){
+    public void killLocationServices() {
         locationManager.removeUpdates(locationListener);
     }
 
-    /***
-     * Get Latitude from GPS Helper.
-     * Should check gotLocation() first.
-     * @return - The current Latitude.
-     */
-    public float getLat(){
-        return latitude;
-    }
-
-    /***
-     * Get Longitude from GPS Helper.
-     * Should check gotLocation() first.
-     * @return - The current Longitude.
-     */
-    public float getLong(){
-        return longitude;
-    }
-
-    /***
-     * Get Location from GPS Helper.
-     * Should check gotLocation() first.
-     * @return - The current Longitude.
-     */
-    public Location getLocation(){
-        return location;
-    }
-
-    /***
-     * Check if a location has been found yet.
-     * @return - True if a location has been acquired. False otherwise.
-     */
-    public Boolean gotLocation(){
-        return gotLocation;
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    @SuppressWarnings("deprecation")
+    public static boolean isGpsEnabled(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            String providers = Settings.Secure.getString(context.getContentResolver(),
+                    Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+            if (TextUtils.isEmpty(providers)) {
+                return false;
+            }
+            return (providers.contains(LocationManager.GPS_PROVIDER) || providers.contains(LocationManager.NETWORK_PROVIDER));
+        } else {
+            final int locationMode;
+            try {
+                locationMode = Settings.Secure.getInt(context.getContentResolver(),
+                        Settings.Secure.LOCATION_MODE);
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+                return false;
+            }
+            switch (locationMode) {
+                case Settings.Secure.LOCATION_MODE_BATTERY_SAVING:
+                case Settings.Secure.LOCATION_MODE_HIGH_ACCURACY:
+                case Settings.Secure.LOCATION_MODE_SENSORS_ONLY:
+                    return true;
+                case Settings.Secure.LOCATION_MODE_OFF:
+                default:
+                    return false;
+            }
+        }
     }
 }
