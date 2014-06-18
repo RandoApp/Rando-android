@@ -59,7 +59,6 @@ public class UploadService extends Service {
 
     private void upload() {
         Log.d(UploadService.class, "Upload service try upload next file");
-
         if (!ConnectionUtil.isOnline(getApplicationContext())) {
             Log.d(UploadService.class, "No network. sleep.");
             uploadAttemptsFail++;
@@ -74,13 +73,12 @@ public class UploadService extends Service {
         }
     }
 
-    private void deleteAndSync(final RandoUpload rando) {
+    private void sync() {
         //Get server time to pairing and sync after that
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                deleteRando(rando);
                 SyncService.run();
             }
         }, SERVICE_SHORT_PAUSE);
@@ -92,7 +90,8 @@ public class UploadService extends Service {
                     @Override
                     public void onOk(Map<String, Object> data) {
                         uploadAttemptsFail = 0;
-                        deleteAndSync(rando);
+                        deleteRando(rando);
+                        sync();
                         setTimeout(0);  //go to next rando to upload immediately
                     }
                 }).onError(new OnError() {
@@ -122,9 +121,6 @@ public class UploadService extends Service {
     private void deleteRando(RandoUpload rando) {
         Log.d(UploadService.class, "Delete rando");
         RandoDAO.deleteRandoToUpload(rando);
-
-        File image = new File(rando.file);
-        image.delete();
     }
 
     private void sleep() {

@@ -35,7 +35,7 @@ public class Constants {
     public static final int SIZE_LARGE = 1200;
     public static final double PICTURE_DESIRED_ASPECT_RATIO = 0.75;
 
-    public static final String SERVER_HOST = "rando4.me";
+    public static final String SERVER_HOST = "192.168.1.103:8888";
     public static final String SERVER_URL = "http://" + SERVER_HOST;
     public static final int ESTABLISH_CONNECTION_TIMEOUT = 5 * 60 * 1000;
     public static final int CONNECTION_TIMEOUT = 60 * 60 * 1000;
@@ -45,11 +45,11 @@ public class Constants {
 
     public static final long UPLOAD_SERVICE_INTERVAL = AlarmManager.INTERVAL_HOUR * 3;
 
-    public static final int UPLOAD_SERVICE_ATTEMPTS_FAIL = 10;
-    public static final int UPLOAD_SERVICE_MANY_ATTEMPTS_FAIL = 25;
-    public static final long UPLOAD_SERVICE_SHORT_PAUSE = 30 * 1000;
+    public static final int UPLOAD_SERVICE_ATTEMPTS_FAIL = 50;
+    public static final int UPLOAD_SERVICE_MANY_ATTEMPTS_FAIL = 150;
+    public static final long UPLOAD_SERVICE_SHORT_PAUSE = 5 * 1000;
     public static final long UPLOAD_SERVICE_LONG_PAUSE = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
-    public static final long UPLOAD_SERVICE_VERY_LONG_PAUSE = AlarmManager.INTERVAL_HOUR * 3;
+    public static final long UPLOAD_SERVICE_VERY_LONG_PAUSE = AlarmManager.INTERVAL_HOUR;
     public static final long UPLOAD_SERVICE_FORBIDDEN_PAUSE = AlarmManager.INTERVAL_HOUR * 6;
 
 
