@@ -7,3 +7,6 @@
 [submodule "modules/facebook"]
 	path = modules/facebook
 	url = https://github.com/xp-vit/facebook-android-sdk.git
+[submodule "modules/cwac-camera"]
+	path = modules/cwac-camera
+	url = https://github.com/RandoApp/cwac-camera.git
