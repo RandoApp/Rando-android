@@ -1,10 +1,12 @@
 package com.github.randoapp.camera;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.Camera;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
@@ -80,7 +82,11 @@ public class CameraCaptureFragment extends CameraFragment {
         @Override
         public void onClick(View v) {
             captureButton.setEnabled(false);
-            cameraView.takePicture(false, true);
+            if (isAutoFocusAvailable()) {
+                autoFocus();
+            } else {
+                cameraView.takePicture(false, true);
+            }
         }
     }
 
@@ -187,6 +193,13 @@ class RandoCameraHost extends SimpleCameraHost {
     @Override
     public RecordingHint getRecordingHint() {
         return RecordingHint.STILL_ONLY;
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    @Override
+    public void onAutoFocus(boolean success, Camera camera) {
+        super.onAutoFocus(success, camera);
+        cameraView.takePicture(false, true);
     }
 }
 }
