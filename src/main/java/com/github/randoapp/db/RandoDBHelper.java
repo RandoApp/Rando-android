@@ -7,7 +7,7 @@ import android.util.Log;
 
 public class RandoDBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
     private static final String DATABASE_NAME = "rando.db";
 
     private static RandoDBHelper helperInstance;
@@ -130,15 +130,17 @@ public class RandoDBHelper extends SQLiteOpenHelper {
         public static final String COLUMN_LATITUDE = "RANDO_LATITUDE";
         public static final String COLUMN_LONGITUDE = "RANDO_LONGITUDE";
         public static final String COLUMN_DATE = "RANDO_DATE";
+        public static final String COLUMN_LAST_TRY_DATE = "RANDO_LAST_TRY_DATE";
 
-        public static final String[] ALL_COLUMNS = {COLUMN_ID, COLUMN_FILE, COLUMN_LATITUDE, COLUMN_LONGITUDE, COLUMN_DATE};
+        public static final String[] ALL_COLUMNS = {COLUMN_ID, COLUMN_FILE, COLUMN_LATITUDE, COLUMN_LONGITUDE, COLUMN_DATE, COLUMN_LAST_TRY_DATE};
 
         private static final String CREATE_TABLE_SQL = "CREATE TABLE " + RandoUploadTable.NAME +
                 " (" + COLUMN_ID + " integer primary key autoincrement, " +
                 COLUMN_FILE + " text," +
                 COLUMN_LATITUDE + " text," +
                 COLUMN_LONGITUDE + " text," +
-                COLUMN_DATE + " integer" +
+                COLUMN_DATE + " integer," +
+                COLUMN_LAST_TRY_DATE + " integer" +
                 ");";
     }
 }
