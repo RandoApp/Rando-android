@@ -1,24 +1,28 @@
 package com.github.randoapp.network;
 
+import com.android.volley.Network;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HttpClientStack;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.Volley;
 import com.github.randoapp.App;
 import com.github.randoapp.cache.LruMemCache;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 
+import java.io.File;
+
 import static com.github.randoapp.Constants.CONNECTION_TIMEOUT;
+import static com.github.randoapp.Constants.DEFAULT_CACHE_DIR;
+import static com.github.randoapp.Constants.DEFAULT_CACHE_SIZE;
 import static com.github.randoapp.Constants.ESTABLISH_CONNECTION_TIMEOUT;
 
 public class VolleySingleton {
@@ -39,9 +43,8 @@ public class VolleySingleton {
         ClientConnectionManager mgr = httpClient.getConnectionManager();
         HttpParams params = httpClient.getParams();
         httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(params,
-                    mgr.getSchemeRegistry()), params);
-
-        requestQueue = Volley.newRequestQueue(App.context, new HttpClientStack(httpClient));
+                mgr.getSchemeRegistry()), params);
+        requestQueue = createRequestQueue();
         imageLoader = new ImageLoader(this.requestQueue, new LruMemCache());
     }
 
@@ -62,6 +65,14 @@ public class VolleySingleton {
 
     public ImageLoader getImageLoader() {
         return imageLoader;
+    }
+
+    private RequestQueue createRequestQueue() {
+        File cacheDir = new File(App.context.getCacheDir(), DEFAULT_CACHE_DIR);
+        Network network = new BasicNetwork(new HttpClientStack(httpClient));
+        RequestQueue queue = new RequestQueue(new DiskBasedCache(cacheDir, DEFAULT_CACHE_SIZE), network);
+        queue.start();
+        return queue;
     }
 
 }
