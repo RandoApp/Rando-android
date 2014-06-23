@@ -1,8 +1,6 @@
 package com.github.randoapp.task;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.support.v4.app.FragmentActivity;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -49,12 +47,12 @@ public class GoogleAuthTask extends BaseTask {
                 return OK;
             }
         } catch (GooglePlayServicesAvailabilityException playEx) {
-            Dialog alert = GooglePlayServicesUtil.getErrorDialog(playEx.getConnectionStatusCode(), authFragment.getActivity(), Constants.GOOGLE_ACTIVITYS_AUTH_REQUEST_CODE);
+            Dialog alert = GooglePlayServicesUtil.getErrorDialog(playEx.getConnectionStatusCode(), authFragment.getActivity(), Constants.GOOGLE_ACTIVITIES_AUTH_REQUEST_CODE);
             Log.e(GoogleAuthTask.class, "Google Play service exception: ", playEx.getMessage());
             return ERROR;
         } catch (UserRecoverableAuthException userRecoverableException) {
             Log.e(GoogleAuthTask.class, "Start Google activity because we have UserRecoverableAuthException and user should fix this: ", userRecoverableException.getMessage());
-            authFragment.startActivityForResult(userRecoverableException.getIntent(), Constants.GOOGLE_ACTIVITYS_AUTH_REQUEST_CODE);
+            authFragment.startActivityForResult(userRecoverableException.getIntent(), Constants.GOOGLE_ACTIVITIES_AUTH_REQUEST_CODE);
             //Do not set any error to data, because we don't need change fragments before G+ activity done
             return ERROR;
         } catch (GoogleAuthException fatalException) {

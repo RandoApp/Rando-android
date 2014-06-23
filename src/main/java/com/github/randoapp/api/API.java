@@ -84,7 +84,7 @@ import static com.github.randoapp.Constants.SIGNUP_PASSWORD_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_URL;
 import static com.github.randoapp.Constants.SMALL_PARAM;
 import static com.github.randoapp.Constants.STRANGER_PARAM;
-import static com.github.randoapp.Constants.ULOAD_RANDO_URL;
+import static com.github.randoapp.Constants.UPLOAD_RANDO_URL;
 import static com.github.randoapp.Constants.UNAUTHORIZED_CODE;
 import static com.github.randoapp.Constants.USER_PARAM;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -283,7 +283,7 @@ public class API {
                 longitude = String.valueOf(location.getLongitude());
             }
 
-            HttpPost request = new HttpPost(getUrl(ULOAD_RANDO_URL));
+            HttpPost request = new HttpPost(getUrl(UPLOAD_RANDO_URL));
 
             MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
             multipartEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
