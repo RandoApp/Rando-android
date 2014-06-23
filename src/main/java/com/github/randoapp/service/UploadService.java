@@ -129,6 +129,8 @@ public class UploadService extends Service {
                     setTimeout(UPLOAD_SERVICE_SHORT_PAUSE);
                 } else {
                     Log.w(UploadService.class, "Can not upload image, because: ", error);
+                    rando.lastTry = new Date(0);
+                    RandoDAO.updateRandoToUpload(rando);
                     uploadAttemptsFail++;
                     sleep();
                 }
