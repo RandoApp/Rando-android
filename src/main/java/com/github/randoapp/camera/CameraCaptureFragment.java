@@ -42,6 +42,7 @@ public class CameraCaptureFragment extends CameraFragment {
 
     private CameraView cameraView;
     private ImageView captureButton;
+    private boolean shutterSoundDisabled = false;
 
     private int displayWidth;
 
@@ -198,7 +199,19 @@ class RandoCameraHost extends SimpleCameraHost {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onAutoFocus(boolean success, Camera camera) {
+        if (!shutterSoundDisabled) {
+            disableShutterSound(camera);
+        }
         cameraView.takePicture(false, true);
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void disableShutterSound(Camera camera){
+        Camera.CameraInfo info = new Camera.CameraInfo();
+        Camera.getCameraInfo(getCameraId(), info);
+        if (info.canDisableShutterSound) {
+            shutterSoundDisabled = camera.enableShutterSound(false);
+        }
     }
 }
 }
