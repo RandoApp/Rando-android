@@ -134,7 +134,7 @@ class RandoCameraHost extends SimpleCameraHost {
 
     @Override
     public Camera.Size getPictureSize(PictureTransaction xact, Camera.Parameters parameters) {
-        Camera.Size size = CameraUtil.getBestPictureSizeForOldDevices(parameters.getSupportedPictureSizes());
+        Camera.Size size = CameraUtil.getBestPictureSizeForOldDevices(parameters.getSupportedPictureSizes(), getDeviceProfile());
         Log.i(CameraCaptureFragment.class, "Selected picture size:", String.valueOf(size.height), "x", String.valueOf(size.width));
         return size;
     }
@@ -193,7 +193,11 @@ class RandoCameraHost extends SimpleCameraHost {
 
     @Override
     public RecordingHint getRecordingHint() {
-        return RecordingHint.STILL_ONLY;
+        RecordingHint recordingHint = getDeviceProfile().getDefaultRecordingHint();
+        if (recordingHint==RecordingHint.NONE) {
+            recordingHint=RecordingHint.STILL_ONLY;
+        }
+        return recordingHint;
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
