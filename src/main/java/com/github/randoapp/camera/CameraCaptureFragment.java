@@ -198,7 +198,6 @@ class RandoCameraHost extends SimpleCameraHost {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onAutoFocus(boolean success, Camera camera) {
-        super.onAutoFocus(success, camera);
         cameraView.takePicture(false, true);
     }
 }
