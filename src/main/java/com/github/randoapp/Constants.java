@@ -25,7 +25,7 @@ public class Constants {
     public static final String IMAGE_POSTFIX = ".jpg";
     public static final int JPEG_QUALITY = 75;
 
-    public static final int LOCATION_DETECT_TIMEOUT = 5*60;//in Seconds
+    public static final long LOCATION_DETECT_TIMEOUT = 5*60*1000; //in milliseconds
 
     public static final String ERROR = "error";
     public static final int UNAUTHORIZED_CODE = 400;

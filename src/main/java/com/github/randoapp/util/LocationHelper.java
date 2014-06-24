@@ -13,8 +13,6 @@ import android.text.TextUtils;
 import com.github.randoapp.Constants;
 import com.github.randoapp.preferences.Preferences;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -54,10 +52,12 @@ public class LocationHelper {
 
         //Set timer to kill location services after timeout
         Timer timer = new Timer();
-        Calendar c = Calendar.getInstance();
-        c.setTime(new Date());
-        c.add(Calendar.SECOND, Constants.LOCATION_DETECT_TIMEOUT);
-        timer.schedule(new RemoveLocationUpdates(), c.getTime());
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                killLocationServices();
+            }
+        }, Constants.LOCATION_DETECT_TIMEOUT);
     }
 
     /**
@@ -127,13 +127,6 @@ public class LocationHelper {
                 default:
                     return false;
             }
-        }
-    }
-
-    class RemoveLocationUpdates extends TimerTask {
-        @Override
-        public void run() {
-            killLocationServices();
         }
     }
 }
