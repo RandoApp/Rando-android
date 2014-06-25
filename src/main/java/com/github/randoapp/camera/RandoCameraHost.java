@@ -113,7 +113,7 @@ public class RandoCameraHost extends SquareCameraHost {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onAutoFocus(boolean success, Camera camera) {
-        if (!shutterSoundDisabled) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && !shutterSoundDisabled) {
             disableShutterSound(camera);
         }
         ((CameraView) activity.findViewById(R.id.camera)).takePicture(false, true);
