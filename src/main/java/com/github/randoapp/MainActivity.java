@@ -23,6 +23,7 @@ import com.github.randoapp.log.Log;
 import com.github.randoapp.menu.LogoutMenu;
 import com.github.randoapp.menu.ReportMenu;
 import com.github.randoapp.preferences.Preferences;
+import com.github.randoapp.service.UploadService;
 
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
 import static com.github.randoapp.Constants.SYNC_SERVICE_BROADCAST_EVENT;
@@ -138,6 +139,7 @@ public class MainActivity extends FragmentActivity {
     protected void onPostResume() {
         super.onPostResume();
         registerReceivers();
+        startService(new Intent(getApplicationContext(), UploadService.class));
     }
 
     private void registerReceivers() {

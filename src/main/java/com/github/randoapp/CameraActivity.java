@@ -15,6 +15,7 @@ import com.commonsware.cwac.camera.CameraHostProvider;
 import com.commonsware.cwac.camera.SimpleCameraHost;
 import com.github.randoapp.camera.CameraCaptureFragment;
 import com.github.randoapp.camera.CameraUploadFragment;
+import com.github.randoapp.camera.RandoCameraHost;
 
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
@@ -60,7 +61,7 @@ public class CameraActivity extends SherlockFragmentActivity implements CameraHo
 
     @Override
     public CameraHost getCameraHost() {
-        return (new SimpleCameraHost(this));
+        return (new RandoCameraHost(this));
     }
 
     @Override

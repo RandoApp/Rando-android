@@ -8,6 +8,7 @@ public class RandoUpload {
     public String latitude;
     public String longitude;
     public Date date;
+    public Date lastTry = new Date(0);
 
     public RandoUpload() {
     }

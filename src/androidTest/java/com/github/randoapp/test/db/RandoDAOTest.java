@@ -219,6 +219,21 @@ public class RandoDAOTest extends AndroidTestCase {
         assertThat("Miss one of rando to upload", RandoDAO.getRandosToUploadNumber(), is(3));
     }
 
+    public void testUpdateToUploadSuccessful() {
+        RandoDAO.addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
+
+        RandoUpload randoUpload = RandoDAO.getAllRandosToUpload().get(0);
+        assertThat("Last try is not a default value", randoUpload.lastTry.getTime(), is(0l));
+
+        Date now = new Date();
+        randoUpload.lastTry = now;
+        RandoDAO.updateRandoToUpload(randoUpload);
+
+        RandoUpload randoUploadAfterUpdate = RandoDAO.getAllRandosToUpload().get(0);
+
+        assertThat("Unsuccessful update lastTry field", randoUploadAfterUpdate.lastTry.getTime(), is(now.getTime()));
+    }
+
     public void testAddToUploadEmptyRandoUpload() {
         RandoDAO.addToUpload(new RandoUpload());
         assertThat("Empty rando to upload created something in DB", RandoDAO.getRandosToUploadNumber(), is(0));

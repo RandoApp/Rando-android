@@ -27,6 +27,7 @@ public class RandoDAO {
         values.put(RandoDBHelper.RandoUploadTable.COLUMN_LATITUDE, randoUpload.latitude);
         values.put(RandoDBHelper.RandoUploadTable.COLUMN_LONGITUDE, randoUpload.longitude);
         values.put(RandoDBHelper.RandoUploadTable.COLUMN_DATE, randoUpload.date.getTime());
+        values.put(RandoDBHelper.RandoUploadTable.COLUMN_LAST_TRY_DATE, randoUpload.lastTry.getTime());
 
         getDB().insert(RandoDBHelper.RandoUploadTable.NAME, null, values);
     }
@@ -45,16 +46,33 @@ public class RandoDAO {
             rando.latitude = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_LATITUDE));
             rando.longitude = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_LONGITUDE));
             long userDate = cursor.getLong(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_DATE));
+            long lastTryDate = cursor.getLong(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_LAST_TRY_DATE));
             if (userDate > 0) {
                 rando.date = new Date(userDate);
             } else {
                 rando.date = new Date();
+            }
+            if (lastTryDate > 0) {
+                rando.lastTry = new Date(lastTryDate);
+            } else {
+                rando.lastTry = new Date(0);
             }
             randos.add(rando);
             cursor.moveToNext();
         }
         cursor.close();
         return randos;
+    }
+
+    public static synchronized void updateRandoToUpload(RandoUpload rando) {
+        ContentValues values = new ContentValues();
+        values.put(RandoDBHelper.RandoUploadTable.COLUMN_FILE, rando.file);
+        values.put(RandoDBHelper.RandoUploadTable.COLUMN_LATITUDE, rando.latitude);
+        values.put(RandoDBHelper.RandoUploadTable.COLUMN_LONGITUDE, rando.longitude);
+        values.put(RandoDBHelper.RandoUploadTable.COLUMN_DATE, rando.date.getTime());
+        values.put(RandoDBHelper.RandoUploadTable.COLUMN_LAST_TRY_DATE, rando.lastTry.getTime());
+
+        getDB().update(RandoDBHelper.RandoUploadTable.NAME, values, RandoDBHelper.RandoTable.COLUMN_ID + " = " + rando.id, null);
     }
 
     public static synchronized void deleteRandoToUpload(RandoUpload rando) {

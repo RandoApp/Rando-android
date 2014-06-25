@@ -17,6 +17,7 @@ import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.ConnectionUtil;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -69,7 +70,24 @@ public class UploadService extends Service {
         List<RandoUpload> randosToUpload = RandoDAO.getAllRandosToUpload();
         Log.d(UploadService.class, "Need upload ", String.valueOf(randosToUpload.size()), " randos");
         if (randosToUpload.size() > 0) {
-            uploadFile(randosToUpload.get(0));
+            boolean isNeedTryAgain = true;
+            for (RandoUpload randoToUpload: randosToUpload) {
+                long pastFromLastTry = new Date().getTime() - randoToUpload.lastTry.getTime();
+                if (pastFromLastTry >= Constants.UPLOAD_RETRY_TIMEOUT){
+                    randoToUpload.lastTry = new Date();
+                    RandoDAO.updateRandoToUpload(randoToUpload);
+
+                    uploadFile(randoToUpload);
+                    isNeedTryAgain = false;
+                    //One service call = one file upload
+                    break;
+                }
+            }
+
+            if (isNeedTryAgain) {
+                Log.d(UploadService.class, "Need retry upload. Sleep shot pause and will try again.");
+                setTimeout(UPLOAD_SERVICE_SHORT_PAUSE);
+            }
         }
     }
 
@@ -111,6 +129,8 @@ public class UploadService extends Service {
                     setTimeout(UPLOAD_SERVICE_SHORT_PAUSE);
                 } else {
                     Log.w(UploadService.class, "Can not upload image, because: ", error);
+                    rando.lastTry = new Date(0);
+                    RandoDAO.updateRandoToUpload(rando);
                     uploadAttemptsFail++;
                     sleep();
                 }
