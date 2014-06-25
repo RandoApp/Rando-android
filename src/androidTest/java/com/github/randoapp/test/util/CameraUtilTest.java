@@ -4,6 +4,8 @@ import android.hardware.Camera;
 import android.test.AndroidTestCase;
 
 import static com.github.randoapp.Constants.*;
+
+import com.commonsware.cwac.camera.DeviceProfile;
 import com.github.randoapp.util.CameraUtil;
 
 import java.util.ArrayList;
@@ -21,7 +23,8 @@ public class CameraUtilTest extends AndroidTestCase {
                 9000, 8000,
                 1900, CAMERA_MIN_SIZE,
                 640, 480,
-                400, 400));
+                400, 400),
+                DeviceProfile.getInstance(getContext()));
 
         assertThat(actual.width + ":" + actual.height, actual, is(createSize(640, 480)));
     }
@@ -32,7 +35,8 @@ public class CameraUtilTest extends AndroidTestCase {
                 CAMERA_MIN_SIZE, CAMERA_MIN_SIZE,
                 3000, CAMERA_MIN_SIZE,
                 640, 480,
-                400, 400));
+                400, 400),
+                DeviceProfile.getInstance(getContext()));
 
         assertThat(actual.width + ":" + actual.height, actual, is(createSize(640, 480)));
     }
@@ -42,7 +46,8 @@ public class CameraUtilTest extends AndroidTestCase {
                 9000, 9000,
                 8000, 7000,
                 6000, 5000,
-                3000, 2000));
+                3000, 2000),
+                DeviceProfile.getInstance(getContext()));
 
         assertThat(actual.width + ":" + actual.height, actual, is(createSize(3000, 2000)));
     }
@@ -52,7 +57,8 @@ public class CameraUtilTest extends AndroidTestCase {
                 3000, 2000,
                 6000, 5000,
                 8000, 7000,
-                9000, 9000));
+                9000, 9000),
+                DeviceProfile.getInstance(getContext()));
 
         assertThat(actual.width + ":" + actual.height, actual, is(createSize(3000, 2000)));
     }
@@ -62,7 +68,8 @@ public class CameraUtilTest extends AndroidTestCase {
                 800, 700,
                 900, 200,
                 400, 500,
-                300, 300));
+                300, 300),
+                DeviceProfile.getInstance(getContext()));
 
         assertThat(actual.width + ":" + actual.height, actual, is(createSize(800, 700)));
     }
@@ -72,7 +79,8 @@ public class CameraUtilTest extends AndroidTestCase {
                 300, 300,
                 400, 500,
                 900, 200,
-                800, 700));
+                800, 700),
+                DeviceProfile.getInstance(getContext()));
 
         assertThat(actual.width + ":" + actual.height, actual, is(createSize(800, 700)));
     }
@@ -82,7 +90,8 @@ public class CameraUtilTest extends AndroidTestCase {
                 3000, 7000,
                 3000, 4000,
                 3000, 2000,
-                3000, 1000));
+                3000, 1000),
+                DeviceProfile.getInstance(getContext()));
 
         assertThat(actual.width + ":" + actual.height, actual, is(createSize(3000, 2000)));
     }
@@ -93,7 +102,8 @@ public class CameraUtilTest extends AndroidTestCase {
                 3000, 4000,
                 3000, 3000,
                 3000, 1000,
-                1000, 1000));
+                1000, 1000),
+                DeviceProfile.getInstance(getContext()));
 
         assertThat(actual.width + ":" + actual.height, actual, is(createSize(3000, 3000)));
     }
