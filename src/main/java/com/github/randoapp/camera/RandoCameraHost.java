@@ -16,6 +16,7 @@ import com.commonsware.cwac.camera.CameraUtils;
 import com.commonsware.cwac.camera.CameraView;
 import com.commonsware.cwac.camera.SquareCameraHost;
 import com.github.randoapp.Constants;
+import com.github.randoapp.R;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.util.CameraUtil;
 import com.github.randoapp.util.FileUtil;
@@ -28,13 +29,11 @@ import static com.github.randoapp.Constants.RANDO_PHOTO_PATH;
 
 public class RandoCameraHost extends SquareCameraHost {
     private Activity activity;
-    private CameraView cameraView;
     private boolean shutterSoundDisabled = false;
 
-    public RandoCameraHost(Activity activity, CameraView cameraView) {
+    public RandoCameraHost(Activity activity) {
         super(activity.getBaseContext());
         this.activity = activity;
-        this.cameraView = cameraView;
     }
 
     @Override
@@ -117,7 +116,7 @@ public class RandoCameraHost extends SquareCameraHost {
         if (!shutterSoundDisabled) {
             disableShutterSound(camera);
         }
-        cameraView.takePicture(false, true);
+        ((CameraView) activity.findViewById(R.id.camera)).takePicture(false, true);
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)

@@ -93,7 +93,7 @@ public class CameraCaptureFragment extends CameraFragment {
                                 }
                             }
                     ).create().show();
+        }
     }
-}
 
 }
