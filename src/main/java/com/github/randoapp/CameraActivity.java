@@ -12,6 +12,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.commonsware.cwac.camera.CameraHost;
 import com.commonsware.cwac.camera.CameraHostProvider;
+import com.commonsware.cwac.camera.CameraView;
 import com.commonsware.cwac.camera.SimpleCameraHost;
 import com.github.randoapp.camera.CameraCaptureFragment;
 import com.github.randoapp.camera.CameraUploadFragment;
@@ -61,7 +62,7 @@ public class CameraActivity extends SherlockFragmentActivity implements CameraHo
 
     @Override
     public CameraHost getCameraHost() {
-        return (new RandoCameraHost(this));
+        return (new RandoCameraHost(this, (CameraView) findViewById(R.id.camera)));
     }
 
     @Override

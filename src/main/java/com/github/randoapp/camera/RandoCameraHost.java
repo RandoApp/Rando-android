@@ -1,9 +1,11 @@
 package com.github.randoapp.camera;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;
+import android.os.Build;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Display;
 import android.view.WindowManager;
@@ -11,7 +13,7 @@ import android.widget.Toast;
 
 import com.commonsware.cwac.camera.CameraHost;
 import com.commonsware.cwac.camera.CameraUtils;
-import com.commonsware.cwac.camera.PictureTransaction;
+import com.commonsware.cwac.camera.CameraView;
 import com.commonsware.cwac.camera.SquareCameraHost;
 import com.github.randoapp.Constants;
 import com.github.randoapp.log.Log;
@@ -22,15 +24,17 @@ import java.io.File;
 import java.util.List;
 
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
-import static com.github.randoapp.Constants.JPEG_QUALITY;
 import static com.github.randoapp.Constants.RANDO_PHOTO_PATH;
 
 public class RandoCameraHost extends SquareCameraHost {
     private Activity activity;
+    private CameraView cameraView;
+    private boolean shutterSoundDisabled = false;
 
-    public RandoCameraHost(Activity activity) {
+    public RandoCameraHost(Activity activity, CameraView cameraView) {
         super(activity.getBaseContext());
         this.activity = activity;
+        this.cameraView = cameraView;
     }
 
     @Override
@@ -40,7 +44,7 @@ public class RandoCameraHost extends SquareCameraHost {
 
     @Override
     public Camera.Size getPictureSize(Camera.Parameters parameters) {
-        Camera.Size size = CameraUtil.getBestPictureSizeForOldDevices(parameters.getSupportedPictureSizes());
+        Camera.Size size = CameraUtil.getBestPictureSizeForOldDevices(parameters.getSupportedPictureSizes(), getDeviceProfile());
         Log.i(CameraCaptureFragment.class, "Selected picture size:", String.valueOf(size.height), "x", String.valueOf(size.width));
         return size;
     }
@@ -76,13 +80,6 @@ public class RandoCameraHost extends SquareCameraHost {
                 Toast.LENGTH_LONG).show();
     }
 
-
-    @Override
-    public Camera.Parameters adjustPictureParameters(PictureTransaction xact, Camera.Parameters parameters) {
-        parameters.setJpegQuality(JPEG_QUALITY);
-        return parameters;
-    }
-
     @Override
     protected File getPhotoPath() {
         return FileUtil.getOutputMediaFile();
@@ -107,7 +104,29 @@ public class RandoCameraHost extends SquareCameraHost {
 
     @Override
     public RecordingHint getRecordingHint() {
-        return RecordingHint.STILL_ONLY;
+        RecordingHint recordingHint = getDeviceProfile().getDefaultRecordingHint();
+        if (recordingHint==RecordingHint.NONE) {
+            recordingHint=RecordingHint.STILL_ONLY;
+        }
+        return recordingHint;
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    @Override
+    public void onAutoFocus(boolean success, Camera camera) {
+        if (!shutterSoundDisabled) {
+            disableShutterSound(camera);
+        }
+        cameraView.takePicture(false, true);
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void disableShutterSound(Camera camera){
+        Camera.CameraInfo info = new Camera.CameraInfo();
+        Camera.getCameraInfo(getCameraId(), info);
+        if (info.canDisableShutterSound) {
+            shutterSoundDisabled = camera.enableShutterSound(false);
+        }
     }
 
 }

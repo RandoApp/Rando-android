@@ -2,6 +2,8 @@ package com.github.randoapp.util;
 
 import android.hardware.Camera;
 
+import com.commonsware.cwac.camera.DeviceProfile;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,12 +18,14 @@ public static Camera.Size getBestPictureSize(List<Camera.Size> cameraSizes) {
         return findMaxCameraSize(cameraSizes);
     }
 
-    public static Camera.Size getBestPictureSizeForOldDevices(List<Camera.Size> cameraSizes) {
+    public static Camera.Size getBestPictureSizeForOldDevices(List<Camera.Size> cameraSizes, DeviceProfile deviceProfile) {
 
         List<Camera.Size> filteredList = new ArrayList<Camera.Size>();
         for (Camera.Size size : cameraSizes){
             double ratio=(double)size.height / size.width;
-            if (Math.abs(ratio - PICTURE_DESIRED_ASPECT_RATIO) < 0.05){
+            if (Math.abs(ratio - PICTURE_DESIRED_ASPECT_RATIO) < 0.05
+                    && size.height > deviceProfile.getMinPictureHeight()
+                    && size.height < deviceProfile.getMaxPictureHeight()){
                 filteredList.add(size);
             }
         }

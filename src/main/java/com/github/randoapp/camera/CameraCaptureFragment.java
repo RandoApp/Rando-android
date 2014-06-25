@@ -55,10 +55,13 @@ public class CameraCaptureFragment extends CameraFragment {
     private class CaptureButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-
             captureButton.setEnabled(false);
             try {
-                cameraView.takePicture(false, true);
+                if (isAutoFocusAvailable()) {
+                    autoFocus();
+                } else {
+                    cameraView.takePicture(false, true);
+                }
             } catch (Exception e) {
                 Log.w(CameraCaptureFragment.class, "Can not take picture, because: ", e.getMessage());
             }
@@ -90,7 +93,7 @@ public class CameraCaptureFragment extends CameraFragment {
                                 }
                             }
                     ).create().show();
-        }
     }
+}
 
 }

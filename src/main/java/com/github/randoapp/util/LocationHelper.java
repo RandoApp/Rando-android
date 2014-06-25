@@ -10,7 +10,11 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 
+import com.github.randoapp.Constants;
 import com.github.randoapp.preferences.Preferences;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Location Helper Class.
@@ -45,6 +49,15 @@ public class LocationHelper {
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
         //setup a callback for when the GPS gets a lock and we receive data
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+
+        //Set timer to kill location services after timeout
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                killLocationServices();
+            }
+        }, Constants.LOCATION_DETECT_TIMEOUT);
     }
 
     /**
@@ -60,7 +73,7 @@ public class LocationHelper {
             Preferences.setLocation(location);
             //now we have our location we can stop the service from sending updates
             //comment out this line if you want the service to continue updating the users location
-            locationManager.removeUpdates(locationListener);
+            killLocationServices();
         }
 
         //called when the provider is disabled
@@ -80,7 +93,10 @@ public class LocationHelper {
      * Stop updates from the Location Service.
      */
     public void killLocationServices() {
-        locationManager.removeUpdates(locationListener);
+        if (locationManager!=null && locationListener != null) {
+            locationManager.removeUpdates(locationListener);
+        }
+
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)

@@ -10,6 +10,10 @@ public class Constants {
     public static final String RANDO_PAIRS_NUMBER = "RANDO_PAIRS_NUMBER";
     public static final String NOT_PAIRED_RANDO_PAIRS_NUMBER = "NOT_PAIRED_RANDO_PAIRS_NUMBER";
 
+    /** Default on-disk cache directory. */
+    public static final String DEFAULT_CACHE_DIR = "volley";
+    public static final int DEFAULT_CACHE_SIZE = 20 * 1024 * 1024;
+
     public static final String CAMERA_BROADCAST_EVENT = "RANDO_CAMERA_EVENT";
     public static final String SYNC_SERVICE_BROADCAST_EVENT = "Rando4MeSyncService";
     public static final String UPLOAD_SERVICE_BROADCAST_EVENT = "Rando4MeUploadService";
@@ -21,7 +25,7 @@ public class Constants {
     public static final String IMAGE_POSTFIX = ".jpg";
     public static final int JPEG_QUALITY = 75;
 
-    public static final int LOCATION_PERIOD = 20000;
+    public static final long LOCATION_DETECT_TIMEOUT = 5*60*1000; //in milliseconds
 
     public static final String ERROR = "error";
     public static final int UNAUTHORIZED_CODE = 400;
@@ -53,7 +57,6 @@ public class Constants {
     public static final long UPLOAD_SERVICE_LONG_PAUSE = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
     public static final long UPLOAD_SERVICE_VERY_LONG_PAUSE = AlarmManager.INTERVAL_HOUR;
     public static final long UPLOAD_SERVICE_FORBIDDEN_PAUSE = AlarmManager.INTERVAL_HOUR * 6;
-
 
     //Shared Preferences
     public static final String PREFERENCES_FILE_NAME = "rando.prefs";
@@ -98,7 +101,7 @@ public class Constants {
     public static final String ANONYMOUS_URL = SERVER_URL + "/anonymous";
     public static final String LOGOUT_URL = SERVER_URL + "/logout";
     public static final String FETCH_USER_URL = SERVER_URL + "/user";
-    public static final String ULOAD_RANDO_URL = SERVER_URL + "/image";
+    public static final String UPLOAD_RANDO_URL = SERVER_URL + "/image";
     public static final String REPORT_URL = SERVER_URL + "/report/";
     public static final String LOG_URL = SERVER_URL + "/log";
 
@@ -113,7 +116,7 @@ public class Constants {
     private static final int NUMBER_OF_IMAGES_IN_ONE_SET = 4; //stranger's + user's images and maps
     public static final int NUMBER_OF_IMAGES_FOR_CACHING = NUMBER_OF_IMAGES_IN_ONE_SET * 2; //2 visible image sets per screen
 
-    public static final int GOOGLE_ACTIVITYS_AUTH_REQUEST_CODE = 483; //value is not matter
+    public static final int GOOGLE_ACTIVITIES_AUTH_REQUEST_CODE = 483; //value is not matter
 
     public static final int CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE = 628;
     public static final int CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE = 623;
