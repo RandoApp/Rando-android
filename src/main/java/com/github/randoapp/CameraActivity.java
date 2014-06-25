@@ -62,7 +62,7 @@ public class CameraActivity extends SherlockFragmentActivity implements CameraHo
 
     @Override
     public CameraHost getCameraHost() {
-        return (new RandoCameraHost(this, (CameraView) findViewById(R.id.camera)));
+        return (new RandoCameraHost(this));
     }
 
     @Override
