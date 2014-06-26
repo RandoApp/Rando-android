@@ -5,9 +5,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
+import android.view.View;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.commonsware.cwac.camera.CameraHost;
@@ -30,7 +33,7 @@ public class CameraActivity extends SherlockFragmentActivity implements CameraHo
             Bundle extra = intent.getExtras();
             if (extra != null) {
                 String photoPath = (String) extra.get(Constants.RANDO_PHOTO_PATH);
-                if (photoPath != null) {
+                if (photoPath != null && !photoPath.isEmpty()) {
 
                     CameraUploadFragment uploadFragment = new CameraUploadFragment();
                     Bundle args = new Bundle();
@@ -40,6 +43,10 @@ public class CameraActivity extends SherlockFragmentActivity implements CameraHo
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     fragmentManager.beginTransaction().addToBackStack("CameraCaptureFragment").replace(R.id.camera_screen, uploadFragment).commit();
                     return;
+                }
+                else  {
+                    Toast.makeText(CameraActivity.this, getResources().getText(R.string.image_crop_failed),
+                            Toast.LENGTH_LONG).show();
                 }
             }
 
