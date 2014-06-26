@@ -75,7 +75,7 @@ public class RandoCameraHost extends SquareCameraHost {
     public void onCameraFail(CameraHost.FailureReason reason) {
         super.onCameraFail(reason);
         Toast.makeText(activity,
-                "Sorry, but you cannot use the camera now!",
+                activity.getResources().getText(R.string.camera_init_failed),
                 Toast.LENGTH_LONG).show();
     }
 
@@ -87,7 +87,11 @@ public class RandoCameraHost extends SquareCameraHost {
     @Override
     public void OnImageSaved(File image) {
         Intent intent = new Intent(CAMERA_BROADCAST_EVENT);
-        intent.putExtra(RANDO_PHOTO_PATH, image.getAbsolutePath());
+        if (image != null) {
+            intent.putExtra(RANDO_PHOTO_PATH, image.getAbsolutePath());
+        } else {
+            intent.putExtra(RANDO_PHOTO_PATH, "");
+        }
         LocalBroadcastManager.getInstance(activity).sendBroadcast(intent);
     }
 
@@ -104,8 +108,8 @@ public class RandoCameraHost extends SquareCameraHost {
     @Override
     public RecordingHint getRecordingHint() {
         RecordingHint recordingHint = getDeviceProfile().getDefaultRecordingHint();
-        if (recordingHint==RecordingHint.NONE) {
-            recordingHint=RecordingHint.STILL_ONLY;
+        if (recordingHint == RecordingHint.NONE) {
+            recordingHint = RecordingHint.STILL_ONLY;
         }
         return recordingHint;
     }
@@ -120,12 +124,11 @@ public class RandoCameraHost extends SquareCameraHost {
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private void disableShutterSound(Camera camera){
+    private void disableShutterSound(Camera camera) {
         Camera.CameraInfo info = new Camera.CameraInfo();
         Camera.getCameraInfo(getCameraId(), info);
         if (info.canDisableShutterSound) {
             shutterSoundDisabled = camera.enableShutterSound(false);
         }
     }
-
 }

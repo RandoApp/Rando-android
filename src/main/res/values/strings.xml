@@ -53,6 +53,8 @@
 
     <string name="no_location_services">No Location Services Enabled</string>
     <string name="enable_location_services">Enable Location Services</string>
+    <string name="image_crop_failed">Image convert Failed. Please take pic once again.</string>
+    <string name="camera_init_failed">Sorry, but you cannot use the camera now!</string>
     <string name="close_dialog">Close</string>
 
 </resources>
