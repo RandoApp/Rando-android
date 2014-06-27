@@ -79,7 +79,7 @@ before_install:
   # Note that sysimg-19 downloads the ARM, x86 and MIPS images (we should optimize this).
   - echo yes | android update sdk --filter platform-tools --no-ui --force > /dev/null
   - echo yes | android update sdk --filter android-19 --no-ui --force > /dev/null
-  - echo yes | android update sdk --filter android-17 --no-ui --force > /dev/null
+  - echo yes | android update sdk --filter android-17 --all --no-ui --force > /dev/null
   - echo yes | android update sdk --filter $ANDROID_SDKS --all --no-ui --force > /dev/null
   - echo yes | android update sdk --filter extra-android-support --no-ui --force > /dev/null
   - echo yes | android update sdk --filter extra-android-m2repository --no-ui --force > /dev/null
