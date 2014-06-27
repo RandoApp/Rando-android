@@ -56,7 +56,6 @@ before_install:
 
   #Download rando.keystore:
   - lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "get rando.keystore; ; bye";
-  - mkdir $HOME/.android
   - mv rando.keystore $HOME/.android/
 
   # Install required components.
