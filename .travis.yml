@@ -58,18 +58,6 @@ before_install:
   - lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "get rando.keystore; ; bye";
   - mv rando.keystore $HOME/.android/
 
-  # Install required components.
-  # For a full list, run `android list sdk -a --extended`
-  # Note that sysimg-19 downloads the ARM, x86 and MIPS images (we should optimize this).
-  - echo yes | android update sdk --filter platform-tools --no-ui --force > /dev/null
-  - echo yes | android update sdk --filter android-19 --no-ui --force > /dev/null
-  - echo yes | android update sdk --filter android-17 --all --no-ui --force > /dev/null
-  - echo yes | android update sdk --filter $ANDROID_SDKS --all --no-ui --force > /dev/null
-  - echo yes | android update sdk --filter extra-android-support --no-ui --force > /dev/null
-  - echo yes | android update sdk --filter extra-android-m2repository --no-ui --force > /dev/null
-  - echo yes | android update sdk --filter extra-google-m2repository --no-ui --force > /dev/null
-  - echo yes | android update sdk --filter extra-google-google_play_services --no-ui --force > /dev/null
-
   # Create and start emulator
   - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
   - emulator -avd test -no-skin -no-audio -no-window &
