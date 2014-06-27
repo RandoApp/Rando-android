@@ -42,7 +42,7 @@ android {
     defaultConfig {
         minSdkVersion 10
         targetSdkVersion 19
-        testPackageName 'com.github.randoapp.test'
+        testApplicationId 'com.github.randoapp.test'
         testInstrumentationRunner 'com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner'
     }
 
