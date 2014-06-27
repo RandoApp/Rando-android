@@ -42,6 +42,7 @@ public class CameraCaptureFragment extends CameraFragment {
 
         captureButton = (ImageView) rootView.findViewById(R.id.capture_button);
         captureButton.setOnClickListener(new CaptureButtonListener());
+        captureButton.setEnabled(false);
 
         return rootView;
     }
