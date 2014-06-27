@@ -99,6 +99,7 @@ public class HomeWallFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        randoPairsAdapter.notifyDataSetChanged();
         getActivity().registerReceiver(receiver, new IntentFilter(SYNC_SERVICE_BROADCAST_EVENT));
         getActivity().registerReceiver(receiver, new IntentFilter(REPORT_BROADCAST));
     }

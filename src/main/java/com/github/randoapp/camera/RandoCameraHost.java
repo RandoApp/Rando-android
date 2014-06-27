@@ -131,4 +131,10 @@ public class RandoCameraHost extends SquareCameraHost {
             shutterSoundDisabled = camera.enableShutterSound(false);
         }
     }
+
+    @Override
+    public void autoFocusAvailable() {
+        //temporary enabling button here... until https://github.com/commonsguy/cwac-camera/issues/179 is resolved
+        activity.findViewById(R.id.capture_button).setEnabled(true);
+    }
 }
