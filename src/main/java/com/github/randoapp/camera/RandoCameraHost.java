@@ -30,6 +30,7 @@ import static com.github.randoapp.Constants.RANDO_PHOTO_PATH;
 public class RandoCameraHost extends SquareCameraHost {
     private Activity activity;
     private boolean shutterSoundDisabled = false;
+    CameraSizes cameraSizes;
 
     public RandoCameraHost(Activity activity) {
         super(activity.getBaseContext());
@@ -43,13 +44,14 @@ public class RandoCameraHost extends SquareCameraHost {
 
     @Override
     public Camera.Size getPictureSize(Camera.Parameters parameters) {
-        Camera.Size size = CameraUtil.getBestPictureSizeForOldDevices(parameters.getSupportedPictureSizes(), getDeviceProfile());
+        Camera.Size size = CameraUtil.getBestPictureSize(parameters.getSupportedPictureSizes(), getDeviceProfile());
         Log.i(CameraCaptureFragment.class, "Selected picture size:", String.valueOf(size.height), "x", String.valueOf(size.width));
         return size;
     }
 
     @Override
     public Camera.Size getPreviewSize(int displayOrientation, int width, int height, Camera.Parameters parameters) {
+        cameraSizes = CameraUtil.getCameraSizes(parameters, getDeviceProfile(), width, height, Constants.DESIRED_PICTURE_SIZE, true);
         WindowManager windowManager = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
         int displayWidth = display.getWidth();

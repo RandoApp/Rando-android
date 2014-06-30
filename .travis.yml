@@ -59,7 +59,6 @@ before_install:
 
   # Install required components.
   # For a full list, run `android list sdk -a --extended`
-  # Note that sysimg-19 downloads the ARM, x86 and MIPS images (we should optimize this).
   - echo yes | android update sdk --filter build-tools-19.1.0 --all --no-ui --force > /dev/null
 
   # Create and start emulator
