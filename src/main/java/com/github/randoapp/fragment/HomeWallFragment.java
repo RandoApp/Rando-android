@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.github.randoapp.CameraActivity;
 import com.github.randoapp.Constants;
@@ -86,6 +89,21 @@ public class HomeWallFragment extends Fragment {
             }
         });
 
+        TextView topPanelText = (TextView)rootView.findViewById(R.id.top_panel_text);
+
+        PackageManager manager = getActivity().getPackageManager();
+        PackageInfo info = null;
+
+        try {
+            info = manager.getPackageInfo(getActivity().getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException ex){
+
+        }
+        String version = "";
+        if (info != null){
+            version = info.versionName;
+        }
+        topPanelText.setText(topPanelText.getText()+"("+version+")");
         RandoUtil.initMenuButton(rootView, getActivity());
         return rootView;
     }
