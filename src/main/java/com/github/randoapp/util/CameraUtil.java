@@ -114,8 +114,7 @@ public class CameraUtil {
             }
         }
 
-
-        for (Camera.Size size : filteredPictureSizes) {
+        for (Camera.Size size : pictureSizes) {
             Camera.Size foundPreviewSize = findBiggestSizeByRatio(filteredPreviewSizes, size.width, size.height);
             if (foundPreviewSize != null) {
                 cameraSizes.previewSize = foundPreviewSize;
@@ -123,15 +122,6 @@ public class CameraUtil {
                 break;
             }
         }
-
-        for (Camera.Size size : pictureSizes) {
-            Log.i(CameraUtil.class, "PictureSize", "Supported Size: " + size.width + "," + size.height + ",");
-        }
-
-        for (Camera.Size size : previewSizes) {
-            Log.i(CameraUtil.class, "PreviewSizes", "Supported Size: " + size.width + ", " + size.height + ",");
-        }
-
         return cameraSizes;
     }
 

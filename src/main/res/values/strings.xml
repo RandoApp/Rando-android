@@ -47,7 +47,7 @@
     <string name="sync_service_name">Rando 4Me Sync Service</string>
     <string name="upload_service_name">Rando 4Me Upload Service</string>
 
-    <string name="crash_toast_text">Ooooops! I\'ve crashed, but bug report has been sent to my developers to help them to fix the issue!</string>
+    <string name="crash_toast_text">Bug report has been sent to my developers to help them to fix the issue!</string>
 
     <string name="top_panel_text">Rando in the testing mode</string>
 

@@ -2,22 +2,17 @@ package com.github.randoapp.camera;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Build;
 import android.support.v4.content.LocalBroadcastManager;
-import android.view.Display;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.commonsware.cwac.camera.CameraHost;
-import com.commonsware.cwac.camera.CameraUtils;
 import com.commonsware.cwac.camera.CameraView;
 import com.commonsware.cwac.camera.SquareCameraHost;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
-import com.github.randoapp.log.Log;
 import com.github.randoapp.util.CameraUtil;
 import com.github.randoapp.util.FileUtil;
 
@@ -30,7 +25,7 @@ import static com.github.randoapp.Constants.RANDO_PHOTO_PATH;
 public class RandoCameraHost extends SquareCameraHost {
     private Activity activity;
     private boolean shutterSoundDisabled = false;
-    CameraSizes cameraSizes;
+    public CameraSizes cameraSizes;
 
     public RandoCameraHost(Activity activity) {
         super(activity.getBaseContext());
@@ -44,22 +39,22 @@ public class RandoCameraHost extends SquareCameraHost {
 
     @Override
     public Camera.Size getPictureSize(Camera.Parameters parameters) {
-        Camera.Size size = CameraUtil.getBestPictureSize(parameters.getSupportedPictureSizes(), getDeviceProfile());
-        Log.i(CameraCaptureFragment.class, "Selected picture size:", String.valueOf(size.height), "x", String.valueOf(size.width));
-        return size;
+        /*Camera.Size size = CameraUtil.getBestPictureSize(parameters.getSupportedPictureSizes(), getDeviceProfile());
+        Log.i(CameraCaptureFragment.class, "Selected picture size:", String.valueOf(size.height), "x", String.valueOf(size.width));*/
+        return cameraSizes.pictureSize;
     }
 
     @Override
     public Camera.Size getPreviewSize(int displayOrientation, int width, int height, Camera.Parameters parameters) {
         cameraSizes = CameraUtil.getCameraSizes(parameters, getDeviceProfile(), width, height, Constants.DESIRED_PICTURE_SIZE, true);
-        WindowManager windowManager = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
+        /*WindowManager windowManager = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
         int displayWidth = display.getWidth();
 
         Camera.Size size = CameraUtils.getBestAspectPreviewSize(displayOrientation, displayWidth, (int) (displayWidth / Constants.PICTURE_DESIRED_ASPECT_RATIO), parameters);
         Log.i(CameraCaptureFragment.class, "Available Preview screen size:", String.valueOf(height), "x", String.valueOf(width), "display orientation: ", String.valueOf(displayOrientation));
-        Log.i(CameraCaptureFragment.class, "Selected preview camera size:", String.valueOf(size.height), "x", String.valueOf(size.width));
-        return size;
+        Log.i(CameraCaptureFragment.class, "Selected preview camera size:", String.valueOf(size.height), "x", String.valueOf(size.width));*/
+        return cameraSizes.previewSize;
     }
 
     @Override
