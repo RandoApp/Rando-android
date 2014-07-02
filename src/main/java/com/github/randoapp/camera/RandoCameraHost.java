@@ -46,7 +46,7 @@ public class RandoCameraHost extends SquareCameraHost {
 
     @Override
     public Camera.Size getPreviewSize(int displayOrientation, int width, int height, Camera.Parameters parameters) {
-        cameraSizes = CameraUtil.getCameraSizes(parameters, getDeviceProfile(), width, height, Constants.DESIRED_PICTURE_SIZE, true);
+        cameraSizes = CameraUtil.getCameraSizes(parameters, this, width, height, Constants.DESIRED_PICTURE_SIZE, true);
         /*WindowManager windowManager = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
         int displayWidth = display.getWidth();

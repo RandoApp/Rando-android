@@ -5,6 +5,7 @@ import android.test.AndroidTestCase;
 
 import static com.github.randoapp.Constants.*;
 
+import com.commonsware.cwac.camera.CameraHost;
 import com.commonsware.cwac.camera.DeviceProfile;
 import com.github.randoapp.Constants;
 import com.github.randoapp.camera.CameraSizes;
@@ -263,14 +264,14 @@ public class CameraUtilTest extends AndroidTestCase {
                         320, 240,
                         240, 160,
                         176, 144)
-        ), mockDefaultDeviceProfile(), 768, 1184, Constants.DESIRED_PICTURE_SIZE, true);
+        ), mockCameraHost(mockDefaultDeviceProfile()), 768, 1184, Constants.DESIRED_PICTURE_SIZE, true);
 
         CameraSizes expectedCameraSizes = new CameraSizes();
         expectedCameraSizes.previewSize = createSize(640,480);
         expectedCameraSizes.pictureSize = createSize(1600,1200);
 
-        assertThat("Preview size " + actualCameraSizes.previewSize.width + ":" + actualCameraSizes.previewSize.height, actualCameraSizes.previewSize, is(expectedCameraSizes.previewSize));
-        assertThat("Picture size " + actualCameraSizes.pictureSize.width + ":" + actualCameraSizes.pictureSize.height, actualCameraSizes.pictureSize, is(expectedCameraSizes.pictureSize));
+        assertThat("Preview size " + actualCameraSizes.previewSize.width + ":" + actualCameraSizes.previewSize.height + "But Expected:"+expectedCameraSizes.previewSize.width + ":" + expectedCameraSizes.previewSize.height, actualCameraSizes.previewSize, is(expectedCameraSizes.previewSize));
+        assertThat("Picture size " + actualCameraSizes.pictureSize.width + ":" + actualCameraSizes.pictureSize.height+expectedCameraSizes.pictureSize.width + ":" + expectedCameraSizes.pictureSize.height, actualCameraSizes.pictureSize, is(expectedCameraSizes.pictureSize));
     }
 
     public void testCameraSizesNexus4EnforceProfileRatio1_3() throws Exception {
@@ -304,14 +305,14 @@ public class CameraUtilTest extends AndroidTestCase {
                         320, 240,
                         240, 160,
                         176, 144)
-        ), mockDeviceProfile(1536,1536), 768, 1184, Constants.DESIRED_PICTURE_SIZE, true);
+        ), mockCameraHost(mockDeviceProfile(1536, 1536)), 768, 1184, Constants.DESIRED_PICTURE_SIZE, true);
 
         CameraSizes expectedCameraSizes = new CameraSizes();
         expectedCameraSizes.previewSize = createSize(640,480);
-        expectedCameraSizes.pictureSize = createSize(1600,1200);
+        expectedCameraSizes.pictureSize = createSize(1600, 1200);
 
         assertThat("Preview size " + actualCameraSizes.previewSize.width + ":" + actualCameraSizes.previewSize.height + "But Expected:"+expectedCameraSizes.previewSize.width + ":" + expectedCameraSizes.previewSize.height, actualCameraSizes.previewSize, is(expectedCameraSizes.previewSize));
-        assertThat("Picture size " + actualCameraSizes.pictureSize.width + ":" + actualCameraSizes.pictureSize.height, actualCameraSizes.pictureSize, is(expectedCameraSizes.pictureSize));
+        assertThat("Picture size " + actualCameraSizes.pictureSize.width + ":" + actualCameraSizes.pictureSize.height+expectedCameraSizes.pictureSize.width + ":" + expectedCameraSizes.pictureSize.height, actualCameraSizes.pictureSize, is(expectedCameraSizes.pictureSize));
     }
 
     public void testCameraSizesNexus4EnforceProfileRatio1_7() throws Exception {
@@ -345,11 +346,11 @@ public class CameraUtilTest extends AndroidTestCase {
                         320, 240,
                         240, 160,
                         176, 144)
-        ), mockDeviceProfile(1836,1836), 768, 1184, Constants.DESIRED_PICTURE_SIZE, true);
+        ), mockCameraHost(mockDeviceProfile(1836,1836)), 768, 1184, Constants.DESIRED_PICTURE_SIZE, true);
 
         CameraSizes expectedCameraSizes = new CameraSizes();
         expectedCameraSizes.previewSize = createSize(640,480);
-        expectedCameraSizes.pictureSize = createSize(1600,1200);
+        expectedCameraSizes.pictureSize = createSize(1600, 1200);
 
         assertThat("Preview size " + actualCameraSizes.previewSize.width + ":" + actualCameraSizes.previewSize.height + "But Expected:"+expectedCameraSizes.previewSize.width + ":" + expectedCameraSizes.previewSize.height, actualCameraSizes.previewSize, is(expectedCameraSizes.previewSize));
         assertThat("Picture size " + actualCameraSizes.pictureSize.width + ":" + actualCameraSizes.pictureSize.height+expectedCameraSizes.pictureSize.width + ":" + expectedCameraSizes.pictureSize.height, actualCameraSizes.pictureSize, is(expectedCameraSizes.pictureSize));
@@ -382,7 +383,7 @@ public class CameraUtilTest extends AndroidTestCase {
                         352, 288,
                         240, 160,
                         176, 144)
-        ), mockDefaultDeviceProfile(), 768, 1184, Constants.DESIRED_PICTURE_SIZE, true);
+        ), mockCameraHost(mockDefaultDeviceProfile()), 768, 1184, Constants.DESIRED_PICTURE_SIZE, true);
 
         CameraSizes expectedCameraSizes = new CameraSizes();
         expectedCameraSizes.previewSize = createSize(768,432);
@@ -427,6 +428,13 @@ public class CameraUtilTest extends AndroidTestCase {
         when(deviceProfileMock.getMinPictureHeight()).thenReturn(minHeight);
 
         return deviceProfileMock;
+    }
+
+    private CameraHost mockCameraHost(DeviceProfile deviceProfile) throws IOException {
+        CameraHost cameraHost = mock(CameraHost.class);
+        when(cameraHost.getDeviceProfile()).thenReturn(deviceProfile);
+
+        return cameraHost;
     }
 
 }

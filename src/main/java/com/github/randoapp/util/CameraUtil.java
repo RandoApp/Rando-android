@@ -2,6 +2,8 @@ package com.github.randoapp.util;
 
 import android.hardware.Camera;
 
+import com.commonsware.cwac.camera.CameraHost;
+import com.commonsware.cwac.camera.CameraUtils;
 import com.commonsware.cwac.camera.DeviceProfile;
 import com.github.randoapp.camera.CameraSizes;
 import com.github.randoapp.log.Log;
@@ -61,29 +63,8 @@ public class CameraUtil {
         return optimalSize;
     }
 
-
-    /**
-     * Returns CameraSizes pair picture size and preview size with following conditions:
-     * 1. Preview and Picture sizes must be in the same ratio
-     * 2. Height of preview size should be less than screen height
-     *
-     * @param parameters         Camera.Parameters
-     * @param deviceProfile      profile of device
-     * @param screenWidth        available preview screen Width
-     * @param screenHeight       available preview screen Height
-     * @param desiredPictureSize
-     * @param enforceProfile
-     * @return
-     */
-
-    public static CameraSizes getCameraSizes(Camera.Parameters parameters, DeviceProfile deviceProfile,
-                                             final int screenWidth, final int screenHeight, final int desiredPictureSize, boolean enforceProfile) {
-        CameraSizes cameraSizes = new CameraSizes();
-        List<Camera.Size> pictureSizes = parameters.getSupportedPictureSizes();
-
-        List<Camera.Size> filteredPictureSizes = new ArrayList<Camera.Size>();
-
-        Collections.sort(pictureSizes, new Comparator<Camera.Size>() {
+    public static Camera.Size getBestPictureSizeForOldDevices(List<Camera.Size> cameraSizes) {
+        Collections.sort(cameraSizes, new Comparator<Camera.Size>() {
             @Override
             public int compare(Camera.Size cameraSize1, Camera.Size cameraSize2) {
                 int cameraMinSize1 = Math.min(cameraSize1.height, cameraSize1.width);
@@ -95,13 +76,61 @@ public class CameraUtil {
                 return compareSizeIncludeResolution(cameraSize2, cameraSize1);
             }
         });
+        return cameraSizes.get(0);
+    }
 
-        for (Camera.Size size : pictureSizes) {
-            if ((!enforceProfile)
-                    ||
-                    (size.height <= deviceProfile.getMaxPictureHeight()
-                            && size.height >= deviceProfile.getMinPictureHeight())) {
-                filteredPictureSizes.add(size);
+
+
+
+    /**
+     * Returns CameraSizes pair picture size and preview size with following conditions:
+     * 1. Preview and Picture sizes must be in the same ratio
+     * 2. Height of preview size should be less than screen height
+     *
+     * @param parameters         Camera.Parameters
+     * @param host               CameraHost used
+     * @param screenWidth        available preview screen Width
+     * @param screenHeight       available preview screen Height
+     * @param desiredPictureSize
+     * @param enforceProfile
+     * @return
+     */
+
+    public static CameraSizes getCameraSizes(Camera.Parameters parameters, CameraHost host,
+                                             final int screenWidth, final int screenHeight, final int desiredPictureSize, boolean enforceProfile) {
+        CameraSizes cameraSizes = new CameraSizes();
+        List<Camera.Size> pictureSizes = parameters.getSupportedPictureSizes();
+
+        DeviceProfile deviceProfile = host.getDeviceProfile();
+
+        List<Camera.Size> filteredPictureSizes = new ArrayList<Camera.Size>();
+
+        Collections.sort(pictureSizes, new Comparator<Camera.Size>() {
+            @Override
+            public int compare(Camera.Size cameraSize1, Camera.Size cameraSize2) {
+                int cameraMinSize1 = Math.min(cameraSize1.height, cameraSize1.width);
+                int cameraMinSize2 = Math.min(cameraSize2.height, cameraSize2.width);
+
+                if (cameraMinSize1 >= desiredPictureSize && cameraMinSize2 >= desiredPictureSize) {
+                    return compareSizeIncludeResolution(cameraSize1, cameraSize2);
+                }
+                return compareSizeIncludeResolution(cameraSize2, cameraSize1);
+            }
+        });
+
+        if (enforceProfile && (deviceProfile.getMinPictureHeight() != 0 || deviceProfile.getMaxPictureHeight() != Integer.MAX_VALUE)) {
+            filteredPictureSizes.add(getBestPictureSizeForOldDevices(parameters.getSupportedPictureSizes()));
+            if (filteredPictureSizes.size() == 0) {
+                return getCameraSizes(parameters, host, screenWidth, screenHeight, desiredPictureSize, false);
+            }
+        } else {
+            for (Camera.Size size : pictureSizes) {
+                if ((!enforceProfile)
+                        ||
+                        (size.height <= deviceProfile.getMaxPictureHeight()
+                                && size.height >= deviceProfile.getMinPictureHeight())) {
+                    filteredPictureSizes.add(size);
+                }
             }
         }
 
@@ -114,13 +143,16 @@ public class CameraUtil {
             }
         }
 
-        for (Camera.Size size : pictureSizes) {
+        for (Camera.Size size : filteredPictureSizes) {
             Camera.Size foundPreviewSize = findBiggestSizeByRatio(filteredPreviewSizes, size.width, size.height);
             if (foundPreviewSize != null) {
                 cameraSizes.previewSize = foundPreviewSize;
                 cameraSizes.pictureSize = size;
                 break;
             }
+        }
+        if ((cameraSizes.pictureSize == null || cameraSizes.previewSize == null) && enforceProfile){
+            return getCameraSizes(parameters, host, screenWidth, screenHeight, desiredPictureSize, false);
         }
         return cameraSizes;
     }
