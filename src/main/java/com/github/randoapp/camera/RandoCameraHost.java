@@ -13,6 +13,8 @@ import com.commonsware.cwac.camera.CameraView;
 import com.commonsware.cwac.camera.SquareCameraHost;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
+import com.github.randoapp.log.Log;
+import com.github.randoapp.task.SendLogTask;
 import com.github.randoapp.util.CameraUtil;
 import com.github.randoapp.util.FileUtil;
 
@@ -39,8 +41,8 @@ public class RandoCameraHost extends SquareCameraHost {
 
     @Override
     public Camera.Size getPictureSize(Camera.Parameters parameters) {
-        /*Camera.Size size = CameraUtil.getBestPictureSize(parameters.getSupportedPictureSizes(), getDeviceProfile());
-        Log.i(CameraCaptureFragment.class, "Selected picture size:", String.valueOf(size.height), "x", String.valueOf(size.width));*/
+        /*Camera.Size size = CameraUtil.getBestPictureSize(parameters.getSupportedPictureSizes(), getDeviceProfile());*/
+        Log.i(CameraCaptureFragment.class, "Selected picture size:", String.valueOf(cameraSizes.pictureSize.height), "x", String.valueOf(cameraSizes.pictureSize.width));
         return cameraSizes.pictureSize;
     }
 
@@ -51,9 +53,9 @@ public class RandoCameraHost extends SquareCameraHost {
         Display display = windowManager.getDefaultDisplay();
         int displayWidth = display.getWidth();
 
-        Camera.Size size = CameraUtils.getBestAspectPreviewSize(displayOrientation, displayWidth, (int) (displayWidth / Constants.PICTURE_DESIRED_ASPECT_RATIO), parameters);
+        Camera.Size size = CameraUtils.getBestAspectPreviewSize(displayOrientation, displayWidth, (int) (displayWidth / Constants.PICTURE_DESIRED_ASPECT_RATIO), parameters);*/
         Log.i(CameraCaptureFragment.class, "Available Preview screen size:", String.valueOf(height), "x", String.valueOf(width), "display orientation: ", String.valueOf(displayOrientation));
-        Log.i(CameraCaptureFragment.class, "Selected preview camera size:", String.valueOf(size.height), "x", String.valueOf(size.width));*/
+        Log.i(CameraCaptureFragment.class, "Selected preview camera size:", String.valueOf(cameraSizes.previewSize.height), "x", String.valueOf(cameraSizes.previewSize.width));
         return cameraSizes.previewSize;
     }
 
@@ -83,6 +85,13 @@ public class RandoCameraHost extends SquareCameraHost {
 
     @Override
     public void OnImageSaved(File image) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Deice:").append(Build.DEVICE).append(" Manufacturer:").append(Build.MANUFACTURER)
+                .append(" Pic size: ").append(cameraSizes.pictureSize.height).append("x").append(cameraSizes.pictureSize.width)
+                .append(" Preview size: ").append(cameraSizes.previewSize.height).append("x").append(cameraSizes.previewSize.width);
+
+        new SendLogTask(sb.toString()).execute();
         Intent intent = new Intent(CAMERA_BROADCAST_EVENT);
         if (image != null) {
             intent.putExtra(RANDO_PHOTO_PATH, image.getAbsolutePath());
