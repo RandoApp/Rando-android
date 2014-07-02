@@ -27,8 +27,7 @@
             android:label="@string/take_picture_screen_label"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:theme="@style/RandoThemeFullScreen"
-            android:largeHeap="true"/>
+            android:theme="@style/RandoThemeFullScreen"/>
 
         <meta-data
             android:name="com.google.android.gms.version"
