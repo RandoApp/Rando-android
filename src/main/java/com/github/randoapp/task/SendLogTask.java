@@ -13,7 +13,9 @@ public class SendLogTask extends BaseTask {
     @Override
     public Integer run() {
         try {
-            API.uploadLog(logs);
+            StringBuilder sb = new StringBuilder("{\"log\":\"");
+            sb.append(logs).append("\"}");
+            API.uploadLog(sb.toString());
         } catch (Exception e) {
             Log.e(SendLogTask.class, "Can not send log, because: ", e.getMessage());
         }

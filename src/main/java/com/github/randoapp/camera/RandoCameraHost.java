@@ -29,6 +29,9 @@ public class RandoCameraHost extends SquareCameraHost {
     private boolean shutterSoundDisabled = false;
     public CameraSizes cameraSizes;
 
+    private List<Camera.Size> pictureSizes;
+    private List<Camera.Size> previewSizes;
+
     public RandoCameraHost(Activity activity) {
         super(activity.getBaseContext());
         this.activity = activity;
@@ -49,6 +52,9 @@ public class RandoCameraHost extends SquareCameraHost {
     @Override
     public Camera.Size getPreviewSize(int displayOrientation, int width, int height, Camera.Parameters parameters) {
         cameraSizes = CameraUtil.getCameraSizes(parameters, this, width, height, Constants.DESIRED_PICTURE_SIZE, true);
+
+        pictureSizes = parameters.getSupportedPictureSizes();
+        previewSizes = parameters.getSupportedPreviewSizes();
         /*WindowManager windowManager = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
         int displayWidth = display.getWidth();
@@ -90,7 +96,6 @@ public class RandoCameraHost extends SquareCameraHost {
         sb.append("Deice:").append(Build.DEVICE).append(" Manufacturer:").append(Build.MANUFACTURER)
                 .append(" Pic size: ").append(cameraSizes.pictureSize.height).append("x").append(cameraSizes.pictureSize.width)
                 .append(" Preview size: ").append(cameraSizes.previewSize.height).append("x").append(cameraSizes.previewSize.width);
-
         new SendLogTask(sb.toString()).execute();
         Intent intent = new Intent(CAMERA_BROADCAST_EVENT);
         if (image != null) {
