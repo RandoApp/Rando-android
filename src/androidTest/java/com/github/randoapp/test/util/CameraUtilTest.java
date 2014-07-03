@@ -309,7 +309,7 @@ public class CameraUtilTest extends AndroidTestCase {
 
         CameraSizes expectedCameraSizes = new CameraSizes();
         expectedCameraSizes.previewSize = createSize(640,480);
-        expectedCameraSizes.pictureSize = createSize(1600, 1200);
+        expectedCameraSizes.pictureSize = createSize(3264, 2448);
 
         assertThat("Preview size " + actualCameraSizes.previewSize.width + ":" + actualCameraSizes.previewSize.height + "But Expected:"+expectedCameraSizes.previewSize.width + ":" + expectedCameraSizes.previewSize.height, actualCameraSizes.previewSize, is(expectedCameraSizes.previewSize));
         assertThat("Picture size " + actualCameraSizes.pictureSize.width + ":" + actualCameraSizes.pictureSize.height+expectedCameraSizes.pictureSize.width + ":" + expectedCameraSizes.pictureSize.height, actualCameraSizes.pictureSize, is(expectedCameraSizes.pictureSize));
@@ -350,7 +350,7 @@ public class CameraUtilTest extends AndroidTestCase {
 
         CameraSizes expectedCameraSizes = new CameraSizes();
         expectedCameraSizes.previewSize = createSize(640,480);
-        expectedCameraSizes.pictureSize = createSize(1600, 1200);
+        expectedCameraSizes.pictureSize = createSize(3264,2448);
 
         assertThat("Preview size " + actualCameraSizes.previewSize.width + ":" + actualCameraSizes.previewSize.height + "But Expected:"+expectedCameraSizes.previewSize.width + ":" + expectedCameraSizes.previewSize.height, actualCameraSizes.previewSize, is(expectedCameraSizes.previewSize));
         assertThat("Picture size " + actualCameraSizes.pictureSize.width + ":" + actualCameraSizes.pictureSize.height+expectedCameraSizes.pictureSize.width + ":" + expectedCameraSizes.pictureSize.height, actualCameraSizes.pictureSize, is(expectedCameraSizes.pictureSize));

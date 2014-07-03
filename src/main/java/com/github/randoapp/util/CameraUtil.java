@@ -79,8 +79,16 @@ public class CameraUtil {
         return cameraSizes.get(0);
     }
 
-
-
+    public static Camera.Size getLargestPictureSize(List<Camera.Size> cameraSizes) {
+        Camera.Size bestSize = null;
+        for (Camera.Size size: cameraSizes){
+            if (bestSize == null
+                    ||(bestSize.height*bestSize.width < size.height*size.width)){
+                bestSize = size;
+            }
+        }
+        return bestSize;
+    }
 
     /**
      * Returns CameraSizes pair picture size and preview size with following conditions:
@@ -119,7 +127,7 @@ public class CameraUtil {
         });
 
         if (enforceProfile && (deviceProfile.getMinPictureHeight() != 0 || deviceProfile.getMaxPictureHeight() != Integer.MAX_VALUE)) {
-            filteredPictureSizes.add(getBestPictureSizeForOldDevices(parameters.getSupportedPictureSizes()));
+            filteredPictureSizes.add(getLargestPictureSize(parameters.getSupportedPictureSizes()));
             if (filteredPictureSizes.size() == 0) {
                 return getCameraSizes(parameters, host, screenWidth, screenHeight, desiredPictureSize, false);
             }
