@@ -126,9 +126,9 @@ public class CameraUtil {
             }
         });
 
-        if (enforceProfile && (deviceProfile.getMinPictureHeight() != 0 || deviceProfile.getMaxPictureHeight() != Integer.MAX_VALUE)) {
-            //filteredPictureSizes.add(getLargestPictureSize(parameters.getSupportedPictureSizes()));
-            filteredPictureSizes.add(CameraUtils.getLargestPictureSize(host, parameters, true));
+        if (enforceProfile) {
+            filteredPictureSizes.add(getLargestPictureSize(parameters.getSupportedPictureSizes()));
+            //filteredPictureSizes.add(CameraUtils.getLargestPictureSize(host, parameters, true));
             if (filteredPictureSizes.size() == 0) {
                 return getCameraSizes(parameters, host, screenWidth, screenHeight, desiredPictureSize, false);
             }

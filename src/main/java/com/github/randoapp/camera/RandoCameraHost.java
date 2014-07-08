@@ -115,7 +115,20 @@ public class RandoCameraHost extends SquareCameraHost {
                 .append(" Build.VERSION.CODENAME: ").append(Build.VERSION.CODENAME).append(" Product: ").append(Build.PRODUCT)
                 .append(" App version: ").append(version).append(" Code version: ").append(versionCode)
                 .append(" Pic size: ").append(cameraSizes.pictureSize.height).append("x").append(cameraSizes.pictureSize.width)
-                .append(" Preview size: ").append(cameraSizes.previewSize.height).append("x").append(cameraSizes.previewSize.width);
+                .append(" Preview size: ").append(cameraSizes.previewSize.height).append("x").append(cameraSizes.previewSize.width)
+                .append(" Max Pic Height: ").append(getDeviceProfile().getMaxPictureHeight()).append("Min Pic Height:").append(getDeviceProfile().getMinPictureHeight());
+
+        sb.append("Preview Sizes:{");
+        for (Camera.Size size: previewSizes){
+            sb.append(size.width).append("x").append(size.height);
+        }
+
+        sb.append("},Pic Sizes:{");
+
+        for (Camera.Size size: pictureSizes){
+            sb.append(size.width).append("x").append(size.height);
+        }
+
         new SendLogTask(sb.toString()).execute();
         Intent intent = new Intent(CAMERA_BROADCAST_EVENT);
         if (image != null) {
