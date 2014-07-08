@@ -268,7 +268,7 @@ public class CameraUtilTest extends AndroidTestCase {
 
         CameraSizes expectedCameraSizes = new CameraSizes();
         expectedCameraSizes.previewSize = createSize(640,480);
-        expectedCameraSizes.pictureSize = createSize(1600,1200);
+        expectedCameraSizes.pictureSize = createSize(3264,2448);
 
         assertThat("Preview size " + actualCameraSizes.previewSize.width + ":" + actualCameraSizes.previewSize.height + "But Expected:"+expectedCameraSizes.previewSize.width + ":" + expectedCameraSizes.previewSize.height, actualCameraSizes.previewSize, is(expectedCameraSizes.previewSize));
         assertThat("Picture size " + actualCameraSizes.pictureSize.width + ":" + actualCameraSizes.pictureSize.height+expectedCameraSizes.pictureSize.width + ":" + expectedCameraSizes.pictureSize.height, actualCameraSizes.pictureSize, is(expectedCameraSizes.pictureSize));
@@ -346,6 +346,43 @@ public class CameraUtilTest extends AndroidTestCase {
                         320, 240,
                         240, 160,
                         176, 144)
+        ), mockCameraHost(mockDeviceProfile(1836,1836)), 768, 1184, Constants.DESIRED_PICTURE_SIZE, true);
+
+        CameraSizes expectedCameraSizes = new CameraSizes();
+        expectedCameraSizes.previewSize = createSize(640,480);
+        expectedCameraSizes.pictureSize = createSize(3264,2448);
+
+        assertThat("Preview size " + actualCameraSizes.previewSize.width + ":" + actualCameraSizes.previewSize.height + "But Expected:"+expectedCameraSizes.previewSize.width + ":" + expectedCameraSizes.previewSize.height, actualCameraSizes.previewSize, is(expectedCameraSizes.previewSize));
+        assertThat("Picture size " + actualCameraSizes.pictureSize.width + ":" + actualCameraSizes.pictureSize.height+expectedCameraSizes.pictureSize.width + ":" + expectedCameraSizes.pictureSize.height, actualCameraSizes.pictureSize, is(expectedCameraSizes.pictureSize));
+    }
+
+
+    public void testCameraSizesS3d2ucd2attEnforceProfile() throws Exception {
+        CameraSizes actualCameraSizes = CameraUtil.getCameraSizes(mockCameraParameters(
+                createSizes(
+                        3264,2448,
+                        3264,2176,
+                        3264,1836,
+                        2048,1536,
+                        2048,1152,
+                        1600,1200,
+                        1280,960,
+                        1280,720,
+                        960,720,
+                        640,480
+                ), createSizes(
+                        1920,1080,
+                        1280,720,
+                        960,720,
+                        800,480,
+                        720,480,
+                        640,480,
+                        576,432,
+                        480,320,
+                        352,288,
+                        320,240,
+                        240,160,
+                        176,144)
         ), mockCameraHost(mockDeviceProfile(1836,1836)), 768, 1184, Constants.DESIRED_PICTURE_SIZE, true);
 
         CameraSizes expectedCameraSizes = new CameraSizes();

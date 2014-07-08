@@ -3,6 +3,8 @@ package com.github.randoapp.camera;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Build;
 import android.support.v4.content.LocalBroadcastManager;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 import com.commonsware.cwac.camera.CameraHost;
 import com.commonsware.cwac.camera.CameraView;
 import com.commonsware.cwac.camera.SquareCameraHost;
+import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.log.Log;
@@ -92,8 +95,25 @@ public class RandoCameraHost extends SquareCameraHost {
     @Override
     public void OnImageSaved(File image) {
 
+        PackageManager manager = App.context.getPackageManager();
+        PackageInfo info = null;
+
+        try {
+            info = manager.getPackageInfo(App.context.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException ex){
+
+        }
+        String version = "";
+        String versionCode  = "";
+        if (info != null){
+            version = info.versionName;
+            versionCode = String.valueOf(info.versionCode);
+        }
+
         StringBuilder sb = new StringBuilder();
-        sb.append("Deice:").append(Build.DEVICE).append(" Manufacturer:").append(Build.MANUFACTURER)
+        sb.append("Deice: ").append(Build.DEVICE).append(" Manufacturer: ").append(Build.MANUFACTURER)
+                .append(" Build.VERSION.CODENAME: ").append(Build.VERSION.CODENAME).append(" Product: ").append(Build.PRODUCT)
+                .append(" App version: ").append(version).append(" Code version: ").append(versionCode)
                 .append(" Pic size: ").append(cameraSizes.pictureSize.height).append("x").append(cameraSizes.pictureSize.width)
                 .append(" Preview size: ").append(cameraSizes.previewSize.height).append("x").append(cameraSizes.previewSize.width);
         new SendLogTask(sb.toString()).execute();
