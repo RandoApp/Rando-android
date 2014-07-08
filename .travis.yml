@@ -37,6 +37,7 @@ before_install:
   - cd ${HOME}
   - ls -l
   - ls -l build/
+  - ls -l build/RandoApp/
   - if [ ! -f $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
   - sudo apt-get update -qq
   - cd $DOWNLOADS_HOME
