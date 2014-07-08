@@ -36,6 +36,7 @@ before_install:
   # Install base Android SDK
   - cd ${HOME}
   - ls -l
+  - ls -l build/
   - if [ ! -f $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
   - sudo apt-get update -qq
   - cd $DOWNLOADS_HOME
