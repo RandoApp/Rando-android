@@ -451,11 +451,11 @@ public class CameraUtilTest extends AndroidTestCase {
                         320,240,
                         240,160,
                         176,144)
-        ), mockCameraHost(mockDeviceProfile(1536,Integer.MAX_VALUE)), 768, 1184, Constants.DESIRED_PICTURE_SIZE, true);
+        ), mockCameraHost(mockDeviceProfile(2448,Integer.MAX_VALUE)), 768, 1184, Constants.DESIRED_PICTURE_SIZE, true);
 
         CameraSizes expectedCameraSizes = new CameraSizes();
         expectedCameraSizes.previewSize = createSize(640,480);
-        expectedCameraSizes.pictureSize = createSize(2048,1536);
+        expectedCameraSizes.pictureSize = createSize(3264,2448);
 
         assertThat("Picture sizes are not equal", actualCameraSizes, is(expectedCameraSizes));
     }
