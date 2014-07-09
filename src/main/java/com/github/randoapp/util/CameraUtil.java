@@ -81,9 +81,9 @@ public class CameraUtil {
 
     public static Camera.Size getLargestPictureSize(List<Camera.Size> cameraSizes) {
         Camera.Size bestSize = null;
-        for (Camera.Size size: cameraSizes){
+        for (Camera.Size size : cameraSizes) {
             if (bestSize == null
-                    ||(bestSize.height*bestSize.width < size.height*size.width)){
+                    || (bestSize.height * bestSize.width < size.height * size.width)) {
                 bestSize = size;
             }
         }
@@ -126,21 +126,17 @@ public class CameraUtil {
             }
         });
 
-        if (enforceProfile) {
-            filteredPictureSizes.add(getLargestPictureSize(parameters.getSupportedPictureSizes()));
-            //filteredPictureSizes.add(CameraUtils.getLargestPictureSize(host, parameters, true));
-            if (filteredPictureSizes.size() == 0) {
-                return getCameraSizes(parameters, host, screenWidth, screenHeight, desiredPictureSize, false);
+        for (Camera.Size size : pictureSizes) {
+            if ((!enforceProfile)
+                    ||
+                    (size.height <= deviceProfile.getMaxPictureHeight()
+                            && size.height >= deviceProfile.getMinPictureHeight())) {
+                filteredPictureSizes.add(size);
             }
-        } else {
-            for (Camera.Size size : pictureSizes) {
-                if ((!enforceProfile)
-                        ||
-                        (size.height <= deviceProfile.getMaxPictureHeight()
-                                && size.height >= deviceProfile.getMinPictureHeight())) {
-                    filteredPictureSizes.add(size);
-                }
-            }
+        }
+
+        if (filteredPictureSizes.isEmpty() && enforceProfile){
+            return getCameraSizes(parameters, host, screenWidth, screenHeight, desiredPictureSize, false);
         }
 
         List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
@@ -153,6 +149,9 @@ public class CameraUtil {
         }
 
         for (Camera.Size size : filteredPictureSizes) {
+            if (cameraSizes.pictureSize == null){
+                cameraSizes.pictureSize = size;
+            }
             Camera.Size foundPreviewSize = findBiggestSizeByRatio(filteredPreviewSizes, size.width, size.height);
             if (foundPreviewSize != null) {
                 cameraSizes.previewSize = foundPreviewSize;
@@ -160,8 +159,8 @@ public class CameraUtil {
                 break;
             }
         }
-        if ((cameraSizes.pictureSize == null || cameraSizes.previewSize == null) && enforceProfile){
-            return getCameraSizes(parameters, host, screenWidth, screenHeight, desiredPictureSize, false);
+        if (cameraSizes.previewSize == null) {
+            cameraSizes.previewSize = filteredPreviewSizes.get(0);
         }
         return cameraSizes;
     }
