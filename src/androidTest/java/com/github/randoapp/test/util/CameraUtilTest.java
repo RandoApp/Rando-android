@@ -3,8 +3,6 @@ package com.github.randoapp.test.util;
 import android.hardware.Camera;
 import android.test.AndroidTestCase;
 
-import static com.github.randoapp.Constants.*;
-
 import com.commonsware.cwac.camera.CameraHost;
 import com.commonsware.cwac.camera.DeviceProfile;
 import com.github.randoapp.Constants;
@@ -21,217 +19,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class CameraUtilTest extends AndroidTestCase {
-
-    public void testSelectMaxSizeButNearCameraMinSize() throws Exception {
-        Camera.Size actual = CameraUtil.getBestPictureSize(createSizes(
-                        8000, 7000,
-                        9000, 8000,
-                        1900, DESIRED_PICTURE_SIZE,
-                        640, 480,
-                        400, 400),
-                DeviceProfile.getInstance(getContext())
-        );
-
-        assertThat(actual.width + ":" + actual.height, actual, is(createSize(640, 480)));
-    }
-
-    public void testGetCameraMinSizeRectangle() throws Exception {
-        Camera.Size actual = CameraUtil.getBestPictureSize(createSizes(
-                        DESIRED_PICTURE_SIZE, 500,
-                        DESIRED_PICTURE_SIZE, DESIRED_PICTURE_SIZE,
-                        3000, DESIRED_PICTURE_SIZE,
-                        640, 480,
-                        400, 400),
-                DeviceProfile.getInstance(getContext())
-        );
-
-        assertThat(actual.width + ":" + actual.height, actual, is(createSize(640, 480)));
-    }
-
-    public void testGetMinSizeIfAllSizesAreHuge() throws Exception {
-        Camera.Size actual = CameraUtil.getBestPictureSize(createSizes(
-                        9000, 9000,
-                        8000, 7000,
-                        6000, 5000,
-                        3000, 2000),
-                DeviceProfile.getInstance(getContext())
-        );
-
-        assertThat(actual.width + ":" + actual.height, actual, is(createSize(3000, 2000)));
-    }
-
-    public void testGetMinSizeIfAllSizesAreHugeIgnoreOrder() throws Exception {
-        Camera.Size actual = CameraUtil.getBestPictureSize(createSizes(
-                        3000, 2000,
-                        6000, 5000,
-                        8000, 7000,
-                        9000, 9000),
-                DeviceProfile.getInstance(getContext())
-        );
-
-        assertThat(actual.width + ":" + actual.height, actual, is(createSize(3000, 2000)));
-    }
-
-    public void testGetMaxSizeIfAllSizesAreLow() throws Exception {
-        Camera.Size actual = CameraUtil.getBestPictureSize(createSizes(
-                        800, 700,
-                        900, 200,
-                        400, 500,
-                        300, 300),
-                DeviceProfile.getInstance(getContext())
-        );
-
-        assertThat(actual.width + ":" + actual.height, actual, is(createSize(800, 700)));
-    }
-
-    public void testGetMaxSizeIfAllSizesAreLowIgnoreOrder() throws Exception {
-        Camera.Size actual = CameraUtil.getBestPictureSize(createSizes(
-                        300, 300,
-                        400, 500,
-                        900, 200,
-                        800, 700),
-                DeviceProfile.getInstance(getContext())
-        );
-
-        assertThat(actual.width + ":" + actual.height, actual, is(createSize(800, 700)));
-    }
-
-    public void testGetMaxSizeWithMinResolution() throws Exception {
-        Camera.Size actual = CameraUtil.getBestPictureSize(createSizes(
-                        3000, 7000,
-                        3000, 4000,
-                        3000, 2000,
-                        3000, 1000),
-                DeviceProfile.getInstance(getContext())
-        );
-
-        assertThat(actual.width + ":" + actual.height, actual, is(createSize(3000, 2000)));
-    }
-
-    public void testGetRectangleResolutionIfItIsMaxSize() throws Exception {
-        Camera.Size actual = CameraUtil.getBestPictureSize(createSizes(
-                        3000, 7000,
-                        3000, 4000,
-                        3000, 3000,
-                        3000, 1000,
-                        1000, 1000),
-                DeviceProfile.getInstance(getContext())
-        );
-
-        assertThat(actual.width + ":" + actual.height, actual, is(createSize(3000, 3000)));
-    }
-
-    public void testGetMaxSize() throws Exception {
-        Camera.Size actual = CameraUtil.getBestPictureSize(createSizes(
-                7000, 5000,
-                4000, 2000,
-                3000, 3000,
-                500, 400,
-                400, 100));
-
-        assertThat(actual.width + ":" + actual.height, actual, is(createSize(7000, 5000)));
-    }
-
-    public void testGetMaxSizeIgnoreSizeListOrder() throws Exception {
-        Camera.Size actual = CameraUtil.getBestPictureSize(createSizes(
-                400, 100,
-                500, 400,
-                3000, 3000,
-                4000, 2000,
-                7000, 5000));
-
-        assertThat(actual.width + ":" + actual.height, actual, is(createSize(7000, 5000)));
-    }
-
-    public void testGetMaxSizeIgnoreWidthAndHeightOrder() throws Exception {
-        Camera.Size actual = CameraUtil.getBestPictureSize(createSizes(
-                4000, 5000,
-                5000, 4000,
-                3000, 3000,
-                500, 400,
-                400, 100));
-
-        assertThat(actual.width + ":" + actual.height, actual, is(createSize(4000, 5000)));
-    }
-
-    public void testGetBestPreivewSize() throws Exception {
-        Camera.Size actual = CameraUtil.getBestPreviewSize(createSizes(
-                4000, 5000,
-                2000, 4000,
-                3000, 3000,
-                400, 1000,
-                400, 900,
-                400, 100), 400, 800);
-
-        assertThat(actual.width + ":" + actual.height, actual, is(createSize(2000, 4000)));
-    }
-
-    public void testGetBestPreivewSizeSameSize() throws Exception {
-        Camera.Size actual = CameraUtil.getBestPreviewSize(createSizes(
-                4000, 5000,
-                400, 800,
-                4000, 8000,
-                400, 1000,
-                400, 900,
-                400, 100), 400, 800);
-
-        assertThat(actual.width + ":" + actual.height, actual, is(createSize(400, 800)));
-    }
-
-    public void testGetBestPreivewSizeBigTarget() throws Exception {
-        Camera.Size actual = CameraUtil.getBestPreviewSize(createSizes(
-                4000, 5000,
-                400, 800,
-                4000, 8000,
-                400, 1000,
-                400, 900,
-                4200, 5000,
-                400, 100), 70000, 80000);
-
-        assertThat(actual.width + ":" + actual.height, actual, is(createSize(4200, 5000)));
-    }
-
-    public void testGetBestPreivewSizeSmallTarget() throws Exception {
-        Camera.Size actual = CameraUtil.getBestPreviewSize(createSizes(
-                4000, 5000,
-                400, 800,
-                4000, 8000,
-                400, 1000,
-                600, 700,
-                400, 900,
-                400, 100), 100, 80);
-
-        assertThat(actual.width + ":" + actual.height, actual, is(createSize(400, 100)));
-    }
-
-    public void testGetBestPreivewSizeWithAllSizesWithEqualRation() throws Exception {
-        Camera.Size actual = CameraUtil.getBestPreviewSize(createSizes(
-                2000, 2000,
-                1000, 1000,
-                400, 400,
-                100, 100), 800, 1200);
-
-        assertThat(actual.width + ":" + actual.height, actual, is(createSize(2000, 2000)));
-    }
-
-    public void testGetBestPreivewSizeIgnoreOrderList() throws Exception {
-        Camera.Size actual = CameraUtil.getBestPreviewSize(createSizes(
-                3000, 3000,
-                1000, 1000,
-                400, 400,
-                100, 100,
-                2000, 2000), 800, 1200);
-
-        assertThat(actual.width + ":" + actual.height, actual, is(createSize(2000, 2000)));
-    }
-
-    public void testGetBestPreivewSizeOneSize() throws Exception {
-        Camera.Size actual = CameraUtil.getBestPreviewSize(createSizes(
-                100, 100), 800, 1200);
-
-        assertThat(actual.width + ":" + actual.height, actual, is(createSize(100, 100)));
-    }
-
 
     public void testCameraSizesNexus4DefaultProfile() throws Exception {
         CameraSizes actualCameraSizes = CameraUtil.getCameraSizes(mockCameraParameters(
@@ -267,7 +54,7 @@ public class CameraUtilTest extends AndroidTestCase {
         ), mockCameraHost(mockDefaultDeviceProfile()), 768, 1184, Constants.DESIRED_PICTURE_SIZE, true);
 
         CameraSizes expectedCameraSizes = new CameraSizes();
-        expectedCameraSizes.previewSize = createSize(640,480);
+        expectedCameraSizes.previewSize = createSize(640, 480);
         expectedCameraSizes.pictureSize = createSize(1600, 1200);
 
         assertThat("Picture sizes are not equal", actualCameraSizes, is(expectedCameraSizes));
@@ -307,8 +94,8 @@ public class CameraUtilTest extends AndroidTestCase {
         ), mockCameraHost(mockDeviceProfile(1536, Integer.MAX_VALUE)), 768, 1184, Constants.DESIRED_PICTURE_SIZE, true);
 
         CameraSizes expectedCameraSizes = new CameraSizes();
-        expectedCameraSizes.previewSize = createSize(640,480);
-        expectedCameraSizes.pictureSize = createSize(2048,1536);
+        expectedCameraSizes.previewSize = createSize(640, 480);
+        expectedCameraSizes.pictureSize = createSize(2048, 1536);
 
         assertThat("Picture sizes are not equal", actualCameraSizes, is(expectedCameraSizes));
     }
@@ -344,11 +131,11 @@ public class CameraUtilTest extends AndroidTestCase {
                         320, 240,
                         240, 160,
                         176, 144)
-        ), mockCameraHost(mockDeviceProfile(1836,Integer.MAX_VALUE)), 768, 1184, Constants.DESIRED_PICTURE_SIZE, true);
+        ), mockCameraHost(mockDeviceProfile(1836, Integer.MAX_VALUE)), 768, 1184, Constants.DESIRED_PICTURE_SIZE, true);
 
         CameraSizes expectedCameraSizes = new CameraSizes();
-        expectedCameraSizes.previewSize = createSize(768,432);
-        expectedCameraSizes.pictureSize = createSize(3264,1836);
+        expectedCameraSizes.previewSize = createSize(768, 432);
+        expectedCameraSizes.pictureSize = createSize(3264, 1836);
 
         assertThat("Picture sizes are not equal", actualCameraSizes, is(expectedCameraSizes));
     }
@@ -357,30 +144,30 @@ public class CameraUtilTest extends AndroidTestCase {
     public void testCameraSizesS3d2ucd2attEnforceProfile() throws Exception {
         CameraSizes actualCameraSizes = CameraUtil.getCameraSizes(mockCameraParameters(
                 createSizes(
-                        3264,2448,
-                        3264,2176,
-                        3264,1836,
-                        2048,1536,
-                        2048,1152,
-                        1600,1200,
-                        1280,960,
-                        1280,720,
-                        960,720,
-                        640,480
+                        3264, 2448,
+                        3264, 2176,
+                        3264, 1836,
+                        2048, 1536,
+                        2048, 1152,
+                        1600, 1200,
+                        1280, 960,
+                        1280, 720,
+                        960, 720,
+                        640, 480
                 ), createSizes(
-                        1920,1080,
-                        1280,720,
-                        960,720,
-                        800,480,
-                        720,480,
-                        640,480,
-                        576,432,
-                        480,320,
-                        352,288,
-                        320,240,
-                        240,160,
-                        176,144)
-        ), mockCameraHost(mockDeviceProfile(1836,1836)), 768, 1184, Constants.DESIRED_PICTURE_SIZE, true);
+                        1920, 1080,
+                        1280, 720,
+                        960, 720,
+                        800, 480,
+                        720, 480,
+                        640, 480,
+                        576, 432,
+                        480, 320,
+                        352, 288,
+                        320, 240,
+                        240, 160,
+                        176, 144)
+        ), mockCameraHost(mockDeviceProfile(1836, 1836)), 768, 1184, Constants.DESIRED_PICTURE_SIZE, true);
 
         CameraSizes expectedCameraSizes = new CameraSizes();
         expectedCameraSizes.previewSize = createSize(720, 480);
@@ -419,7 +206,7 @@ public class CameraUtilTest extends AndroidTestCase {
         ), mockCameraHost(mockDefaultDeviceProfile()), 768, 1184, Constants.DESIRED_PICTURE_SIZE, true);
 
         CameraSizes expectedCameraSizes = new CameraSizes();
-        expectedCameraSizes.previewSize = createSize(768,432);
+        expectedCameraSizes.previewSize = createSize(768, 432);
         expectedCameraSizes.pictureSize = createSize(3264, 1836);
 
         assertThat("Picture sizes are not equal", actualCameraSizes, is(expectedCameraSizes));
@@ -428,34 +215,34 @@ public class CameraUtilTest extends AndroidTestCase {
     public void testCameraSizesSamsungd2vmuEnforceProfile() throws Exception {
         CameraSizes actualCameraSizes = CameraUtil.getCameraSizes(mockCameraParameters(
                 createSizes(
-                        3264,2448,
-                        3264,2176,
-                        3264,1836,
-                        2048,1536,
-                        2048,1152,
-                        1600,1200,
-                        1280,960,
-                        1280,720,
-                        960,720,
-                        640,480
+                        3264, 2448,
+                        3264, 2176,
+                        3264, 1836,
+                        2048, 1536,
+                        2048, 1152,
+                        1600, 1200,
+                        1280, 960,
+                        1280, 720,
+                        960, 720,
+                        640, 480
                 ), createSizes(
-                        1920,1080,
-                        1280,720,
-                        960,720,
-                        800,480,
-                        720,480,
-                        640,480,
-                        576,432,
-                        480,320,
-                        352,288,
-                        320,240,
-                        240,160,
-                        176,144)
-        ), mockCameraHost(mockDeviceProfile(2448,Integer.MAX_VALUE)), 768, 1184, Constants.DESIRED_PICTURE_SIZE, true);
+                        1920, 1080,
+                        1280, 720,
+                        960, 720,
+                        800, 480,
+                        720, 480,
+                        640, 480,
+                        576, 432,
+                        480, 320,
+                        352, 288,
+                        320, 240,
+                        240, 160,
+                        176, 144)
+        ), mockCameraHost(mockDeviceProfile(2448, Integer.MAX_VALUE)), 768, 1184, Constants.DESIRED_PICTURE_SIZE, true);
 
         CameraSizes expectedCameraSizes = new CameraSizes();
-        expectedCameraSizes.previewSize = createSize(640,480);
-        expectedCameraSizes.pictureSize = createSize(3264,2448);
+        expectedCameraSizes.previewSize = createSize(640, 480);
+        expectedCameraSizes.pictureSize = createSize(3264, 2448);
 
         assertThat("Picture sizes are not equal", actualCameraSizes, is(expectedCameraSizes));
     }
@@ -504,8 +291,8 @@ public class CameraUtilTest extends AndroidTestCase {
         return cameraHost;
     }
 
-    private String size2String(Camera.Size size){
-        return size.width+"x"+size.height;
+    private String size2String(Camera.Size size) {
+        return size.width + "x" + size.height;
     }
 
 }

@@ -18,78 +18,6 @@ import static com.github.randoapp.Constants.PICTURE_DESIRED_ASPECT_RATIO;
 
 public class CameraUtil {
 
-    public static Camera.Size getBestPictureSize(List<Camera.Size> cameraSizes) {
-        return findMaxCameraSize(cameraSizes);
-    }
-
-    public static Camera.Size getBestPictureSize(List<Camera.Size> cameraSizes, DeviceProfile deviceProfile) {
-
-        List<Camera.Size> filteredList = new ArrayList<Camera.Size>();
-        for (Camera.Size size : cameraSizes) {
-            double ratio = (double) size.height / size.width;
-            if (Math.abs(ratio - PICTURE_DESIRED_ASPECT_RATIO) < 0.05
-                    && size.height >= deviceProfile.getMinPictureHeight()
-                    && size.height <= deviceProfile.getMaxPictureHeight()) {
-                filteredList.add(size);
-            }
-        }
-
-        if (filteredList.size() == 0) {
-            filteredList = cameraSizes;
-        }
-
-        Collections.sort(filteredList, new Comparator<Camera.Size>() {
-            @Override
-            public int compare(Camera.Size cameraSize1, Camera.Size cameraSize2) {
-                int cameraMinSize1 = Math.min(cameraSize1.height, cameraSize1.width);
-                int cameraMinSize2 = Math.min(cameraSize2.height, cameraSize2.width);
-
-                if (cameraMinSize1 >= DESIRED_PICTURE_SIZE && cameraMinSize2 >= DESIRED_PICTURE_SIZE) {
-                    return compareSizeIncludeResolution(cameraSize1, cameraSize2);
-                }
-                return compareSizeIncludeResolution(cameraSize2, cameraSize1);
-            }
-        });
-        return filteredList.get(0);
-    }
-
-    public static Camera.Size getBestPreviewSize(List<Camera.Size> cameraSizes, final int screenWidth, final int screenHeight) {
-        Camera.Size optimalSize = findBestSizeByRatio(cameraSizes, screenWidth, screenHeight);
-
-        if (optimalSize == null) {
-            optimalSize = findClosestSize(cameraSizes, screenWidth, screenHeight);
-        }
-
-        return optimalSize;
-    }
-
-    public static Camera.Size getBestPictureSizeForOldDevices(List<Camera.Size> cameraSizes) {
-        Collections.sort(cameraSizes, new Comparator<Camera.Size>() {
-            @Override
-            public int compare(Camera.Size cameraSize1, Camera.Size cameraSize2) {
-                int cameraMinSize1 = Math.min(cameraSize1.height, cameraSize1.width);
-                int cameraMinSize2 = Math.min(cameraSize2.height, cameraSize2.width);
-
-                if (cameraMinSize1 >= DESIRED_PICTURE_SIZE && cameraMinSize2 >= DESIRED_PICTURE_SIZE) {
-                    return compareSizeIncludeResolution(cameraSize1, cameraSize2);
-                }
-                return compareSizeIncludeResolution(cameraSize2, cameraSize1);
-            }
-        });
-        return cameraSizes.get(0);
-    }
-
-    public static Camera.Size getLargestPictureSize(List<Camera.Size> cameraSizes) {
-        Camera.Size bestSize = null;
-        for (Camera.Size size : cameraSizes) {
-            if (bestSize == null
-                    || (bestSize.height * bestSize.width < size.height * size.width)) {
-                bestSize = size;
-            }
-        }
-        return bestSize;
-    }
-
     /**
      * Returns CameraSizes pair picture size and preview size with following conditions:
      * 1. Preview and Picture sizes must be in the same ratio
@@ -166,24 +94,6 @@ public class CameraUtil {
     }
 
 
-    private static Camera.Size findBestSizeByRatio(List<Camera.Size> cameraSizes, final int screenWidth, final int screenHeight) {
-        double screenRatio = (double) screenWidth / screenHeight;
-        Camera.Size optimalSize = null;
-        for (Camera.Size cameraSize : cameraSizes) {
-            double ratio = (double) cameraSize.width / cameraSize.height;
-            if (Math.abs(screenRatio - ratio) < 0.05) {
-                if (optimalSize != null) {
-                    if (optimalSize.height > cameraSize.height && optimalSize.width > cameraSize.width) {
-                        optimalSize = cameraSize;
-                    }
-                } else {
-                    optimalSize = cameraSize;
-                }
-            }
-        }
-        return optimalSize;
-    }
-
     private static Camera.Size findBiggestSizeByRatio(List<Camera.Size> cameraSizes, final int screenWidth, final int screenHeight) {
         double screenRatio = (double) screenWidth / screenHeight;
         Camera.Size optimalSize = null;
@@ -200,30 +110,6 @@ public class CameraUtil {
             }
         }
         return optimalSize;
-    }
-
-
-    private static Camera.Size findClosestSize(List<Camera.Size> cameraSizes, final int width, final int height) {
-        Camera.Size optimalSize = cameraSizes.get(0);
-
-        for (Camera.Size cameraSize : cameraSizes) {
-            if (cameraSize.height >= height && optimalSize.height >= cameraSize.height
-                    && cameraSize.width >= width && optimalSize.width >= cameraSize.width) {
-                optimalSize = cameraSize;
-            }
-        }
-
-        return optimalSize;
-    }
-
-    private static Camera.Size findMaxCameraSize(List<Camera.Size> cameraSizes) {
-        Collections.sort(cameraSizes, new Comparator<Camera.Size>() {
-            @Override
-            public int compare(Camera.Size cameraSize1, Camera.Size cameraSize2) {
-                return Math.min(cameraSize2.height, cameraSize2.width) - Math.min(cameraSize1.width, cameraSize1.height);
-            }
-        });
-        return cameraSizes.get(0);
     }
 
     private static int compareSizeIncludeResolution(Camera.Size cameraSize1, Camera.Size cameraSize2) {
