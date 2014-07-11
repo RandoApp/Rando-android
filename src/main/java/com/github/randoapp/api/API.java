@@ -28,6 +28,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.ConnectionPoolTimeoutException;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
@@ -72,6 +73,7 @@ import static com.github.randoapp.Constants.IMAGE_URL_SIZES_PARAM;
 import static com.github.randoapp.Constants.LARGE_PARAM;
 import static com.github.randoapp.Constants.LATITUDE_PARAM;
 import static com.github.randoapp.Constants.LOGOUT_URL;
+import static com.github.randoapp.Constants.LOG_URL;
 import static com.github.randoapp.Constants.LONGITUDE_PARAM;
 import static com.github.randoapp.Constants.MAP_URL_PARAM;
 import static com.github.randoapp.Constants.MAP_URL_SIZES_PARAM;
@@ -343,6 +345,18 @@ public class API {
             throw processError(e);
         } catch (IOException e) {
             throw processError(e);
+        }
+    }
+
+    public static void uploadLog(String logs) throws AuthenticationException, Exception {
+        Log.i(API.class, "uploadLog");
+        try {
+            HttpPost request = new HttpPost(getUrl(LOG_URL));
+            request.setHeader("Content-Type", "application/json");
+            request.setEntity(new StringEntity(logs, "UTF-8"));
+            VolleySingleton.getInstance().getHttpClient().execute(request);
+        } catch (IOException e) {
+            Log.e(API.class, "Can not upload logs, because: ", e.getMessage());
         }
     }
 

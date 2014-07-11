@@ -20,6 +20,7 @@ import com.github.randoapp.log.Log;
 import com.github.randoapp.notification.Notification;
 import com.github.randoapp.util.RandoUtil;
 import com.jess.ui.TwoWayGridView;
+
 import static com.github.randoapp.Constants.REPORT_BROADCAST;
 import static com.github.randoapp.Constants.SYNC_SERVICE_BROADCAST_EVENT;
 

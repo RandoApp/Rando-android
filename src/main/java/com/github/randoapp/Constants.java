@@ -33,7 +33,7 @@ public class Constants {
 
     public static final int RANDO_MARGIN_PORTRAIT = 30;
 
-    public static final int CAMERA_MIN_SIZE = 1200;
+    public static final int DESIRED_PICTURE_SIZE = 1200;
     public static final int SIZE_SMALL = 480;
     public static final int SIZE_MEDIUM = 800;
     public static final int SIZE_LARGE = 1200;
