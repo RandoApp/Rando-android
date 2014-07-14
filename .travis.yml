@@ -48,7 +48,7 @@ before_install:
 
   # Install NDK
   - if [ ! -f android-ndk-r9d-linux-x86_64.tar.bz2 ]; then  wget https://dl.google.com/android/ndk/android-ndk-r9d-linux-x86_64.tar.bz2 > /dev/null; fi
-  - tar -jxvf android-ndk-r9d-linux-x86_64.tar.bz2
+  - tar -jxf android-ndk-r9d-linux-x86_64.tar.bz2
   - export NDK_HOME=$PWD/android-ndk-r9d
   - export PATH=$NDK_HOME/bin:$PATH
 
