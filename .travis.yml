@@ -55,7 +55,7 @@ before_install:
   # Create settings.gradle. Need for modules correct build
   - cd ${CI_HOME}
   - cd ..
-  - echo "include ':Rando-android:modules:cwac-camera:modules:AndroidJniBitmapOperations:JniBitmapOperationsLibrary',':Rando-android:modules:facebook:facebook', ':Rando-android:modules:volley', ':Rando-android:modules:two-way-gridview:lib', ':Rando-android:modules:cwac-camera:camera', ':Rando-android'" > settings.gradle
+  - echo "include ':Rando-android:modules:cwac-camera:modules:AndroidJniBitmapOperations:JniBitmapOperationsLibrary',':Rando-android:modules:facebook:facebook', ':Rando-android:modules:volley', ':Rando-android:modules:two-way-gridview:lib', ':Rando-android:modules:cwac-camera:camera', ':Rando-android:modules:cwac-camera:camera-v9', ':Rando-android'" > settings.gradle
   - echo "ndk.dir=$NDK_HOME" > local.properties
 
   # Create gradle.properties with secret stroke password:
