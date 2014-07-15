@@ -3,7 +3,6 @@ package com.github.randoapp.adapter;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.Display;
@@ -24,7 +23,6 @@ import android.widget.ViewSwitcher;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.animation.AnimationFactory;
@@ -76,7 +74,7 @@ public class RandoPairsAdapter extends BaseAdapter {
         Display display = windowManager.getDefaultDisplay();
         int displayWidth = display.getWidth();
         int orientation = context.getResources().getConfiguration().orientation;
-        this.context=context;
+        this.context = context;
         imageSize = getRandoImageSize(orientation, displayWidth);
         initData();
     }
@@ -103,7 +101,7 @@ public class RandoPairsAdapter extends BaseAdapter {
             LayoutInflater inflater = (LayoutInflater) container.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.rando_item, container, false);
             holder = createHolder(convertView);
-            addListenersToHolder(container.getContext(), holder);
+            addListenersToHolder(holder);
         }
 
         recycle(holder, randoPair);
@@ -134,7 +132,7 @@ public class RandoPairsAdapter extends BaseAdapter {
         holder.imagePager.setOnPageChangeListener(randoPagerListener);
         holder.mapPager.setOnPageChangeListener(randoPagerListener);
 
-        holder.mapPagerAdapter  = new MapPagerAdapter(holder, imageSize);
+        holder.mapPagerAdapter = new MapPagerAdapter(holder, imageSize);
         holder.mapPager.setAdapter(holder.mapPagerAdapter);
 
         holder.dateTimeView = (TextView) convertView.findViewWithTag("date_time");
@@ -161,8 +159,8 @@ public class RandoPairsAdapter extends BaseAdapter {
         holder.reportDialog.setLayoutParams(new RelativeLayout.LayoutParams(imageSize, imageSize));
     }
 
-    private void addListenersToHolder(Context context, final ViewHolder holder) {
-        View.OnClickListener randoOnClickListener = createRandoOnClickListener(context, holder);
+    private void addListenersToHolder(final ViewHolder holder) {
+        View.OnClickListener randoOnClickListener = createRandoOnClickListener(holder);
         holder.imagePagerAdapter.setOnClickListener(randoOnClickListener);
         holder.mapPagerAdapter.setOnClickListener(randoOnClickListener);
         holder.reportDialog.setOnTouchListener(new View.OnTouchListener() {
@@ -188,7 +186,7 @@ public class RandoPairsAdapter extends BaseAdapter {
         });
     }
 
-    private View.OnClickListener createRandoOnClickListener(final Context context, final ViewHolder holder) {
+    private View.OnClickListener createRandoOnClickListener(final ViewHolder holder) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -210,6 +208,7 @@ public class RandoPairsAdapter extends BaseAdapter {
 
         recycleViewSwitcher(holder.viewSwitcher);
         recycleViewPager(holder);
+        recycleUserHolders(holder);
 
         holder.dateTimeView.setText(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
                 .format(holder.randoPair.user.date) + " "); //1 space for fix italic cutting off issue
@@ -223,6 +222,13 @@ public class RandoPairsAdapter extends BaseAdapter {
         holder.mapPagerAdapter.recycle();
 
         holder.reportDialog.setVisibility(View.GONE);
+    }
+
+    private void recycleUserHolders(ViewHolder holder) {
+        holder.stranger.imageBitmap = null;
+        holder.stranger.mapBitmap = null;
+        holder.user.imageBitmap = null;
+        holder.user.mapBitmap = null;
     }
 
     private void cancelRequests(ViewHolder holder) {
@@ -362,7 +368,7 @@ public class RandoPairsAdapter extends BaseAdapter {
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.e(RandoPairsAdapter.class, "VolleyError when load rando image: ", url , "with imageSize = ", String.valueOf(imageSize), " , because ", error.getMessage());
+                    Log.e(RandoPairsAdapter.class, "VolleyError when load rando image: ", url, "with imageSize = ", String.valueOf(imageSize), " , because ", error.getMessage());
                     if (userHolder.image != null) {
                         userHolder.image.setImageResource(R.drawable.rando_error);
                     } else {
@@ -397,7 +403,7 @@ public class RandoPairsAdapter extends BaseAdapter {
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.e(RandoPairsAdapter.class, "VolleyError when load map image: ", url , "with imageSize = ", String.valueOf(imageSize), " , because ", error.getMessage());
+                    Log.e(RandoPairsAdapter.class, "VolleyError when load map image: ", url, "with imageSize = ", String.valueOf(imageSize), " , because ", error.getMessage());
                     if (userHolder.map != null) {
                         userHolder.map.setImageResource(R.drawable.rando_error);
                     } else {
