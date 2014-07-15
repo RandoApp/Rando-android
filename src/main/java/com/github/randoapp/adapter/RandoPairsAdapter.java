@@ -265,8 +265,8 @@ public class RandoPairsAdapter extends BaseAdapter {
     }
 
     private void setAnimations(final ViewHolder holder) {
-        final Animation[] leftToRightAnimation = AnimationFactory.flipAnimation(imageSize, AnimationFactory.FlipDirection.LEFT_RIGHT, 600, null);
-        final Animation[] rightToLeftAnimation = AnimationFactory.flipAnimation(imageSize, AnimationFactory.FlipDirection.RIGHT_LEFT, 600, null);
+        final Animation[] leftToRightAnimation = AnimationFactory.flipAnimation(imageSize, AnimationFactory.FlipDirection.LEFT_RIGHT, 350, null);
+        final Animation[] rightToLeftAnimation = AnimationFactory.flipAnimation(imageSize, AnimationFactory.FlipDirection.RIGHT_LEFT, 350, null);
 
         holder.viewSwitcher.setOutAnimation(leftToRightAnimation[0]);
         holder.viewSwitcher.setInAnimation(leftToRightAnimation[1]);
