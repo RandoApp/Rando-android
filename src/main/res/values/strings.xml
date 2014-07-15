@@ -49,7 +49,7 @@
 
     <string name="crash_toast_text">Device issue detected. Report has been sent to developers. We are working on resolution. Thank you.</string>
 
-    <string name="top_panel_text">Rando</string>
+    <string name="top_panel_text">Rando 4Me (testing mode)</string>
 
     <string name="no_location_services">No Location Services Enabled</string>
     <string name="enable_location_services">Enable Location Services</string>
