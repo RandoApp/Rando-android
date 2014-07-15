@@ -29,8 +29,6 @@ public class Notification {
         notification.setContentIntent(contentIntent);
         notification.setAutoCancel(true);
         notification.setLights(Color.BLUE, 500, 500);
-        long[] pattern = {500, 500, 500, 500, 500, 500, 500, 500, 500};
-        notification.setVibrate(pattern);
         notification.setStyle(new NotificationCompat.InboxStyle());
 
         NotificationManager manager = (NotificationManager) App.context.getSystemService(Context.NOTIFICATION_SERVICE);
