@@ -24,22 +24,15 @@ public class CameraUtil {
      * 2. Height of preview size should be less than screen height
      *
      * @param parameters         Camera.Parameters
-     * @param host               CameraHost used
      * @param screenWidth        available preview screen Width
      * @param screenHeight       available preview screen Height
      * @param desiredPictureSize
-     * @param enforceProfile
      * @return
      */
 
-    public static CameraSizes getCameraSizes(Camera.Parameters parameters, CameraHost host,
-                                             final int screenWidth, final int screenHeight, final int desiredPictureSize, boolean enforceProfile) {
+    public static CameraSizes getCameraSizes(Camera.Parameters parameters, final int screenWidth, final int screenHeight, final int desiredPictureSize) {
         CameraSizes cameraSizes = new CameraSizes();
         List<Camera.Size> pictureSizes = parameters.getSupportedPictureSizes();
-
-        DeviceProfile deviceProfile = host.getDeviceProfile();
-
-        List<Camera.Size> filteredPictureSizes = new ArrayList<Camera.Size>();
 
         Collections.sort(pictureSizes, new Comparator<Camera.Size>() {
             @Override
@@ -54,19 +47,6 @@ public class CameraUtil {
             }
         });
 
-        for (Camera.Size size : pictureSizes) {
-            if ((!enforceProfile)
-                    ||
-                    (size.height <= deviceProfile.getMaxPictureHeight()
-                            && size.height >= deviceProfile.getMinPictureHeight())) {
-                filteredPictureSizes.add(size);
-            }
-        }
-
-        if (filteredPictureSizes.isEmpty() && enforceProfile){
-            return getCameraSizes(parameters, host, screenWidth, screenHeight, desiredPictureSize, false);
-        }
-
         List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
         List<Camera.Size> filteredPreviewSizes = new ArrayList<Camera.Size>();
 
@@ -76,8 +56,8 @@ public class CameraUtil {
             }
         }
 
-        for (Camera.Size size : filteredPictureSizes) {
-            if (cameraSizes.pictureSize == null){
+        for (Camera.Size size : pictureSizes) {
+            if (cameraSizes.pictureSize == null) {
                 cameraSizes.pictureSize = size;
             }
             Camera.Size foundPreviewSize = findBiggestSizeByRatio(filteredPreviewSizes, size.width, size.height);
