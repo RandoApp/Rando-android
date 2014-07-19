@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">Rando [New]</string>
+    <string name="app_name_official">Rando 4Me</string>
     <string name="email">Email:</string>
     <string name="password">Password:</string>
     <string name="facebook">Facebook</string>
