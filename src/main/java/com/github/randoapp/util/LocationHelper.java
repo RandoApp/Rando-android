@@ -46,9 +46,13 @@ public class LocationHelper {
         locationListener = new MyLocationListener();
 
         //setup a callback for when the GRPS/WiFi gets a lock and we receive data
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        if (locationManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 30000, 10, locationListener);
+        }
         //setup a callback for when the GPS gets a lock and we receive data
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        if (locationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)){
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 10, locationListener);
+        }
 
         //Set timer to kill location services after timeout
         Timer timer = new Timer();
