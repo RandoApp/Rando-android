@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.github.randoapp.CameraActivity;
 import com.github.randoapp.Constants;
@@ -54,16 +57,10 @@ public class HomeWallFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.home, container, false);
-
-
-
         TwoWayGridView gridView = (TwoWayGridView) rootView.findViewById(R.id.main_grid);
-
 
         randoPairsAdapter = new RandoPairsAdapter(container.getContext());
         gridView.setAdapter(randoPairsAdapter);
-
-        ImageView takePictureButton = (ImageView) rootView.findViewById(R.id.camera_button);
 
         if (container.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             gridView.setPadding(getResources().getDimensionPixelSize(R.dimen.rando_padding_landscape_column_left),
@@ -79,6 +76,7 @@ public class HomeWallFragment extends Fragment {
                     getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));
         }
 
+        ImageView takePictureButton = (ImageView) rootView.findViewById(R.id.camera_button);
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,6 +86,24 @@ public class HomeWallFragment extends Fragment {
         });
 
         RandoUtil.initMenuButton(rootView, getActivity());
+
+        TextView topPanelText = (TextView) rootView.findViewById(R.id.top_panel_text);
+        PackageManager manager = getActivity().getPackageManager();
+        PackageInfo info = null;
+
+        try {
+            info = manager.getPackageInfo(getActivity().getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException ex) {
+
+        }
+        String version = "";
+        if (info != null) {
+            version = info.versionName;
+        }
+        if (version != null && version.contains("b")) {
+            topPanelText.setText(getText(R.string.app_name_official) + " (" + version + ")");
+        }
+
         return rootView;
     }
 

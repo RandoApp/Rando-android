@@ -46,7 +46,7 @@ public class RandoCameraHost extends SquareCameraHost {
 
     @Override
     public Camera.Size getPreviewSize(int displayOrientation, int width, int height, Camera.Parameters parameters) {
-        cameraSizes = CameraUtil.getCameraSizes(parameters, this, width, height, Constants.DESIRED_PICTURE_SIZE, true);
+        cameraSizes = CameraUtil.getCameraSizes(parameters, width, height, Constants.DESIRED_PICTURE_SIZE);
 
         Log.i(CameraCaptureFragment.class, "Available Preview screen size:", String.valueOf(height), "x", String.valueOf(width), "display orientation: ", String.valueOf(displayOrientation));
         Log.i(CameraCaptureFragment.class, "Selected preview camera size:", String.valueOf(cameraSizes.previewSize.height), "x", String.valueOf(cameraSizes.previewSize.width));
@@ -126,8 +126,7 @@ public class RandoCameraHost extends SquareCameraHost {
     }
 
     @Override
-    public void autoFocusAvailable() {
-        //temporary enabling button here... until https://github.com/commonsguy/cwac-camera/issues/179 is resolved
+    public void previewReady() {
         activity.findViewById(R.id.capture_button).setEnabled(true);
     }
 }
