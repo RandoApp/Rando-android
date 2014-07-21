@@ -62,8 +62,6 @@ public class HomeWallFragment extends Fragment {
         randoPairsAdapter = new RandoPairsAdapter(container.getContext());
         gridView.setAdapter(randoPairsAdapter);
 
-        ImageView takePictureButton = (ImageView) rootView.findViewById(R.id.camera_button);
-
         if (container.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             gridView.setPadding(getResources().getDimensionPixelSize(R.dimen.rando_padding_landscape_column_left),
                     getResources().getDimensionPixelSize(R.dimen.rando_padding_landscape_column_top),
@@ -78,6 +76,7 @@ public class HomeWallFragment extends Fragment {
                     getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));
         }
 
+        ImageView takePictureButton = (ImageView) rootView.findViewById(R.id.camera_button);
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,24 +87,22 @@ public class HomeWallFragment extends Fragment {
 
         RandoUtil.initMenuButton(rootView, getActivity());
 
-        TextView topPanelText = (TextView)rootView.findViewById(R.id.top_panel_text);
-
+        TextView topPanelText = (TextView) rootView.findViewById(R.id.top_panel_text);
         PackageManager manager = getActivity().getPackageManager();
         PackageInfo info = null;
 
         try {
             info = manager.getPackageInfo(getActivity().getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException ex){
+        } catch (PackageManager.NameNotFoundException ex) {
 
         }
         String version = "";
-        if (info != null){
+        if (info != null) {
             version = info.versionName;
         }
-        if (version!=null && version.contains("b")) {
-            topPanelText.setText(getText(R.string.app_name_official)+ " (" + version + ")");
+        if (version != null && version.contains("b")) {
+            topPanelText.setText(getText(R.string.app_name_official) + " (" + version + ")");
         }
-
 
         return rootView;
     }
