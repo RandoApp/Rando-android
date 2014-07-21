@@ -40,8 +40,8 @@
     <color name="white_button_background_pressed">#ffdddddd</color>
     <color name="light_gray_button_background_normal">#fff1f1f1</color>
     <color name="light_gray_button_text">#ff8f8f8f</color>
-    <color name="gray_button_background_normal">#ffd1d1d1</color>
-    <color name="gray_button_background_pressed">#ffb6b6b6</color>
+    <color name="grey_button_background_normal">#ffd1d1d1</color>
+    <color name="grey_button_background_pressed">#ffb6b6b6</color>
     <color name="capture_button_background_normal">#fff87b00</color>
     <color name="capture_button_background_pressed">#ffdc6f00</color>
     <color name="capture_button_background_disabled">#ff8f8f8f</color>
