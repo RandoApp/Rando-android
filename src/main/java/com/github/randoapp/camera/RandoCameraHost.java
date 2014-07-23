@@ -60,6 +60,10 @@ public class RandoCameraHost extends SquareCameraHost {
             parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         } else if (focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
             parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+        } else if (focusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+        } else if (focusModes.contains(Camera.Parameters.FOCUS_MODE_INFINITY)) {
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_INFINITY);
         }
         return parameters;
     }
@@ -107,15 +111,6 @@ public class RandoCameraHost extends SquareCameraHost {
         return recordingHint;
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @Override
-    public void onAutoFocus(boolean success, Camera camera) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && !shutterSoundDisabled) {
-            disableShutterSound(camera);
-        }
-        ((CameraView) activity.findViewById(R.id.camera)).takePicture(false, true);
-    }
-
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void disableShutterSound(Camera camera) {
         Camera.CameraInfo info = new Camera.CameraInfo();
@@ -126,7 +121,10 @@ public class RandoCameraHost extends SquareCameraHost {
     }
 
     @Override
-    public void previewReady() {
+    public void previewReady(Camera camera) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && !shutterSoundDisabled) {
+            disableShutterSound(camera);
+        }
         activity.findViewById(R.id.capture_button).setEnabled(true);
     }
 }
