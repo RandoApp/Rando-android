@@ -3,6 +3,7 @@ package com.github.randoapp.camera;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import com.commonsware.cwac.camera.CameraView;
 import com.commonsware.cwac.camera.acl.CameraFragment;
 import com.github.randoapp.R;
+import com.github.randoapp.log.Log;
 import com.github.randoapp.util.LocationHelper;
 
 public class CameraCaptureFragment extends CameraFragment {
@@ -54,7 +56,15 @@ public class CameraCaptureFragment extends CameraFragment {
         @Override
         public void onClick(View v) {
             captureButton.setEnabled(false);
-            cameraView.takePicture(false, true);
+            try {
+                if (isAutoFocusAvailable() && cameraView.getFocushMode().equals(Camera.Parameters.FOCUS_MODE_AUTO)) {
+                    autoFocus();
+                } else {
+                    cameraView.takePicture(false, true);
+                }
+            } catch (Exception e) {
+                Log.w(CameraCaptureFragment.class, "Can not take picture, because: ", e.getMessage());
+            }
         }
     }
 
