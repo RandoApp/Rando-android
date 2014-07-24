@@ -5,7 +5,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.view.Display;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -70,9 +70,11 @@ public class RandoPairsAdapter extends BaseAdapter {
     }
 
     public RandoPairsAdapter(Context context) {
+        // get the window width according to device screen size
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
-        int displayWidth = display.getWidth();
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(displaymetrics);
+        int displayWidth = displaymetrics.widthPixels;
         int orientation = context.getResources().getConfiguration().orientation;
         this.context = context;
         imageSize = getRandoImageSize(orientation, displayWidth);

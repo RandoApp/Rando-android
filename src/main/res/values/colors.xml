@@ -44,7 +44,7 @@
     <color name="grey_button_background_pressed">#ffb6b6b6</color>
     <color name="capture_button_background_normal">#fff87b00</color>
     <color name="capture_button_background_pressed">#ffdc6f00</color>
-    <color name="capture_button_background_disabled">#ff8f8f8f</color>
+    <color name="capture_button_background_disabled">#fffaa24b</color>
     <color name="yellow_button_background_normal">#fffcc400</color>
     <color name="yellow_button_background_pressed">#ffcea000</color>
     <color name="yellow_button_background_disabled">#fffdd54b</color>

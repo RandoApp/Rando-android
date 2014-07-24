@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import com.commonsware.cwac.camera.CameraView;
 import com.commonsware.cwac.camera.acl.CameraFragment;
 import com.github.randoapp.R;
-import com.github.randoapp.log.Log;
 import com.github.randoapp.util.LocationHelper;
 
 public class CameraCaptureFragment extends CameraFragment {
@@ -21,8 +20,6 @@ public class CameraCaptureFragment extends CameraFragment {
 
     private CameraView cameraView;
     private ImageView captureButton;
-
-    private int displayWidth;
 
     public static CameraCaptureFragment newInstance(boolean useFFC) {
         CameraCaptureFragment fragment = new CameraCaptureFragment();
@@ -57,15 +54,7 @@ public class CameraCaptureFragment extends CameraFragment {
         @Override
         public void onClick(View v) {
             captureButton.setEnabled(false);
-            try {
-                if (isAutoFocusAvailable()) {
-                    autoFocus();
-                } else {
-                    cameraView.takePicture(false, true);
-                }
-            } catch (Exception e) {
-                Log.w(CameraCaptureFragment.class, "Can not take picture, because: ", e.getMessage());
-            }
+            cameraView.takePicture(false, true);
         }
     }
 
