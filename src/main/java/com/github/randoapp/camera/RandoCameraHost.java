@@ -127,4 +127,9 @@ public class RandoCameraHost extends SquareCameraHost {
         }
         activity.findViewById(R.id.capture_button).setEnabled(true);
     }
+
+    @Override
+    public void onAutoFocus(boolean success, Camera camera) {
+        ((CameraView) activity.findViewById(R.id.camera)).takePicture(false, true);
+    }
 }
