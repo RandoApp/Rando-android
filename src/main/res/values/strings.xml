@@ -40,6 +40,8 @@
     <string name="cropping_progress">Prepairing to Upload…</string>
     <string name="uploading_progress">Uploading…</string>
 
+    <string name="version">Version: </string>
+
     <string name="crop_failed">Crop Failed.</string>
 
     <string name="error_400">You are not authorized. Please, signup.</string>

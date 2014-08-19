@@ -10,7 +10,6 @@ import android.widget.ImageView;
 
 import com.github.randoapp.CameraActivity;
 import com.github.randoapp.R;
-import com.github.randoapp.util.RandoUtil;
 
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE;
 
@@ -28,8 +27,6 @@ public class EmptyHomeWallFragment extends Fragment {
                 startActivityForResult(intent, CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE);
             }
         });
-
-        RandoUtil.initMenuButton(rootView, getActivity());
         return rootView;
     }
 

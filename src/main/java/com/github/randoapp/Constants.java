@@ -89,6 +89,8 @@ public class Constants {
     public static final String LATITUDE_PARAM = "latitude";
     public static final String LONGITUDE_PARAM = "longitude";
 
+    public static final String PAGE = "page";
+
     public static final String ERROR_MESSAGE_PARAM = "message";
     public static final String ERROR_CODE_PARAM = "code";
 
