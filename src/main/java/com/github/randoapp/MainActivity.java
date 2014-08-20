@@ -32,6 +32,7 @@ import com.github.randoapp.view.Progress;
 
 import java.util.Map;
 
+import static com.github.randoapp.Constants.AUTH_FAILURE_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
 import static com.github.randoapp.Constants.SYNC_SERVICE_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_BROADCAST_EVENT;
@@ -45,7 +46,7 @@ public class MainActivity extends FragmentActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i(android.content.BroadcastReceiver.class, "Recieved Update request.");
+            Log.i(android.content.BroadcastReceiver.class, "Recieved event:", intent.getAction());
 
             if (SYNC_SERVICE_BROADCAST_EVENT.equals(intent.getAction())) {
                 RelativeLayout emptyHome = (RelativeLayout) findViewById(R.id.empty_home);
@@ -60,6 +61,10 @@ public class MainActivity extends FragmentActivity {
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
                 }
+            } else if(AUTH_FAILURE_BROADCAST_EVENT.equals(intent.getAction())){
+                Preferences.removeAuthToken();
+                FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.main_screen, new AuthFragment()).commit();
             }
         }
     };
@@ -161,6 +166,7 @@ public class MainActivity extends FragmentActivity {
     private void registerReceivers() {
         registerReceiver(receiver, new IntentFilter(SYNC_SERVICE_BROADCAST_EVENT));
         registerReceiver(receiver, new IntentFilter(UPLOAD_SERVICE_BROADCAST_EVENT));
+        registerReceiver(receiver, new IntentFilter(AUTH_FAILURE_BROADCAST_EVENT));
     }
 
     @Override
