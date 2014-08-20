@@ -12,6 +12,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -37,6 +39,7 @@ import static com.github.randoapp.Constants.UPLOAD_SERVICE_BROADCAST_EVENT;
 public class MainActivity extends FragmentActivity {
 
     public static Activity activity;
+    private DrawerLayout randoDrawerLayout;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -92,8 +95,9 @@ public class MainActivity extends FragmentActivity {
             version = info.versionName;
         }
         versionText.setText(versionText.getText() + " " + version);
+        randoDrawerLayout = (DrawerLayout)findViewById(R.id.main_drawer_layout);
 
-        findViewById(R.id.main_drawer_layout).setOnClickListener(new View.OnClickListener() {
+        randoDrawerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -102,7 +106,7 @@ public class MainActivity extends FragmentActivity {
         findViewById(R.id.logoutButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((DrawerLayout) findViewById(R.id.main_drawer_layout)).closeDrawers();
+                randoDrawerLayout.closeDrawers();
                 Progress.show(App.context.getResources().getString(R.string.logout_progress));
                 new LogoutTask()
                         .onDone(new OnDone() {
@@ -167,5 +171,14 @@ public class MainActivity extends FragmentActivity {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
         }
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            randoDrawerLayout.openDrawer(Gravity.LEFT);
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
     }
 }
