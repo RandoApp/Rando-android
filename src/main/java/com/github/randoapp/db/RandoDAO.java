@@ -155,22 +155,25 @@ public class RandoDAO {
         Log.w(RandoDAO.class, "RandoPair updated with id: ", String.valueOf(id));
     }
 
-    public static synchronized List<RandoPair> getAllRandos() {
+    public static synchronized List<RandoPair> getAllRandos(boolean includeRealFromUploads) {
         List<RandoPair> randos = new ArrayList<RandoPair>();
 
         List<RandoUpload> randosToUpload = getAllRandosToUpload();
         for (RandoUpload randoUpload : randosToUpload) {
             RandoPair randoPair = new RandoPair();
-            randoPair.user.randoId = String.valueOf(randoUpload.id);
-            randoPair.user.date = randoUpload.date;
-            randoPair.user.imageURL = randoUpload.file;
-            randoPair.user.imageURLSize.small = randoUpload.file;
-            randoPair.user.imageURLSize.medium = randoUpload.file;
-            randoPair.user.imageURLSize.large = randoUpload.file;
+            if (includeRealFromUploads) {
+                randoPair.user.randoId = String.valueOf(randoUpload.id);
+                randoPair.user.date = randoUpload.date;
+                randoPair.user.imageURL = randoUpload.file;
+                randoPair.user.imageURLSize.small = randoUpload.file;
+                randoPair.user.imageURLSize.medium = randoUpload.file;
+                randoPair.user.imageURLSize.large = randoUpload.file;
+            }
             randos.add(randoPair);
         }
         List<RandoPair> randoPairs = getAllRandoPairs();
         randos.addAll(randoPairs);
+        Log.i(RandoDAO.class,"Size:", String.valueOf(randoPairs.size()), "include=", String.valueOf(includeRealFromUploads));
         return randos;
     }
 

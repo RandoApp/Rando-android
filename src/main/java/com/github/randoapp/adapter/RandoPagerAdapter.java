@@ -72,12 +72,12 @@ public abstract class RandoPagerAdapter extends PagerAdapter {
     }
 
     private boolean isNeedPairing() {
-        return holder.stranger.needSetPairing && holder.stranger.imageBitmap == null;
+        return holder.needSetPairing;
     }
 
     private void setPairing(ImageView view) {
-        Log.d(ImagePagerAdapter.class, "Set pairing");
-        holder.stranger.needSetPairing = false;
+        Log.d(RandoPagerAdapter.class, "Set pairing");
+        holder.needSetPairing = false;
         view.setImageResource(R.drawable.rando_pairing);
     }
 

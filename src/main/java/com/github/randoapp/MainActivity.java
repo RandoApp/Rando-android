@@ -5,14 +5,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.support.v4.widget.DrawerLayout;
+import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.fragment.AuthFragment;
@@ -20,10 +22,13 @@ import com.github.randoapp.fragment.EmptyHomeWallFragment;
 import com.github.randoapp.fragment.HomeWallFragment;
 import com.github.randoapp.fragment.TrainingHomeFragment;
 import com.github.randoapp.log.Log;
-import com.github.randoapp.menu.LogoutMenu;
-import com.github.randoapp.menu.ReportMenu;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.service.UploadService;
+import com.github.randoapp.task.LogoutTask;
+import com.github.randoapp.task.callback.OnDone;
+import com.github.randoapp.view.Progress;
+
+import java.util.Map;
 
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
 import static com.github.randoapp.Constants.SYNC_SERVICE_BROADCAST_EVENT;
@@ -63,6 +68,8 @@ public class MainActivity extends FragmentActivity {
 
         setContentView(R.layout.activity_main);
 
+        initNavigationMenu();
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.main_screen, getFragment())
@@ -70,42 +77,47 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        if (ReportMenu.isReport) {
-            ReportMenu.off();
-        } else {
-            super.onBackPressed();
+    private void initNavigationMenu() {
+        TextView versionText = (TextView) findViewById(R.id.app_version);
+        PackageManager manager = getPackageManager();
+        PackageInfo info = null;
+
+        try {
+            info = manager.getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException ex) {
+
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        MenuItem actionReportItem = menu.findItem(R.id.action_report);
-        actionReportItem.setTitle(ReportMenu.getMenuTitle());
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case ReportMenu.ID:
-                new ReportMenu(item, this).select();
-                break;
-            case LogoutMenu.ID:
-                new LogoutMenu(item, this).select();
-                break;
+        String version = "";
+        if (info != null) {
+            version = info.versionName;
         }
+        versionText.setText(versionText.getText() + " " + version);
 
-        return true;
+        findViewById(R.id.main_drawer_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        findViewById(R.id.logoutButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((DrawerLayout) findViewById(R.id.main_drawer_layout)).closeDrawers();
+                Progress.show(App.context.getResources().getString(R.string.logout_progress));
+                new LogoutTask()
+                        .onDone(new OnDone() {
+                            @Override
+                            public void onDone(Map<String, Object> data) {
+                                FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
+                                fragmentManager.beginTransaction().replace(R.id.main_screen, new AuthFragment()).commit();
+                                Progress.hide();
+
+                            }
+                        })
+                        .execute();
+            }
+        });
+
     }
 
     private Fragment getFragment() {

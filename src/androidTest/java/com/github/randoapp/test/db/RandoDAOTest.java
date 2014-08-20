@@ -291,12 +291,12 @@ public class RandoDAOTest extends AndroidTestCase {
     public void testGetAllRandos() {
         RandoDAO.addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
         insertNRandomRandoPairs(3);
-        List<RandoPair> randos = RandoDAO.getAllRandos();
+        List<RandoPair> randos = RandoDAO.getAllRandos(false);
         assertThat("Collection number is not correct", randos.size(), is(4));
     }
 
     public void testGetAllRandosEmpty() {
-        List<RandoPair> randos = RandoDAO.getAllRandos();
+        List<RandoPair> randos = RandoDAO.getAllRandos(false);
         assertThat("Collection number is not correct", randos.size(), is(0));
     }
 
@@ -304,13 +304,13 @@ public class RandoDAOTest extends AndroidTestCase {
         RandoDAO.addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
         RandoDAO.addToUpload(new RandoUpload("/path/to/file2", 23.33, 24.44, new Date()));
         RandoDAO.addToUpload(new RandoUpload("/path/to/file3", 33.33, 34.44, new Date()));
-        List<RandoPair> randos = RandoDAO.getAllRandos();
+        List<RandoPair> randos = RandoDAO.getAllRandos(false);
         assertThat("Collection number is not correct", randos.size(), is(3));
     }
 
     public void testGetAllRandosOnlyPairs() {
         insertNRandomRandoPairs(4);
-        List<RandoPair> randos = RandoDAO.getAllRandos();
+        List<RandoPair> randos = RandoDAO.getAllRandos(false);
         assertThat("Collection number is not correct", randos.size(), is(4));
     }
 

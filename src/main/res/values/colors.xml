@@ -23,6 +23,8 @@
     <color name="empty_home_message">#BB000000</color>
     <color name="empty_home_message_shadow">#CCCCCC</color>
 
+    <color name="app_name_on_navigation_bar">#FFFFFF</color>
+
     <color name="rando_red">#ffe93229</color>
     <color name="rando_red_pressed">#ffbf2a22</color>
     <color name="rando_grey">#ffe1e1e1</color>
