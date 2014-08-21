@@ -240,7 +240,8 @@ public class API {
 
             @Override
             public void onErrorResponse(VolleyError e) {
-                Log.d(API.class,"Network Error",""+e.networkResponse.statusCode+" "+String.valueOf(e.networkResponse.data));
+                if (e.networkResponse !=null)
+                    Log.d(API.class,"Network Error",""+e.networkResponse.statusCode+" "+String.valueOf(e.networkResponse.data));
                 // Handle your error types accordingly.For Timeout & No connection error, you can show 'retry' button.
                 // For AuthFailure, you can re login with user credentials.
                 // For ClientError, 400 & 401, Errors happening on client side when sending api request.

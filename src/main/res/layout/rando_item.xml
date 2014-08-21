@@ -15,26 +15,24 @@
         <ViewSwitcher
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:tag="viewSwitcher"
+            android:paddingBottom="@dimen/rando_padding_portrait_column_bottom"
             android:paddingLeft="@dimen/rando_padding_portrait_column_left"
-            android:paddingTop="@dimen/rando_padding_portrait_column_top"
             android:paddingRight="@dimen/rando_padding_portrait_column_right"
-            android:paddingBottom="@dimen/rando_padding_portrait_column_bottom">
-s
-            <com.makeramen.RoundedImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:paddingTop="@dimen/rando_padding_portrait_column_top"
+            android:tag="viewSwitcher">
+
+            <com.makeramen.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:tag="image"
                 android:layout_centerVertical="true"
-                app:oval="true"/>
+                android:tag="image"
+                app:oval="true" />
 
-            <com.makeramen.RoundedImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
+            <com.makeramen.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:tag="map"
-                app:oval="true"/>
+                app:oval="true" />
         </ViewSwitcher>
     </LinearLayout>
 </RelativeLayout>

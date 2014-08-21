@@ -21,4 +21,11 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="GrayButton">
+        <item name="android:textSize">16.0sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/button_text</item>
+        <item name="android:background">@drawable/gray_button_background</item>
+    </style>
+
 </resources>

@@ -21,7 +21,7 @@ public class HomeWallFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.home, container, false);
         ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.colums_pager);
         viewPager.setAdapter(new HomePagerAdapter(getActivity().getSupportFragmentManager()));
-
+        viewPager.setCurrentItem(1);
         ImageView takePictureButton = (ImageView) rootView.findViewById(R.id.camera_button);
         takePictureButton.setEnabled(true);
         takePictureButton.setOnClickListener(new View.OnClickListener() {

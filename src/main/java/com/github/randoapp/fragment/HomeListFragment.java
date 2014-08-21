@@ -25,7 +25,7 @@ public class HomeListFragment extends Fragment {
 
     private RandoPairsAdapter randoPairsAdapter;
 
-    private int page;
+    private boolean isStranger;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -55,21 +55,21 @@ public class HomeListFragment extends Fragment {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            page = bundle.getInt(Constants.PAGE);
+            isStranger = bundle.getInt(Constants.PAGE) == 1;
         }
 
         final View rootView;
         rootView = inflater.inflate(R.layout.home_list, container, false);
 
         ImageView icHome = (ImageView) rootView.findViewById(R.id.ic_home);
-        if (page == 0){
+        if (isStranger){
             icHome.setVisibility(View.GONE);
         } else {
             icHome.setVisibility(View.VISIBLE);
         }
 
         ListView listView = (ListView) rootView.findViewById(R.id.listView);
-        randoPairsAdapter = new RandoPairsAdapter(container.getContext(), page == 0);
+        randoPairsAdapter = new RandoPairsAdapter(isStranger);
         listView.setAdapter(randoPairsAdapter);
 
         return rootView;
@@ -84,7 +84,7 @@ public class HomeListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        //randoPairsAdapter.notifyDataSetChanged();
+        randoPairsAdapter.notifyDataSetChanged();
         getActivity().registerReceiver(receiver, new IntentFilter(SYNC_SERVICE_BROADCAST_EVENT));
         getActivity().registerReceiver(receiver, new IntentFilter(REPORT_BROADCAST));
     }
