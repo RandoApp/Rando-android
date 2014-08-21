@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
+import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.task.LogoutTask;
 import com.github.randoapp.task.callback.OnDone;
 import com.github.randoapp.view.Progress;
@@ -83,7 +84,7 @@ public class HomeMenuFragment extends Fragment {
 
     private void initAccountName(View rootView){
         TextView accountName = (TextView) rootView.findViewById(R.id.accountName);
-        accountName.setText(accountName.getText() + " " + "xp.vit.blr@gmail.com");
+        accountName.setText(accountName.getText() + " " + Preferences.getAccount());
     }
 
     private void initHelp(View rootView){

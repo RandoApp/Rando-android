@@ -16,6 +16,7 @@ import static com.github.randoapp.Constants.TRAINING_FRAGMENT_SHOWN;
 
 public class Preferences {
     public static final String AUTH_TOKEN_DEFAULT_VALUE = "";
+    public static final String ACCOUNT_DEFAULT_VALUE = "";
 
     public static String getAuthToken() {
         return getSharedPreferences().getString(AUTH_TOKEN, AUTH_TOKEN_DEFAULT_VALUE);
@@ -32,7 +33,7 @@ public class Preferences {
     }
 
     public static String getAccount() {
-        return getSharedPreferences().getString(ACCOUNT, "");
+        return getSharedPreferences().getString(ACCOUNT, ACCOUNT_DEFAULT_VALUE);
     }
 
     public static void setAccount(String token) {

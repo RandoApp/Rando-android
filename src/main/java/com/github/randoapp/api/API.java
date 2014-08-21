@@ -64,6 +64,7 @@ import java.util.regex.Pattern;
 import static com.github.randoapp.Constants.ANONYMOUS_ID_PARAM;
 import static com.github.randoapp.Constants.ANONYMOUS_URL;
 import static com.github.randoapp.Constants.CREATION_PARAM;
+import static com.github.randoapp.Constants.EMAIL_PARAM;
 import static com.github.randoapp.Constants.ERROR_CODE_PARAM;
 import static com.github.randoapp.Constants.FACEBOOK_EMAIL_PARAM;
 import static com.github.randoapp.Constants.FACEBOOK_ID_PARAM;
@@ -191,6 +192,7 @@ public class API {
             @Override
             public void onResponse(JSONObject response) {
                 try {
+                    Preferences.setAccount(response.getString(EMAIL_PARAM));
                     JSONArray jsonRandos = response.getJSONArray(RANDOS_PARAM);
                     List<RandoPair> randos = new ArrayList<RandoPair>(jsonRandos.length());
 
