@@ -40,7 +40,6 @@ import static com.github.randoapp.Constants.UPLOAD_SERVICE_BROADCAST_EVENT;
 public class MainActivity extends FragmentActivity {
 
     public static Activity activity;
-    private DrawerLayout randoDrawerLayout;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -76,57 +75,11 @@ public class MainActivity extends FragmentActivity {
 
         setContentView(R.layout.activity_main);
 
-        initNavigationMenu();
-
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.main_screen, getFragment())
                     .commit();
         }
-    }
-
-    private void initNavigationMenu() {
-        TextView versionText = (TextView) findViewById(R.id.app_version);
-        PackageManager manager = getPackageManager();
-        PackageInfo info = null;
-
-        try {
-            info = manager.getPackageInfo(getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException ex) {
-
-        }
-        String version = "";
-        if (info != null) {
-            version = info.versionName;
-        }
-        versionText.setText(versionText.getText() + " " + version);
-        randoDrawerLayout = (DrawerLayout)findViewById(R.id.main_drawer_layout);
-
-        randoDrawerLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        findViewById(R.id.logoutButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                randoDrawerLayout.closeDrawers();
-                Progress.show(App.context.getResources().getString(R.string.logout_progress));
-                new LogoutTask()
-                        .onDone(new OnDone() {
-                            @Override
-                            public void onDone(Map<String, Object> data) {
-                                FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
-                                fragmentManager.beginTransaction().replace(R.id.main_screen, new AuthFragment()).commit();
-                                Progress.hide();
-
-                            }
-                        })
-                        .execute();
-            }
-        });
-
     }
 
     private Fragment getFragment() {
@@ -177,14 +130,5 @@ public class MainActivity extends FragmentActivity {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
         }
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_MENU) {
-            randoDrawerLayout.openDrawer(Gravity.LEFT);
-            return true;
-        }
-        return super.onKeyUp(keyCode, event);
     }
 }

@@ -64,6 +64,7 @@ import java.util.regex.Pattern;
 import static com.github.randoapp.Constants.ANONYMOUS_ID_PARAM;
 import static com.github.randoapp.Constants.ANONYMOUS_URL;
 import static com.github.randoapp.Constants.CREATION_PARAM;
+import static com.github.randoapp.Constants.EMAIL_PARAM;
 import static com.github.randoapp.Constants.ERROR_CODE_PARAM;
 import static com.github.randoapp.Constants.FACEBOOK_EMAIL_PARAM;
 import static com.github.randoapp.Constants.FACEBOOK_ID_PARAM;
@@ -191,6 +192,7 @@ public class API {
             @Override
             public void onResponse(JSONObject response) {
                 try {
+                    Preferences.setAccount(response.getString(EMAIL_PARAM));
                     JSONArray jsonRandos = response.getJSONArray(RANDOS_PARAM);
                     List<RandoPair> randos = new ArrayList<RandoPair>(jsonRandos.length());
 
@@ -240,7 +242,8 @@ public class API {
 
             @Override
             public void onErrorResponse(VolleyError e) {
-                Log.d(API.class,"Network Error",""+e.networkResponse.statusCode+" "+String.valueOf(e.networkResponse.data));
+                if (e.networkResponse !=null)
+                    Log.d(API.class,"Network Error",""+e.networkResponse.statusCode+" "+String.valueOf(e.networkResponse.data));
                 // Handle your error types accordingly.For Timeout & No connection error, you can show 'retry' button.
                 // For AuthFailure, you can re login with user credentials.
                 // For ClientError, 400 & 401, Errors happening on client side when sending api request.

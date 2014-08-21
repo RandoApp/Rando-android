@@ -6,6 +6,7 @@ import android.location.Location;
 
 import com.github.randoapp.App;
 
+import static com.github.randoapp.Constants.ACCOUNT;
 import static com.github.randoapp.Constants.AUTH_TOKEN;
 import static com.github.randoapp.Constants.LATITUDE_PARAM;
 import static com.github.randoapp.Constants.LOCATION;
@@ -15,6 +16,7 @@ import static com.github.randoapp.Constants.TRAINING_FRAGMENT_SHOWN;
 
 public class Preferences {
     public static final String AUTH_TOKEN_DEFAULT_VALUE = "";
+    public static final String ACCOUNT_DEFAULT_VALUE = "";
 
     public static String getAuthToken() {
         return getSharedPreferences().getString(AUTH_TOKEN, AUTH_TOKEN_DEFAULT_VALUE);
@@ -28,6 +30,20 @@ public class Preferences {
 
     public static void removeAuthToken() {
         getSharedPreferences().edit().remove(AUTH_TOKEN).commit();
+    }
+
+    public static String getAccount() {
+        return getSharedPreferences().getString(ACCOUNT, ACCOUNT_DEFAULT_VALUE);
+    }
+
+    public static void setAccount(String token) {
+        if (token != null) {
+            getSharedPreferences().edit().putString(ACCOUNT, token).commit();
+        }
+    }
+
+    public static void removeAccount() {
+        getSharedPreferences().edit().remove(ACCOUNT).commit();
     }
 
     public static Location getLocation() {

@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import static com.github.randoapp.Constants.LOCATION;
 import static com.github.randoapp.Constants.PREFERENCES_FILE_NAME;
+import static com.github.randoapp.preferences.Preferences.ACCOUNT_DEFAULT_VALUE;
 import static com.github.randoapp.preferences.Preferences.AUTH_TOKEN_DEFAULT_VALUE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -132,4 +133,40 @@ public class PreferencesTest extends AndroidTestCase {
         Preferences.removeTrainingFragmentShown();
         assertThat(Preferences.isTrainingFragmentShown(), is(true));
     }
+
+    //Account Tests
+    public void testGetAccount() {
+        String value = UUID.randomUUID().toString();
+
+        Preferences.setAccount(value);
+
+        assertThat(Preferences.getAccount(), is(value));
+    }
+
+    public void testSetEmptyAccountReturnEmptyTokenOnGet() {
+        String value = "";
+
+        Preferences.setAccount(value);
+
+        assertThat(Preferences.getAccount(), is(value));
+    }
+
+    public void testGetAccountAsNull() {
+        Preferences.setAccount(null);
+
+        assertThat(Preferences.getAccount(), is(ACCOUNT_DEFAULT_VALUE));
+    }
+
+    public void testRemoveAccount() {
+        String value = UUID.randomUUID().toString();
+
+        Preferences.setAccount(value);
+        assertThat(Preferences.getAccount(), is(value));
+
+        Preferences.removeAccount();
+
+        assertThat(Preferences.getAccount(), is(ACCOUNT_DEFAULT_VALUE));
+    }
+
+
 }

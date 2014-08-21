@@ -31,7 +31,8 @@
 
     <string name="app_id">833528743343942</string>
 
-    <string name="logout">Logout</string>
+    <string name="logout">Log out</string>
+    <string name="about">About</string>
     <string name="report">Report</string>
     <string name="report_off">Report OFF</string>
     <string name="report_message">Report</string>
@@ -41,6 +42,7 @@
     <string name="uploading_progress">Uploading…</string>
 
     <string name="version">Version: </string>
+    <string name="account">Account: </string>
 
     <string name="crop_failed">Crop Failed.</string>
 
@@ -60,4 +62,14 @@
     <string name="camera_init_failed">Sorry, but you cannot use the camera now!</string>
     <string name="close_dialog">Close</string>
 
+
+    <!-- Help Resources Start -->
+    <string name="help_take_title">Take Rando</string>
+    <string name="help_take_description">Tap red circle to take Rando and gift it to the stranger</string>
+
+    <string name="help_location_title">Location</string>
+    <string name="help_location_description">Tap a Rando to see where it was taken or went to</string>
+
+    <string name="help_guide_title">How to use</string>
+    <!-- Help Resources End -->
 </resources>

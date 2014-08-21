@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:orientation="vertical"
+    android:paddingBottom="110dp"
+    android:paddingRight="10dp"
+    android:paddingLeft="10dp"
+    android:paddingTop="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:clickable="true"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="@dimen/rando_small_ring_size"
+            android:layout_height="@dimen/rando_small_ring_size"
+            android:background="@drawable/rando_background"
+            android:scaleType="center"
+            android:src="@drawable/rando_ring_small" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/logo"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/app_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name_official"
+                android:textColor="@color/rando_dark_grey"
+                android:textSize="20.0sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/app_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/version"
+                android:textColor="@color/rando_dark_grey"
+                android:textSize="10.0sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/accountName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/logo"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:text="@string/account"
+            android:textColor="@color/rando_dark_grey"
+            android:textSize="15.0sp"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="58dp"
+        android:text="@string/help_guide_title"
+        android:textColor="@color/rando_dark_grey"
+        android:textSize="20.0sp"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"/>
+
+    <ScrollView
+        android:id="@+id/how_to"
+        android:layout_width="fill_parent"
+        android:layout_height="0.0dip"
+        android:layout_weight="1.0"
+        android:clipToPadding="false"
+        android:fadingEdge="none"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/help_layout_take"
+                layout="@layout/help_section" />
+
+            <include
+                android:id="@+id/help_layout_location"
+                layout="@layout/help_section" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/aboutButton"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/how_to"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="@string/about"
+        android:textColor="@color/rando_dark_grey"
+        android:textSize="18dp"
+        style="@style/GrayButton"/>
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/how_to"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="@string/logout"
+        android:textColor="@color/rando_dark_grey"
+        android:textSize="18dp"
+        style="@style/GrayButton"/>
+
+</LinearLayout>

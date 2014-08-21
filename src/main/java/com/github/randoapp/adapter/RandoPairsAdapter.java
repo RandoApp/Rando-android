@@ -40,8 +40,6 @@ public class RandoPairsAdapter extends BaseAdapter {
 
     private int size;
 
-    private Context context;
-
     @Override
     public int getCount() {
         return size;
@@ -57,15 +55,7 @@ public class RandoPairsAdapter extends BaseAdapter {
         return 0;
     }
 
-    public RandoPairsAdapter(Context context, boolean isStranger) {
-        // get the window width according to device screen size
-        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        windowManager.getDefaultDisplay().getMetrics(displaymetrics);
-        int displayWidth = displaymetrics.widthPixels;
-        int orientation = context.getResources().getConfiguration().orientation;
-        this.context = context;
-        imageSize = getRandoImageSize(orientation, displayWidth);
+    public RandoPairsAdapter(boolean isStranger) {
         this.isStranger = isStranger;
         initData();
     }
@@ -85,6 +75,10 @@ public class RandoPairsAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup container) {
         final RandoPair randoPair = randoPairs.get(position);
         final ViewHolder holder;
+
+        if (imageSize == 0) {
+            imageSize = getRandoImageSize(container);
+        }
 
         Log.i(RandoPairsAdapter.class, "isStranger", String.valueOf(isStranger), "Size:", String.valueOf(size), "Position", String.valueOf(position));
 
@@ -164,12 +158,9 @@ public class RandoPairsAdapter extends BaseAdapter {
         viewSwitcher.setDisplayedChild(0);
     }
 
-    private int getRandoImageSize(int orientation, int displayWidth) {
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            return displayWidth / 2 - (context.getResources().getDimensionPixelSize(R.dimen.rando_padding_landscape_column_left) + context.getResources().getDimensionPixelSize(R.dimen.rando_padding_landscape_column_right));
-        } else {
-            return displayWidth - Constants.RANDO_MARGIN_PORTRAIT;
-        }
+    private int getRandoImageSize(ViewGroup container) {
+        return container.getWidth() - container.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left)
+                - container.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right);
     }
 
     private void setAnimations(final ViewHolder holder) {
@@ -207,7 +198,7 @@ public class RandoPairsAdapter extends BaseAdapter {
     }
 
     private void loadImages(final ViewHolder holder, final RandoPair randoPair) {
-        if (randoPair.user.imageURLSize.small!=null && !URLUtil.isNetworkUrl(randoPair.user.imageURLSize.small) && !randoPair.user.imageURLSize.small.isEmpty()) {
+        if (randoPair.user.imageURLSize.small != null && !URLUtil.isNetworkUrl(randoPair.user.imageURLSize.small) && !randoPair.user.imageURLSize.small.isEmpty()) {
             loadFile(holder, randoPair.user.imageURL);
             return;
         }
