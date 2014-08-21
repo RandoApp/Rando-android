@@ -15,8 +15,8 @@
         android:layout_height="@dimen/ic_home_size"
         android:src="@drawable/ic_home"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginTop="@dimen/ic_home_margin_top"
+        android:layout_marginRight="@dimen/ic_home_margin_right"
         android:id="@+id/ic_home"
         android:visibility="gone"/>
 </RelativeLayout>
