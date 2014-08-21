@@ -6,6 +6,7 @@ import android.location.Location;
 
 import com.github.randoapp.App;
 
+import static com.github.randoapp.Constants.ACCOUNT;
 import static com.github.randoapp.Constants.AUTH_TOKEN;
 import static com.github.randoapp.Constants.LATITUDE_PARAM;
 import static com.github.randoapp.Constants.LOCATION;
@@ -28,6 +29,20 @@ public class Preferences {
 
     public static void removeAuthToken() {
         getSharedPreferences().edit().remove(AUTH_TOKEN).commit();
+    }
+
+    public static String getAccount() {
+        return getSharedPreferences().getString(ACCOUNT, "");
+    }
+
+    public static void setAccount(String token) {
+        if (token != null) {
+            getSharedPreferences().edit().putString(ACCOUNT, token).commit();
+        }
+    }
+
+    public static void removeAccount() {
+        getSharedPreferences().edit().remove(ACCOUNT).commit();
     }
 
     public static Location getLocation() {
