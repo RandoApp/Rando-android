@@ -12,11 +12,15 @@ import static com.github.randoapp.Constants.LATITUDE_PARAM;
 import static com.github.randoapp.Constants.LOCATION;
 import static com.github.randoapp.Constants.LONGITUDE_PARAM;
 import static com.github.randoapp.Constants.PREFERENCES_FILE_NAME;
+import static com.github.randoapp.Constants.RANDOS_BALANCE;
 import static com.github.randoapp.Constants.TRAINING_FRAGMENT_SHOWN;
 
 public class Preferences {
     public static final String AUTH_TOKEN_DEFAULT_VALUE = "";
     public static final String ACCOUNT_DEFAULT_VALUE = "";
+    public static final int RANDOS_BALANCE_DEFAULT_VALUE = 0;
+
+    private static Object monitor = new Object();
 
     public static String getAuthToken() {
         return getSharedPreferences().getString(AUTH_TOKEN, AUTH_TOKEN_DEFAULT_VALUE);
@@ -85,4 +89,34 @@ public class Preferences {
         //Context.MODE_MULTI_PROCESS needs for access from SyncService
         return App.context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE | Context.MODE_MULTI_PROCESS);
     }
+
+
+    //Randos balance
+    public static int getRandosBalance() {
+        synchronized (monitor) {
+            return getSharedPreferences().getInt(RANDOS_BALANCE, RANDOS_BALANCE_DEFAULT_VALUE);
+        }
+    }
+
+    public static void incrementRandosBalance() {
+        synchronized (monitor) {
+            int randosBalance = getRandosBalance();
+            getSharedPreferences().edit().putInt(RANDOS_BALANCE, ++randosBalance).commit();
+        }
+    }
+
+    public static void decrementRandosBalance() {
+        synchronized (monitor) {
+            int randosBalance = getRandosBalance();
+            getSharedPreferences().edit().putInt(RANDOS_BALANCE, --randosBalance).commit();
+        }
+    }
+
+    public static void zeroRandosBalance() {
+        synchronized (monitor) {
+            getSharedPreferences().edit().putInt(RANDOS_BALANCE, 0).commit();
+        }
+    }
+
 }
+

@@ -11,14 +11,13 @@ import android.os.IBinder;
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.api.API;
+import com.github.randoapp.api.beans.User;
 import com.github.randoapp.api.callback.OnFetchUser;
-import com.github.randoapp.db.model.RandoPair;
 import com.github.randoapp.log.Log;
-import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.task.SyncTask;
+import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.ConnectionUtil;
 
-import java.util.List;
 import java.util.Map;
 
 import static com.github.randoapp.Constants.NEED_NOTIFICATION;
@@ -55,14 +54,14 @@ public class SyncService extends Service {
         if (ConnectionUtil.isOnline(getApplicationContext())) {
             API.fetchUserAsync(new OnFetchUser() {
                 @Override
-                public void onFetch(final List<RandoPair> randoPairs) {
-                    Log.i(SyncService.class, "Fetched ", String.valueOf(randoPairs.size()), " randoPairs");
-                    new SyncTask(randoPairs)
+                public void onFetch(final User user) {
+                    Log.i(SyncService.class, "Fetched ", String.valueOf(user.randosIn.size()), " randos");
+                    new SyncTask(user.randosIn)
                             .onOk(new OnOk() {
                                 @Override
                                 public void onOk(Map<String, Object> data) {
                                     if (data.get(NEED_NOTIFICATION) != null) {
-                                        sendNotification(randoPairs.size());
+                                        sendNotification(user.randosIn.size());
                                     }
                                     if ((Integer) data.get(NOT_PAIRED_RANDO_PAIRS_NUMBER) > 0)
                                         setTimeout(System.currentTimeMillis() + SERVICE_SHORT_PAUSE);

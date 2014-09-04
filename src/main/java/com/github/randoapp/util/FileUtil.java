@@ -7,7 +7,7 @@ import android.os.Environment;
 
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
-import com.github.randoapp.db.model.RandoPair;
+import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 
 import java.io.File;
@@ -51,29 +51,27 @@ public class FileUtil {
         return mediaFile;
     }
 
-    public static String getImagePath(RandoPair.User user) {
-        return FileUtil.getOutputMediaDir() + File.separator + user.getRandoFileName();
+    public static String getImagePath(Rando rando) {
+        return FileUtil.getOutputMediaDir() + File.separator + rando.getRandoFileName();
     }
 
-    public static String getMapPath(RandoPair.User user) {
-        return FileUtil.getOutputMediaDir() + File.separator + user.getMapFileName();
+    public static String getMapPath(Rando rando) {
+        return FileUtil.getOutputMediaDir() + File.separator + rando.getMapFileName();
     }
 
-    public static boolean isImageExists(RandoPair.User user) {
-        File file = new File(getImagePath(user));
+    public static boolean isImageExists(Rando rando) {
+        File file = new File(getImagePath(rando));
         return file.exists();
     }
 
-    public static boolean isMapExists(RandoPair.User user) {
-        File file = new File(getMapPath(user));
+    public static boolean isMapExists(Rando rando) {
+        File file = new File(getMapPath(rando));
         return file.exists();
     }
 
-    public static boolean areFilesExist(RandoPair randoPair) {
-        return isImageExists(randoPair.user)
-                && isMapExists(randoPair.user)
-                && isImageExists(randoPair.stranger)
-                && isMapExists(randoPair.stranger);
+    public static boolean areFilesExist(Rando rando) {
+        return isImageExists(rando)
+                && isMapExists(rando);
     }
 
     public static boolean isFileExists(String filePath) {

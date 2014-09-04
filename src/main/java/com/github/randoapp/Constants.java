@@ -62,6 +62,7 @@ public class Constants {
     //Shared Preferences
     public static final String PREFERENCES_FILE_NAME = "rando.prefs";
     public static final String AUTH_TOKEN = "auth.token";
+    public static final String RANDOS_BALANCE = "randos.balance";
     public static final String ACCOUNT = "account";
     public static final String TRAINING_FRAGMENT_SHOWN = "training.fragment.shown";
 
@@ -87,6 +88,8 @@ public class Constants {
     public static final String USER_PARAM = "user";
     public static final String STRANGER_PARAM = "stranger";
     public static final String RANDOS_PARAM = "randos";
+    public static final String IN_RANDOS_PARAM = "in";
+    public static final String OUT_RANDOS_PARAM = "out";
     public static final String EMAIL_PARAM = "email";
     public static final String LOCATION = "location";
     public static final String LATITUDE_PARAM = "latitude";

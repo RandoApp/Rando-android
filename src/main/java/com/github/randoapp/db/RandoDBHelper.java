@@ -7,7 +7,7 @@ import android.util.Log;
 
 public class RandoDBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
     private static final String DATABASE_NAME = "rando.db";
 
     private static RandoDBHelper helperInstance;
@@ -79,22 +79,11 @@ public class RandoDBHelper extends SQLiteOpenHelper {
         public static final String COLUMN_USER_MAP_URL_MEDIUM = "USER_MAP_URL_MEDIUM";
         public static final String COLUMN_USER_MAP_URL_LARGE = "USER_MAP_URL_LARGE";
 
-        public static final String COLUMN_STRANGER_RANDO_ID = "STRANGER_RANDO_ID";
-        public static final String COLUMN_STRANGER_RANDO_URL = "STRANGER_RANDO_URL";
-        public static final String COLUMN_STRANGER_RANDO_URL_SMALL = "STRANGER_RANDO_URL_SMALL";
-        public static final String COLUMN_STRANGER_RANDO_URL_MEDIUM = "STRANGER_RANDO_URL_MEDIUM";
-        public static final String COLUMN_STRANGER_RANDO_URL_LARGE = "STRANGER_RANDO_URL_LARGE";
-        public static final String COLUMN_STRANGER_RANDO_DATE = "STRANGER_RANDO_DATE";
-        public static final String COLUMN_STRANGER_MAP_URL = "STRANGER_MAP_URL";
-        public static final String COLUMN_STRANGER_MAP_URL_SMALL = "STRANGER_MAP_URL_SMALL";
-        public static final String COLUMN_STRANGER_MAP_URL_MEDIUM = "STRANGER_MAP_URL_MEDIUM";
-        public static final String COLUMN_STRANGER_MAP_URL_LARGE = "STRANGER_MAP_URL_LARGE";
+        public static final String COLUMN_RANDO_STATUS = "RANDO_STATUS";
 
         public static final String[] ALL_COLUMNS = {
                 COLUMN_ID, COLUMN_USER_RANDO_ID, COLUMN_USER_RANDO_URL, COLUMN_USER_RANDO_URL_SMALL, COLUMN_USER_RANDO_URL_MEDIUM,
-                COLUMN_USER_RANDO_URL_LARGE, COLUMN_USER_RANDO_DATE, COLUMN_USER_MAP_URL, COLUMN_USER_MAP_URL_SMALL, COLUMN_USER_MAP_URL_MEDIUM, COLUMN_USER_MAP_URL_LARGE,
-                COLUMN_STRANGER_RANDO_ID, COLUMN_STRANGER_RANDO_URL, COLUMN_STRANGER_RANDO_URL_SMALL, COLUMN_STRANGER_RANDO_URL_MEDIUM, COLUMN_STRANGER_RANDO_URL_LARGE, COLUMN_STRANGER_RANDO_DATE,
-                COLUMN_STRANGER_MAP_URL, COLUMN_STRANGER_MAP_URL_SMALL, COLUMN_STRANGER_MAP_URL_MEDIUM, COLUMN_STRANGER_MAP_URL_LARGE};
+                COLUMN_USER_RANDO_URL_LARGE, COLUMN_USER_RANDO_DATE, COLUMN_USER_MAP_URL, COLUMN_USER_MAP_URL_SMALL, COLUMN_USER_MAP_URL_MEDIUM, COLUMN_USER_MAP_URL_LARGE, COLUMN_RANDO_STATUS};
 
         public static final String CREATE_TABLE_SQL = "CREATE TABLE " + RandoTable.NAME +
                 " (" + COLUMN_ID + " integer primary key autoincrement, " +
@@ -108,16 +97,7 @@ public class RandoDBHelper extends SQLiteOpenHelper {
                 COLUMN_USER_MAP_URL_SMALL + " text," +
                 COLUMN_USER_MAP_URL_MEDIUM + " text," +
                 COLUMN_USER_MAP_URL_LARGE + " text," +
-                COLUMN_STRANGER_RANDO_ID + " text," +
-                COLUMN_STRANGER_RANDO_URL + " text," +
-                COLUMN_STRANGER_RANDO_URL_SMALL + " text," +
-                COLUMN_STRANGER_RANDO_URL_MEDIUM + " text," +
-                COLUMN_STRANGER_RANDO_URL_LARGE + " text," +
-                COLUMN_STRANGER_RANDO_DATE + " integer," +
-                COLUMN_STRANGER_MAP_URL + " text," +
-                COLUMN_STRANGER_MAP_URL_SMALL + " text," +
-                COLUMN_STRANGER_MAP_URL_MEDIUM + " text," +
-                COLUMN_STRANGER_MAP_URL_LARGE + " text" +
+                COLUMN_RANDO_STATUS + " text" +
                 ");";
     }
 

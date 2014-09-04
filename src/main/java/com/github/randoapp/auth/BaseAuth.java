@@ -45,7 +45,7 @@ public abstract class BaseAuth implements View.OnClickListener {
     }
 
     private static void clearDBForChangeAccount(Context context) {
-        RandoDAO.clearRandoPairs();
+        RandoDAO.clearRandos();
     }
 
 }

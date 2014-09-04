@@ -1,7 +1,7 @@
 package com.github.randoapp.task;
 
 import com.github.randoapp.db.RandoDAO;
-import com.github.randoapp.db.model.RandoPair;
+import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 
 import java.util.List;
@@ -11,10 +11,10 @@ import static com.github.randoapp.Constants.NOT_PAIRED_RANDO_PAIRS_NUMBER;
 
 public class SyncTask extends BaseTask {
 
-    private List<RandoPair> randoPairs;
+    private List<Rando> randos;
 
-    public SyncTask(List<RandoPair> randoPairs) {
-        this.randoPairs = randoPairs;
+    public SyncTask(List<Rando> randos) {
+        this.randos = randos;
     }
 
     @Override
@@ -22,12 +22,10 @@ public class SyncTask extends BaseTask {
         Log.v(SyncTask.class, "OnFetchUser");
 
         if (!isConsistent()) {
-            RandoDAO.clearRandoPairs();
-            RandoDAO.insertRandoPairs(randoPairs);
-            //randoDAO.close();
+            RandoDAO.clearRandos();
+            RandoDAO.insertRandos(randos);
             data.put(NEED_NOTIFICATION, true);
-            data.put(NOT_PAIRED_RANDO_PAIRS_NUMBER, RandoDAO.getNotPairedRandosNumber());
-            //randoDAO.close();
+            //data.put(NOT_PAIRED_RANDO_PAIRS_NUMBER, RandoDAO.getNotPairedRandosNumber());
             return OK;
         }
         return checkEachRandoIfChanged();
@@ -35,21 +33,21 @@ public class SyncTask extends BaseTask {
 
 
     private boolean isConsistent() {
-        return randoPairs.size() == RandoDAO.getRandoPairsNumber();
+        return randos.size() == RandoDAO.getRandosNumber();
     }
 
     private Integer checkEachRandoIfChanged() {
         try {
-            List<RandoPair> dbRandoPairs = RandoDAO.getAllRandoPairs();
-            for (RandoPair randoPair : randoPairs) {
-                if (!dbRandoPairs.contains(randoPair)) {
-                    RandoDAO.clearRandoPairs();
-                    RandoDAO.insertRandoPairs(randoPairs);
+            List<Rando> dbRandos = RandoDAO.getAllRandos();
+            for (Rando rando : randos) {
+                if (!dbRandos.contains(rando)) {
+                    RandoDAO.clearRandos();
+                    RandoDAO.insertRandos(randos);
                     data.put(NEED_NOTIFICATION, true);
                     break;
                 }
             }
-            data.put(NOT_PAIRED_RANDO_PAIRS_NUMBER, RandoDAO.getNotPairedRandosNumber());
+            //data.put(NOT_PAIRED_RANDO_PAIRS_NUMBER, RandoDAO.getNotPairedRandosNumber());
         } catch (IllegalArgumentException e) {
             Log.e(SyncTask.class, "Sync task error: ", e.getMessage());
         }

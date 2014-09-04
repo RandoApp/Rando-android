@@ -1,9 +1,7 @@
 package com.github.randoapp.api.callback;
 
-import com.github.randoapp.db.model.RandoPair;
-
-import java.util.List;
+import com.github.randoapp.api.beans.User;
 
 public interface OnFetchUser {
-    public void onFetch(List<RandoPair> foodPairs);
+    public void onFetch(User user);
 }

@@ -3,10 +3,10 @@ package com.github.randoapp.test.task;
 import android.test.AndroidTestCase;
 
 import com.github.randoapp.db.RandoDAO;
-import com.github.randoapp.db.model.RandoPair;
+import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.task.SyncTask;
-import com.github.randoapp.test.db.RandoPairTestHelper;
+import com.github.randoapp.test.db.RandoTestHelper;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,77 +24,77 @@ public class SyncTaskTest extends AndroidTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        RandoDAO.clearRandoPairs();
+        RandoDAO.clearRandos();
         RandoDAO.clearRandoToUpload();
     }
 
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-        RandoDAO.clearRandoPairs();
+        RandoDAO.clearRandos();
         RandoDAO.clearRandoToUpload();
     }
 
     public void testNotChanged() throws Exception {
-        List<RandoPair> RandoPairs = createRandoPairs();
+        List<Rando> randos = createRandoPairs();
 
-        RandoDAO.insertRandoPairs(RandoPairs);
+        RandoDAO.insertRandos(randos);
 
-        SyncTask syncTask = new SyncTask(RandoPairs);
+        SyncTask syncTask = new SyncTask(randos);
         syncTask.executeSync();
 
-        RandoPairTestHelper.checkListsEqual(RandoDAO.getAllRandoPairs(), RandoPairs);
+        RandoTestHelper.checkListsEqual(RandoDAO.getAllRandos(), randos);
     }
 
     public void testRandoPairUpdated() throws Exception {
-        List<RandoPair> RandoPairs = createRandoPairs();
+        List<Rando> randos = createRandoPairs();
 
-        List<RandoPair> RandoPairsInDB = createRandoPairs();
-        RandoPairsInDB.get(0).user.imageURL = "!BLAAAAA!!!!!!!!";
-        RandoPairsInDB.get(0).user.mapURL = "!BLAAAAA!!!!!!!!";
+        List<Rando> randosInDB = createRandoPairs();
+        randosInDB.get(0).imageURL = "!BLAAAAA!!!!!!!!";
+        randosInDB.get(0).mapURL = "!BLAAAAA!!!!!!!!";
 
-        RandoDAO.insertRandoPairs(RandoPairsInDB);
+        RandoDAO.insertRandos(randosInDB);
 
-        SyncTask syncTask = new SyncTask(RandoPairs);
+        SyncTask syncTask = new SyncTask(randos);
         syncTask.executeSync();
 
-        RandoPairTestHelper.checkListsEqual(RandoDAO.getAllRandoPairs(), RandoPairs);
+        RandoTestHelper.checkListsEqual(RandoDAO.getAllRandos(), randos);
     }
 
     public void testRandoPairAdded() throws Exception {
-        List<RandoPair> RandoPairs = createRandoPairs();
-        List<RandoPair> forDBList = createRandoPairs();
+        List<Rando> randos = createRandoPairs();
+        List<Rando> forDBList = createRandoPairs();
         forDBList.remove(0);
 
-        RandoDAO.insertRandoPairs(forDBList);
+        RandoDAO.insertRandos(forDBList);
 
-        SyncTask syncTask = new SyncTask(RandoPairs);
+        SyncTask syncTask = new SyncTask(randos);
         syncTask.executeSync();
 
-        RandoPairTestHelper.checkListsEqual(RandoDAO.getAllRandoPairs(), RandoPairs);
+        RandoTestHelper.checkListsEqual(RandoDAO.getAllRandos(), randos);
     }
 
     public void testRandoPairRemoved() throws Exception {
-        List<RandoPair> RandoPairs = createRandoPairs();
-        List<RandoPair> forDBList = createRandoPairs();
+        List<Rando> randos = createRandoPairs();
+        List<Rando> forDBList = createRandoPairs();
 
-        forDBList.add(RandoPairTestHelper.getRandomRandoPair());
-        RandoDAO.insertRandoPairs(forDBList);
+        forDBList.add(RandoTestHelper.getRandomRando(Rando.Status.IN));
+        RandoDAO.insertRandos(forDBList);
 
-        SyncTask syncTask = new SyncTask(RandoPairs);
+        SyncTask syncTask = new SyncTask(randos);
         syncTask.executeSync();
 
-        RandoPairTestHelper.checkListsEqual(RandoDAO.getAllRandoPairs(), RandoPairs);
+        RandoTestHelper.checkListsEqual(RandoDAO.getAllRandos(), randos);
     }
 
     public void testOkCallbackIsTriggeredWhenDBUpdated() throws Exception {
-        List<RandoPair> RandoPairs = new ArrayList<RandoPair>();
+        List<Rando> randos = new ArrayList<Rando>();
 
-        RandoPairs.add(RandoPairTestHelper.getRandomRandoPairNotPaired());
+        randos.add(RandoTestHelper.getRandomRando(Rando.Status.IN));
 
         OnOk okCallback = mock(OnOk.class);
 
-        new SyncTask(RandoPairs)
+        new SyncTask(randos)
         .onOk(okCallback)
         .executeSync();
 
@@ -102,39 +102,35 @@ public class SyncTaskTest extends AndroidTestCase {
     }
 
     public void testOkCallbackIsNotTriggeredWhenDBNotUpdated() throws Exception {
-        List<RandoPair> RandoPairs = createRandoPairs();
+        List<Rando> randos = createRandoPairs();
 
         OnOk okCallback = mock(OnOk.class);
 
-        new SyncTask(RandoPairs)
+        new SyncTask(randos)
         .onOk(okCallback)
         .executeSync();
 
         verify(okCallback, times(1)).onOk(anyMap());
     }
 
-    private List<RandoPair> createRandoPairs() {
-        RandoPair RandoPair1 = new RandoPair();
-        RandoPair1.user.randoId = "ddddcwef3242f32f";
-        RandoPair1.user.imageURL = "http://rando4.me/image/dddd/ddddcwef3242f32f.jpg";
-        RandoPair1.user.date = new Date(1383690800877l);
-        RandoPair1.user.mapURL = "http://rando4.me/map/eeee/eeeewef3242f32f.jpg";
-        RandoPair1.stranger.randoId = "abcwef3242f32f";
-        RandoPair1.stranger.imageURL = "http://rando4.me/image/abc/abcwef3242f32f.jpg";
-        RandoPair1.stranger.mapURL = "http://rando4.me/map/azca/azcacwef3242f32f.jpg";
+    private List<Rando> createRandoPairs() {
+        Rando rando1 = new Rando();
+        rando1.randoId = "ddddcwef3242f32f";
+        rando1.imageURL = "http://rando4.me/image/dddd/ddddcwef3242f32f.jpg";
+        rando1.date = new Date(1383690800877l);
+        rando1.mapURL = "http://rando4.me/map/eeee/eeeewef3242f32f.jpg";
+        rando1.status = Rando.Status.IN;
 
-        RandoPair RandoPair2 = new RandoPair();
-        RandoPair2.user.randoId = "abcdw0ef3242f32f";
-        RandoPair2.user.imageURL = "http://rando4.me/image/abcd/abcdw0ef3242f32f.jpg";
-        RandoPair2.user.date = new Date(1383670400877l);
-        RandoPair2.user.mapURL = "http://rando4.me/map/bcde/bcdecwef3242f32f.jpg'";
-        RandoPair2.stranger.randoId = "abcd3cwef3242f32f";
-        RandoPair2.stranger.imageURL = "http://rando4.me/image/abcd/abcd3cwef3242f32f.jpg";
-        RandoPair2.stranger.mapURL = "http://rando4.me/map/abcd/abcd5wef3242f32f.jpg";
+        Rando rando2 = new Rando();
+        rando2.randoId = "abcdw0ef3242f32f";
+        rando2.imageURL = "http://rando4.me/image/abcd/abcdw0ef3242f32f.jpg";
+        rando2.date = new Date(1383670400877l);
+        rando2.mapURL = "http://rando4.me/map/bcde/bcdecwef3242f32f.jpg'";
+        rando2.status = Rando.Status.IN;
 
-        List<RandoPair> RandoPairs = new ArrayList<RandoPair>();
-        RandoPairs.add(RandoPair1);
-        RandoPairs.add(RandoPair2);
-        return RandoPairs;
+        List<Rando> randos = new ArrayList<Rando>();
+        randos.add(rando1);
+        randos.add(rando2);
+        return randos;
     }
 }

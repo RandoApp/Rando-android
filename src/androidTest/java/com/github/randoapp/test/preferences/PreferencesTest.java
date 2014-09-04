@@ -168,5 +168,32 @@ public class PreferencesTest extends AndroidTestCase {
         assertThat(Preferences.getAccount(), is(ACCOUNT_DEFAULT_VALUE));
     }
 
+    //Randos balance
+    public void testIncrement() {
+        int val = Preferences.getRandosBalance();
+        Preferences.incrementRandosBalance();
+        assertThat("Increment doesn't work",Preferences.getRandosBalance(), is(val+1));
+    }
+
+    public void testDecrement() {
+        int val = Preferences.getRandosBalance();
+        Preferences.decrementRandosBalance();
+        assertThat("Increment doesn't work",Preferences.getRandosBalance(), is(val-1));
+    }
+
+    public void testSetZero() {
+        Preferences.zeroRandosBalance();
+        assertThat(Preferences.getRandosBalance(), is(0));
+
+        Preferences.incrementRandosBalance();
+        Preferences.incrementRandosBalance();
+        Preferences.zeroRandosBalance();
+        assertThat(Preferences.getRandosBalance(), is(0));
+
+        Preferences.incrementRandosBalance();
+        Preferences.incrementRandosBalance();
+        Preferences.zeroRandosBalance();
+        assertThat(Preferences.getRandosBalance(), is(0));
+    }
 
 }

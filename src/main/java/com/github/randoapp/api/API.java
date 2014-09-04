@@ -1,6 +1,5 @@
 package com.github.randoapp.api;
 
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.location.Location;
 
@@ -20,7 +19,9 @@ import com.github.randoapp.R;
 import com.github.randoapp.api.callback.OnFetchUser;
 import com.github.randoapp.api.exception.ForbiddenException;
 import com.github.randoapp.api.exception.RequestTooLongException;
-import com.github.randoapp.db.model.RandoPair;
+import com.github.randoapp.api.listeners.ErrorResponseListener;
+import com.github.randoapp.api.listeners.UserFetchResultListener;
+import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.preferences.Preferences;
@@ -32,7 +33,6 @@ import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.RedirectException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.ConnectionPoolTimeoutException;
@@ -41,7 +41,6 @@ import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -64,7 +63,6 @@ import java.util.regex.Pattern;
 import static com.github.randoapp.Constants.ANONYMOUS_ID_PARAM;
 import static com.github.randoapp.Constants.ANONYMOUS_URL;
 import static com.github.randoapp.Constants.CREATION_PARAM;
-import static com.github.randoapp.Constants.EMAIL_PARAM;
 import static com.github.randoapp.Constants.ERROR_CODE_PARAM;
 import static com.github.randoapp.Constants.FACEBOOK_EMAIL_PARAM;
 import static com.github.randoapp.Constants.FACEBOOK_ID_PARAM;
@@ -78,26 +76,16 @@ import static com.github.randoapp.Constants.GOOGLE_TOKEN_PARAM;
 import static com.github.randoapp.Constants.GOOGLE_URL;
 import static com.github.randoapp.Constants.IMAGE_PARAM;
 import static com.github.randoapp.Constants.IMAGE_URL_PARAM;
-import static com.github.randoapp.Constants.IMAGE_URL_SIZES_PARAM;
-import static com.github.randoapp.Constants.LARGE_PARAM;
 import static com.github.randoapp.Constants.LATITUDE_PARAM;
 import static com.github.randoapp.Constants.LOGOUT_URL;
 import static com.github.randoapp.Constants.LOG_URL;
 import static com.github.randoapp.Constants.LONGITUDE_PARAM;
-import static com.github.randoapp.Constants.MAP_URL_PARAM;
-import static com.github.randoapp.Constants.MAP_URL_SIZES_PARAM;
-import static com.github.randoapp.Constants.MEDIUM_PARAM;
-import static com.github.randoapp.Constants.RANDOS_PARAM;
-import static com.github.randoapp.Constants.RANDO_ID_PARAM;
 import static com.github.randoapp.Constants.REPORT_URL;
 import static com.github.randoapp.Constants.SIGNUP_EMAIL_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_PASSWORD_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_URL;
-import static com.github.randoapp.Constants.SMALL_PARAM;
-import static com.github.randoapp.Constants.STRANGER_PARAM;
-import static com.github.randoapp.Constants.UPLOAD_RANDO_URL;
 import static com.github.randoapp.Constants.UNAUTHORIZED_CODE;
-import static com.github.randoapp.Constants.USER_PARAM;
+import static com.github.randoapp.Constants.UPLOAD_RANDO_URL;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.apache.http.HttpStatus.SC_REQUEST_TOO_LONG;
 
@@ -186,121 +174,10 @@ public class API {
 
     public static void fetchUserAsync(final OnFetchUser listener) {
         Log.i(API.class, "API.fetchUser");
-
-        VolleySingleton.getInstance().getRequestQueue().add(new JsonObjectRequest(Request.Method.GET, getUrl(FETCH_USER_URL), null, new Response.Listener<JSONObject>() {
-
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    Preferences.setAccount(response.getString(EMAIL_PARAM));
-                    JSONArray jsonRandos = response.getJSONArray(RANDOS_PARAM);
-                    List<RandoPair> randos = new ArrayList<RandoPair>(jsonRandos.length());
-
-                    for (int i = 0; i < jsonRandos.length(); i++) {
-                        RandoPair rando = new RandoPair();
-                        JSONObject jsonRando = jsonRandos.getJSONObject(i);
-                        JSONObject user = jsonRando.getJSONObject(USER_PARAM);
-                        JSONObject userRandoUrlSizes = user.getJSONObject(IMAGE_URL_SIZES_PARAM);
-                        JSONObject userMapUrlSizes = user.getJSONObject(MAP_URL_SIZES_PARAM);
-
-                        JSONObject stranger = jsonRando.getJSONObject(STRANGER_PARAM);
-                        JSONObject strangerRandoUrlSizes = stranger.getJSONObject(IMAGE_URL_SIZES_PARAM);
-                        JSONObject strangerMapUrlSizes = stranger.getJSONObject(MAP_URL_SIZES_PARAM);
-
-                        rando.user.randoId = user.getString(RANDO_ID_PARAM);
-                        rando.user.imageURL = user.getString(IMAGE_URL_PARAM);
-                        rando.user.imageURLSize.small = userRandoUrlSizes.getString(SMALL_PARAM);
-                        rando.user.imageURLSize.medium = userRandoUrlSizes.getString(MEDIUM_PARAM);
-                        rando.user.imageURLSize.large = userRandoUrlSizes.getString(LARGE_PARAM);
-
-                        rando.user.mapURL = user.getString(MAP_URL_PARAM);
-                        rando.user.mapURLSize.small = userMapUrlSizes.getString(SMALL_PARAM);
-                        rando.user.mapURLSize.medium = userMapUrlSizes.getString(MEDIUM_PARAM);
-                        rando.user.mapURLSize.large = userMapUrlSizes.getString(LARGE_PARAM);
-
-                        rando.user.date = new Date(user.getLong(CREATION_PARAM));
-
-                        rando.stranger.randoId = stranger.getString(RANDO_ID_PARAM);
-                        rando.stranger.imageURL = stranger.getString(IMAGE_URL_PARAM);
-                        rando.stranger.imageURLSize.small = strangerRandoUrlSizes.getString(SMALL_PARAM);
-                        rando.stranger.imageURLSize.medium = strangerRandoUrlSizes.getString(MEDIUM_PARAM);
-                        rando.stranger.imageURLSize.large = strangerRandoUrlSizes.getString(LARGE_PARAM);
-
-                        rando.stranger.mapURL = stranger.getString(MAP_URL_PARAM);
-                        rando.stranger.mapURLSize.small = strangerMapUrlSizes.getString(SMALL_PARAM);
-                        rando.stranger.mapURLSize.medium = strangerMapUrlSizes.getString(MEDIUM_PARAM);
-                        rando.stranger.mapURLSize.large = strangerMapUrlSizes.getString(LARGE_PARAM);
-
-                        randos.add(rando);
-                    }
-                    listener.onFetch(randos);
-                } catch (JSONException e) {
-                    Log.e(API.class, "onResponse method", e);
-                }
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError e) {
-                if (e.networkResponse !=null)
-                    Log.d(API.class,"Network Error",""+e.networkResponse.statusCode+" "+String.valueOf(e.networkResponse.data));
-                // Handle your error types accordingly.For Timeout & No connection error, you can show 'retry' button.
-                // For AuthFailure, you can re login with user credentials.
-                // For ClientError, 400 & 401, Errors happening on client side when sending api request.
-                // In this case you can check how client is forming the api and debug accordingly.
-                // For ServerError 5xx, you can do retry or handle accordingly.
-                if(e instanceof AuthFailureError) {
-                    Intent intent = new Intent(Constants.AUTH_FAILURE_BROADCAST_EVENT);
-                    App.context.sendBroadcast(intent);
-                } else if( e instanceof NetworkError) {
-                } else if( e instanceof ServerError) {
-                } else if( e instanceof ParseError) {
-                } else if( e instanceof NoConnectionError) {
-                } else if( e instanceof TimeoutError) {
-                }
-            }
-        }
-        ));
+        VolleySingleton.getInstance().getRequestQueue().add(new JsonObjectRequest(Request.Method.GET, getUrl(FETCH_USER_URL), null, new UserFetchResultListener(listener), new ErrorResponseListener()));
     }
 
-    public static List<RandoPair> fetchUser() throws AuthenticationException, Exception {
-        try {
-            HttpGet request = new HttpGet(getUrl(FETCH_USER_URL));
-            HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
-
-
-            if (response.getStatusLine().getStatusCode() == SC_OK) {
-                JSONObject json = readJSON(response);
-                JSONArray jsonRandos = json.getJSONArray(RANDOS_PARAM);
-
-                List<RandoPair> randos = new ArrayList<RandoPair>(jsonRandos.length());
-
-                for (int i = 0; i < jsonRandos.length(); i++) {
-                    RandoPair rando = new RandoPair();
-                    JSONObject jsonRando = jsonRandos.getJSONObject(i);
-                    JSONObject user = jsonRando.getJSONObject(USER_PARAM);
-                    JSONObject stranger = jsonRando.getJSONObject(STRANGER_PARAM);
-                    rando.user.randoId = user.getString(RANDO_ID_PARAM);
-                    rando.user.imageURL = user.getString(IMAGE_URL_PARAM);
-                    rando.user.mapURL = user.getString(MAP_URL_PARAM);
-                    rando.user.date = new Date(user.getLong(CREATION_PARAM));
-
-                    rando.stranger.randoId = stranger.getString(RANDO_ID_PARAM);
-                    rando.stranger.imageURL = stranger.getString(IMAGE_URL_PARAM);
-                    rando.stranger.mapURL = stranger.getString(MAP_URL_PARAM);
-
-                    randos.add(rando);
-                }
-                return randos;
-            } else {
-                throw processServerError(readJSON(response));
-            }
-        } catch (IOException e) {
-            throw processError(e);
-        }
-    }
-
-    public static RandoPair uploadImage(File randoFile, Location location) throws AuthenticationException, Exception {
+    public static Rando uploadImage(File randoFile, Location location) throws AuthenticationException, Exception {
         Log.i(API.class, "uploadImage");
         try {
             String latitude = "0.0";
@@ -323,10 +200,10 @@ public class API {
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
                 JSONObject json = readJSON(response);
-                RandoPair randoPair = new RandoPair();
-                randoPair.user.imageURL = json.getString(IMAGE_URL_PARAM);
-                randoPair.user.date = new Date(json.getLong(CREATION_PARAM));
-                return randoPair;
+                Rando rando = new Rando();
+                rando.imageURL = json.getString(IMAGE_URL_PARAM);
+                rando.date = new Date(json.getLong(CREATION_PARAM));
+                return rando;
             } else if (response.getStatusLine().getStatusCode() == SC_REQUEST_TOO_LONG) {
                 throw new RequestTooLongException(App.context.getResources().getString(R.string.error_image_too_big));
             } else {
@@ -449,8 +326,8 @@ public class API {
 
     private static Exception processError(Exception exc) {
         //We don't want to log Connectivity exceptions
-        if(exc instanceof UnknownHostException
-                || exc instanceof ConnectException){
+        if (exc instanceof UnknownHostException
+                || exc instanceof ConnectException) {
             return new Exception(App.context.getResources().getString(R.string.error_no_network));
         }
         Log.e(API.class, "processError method", exc);
