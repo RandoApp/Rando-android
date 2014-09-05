@@ -19,20 +19,7 @@ import static org.hamcrest.Matchers.greaterThan;
 
 public class SyncServiceTest extends AndroidTestCase {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        RandoDAO.clearRandos();
-        RandoDAO.clearRandoToUpload();
-        Preferences.zeroRandosBalance();
-    }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        RandoDAO.clearRandos();
-        RandoDAO.clearRandoToUpload();
-    }
 
 
     /*public void testOnFetchUserImplNoUpdateZeroBalance() throws Exception {

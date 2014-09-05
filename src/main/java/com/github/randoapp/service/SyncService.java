@@ -67,33 +67,6 @@ public class SyncService extends IntentService {
                 @Override
                 public void onFetch(final User user) {
                     Log.i(SyncService.class, "Fetched ", user.toString(), " randos");
-
-                    //check RandosOut
-                    List<Rando> outRandosDB = RandoDAO.getAllOutRandos();
-                    if (!RandoUtil.areRandoListsEqual(outRandosDB, user.randosOut)) {
-                        RandoDAO.clearOutRandos();
-                        RandoDAO.insertRandos(user.randosOut);
-                    }
-
-                    //check RandosIn
-                    List<Rando> inRandosDB = RandoDAO.getAllInRandos();
-                    if (!RandoUtil.areRandoListsEqual(inRandosDB, user.randosIn)) {
-                        for (Rando rando : user.randosIn) {
-                            if (!inRandosDB.contains(rando)) {
-                                Preferences.decrementRandosBalance();
-                            }
-                        }
-                        RandoDAO.clearInRandos();
-                        RandoDAO.insertRandos(user.randosOut);
-                        sendNotification(user.randosIn.size());
-                    }
-
-                    //Safe check
-                    if (Preferences.getRandosBalance() < 0) {
-                        Preferences.zeroRandosBalance();
-                    } else if (Preferences.getRandosBalance() > 0) {
-                        setTimeout(System.currentTimeMillis() + SERVICE_SHORT_PAUSE);
-                    }
                 }
             });
         } else {
