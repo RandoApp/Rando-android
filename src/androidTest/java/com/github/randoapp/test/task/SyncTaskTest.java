@@ -46,7 +46,7 @@ public class SyncTaskTest extends AndroidTestCase {
         RandoTestHelper.checkListsEqual(RandoDAO.getAllRandos(), randos);
     }
 
-    public void testRandoPairUpdated() throws Exception {
+    public void testRandoUpdated() throws Exception {
         List<Rando> randos = createRandoPairs();
 
         List<Rando> randosInDB = createRandoPairs();

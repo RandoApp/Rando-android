@@ -21,6 +21,19 @@ public class Rando implements Serializable {
     public UrlSize mapURLSize = new UrlSize();
     public Status status;
 
+    public Rando() {
+    }
+
+    public Rando(Rando rando) {
+        rando.id = id;
+        rando.randoId = randoId;
+        rando.imageURL = imageURL;
+        rando.imageURLSize = imageURLSize;
+        rando.date = date;
+        rando.mapURL = mapURL;
+        rando.mapURLSize = mapURLSize;
+        rando.status = status;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -104,7 +117,6 @@ public class Rando implements Serializable {
     public String getMapFileName() {
         return mapURL == null ? null : mapURL.substring(mapURL.lastIndexOf('/') + 1);
     }
-
 
     public static class DateComparator implements Comparator<Rando> {
 

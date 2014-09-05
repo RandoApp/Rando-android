@@ -4,6 +4,9 @@ import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static com.github.randoapp.Constants.NEED_NOTIFICATION;
@@ -39,13 +42,10 @@ public class SyncTask extends BaseTask {
     private Integer checkEachRandoIfChanged() {
         try {
             List<Rando> dbRandos = RandoDAO.getAllRandos();
-            for (Rando rando : randos) {
-                if (!dbRandos.contains(rando)) {
-                    RandoDAO.clearRandos();
-                    RandoDAO.insertRandos(randos);
-                    data.put(NEED_NOTIFICATION, true);
-                    break;
-                }
+            if (!(randos.size() == dbRandos.size() && dbRandos.containsAll(randos))){
+                RandoDAO.clearRandos();
+                RandoDAO.insertRandos(randos);
+                data.put(NEED_NOTIFICATION, true);
             }
             //data.put(NOT_PAIRED_RANDO_PAIRS_NUMBER, RandoDAO.getNotPairedRandosNumber());
         } catch (IllegalArgumentException e) {

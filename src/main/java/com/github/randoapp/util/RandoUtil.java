@@ -3,7 +3,9 @@ package com.github.randoapp.util;
 import com.github.randoapp.Constants;
 import com.github.randoapp.db.model.Rando;
 
-public class RandoPairUtil {
+import java.util.List;
+
+public class RandoUtil {
 
     public static String getUrlByImageSize(int imageSize, Rando.UrlSize urls) {
         if (imageSize >= Constants.SIZE_LARGE) {
@@ -12,5 +14,9 @@ public class RandoPairUtil {
             return urls.medium;
         }
         return urls.small;
+    }
+
+    public static boolean areRandoListsEqual(List<Rando> newRandos, List<Rando> oldRandos) {
+        return (oldRandos.size() == newRandos.size() && oldRandos.containsAll(newRandos));
     }
 }

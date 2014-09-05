@@ -2,6 +2,7 @@ package com.github.randoapp.service;
 
 import android.app.ActivityManager;
 import android.app.AlarmManager;
+import android.app.IntentService;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -13,23 +14,26 @@ import com.github.randoapp.Constants;
 import com.github.randoapp.api.API;
 import com.github.randoapp.api.beans.User;
 import com.github.randoapp.api.callback.OnFetchUser;
+import com.github.randoapp.db.RandoDAO;
+import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
-import com.github.randoapp.task.SyncTask;
-import com.github.randoapp.task.callback.OnOk;
+import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.ConnectionUtil;
+import com.github.randoapp.util.RandoUtil;
 
-import java.util.Map;
+import java.util.List;
 
-import static com.github.randoapp.Constants.NEED_NOTIFICATION;
-import static com.github.randoapp.Constants.NOT_PAIRED_RANDO_PAIRS_NUMBER;
 import static com.github.randoapp.Constants.SERVICE_LONG_PAUSE;
 import static com.github.randoapp.Constants.SERVICE_SHORT_PAUSE;
 
-public class SyncService extends Service {
+public class SyncService extends IntentService {
+
+    public SyncService() {
+        super("SyncService");
+    }
 
     public static void run() {
-        Intent syncService = new Intent(App.context, SyncService.class);
-        App.context.startService(syncService);
+        App.context.startService(new Intent(App.context, SyncService.class));
     }
 
     public static boolean isRunning() {
@@ -51,39 +55,55 @@ public class SyncService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(SyncService.class, "onStartCommand");
+        return Service.START_NOT_STICKY;
+    }
+
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        Log.i(SyncService.class, "onHandleIntent");
         if (ConnectionUtil.isOnline(getApplicationContext())) {
             API.fetchUserAsync(new OnFetchUser() {
+
                 @Override
                 public void onFetch(final User user) {
-                    Log.i(SyncService.class, "Fetched ", String.valueOf(user.randosIn.size()), " randos");
-                    new SyncTask(user.randosIn)
-                            .onOk(new OnOk() {
-                                @Override
-                                public void onOk(Map<String, Object> data) {
-                                    if (data.get(NEED_NOTIFICATION) != null) {
-                                        sendNotification(user.randosIn.size());
-                                    }
-                                    if ((Integer) data.get(NOT_PAIRED_RANDO_PAIRS_NUMBER) > 0)
-                                        setTimeout(System.currentTimeMillis() + SERVICE_SHORT_PAUSE);
-                                }
-                            })
-                            .execute();
+                    Log.i(SyncService.class, "Fetched ", user.toString(), " randos");
+
+                    //check RandosOut
+                    List<Rando> outRandosDB = RandoDAO.getAllOutRandos();
+                    if (!RandoUtil.areRandoListsEqual(outRandosDB, user.randosOut)) {
+                        RandoDAO.clearOutRandos();
+                        RandoDAO.insertRandos(user.randosOut);
+                    }
+
+                    //check RandosIn
+                    List<Rando> inRandosDB = RandoDAO.getAllInRandos();
+                    if (!RandoUtil.areRandoListsEqual(inRandosDB, user.randosIn)) {
+                        for (Rando rando : user.randosIn) {
+                            if (!inRandosDB.contains(rando)) {
+                                Preferences.decrementRandosBalance();
+                            }
+                        }
+                        RandoDAO.clearInRandos();
+                        RandoDAO.insertRandos(user.randosOut);
+                        sendNotification(user.randosIn.size());
+                    }
+
+                    //Safe check
+                    if (Preferences.getRandosBalance() < 0) {
+                        Preferences.zeroRandosBalance();
+                    } else if (Preferences.getRandosBalance() > 0) {
+                        setTimeout(System.currentTimeMillis() + SERVICE_SHORT_PAUSE);
+                    }
                 }
             });
         } else {
             Log.i(SyncService.class, "onStartCommand", "no internet connection => not fetching.");
         }
-        return Service.START_NOT_STICKY;
     }
 
     @Override
     public IBinder onBind(Intent arg0) {
         return null;
-    }
-
-    private void setTimeout(long time) {
-        AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarm.set(AlarmManager.RTC_WAKEUP, time, createIntent());
     }
 
     private void setInterval(long time) {
@@ -106,4 +126,8 @@ public class SyncService extends Service {
         Log.i(SyncService.class, "Update broadcast sent.");
     }
 
+    private void setTimeout(long time) {
+        AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarm.set(AlarmManager.RTC_WAKEUP, time, createIntent());
+    }
 }

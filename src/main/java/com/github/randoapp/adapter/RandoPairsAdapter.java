@@ -20,7 +20,7 @@ import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.util.BitmapUtil;
-import com.github.randoapp.util.RandoPairUtil;
+import com.github.randoapp.util.RandoUtil;
 import com.makeramen.RoundedImageView;
 
 import java.util.List;
@@ -199,8 +199,8 @@ public class RandoPairsAdapter extends BaseAdapter {
             return;
         }
 
-        loadImage(holder, RandoPairUtil.getUrlByImageSize(imageSize, isStranger ? rando.imageURLSize : rando.imageURLSize), Priority.HIGH);
-        loadMapImage(holder, RandoPairUtil.getUrlByImageSize(imageSize, isStranger ? rando.mapURLSize : rando.mapURLSize), Priority.LOW);
+        loadImage(holder, RandoUtil.getUrlByImageSize(imageSize, isStranger ? rando.imageURLSize : rando.imageURLSize), Priority.HIGH);
+        loadMapImage(holder, RandoUtil.getUrlByImageSize(imageSize, isStranger ? rando.mapURLSize : rando.mapURLSize), Priority.LOW);
     }
 
     private void loadFile(final ViewHolder holder, final String filePath) {
