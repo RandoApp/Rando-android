@@ -100,7 +100,7 @@ public class RandoUtilTest extends AndroidTestCase {
         RandoTestHelper.checkListsEqual(RandoDAO.getAllInRandos(), user.randosIn);
         RandoTestHelper.checkListsEqual(RandoDAO.getAllOutRandos(), user.randosOut);
 
-        assertThat("Rando Balance not 0", Preferences.getRandosBalance(), is(1));
+        assertThat("Rando Balance not 1", Preferences.getRandosBalance(), is(1));
     }
 
 
@@ -118,7 +118,7 @@ public class RandoUtilTest extends AndroidTestCase {
         assertThat("Not 10 Out Randos", RandoDAO.getAllInRandos().size(), is(10));
         assertThat("Not 9 IN Randos", RandoDAO.getAllOutRandos().size(), is(9));
 
-        assertThat("", RandoUtil.userToDB(user), is(RandoUtil.UserToDBResult.IN_UPDATED));
+        assertThat("", RandoUtil.userToDB(user), is(RandoUtil.UserToDBResult.OUT_UPDATED));
 
         assertThat("Not 10 Out Randos", RandoDAO.getAllInRandos().size(), is(10));
         assertThat("Not 10 IN Randos", RandoDAO.getAllOutRandos().size(), is(10));
@@ -126,7 +126,7 @@ public class RandoUtilTest extends AndroidTestCase {
         RandoTestHelper.checkListsEqual(RandoDAO.getAllInRandos(), user.randosIn);
         RandoTestHelper.checkListsEqual(RandoDAO.getAllOutRandos(), user.randosOut);
 
-        assertThat("Rando Balance not 0", Preferences.getRandosBalance(), is(1));
+        assertThat("Rando Balance not 2", Preferences.getRandosBalance(), is(2));
     }
 
 }

@@ -34,6 +34,7 @@ public class RandoUtil {
         if (!RandoUtil.areRandoListsEqual(outRandosDB, user.randosOut)) {
             RandoDAO.clearOutRandos();
             RandoDAO.insertRandos(user.randosOut);
+            userToDBResult = UserToDBResult.OUT_UPDATED;
         }
 
         //check RandosIn
