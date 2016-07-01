@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
 import com.android.volley.VolleyError;
@@ -230,7 +231,7 @@ public class RandoPairsAdapter extends BaseAdapter {
 
         if (URLUtil.isValidUrl(url)) {
             Log.d(RandoPairsAdapter.class, "image url: ", url);
-            viewHolder.randoContainer = VolleySingleton.getInstance().getImageLoader().get(url, priority, new ImageLoader.ImageListener() {
+            viewHolder.randoContainer = VolleySingleton.getInstance().getImageLoader().get(url, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                     if (viewHolder.image != null && response.getBitmap() != null) {
@@ -249,7 +250,7 @@ public class RandoPairsAdapter extends BaseAdapter {
                         viewHolder.needSetImageError = true;
                     }
                 }
-            });
+            }, ImageView.ScaleType.CENTER, 0, 0, priority);
         } else {
             Log.e(RandoPairsAdapter.class, "Ignore rando image because url: ", url, " incorrect");
             if (viewHolder.image != null) {
@@ -263,7 +264,7 @@ public class RandoPairsAdapter extends BaseAdapter {
     private void loadMapImage(final ViewHolder viewHolder, final String url, Priority priority) {
         if (URLUtil.isValidUrl(url)) {
             Log.d(RandoPairsAdapter.class, "map url: ", url);
-            viewHolder.mapContainer = VolleySingleton.getInstance().getImageLoader().get(url, priority, new ImageLoader.ImageListener() {
+            viewHolder.mapContainer = VolleySingleton.getInstance().getImageLoader().get(url, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                     if (viewHolder.map != null && response.getBitmap() != null) {
@@ -282,7 +283,7 @@ public class RandoPairsAdapter extends BaseAdapter {
                         viewHolder.needSetMapError = true;
                     }
                 }
-            });
+            }, ImageView.ScaleType.CENTER, 0, 0, priority);
         } else {
             Log.e(RandoPairsAdapter.class, "Ignore map image because url: ", url, " incorrect");
             if (viewHolder.map != null) {

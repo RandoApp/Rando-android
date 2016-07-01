@@ -52,7 +52,7 @@ public class AuthFragment extends Fragment {
             if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(rootView.getContext()) == SUCCESS) {
                 Button googleButton = (Button) rootView.findViewById(R.id.googleAuthButton);
                 googleButton.setVisibility(VISIBLE);
-                googleButton.setBackgroundDrawable(getResources().getDrawable(com.google.android.gms.R.drawable.common_signin_btn_text_normal_dark));
+                googleButton.setBackgroundDrawable(getResources().getDrawable(com.google.android.gms.R.drawable.common_google_signin_btn_text_dark_normal));
                 googleButton.setText(getResources().getString(com.google.android.gms.R.string.common_signin_button_text_long));
 
                 GoogleAuth googleAuthListener = new GoogleAuth(this, googleButton);

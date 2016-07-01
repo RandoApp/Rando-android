@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -12,7 +13,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.db.RandoDAO;
@@ -25,7 +25,7 @@ import java.util.Date;
 
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 
-public class CameraUploadFragment extends SherlockFragment {
+public class CameraUploadFragment extends Fragment {
 
     private String picFileName;
     private RoundedImageView preview;
