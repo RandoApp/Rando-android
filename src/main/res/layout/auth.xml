@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -26,6 +25,7 @@
 
             <fragment
                 class="com.github.randoapp.fragment.FacebookFragment"
+                android:id="@+id/facebookfragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
@@ -97,5 +97,5 @@
             android:text="@string/skip"
             android:textColor="@color/auth_button" />
 
-    </LinearLayout>
+g    </LinearLayout>
 </ScrollView>
