@@ -1,10 +1,10 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/auth_root_scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusable="true"
@@ -24,8 +24,8 @@
             android:orientation="vertical">
 
             <fragment
-                class="com.github.randoapp.fragment.FacebookFragment"
                 android:id="@+id/facebookfragment"
+                class="com.github.randoapp.fragment.FacebookFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
@@ -97,5 +97,5 @@
             android:text="@string/skip"
             android:textColor="@color/auth_button" />
 
-g    </LinearLayout>
+    </LinearLayout>
 </ScrollView>
