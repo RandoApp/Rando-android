@@ -38,8 +38,7 @@ before_install:
 
   # Install base Android SDK
   - cd ${HOME}
-  #- if [ ! -f $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
-  #- sudo apt-get update -qq
+  - if [ ! -f $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
   - cd $DOWNLOADS_HOME
 
   # Install Gradle
