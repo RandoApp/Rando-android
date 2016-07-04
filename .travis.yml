@@ -9,6 +9,7 @@ android:
     - sysimg-24
     - extra-android-support
     - extra-android-m2repository
+    - android-ndk
   licenses:
     - android-sdk-license-bcbbd656
     - '.*intel.+'
