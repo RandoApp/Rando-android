@@ -75,6 +75,7 @@ before_install:
   - echo yes | android update sdk --filter build-tools-24.0.0 --all --no-ui --force > /dev/null
 
   # Create and start emulator
+  - ls -l /usr/local/android-sdk
   - android list targets
   - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
   - emulator -avd test -no-skin -no-audio -no-window &
