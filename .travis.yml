@@ -74,7 +74,7 @@ before_install:
   # Install required components.
   # For a full list, run `android list sdk -a --extended`
   - android list sdk -a --extended
-  - echo yes | android update sdk --filter build-tools-24.0.0 --all --no-ui --force
+  - echo yes | android update sdk --filter tools --all --no-ui --force
   - echo yes | android update sdk --filter $ANDROID_TARGET --all --no-ui --force
 
   # Create and start emulator
