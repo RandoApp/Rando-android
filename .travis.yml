@@ -1,10 +1,14 @@
 language: android
+jdk: oraclejdk8
 android:
   components:
+    - tools
+    - platform-tools
     - build-tools-24.0.0
     - android-24
     - sysimg-24
     - extra-android-support
+    - extra-android-m2repository
   licenses:
     - android-sdk-license-bcbbd656
     - '.*intel.+'
@@ -29,28 +33,28 @@ before_install:
   - sudo apt-get install -qq lftp
 
   # Install base Android SDK
-  - cd ${HOME}
-  - if [ ! -f $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
-  - sudo apt-get update -qq
-  - cd $DOWNLOADS_HOME
+  #- cd ${HOME}
+  #- if [ ! -f $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
+  #- sudo apt-get update -qq
+  #- cd $DOWNLOADS_HOME
 
   # Install Gradle
-  - if [ ! -f gradle-2.11-bin.zip ]; then  wget http://services.gradle.org/distributions/gradle-2.11-bin.zip > /dev/null; fi
-  - unzip gradle-2.11-bin.zip
-  - export GRADLE_HOME=$PWD/gradle-2.11
-  - export PATH=$GRADLE_HOME/bin:$PATH
+  #- if [ ! -f gradle-2.11-bin.zip ]; then  wget http://services.gradle.org/distributions/gradle-2.11-bin.zip > /dev/null; fi
+  #- unzip gradle-2.11-bin.zip
+  #- export GRADLE_HOME=$PWD/gradle-2.11
+  #- export PATH=$GRADLE_HOME/bin:$PATH
 
   # Install NDK
-  - if [ ! -f android-ndk-r9d-linux-x86_64.tar.bz2 ]; then  wget https://dl.google.com/android/ndk/android-ndk-r9d-linux-x86_64.tar.bz2 > /dev/null; fi
-  - tar -jxf android-ndk-r9d-linux-x86_64.tar.bz2
-  - export NDK_HOME=$PWD/android-ndk-r9d
-  - export PATH=$NDK_HOME/bin:$PATH
+  #- if [ ! -f android-ndk-r9d-linux-x86_64.tar.bz2 ]; then  wget https://dl.google.com/android/ndk/android-ndk-r9d-linux-x86_64.tar.bz2 > /dev/null; fi
+  #- tar -jxf android-ndk-r9d-linux-x86_64.tar.bz2
+  #- export NDK_HOME=$PWD/android-ndk-r9d
+  #- export PATH=$NDK_HOME/bin:$PATH
 
   # Create settings.gradle. Need for modules correct build
-  - cd ${CI_HOME}
-  - cd ..
-  - echo "include ':Rando-android:modules:cwac-camera:modules:AndroidJniBitmapOperations:JniBitmapOperationsLibrary',':Rando-android:modules:facebook:facebook', ':Rando-android:modules:volley', ':Rando-android:modules:two-way-gridview:lib', ':Rando-android:modules:cwac-camera:camera', ':Rando-android:modules:cwac-camera:camera-v9', ':Rando-android'" > settings.gradle
-  - echo "ndk.dir=$NDK_HOME" > local.properties
+  #- cd ${CI_HOME}
+  #- cd ..
+  #- echo "include ':Rando-android:modules:cwac-camera:modules:AndroidJniBitmapOperations:JniBitmapOperationsLibrary',':Rando-android:modules:facebook:facebook', ':Rando-android:modules:volley', ':Rando-android:modules:two-way-gridview:lib', ':Rando-android:modules:cwac-camera:camera', ':Rando-android:modules:cwac-camera:camera-v9', ':Rando-android'" > settings.gradle
+  #- echo "ndk.dir=$NDK_HOME" > local.properties
 
   # Create gradle.properties with secret stroke password:
   - echo "keyStorePassword=$KEY_STROKE_PASSWORD" > Rando-android/gradle.properties
@@ -61,13 +65,14 @@ before_install:
 
   # Install required components.
   # For a full list, run `android list sdk -a --extended`
-  - echo yes | android update sdk --filter build-tools-19.1.0 --all --no-ui --force > /dev/null
+  #- echo yes | android update sdk --filter build-tools-19.1.0 --all --no-ui --force > /dev/null
 
   # Create and start emulator
   - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
   - emulator -avd test -no-skin -no-audio -no-window &
 
 before_script:
+  - gradle -v
   - chmod +x Rando-android/ci/wait_for_emulator.sh
   - Rando-android/ci/wait_for_emulator.sh
   - adb shell input keyevent 82 &
