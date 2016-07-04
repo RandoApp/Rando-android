@@ -57,6 +57,8 @@ before_install:
   #- echo "ndk.dir=$NDK_HOME" > local.properties
 
   # Create gradle.properties with secret stroke password:
+  - pwd
+  - ls -l
   - echo "keyStorePassword=$KEY_STROKE_PASSWORD" > Rando-android/gradle.properties
 
   #Download rando.keystore:
