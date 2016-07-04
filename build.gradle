@@ -13,12 +13,12 @@ repositories {
 }
 model {
     android {
-        compileSdkVersion 24
-        buildToolsVersion '24.0.0'
+        compileSdkVersion 23
+        buildToolsVersion '23.0.3'
 
         defaultConfig {
             minSdkVersion.apiLevel 10
-            targetSdkVersion.apiLevel 24
+            targetSdkVersion.apiLevel 23
             testApplicationId 'com.github.randoapp.test'
             testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
         }
@@ -57,7 +57,7 @@ dependencies {
     compile project(':volley')
     compile project(':camera-v9')
 
-    compile 'com.android.support:support-v4:24.0.+'
+    compile 'com.android.support:support-v4:23.0.+'
     compile 'com.google.android.gms:play-services-auth:9.2.0'
     compile 'org.apache.httpcomponents:httpcore:4.3'
     compile 'org.apache.httpcomponents:httpmime:4.3.1'
@@ -79,6 +79,6 @@ dependencies {
 }
 
 ext {
-    compileSdkVersion = 24
-    buildToolsVersion = "24.0.0"
+    compileSdkVersion = 23
+    buildToolsVersion = "23.0.3"
 }

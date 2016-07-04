@@ -6,15 +6,12 @@ android:
     - tools
     - tool
     - platform-tools
-    - build-tools-24.0.0
-    - android-24
+    - build-tools-23.0.3
     - android-23
-    - sysimg-24
     - sysimg-23
     - extra-android-support
     - extra-android-m2repository
     - android-ndk
-    - sys-img-x86-android-24
     - sys-img-x86-android-10
     - sys-img-x86-android-18
     - sys-img-x86-android-19
