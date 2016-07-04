@@ -2,19 +2,12 @@ package com.github.randoapp.util;
 
 import android.hardware.Camera;
 
-import com.commonsware.cwac.camera.CameraHost;
-import com.commonsware.cwac.camera.CameraUtils;
-import com.commonsware.cwac.camera.DeviceProfile;
 import com.github.randoapp.camera.CameraSizes;
-import com.github.randoapp.log.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import static com.github.randoapp.Constants.DESIRED_PICTURE_SIZE;
-import static com.github.randoapp.Constants.PICTURE_DESIRED_ASPECT_RATIO;
 
 public class CameraUtil {
 

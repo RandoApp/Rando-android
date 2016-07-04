@@ -1,17 +1,14 @@
 package com.github.randoapp.task;
 
+import com.facebook.Session;
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.api.API;
-import com.github.randoapp.auth.GoogleAuth;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
-import com.facebook.Session;
 import com.google.android.gms.auth.GoogleAuthUtil;
 
 import java.util.HashMap;
-
-import static com.github.randoapp.Constants.GOOGLE_AUTH_SCOPE;
 
 public class LogoutTask extends BaseTask {
 
