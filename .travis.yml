@@ -37,7 +37,7 @@ before_install:
   - sudo apt-get install -qq lftp
 
   # Install base Android SDK
-  #- cd ${HOME}
+  - cd ${HOME}
   #- if [ ! -f $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
   #- sudo apt-get update -qq
   - cd $DOWNLOADS_HOME
