@@ -73,6 +73,7 @@ before_install:
   # For a full list, run `android list sdk -a --extended`
   - android list sdk -a --extended
   - echo yes | android update sdk --filter build-tools-24.0.0 --all --no-ui --force > /dev/null
+  - echo yes | android update sdk --filter $ANDROID_TARGET --all --no-ui --force > /dev/null
 
   # Create and start emulator
   - ls -l /usr/local/android-sdk
