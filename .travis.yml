@@ -57,8 +57,6 @@ before_install:
   #- echo "ndk.dir=$NDK_HOME" > local.properties
 
   # Create gradle.properties with secret stroke password:
-  - pwd
-  - ls -l
   - echo "keyStorePassword=$KEY_STROKE_PASSWORD" > gradle.properties
 
   #Download rando.keystore:
@@ -70,6 +68,7 @@ before_install:
   #- echo yes | android update sdk --filter build-tools-19.1.0 --all --no-ui --force > /dev/null
 
   # Create and start emulator
+  - android list targets
   - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
   - emulator -avd test -no-skin -no-audio -no-window &
 
