@@ -28,7 +28,6 @@ env:
     - secure: Kq5NpWlyXvAvzZ5UUwAxtooG7Cwtdnzh1fhCNqE2Lx2441w9aEGntd5+ffCCTCF4orRHlFIbqfE4/D1YlH6cJtP9hW37SPI8swe3r6Zyfjftakbe3ld72bVfq0f2zx5T4zln63jppMs+XxKNYjg8UswC+9C8Vi2LeJdPUC/Zdzs=
 
 before_install:
-  - git submodule update --init --recursive
   # Install lftp for apk upload:
   - sudo apt-get update -qq
   - sudo apt-get install -qq lftp
