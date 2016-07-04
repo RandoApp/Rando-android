@@ -27,13 +27,6 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq lftp
 
-  # Download necessary libs, that under of any repository:
-  - wget http://cool-project.com/foodex/espresso-1.1.jar -P libs/
-  - wget http://cool-project.com/foodex/testrunner-1.1.jar -P libs/
-  - wget http://cool-project.com/foodex/testrunner-runtime-1.1.jar -P libs/
-  - wget http://cool-project.com/foodex/hamcrest-integration-1.1.jar -P libs/
-  - wget http://cool-project.com/foodex/hamcrest-library-1.1.jar -P libs/
-
   # Install base Android SDK
   - cd ${HOME}
   - if [ ! -f $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
