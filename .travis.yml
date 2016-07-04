@@ -10,6 +10,10 @@ android:
     - extra-android-support
     - extra-android-m2repository
     - android-ndk
+    - sys-img-x86-android-24
+    - sys-img-x86-android-10
+    - sys-img-x86-android-18
+    - sys-img-x86-android-19
   licenses:
     - android-sdk-license-bcbbd656
     - '.*intel.+'
@@ -20,7 +24,7 @@ cache:
     - $HOME/.m2
 env:
   matrix:
-    - ANDROID_SDKS=android-24,sysimg-24 ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a REPO="RandoApp/Rando-android" CI_HOME=$HOME/build/$REPO DOWNLOADS_HOME=downloads NEED_UPLOAD_APK=true
+    - ANDROID_SDKS=android-24,sysimg-24 ANDROID_TARGET=android-24 ANDROID_ABI=armeabi-v7a REPO="RandoApp/Rando-android" CI_HOME=$HOME/build/$REPO DOWNLOADS_HOME=downloads NEED_UPLOAD_APK=true
     #- ANDROID_SDKS=android-19,sysimg-19 ANDROID_TARGET=android-19 ANDROID_ABI=armeabi-v7a REPO="RandoApp/Rando-android" CI_HOME=$HOME/build/$REPO DOWNLOADS_HOME=downloads NEED_UPLOAD_APK=true
     #- ANDROID_SDKS=android-18,sysimg-18 ANDROID_TARGET=android-18 ANDROID_ABI=armeabi-v7a REPO="RandoApp/Rando-android" CI_HOME=$HOME/build/$REPO DOWNLOADS_HOME=downloads
     #- ANDROID_SDKS=android-10 ANDROID_TARGET=android-10 ANDROID_ABI=armeabi REPO="RandoApp/Rando-android" CI_HOME=$HOME/build/$REPO  DOWNLOADS_HOME=downloads
@@ -36,13 +40,13 @@ before_install:
   #- cd ${HOME}
   #- if [ ! -f $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
   #- sudo apt-get update -qq
-  #- cd $DOWNLOADS_HOME
+  - cd $DOWNLOADS_HOME
 
   # Install Gradle
-  #- if [ ! -f gradle-2.11-bin.zip ]; then  wget http://services.gradle.org/distributions/gradle-2.11-bin.zip > /dev/null; fi
-  #- unzip gradle-2.11-bin.zip
-  #- export GRADLE_HOME=$PWD/gradle-2.11
-  #- export PATH=$GRADLE_HOME/bin:$PATH
+  - if [ ! -f gradle-2.11-bin.zip ]; then  wget http://services.gradle.org/distributions/gradle-2.11-bin.zip > /dev/null; fi
+  - unzip gradle-2.11-bin.zip
+  - export GRADLE_HOME=$PWD/gradle-2.11
+  - export PATH=$GRADLE_HOME/bin:$PATH
 
   # Install NDK
   #- if [ ! -f android-ndk-r9d-linux-x86_64.tar.bz2 ]; then  wget https://dl.google.com/android/ndk/android-ndk-r9d-linux-x86_64.tar.bz2 > /dev/null; fi
@@ -79,6 +83,7 @@ before_script:
   - adb shell input keyevent 82 &
 
 script:
+  - ls -l
   - gradle connectedAndroidTest --stacktrace
   - gradle assembleRelease
 
