@@ -82,3 +82,5 @@ ext {
     compileSdkVersion = 23
     buildToolsVersion = "23.0.1"
 }
+
+apply plugin: 'com.google.gms.google-services'
