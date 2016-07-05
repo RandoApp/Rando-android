@@ -83,7 +83,8 @@ before_install:
 
   # Create and start emulator
   #- tree -d /usr/local/android-sdk-24.0.2
-  - ls -l /usr/local/android-sdk
+  - ls -l /usr/local/android-sdk/extras
+  - ls -l /usr/local/android-sdk/extras/google
   #- whereis android
   - android list targets
   #- echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
