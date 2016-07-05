@@ -79,7 +79,7 @@ before_install:
   - echo yes | android update sdk --filter build-tools-23.0.1 --all --no-ui --force
 
   # Create and start emulator
-  - tree -d /usr/local/android-sdk-24.0.2
+  #- tree -d /usr/local/android-sdk-24.0.2
   #- ls -l /usr/local/android-sdk
   #- whereis android
   - android list targets
