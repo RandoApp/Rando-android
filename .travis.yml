@@ -8,6 +8,7 @@ android:
     - android-23
     - extra-android-support
     - extra-android-m2repository
+    - extra-google-m2repository
     - extra-google-google_play_services
     - sys-img-x86-android-10
     - sys-img-x86-android-18
@@ -15,6 +16,8 @@ android:
   licenses:
     - android-sdk-license-bcbbd656
     - '.*intel.+'
+git:
+  depth: 3
 # Not working for public repositories :(
 cache:
   - apt
