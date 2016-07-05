@@ -8,6 +8,7 @@ android:
     - android-23
     - extra-android-support
     - extra-android-m2repository
+    - extra-google-google_play_services
     - sys-img-x86-android-10
     - sys-img-x86-android-18
     - sys-img-x86-android-19
