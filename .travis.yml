@@ -79,15 +79,13 @@ before_install:
   - echo yes | android update sdk --filter build-tools-23.0.1 --all --no-ui --force
   - echo yes | android update sdk --filter extra-google-m2repository --all --no-ui --force
   - echo yes | android update sdk --filter extra-android-m2repository --all --no-ui --force
-
-
+  - echo yes | android update sdk --filter sys-img-armeabi-v7a-android-23 --all --no-ui --force
 
   # Create and start emulator
   #- tree -d /usr/local/android-sdk-24.0.2
-  - ls -l /usr/local/android-sdk/extras
-  - ls -l /usr/local/android-sdk/extras/google
-  #- whereis android
-  - android list targets
+  #- ls -l /usr/local/android-sdk/extras
+  #- ls -l /usr/local/android-sdk/extras/google
+  #- android list targets
   - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
   - emulator -avd test -no-skin -no-audio -no-window &
 
