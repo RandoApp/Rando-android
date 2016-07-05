@@ -61,8 +61,8 @@ before_install:
   - cd ${CI_HOME}
   #- cd ..
   #- echo "include ':Rando-android:modules:cwac-camera:modules:AndroidJniBitmapOperations:JniBitmapOperationsLibrary',':Rando-android:modules:facebook:facebook', ':Rando-android:modules:volley', ':Rando-android:modules:two-way-gridview:lib', ':Rando-android:modules:cwac-camera:camera', ':Rando-android:modules:cwac-camera:camera-v9', ':Rando-android'" > settings.gradle
-  - echo "sdk.dir=/usr/local/android-sdk" >> local.properties
-  - echo "ndk.dir=$ANDROID_NDK_HOME" >> local.properties
+  #- echo "sdk.dir=/usr/local/android-sdk" >> local.properties
+  #- echo "ndk.dir=$ANDROID_NDK_HOME" >> local.properties
 
   # Create gradle.properties with secret stroke password:
   - echo "keyStorePassword=$KEY_STROKE_PASSWORD" > gradle.properties
@@ -74,7 +74,6 @@ before_install:
   # Install required components.
   # For a full list, run `android list sdk -a --extended`
   - android list sdk -a --extended
-  #- echo yes | android update sdk
   #- echo yes | android update sdk --filter tools --all --no-ui --force
   - echo yes | android update sdk --filter $ANDROID_TARGET --all --no-ui --force
   - echo yes | android update sdk --filter build-tools-23.0.1 --all --no-ui --force
@@ -89,8 +88,8 @@ before_install:
   - ls -l /usr/local/android-sdk/extras/google
   #- whereis android
   - android list targets
-  #- echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
-  #- emulator -avd test -no-skin -no-audio -no-window &
+  - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
+  - emulator -avd test -no-skin -no-audio -no-window &
 
 before_script:
   - gradle -v
