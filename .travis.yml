@@ -78,10 +78,12 @@ before_install:
   #- echo yes | android update sdk --filter tools --all --no-ui --force
   - echo yes | android update sdk --filter $ANDROID_TARGET --all --no-ui --force
   - echo yes | android update sdk --filter build-tools-23.0.1 --all --no-ui --force
+  - echo yes | android update sdk --filter extra-google-m2repository --all --no-ui --force
+
 
   # Create and start emulator
   #- tree -d /usr/local/android-sdk-24.0.2
-  #- ls -l /usr/local/android-sdk
+  - ls -l /usr/local/android-sdk
   #- whereis android
   - android list targets
   #- echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
