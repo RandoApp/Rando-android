@@ -47,10 +47,10 @@ before_install:
   - export PATH=$GRADLE_HOME/bin:$PATH
 
   # Install NDK
-  #- if [ ! -f android-ndk-r9d-linux-x86_64.tar.bz2 ]; then  wget https://dl.google.com/android/ndk/android-ndk-r9d-linux-x86_64.tar.bz2 > /dev/null; fi
-  #- tar -jxf android-ndk-r9d-linux-x86_64.tar.bz2
-  #- export NDK_HOME=$PWD/android-ndk-r9d
-  #- export PATH=$NDK_HOME/bin:$PATH
+  - if [ ! -f android-ndk-r11c-linux-x86_64.zip ]; then  wget https://dl.google.com/android/repository/android-ndk-r11c-linux-x86_64.zip > /dev/null; fi
+  - unzip android-ndk-r11c-linux-x86_64.zip
+  - export ANDROID_NDK_HOME=$PWD/android-ndk-r11c
+  - export PATH=$ANDROID_NDK_HOME/bin:$PATH
 
   # Create settings.gradle. Need for modules correct build
   - cd ${CI_HOME}
