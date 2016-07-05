@@ -38,6 +38,7 @@ before_install:
   # Install lftp for apk upload:
   - sudo apt-get update -qq
   - sudo apt-get install -qq lftp
+  - sudo apt-get install -qq tree
 
   # Install base Android SDK
   - cd ${HOME}
