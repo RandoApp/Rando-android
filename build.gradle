@@ -4,6 +4,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle-experimental:0.8.0-alpha4'
+        classpath 'com.google.gms:google-services:3.0.0'
     }
 }
 apply plugin: 'com.android.model.application'
