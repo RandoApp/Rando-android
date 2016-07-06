@@ -42,7 +42,7 @@ before_install:
 
   # Install base Android SDK
   - cd ${HOME}
-  - if [ ! -f $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
+  - if [ ! -d $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
   - cd $DOWNLOADS_HOME
 
   # Install Gradle
