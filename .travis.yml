@@ -82,13 +82,13 @@ before_install:
   - echo yes | android update sdk --filter extra-android-m2repository --all --no-ui --force
   - echo yes | android update sdk --filter sys-img-armeabi-v7a-android-$ANDROID_API --all --no-ui --force
 
-  # Create and start emulator
+before_script:
+# Create and start emulator
   - android list targets
   - echo no | android create avd --force -n test -t android-$ANDROID_API --abi $ANDROID_ABI
   - emulator -avd test -no-skin -no-audio -no-window &
-
-before_script:
-  - chmod +x ci/wait_for_emulator.sh
+  - ls -l
+  - android-wait-for-emulator
   - ci/wait_for_emulator.sh
   - adb shell input keyevent 82 &
 
