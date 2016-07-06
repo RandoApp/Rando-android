@@ -24,7 +24,7 @@ cache:
   - directories:
     - $HOME/.m2
     - $HOME/.gradle
-    - $HOME/$DOWNLOADS_HOME
+    #- $HOME/$DOWNLOADS_HOME
 env:
   matrix:
     #- ANDROID_SDKS=android-23,sysimg-23 ANDROID_TARGET=android-23 ANDROID_ABI=armeabi-v7a REPO="RandoApp/Rando-android" CI_HOME=$HOME/build/$REPO DOWNLOADS_HOME=downloads NEED_UPLOAD_APK=true
@@ -95,7 +95,6 @@ before_script:
   - adb shell input keyevent 82 &
 
 script:
-  - ls -l
   - gradle connectedAndroidTest --stacktrace
   - gradle assembleRelease
 
