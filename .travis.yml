@@ -87,7 +87,7 @@ before_install:
   #- ls -l /usr/local/android-sdk/extras
   #- ls -l /usr/local/android-sdk/extras/google
   - android list targets
-  - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi default/x86
+  - echo no | android create avd --force -n test -t android-$ANDROID_API --abi default/x86
   - emulator -avd test -no-skin -no-audio -no-window &
 
 before_script:
