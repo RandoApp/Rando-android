@@ -87,9 +87,8 @@ before_script:
   - android list targets
   - echo no | android create avd --force -n test -t android-$ANDROID_API --abi $ANDROID_ABI
   - emulator -avd test -no-skin -no-audio -no-window &
-  - ls -l
   - android-wait-for-emulator
-  - ci/wait_for_emulator.sh
+  #- ci/wait_for_emulator.sh
   - adb shell input keyevent 82 &
 
 script:
