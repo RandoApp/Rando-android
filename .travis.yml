@@ -83,9 +83,6 @@ before_install:
   - echo yes | android update sdk --filter sys-img-armeabi-v7a-android-$ANDROID_API --all --no-ui --force
 
   # Create and start emulator
-  #- tree -d /usr/local/android-sdk-24.0.2
-  #- ls -l /usr/local/android-sdk/extras
-  #- ls -l /usr/local/android-sdk/extras/google
   - android list targets
   - echo no | android create avd --force -n test -t android-$ANDROID_API --abi $ANDROID_ABI
   - emulator -avd test -no-skin -no-audio -no-window &
