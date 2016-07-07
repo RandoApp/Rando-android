@@ -47,7 +47,7 @@ model {
 
     android.buildTypes {
         release {
-            minifyEnabled = false
+            minifyEnabled = true
             proguardFiles.add(file("proguard-rules.pro"))
             signingConfig = signConf // <-- Note the changes made here
         }
