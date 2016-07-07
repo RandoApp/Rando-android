@@ -53,6 +53,12 @@ model {
     */
 }
 
+connectedAndroidTest {
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+
 dependencies {
     compile project(':volley')
     compile project(':camera-v9')
