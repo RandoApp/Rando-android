@@ -4,15 +4,12 @@ android:
   components:
     #- tools
     #- platform-tools
-    - build-tools-23.0.1
+    #- build-tools-23.0.1
     #- android-23
     #- extra-android-support
     #- extra-android-m2repository
     #- extra-google-m2repository
     #- extra-google-google_play_services
-    #- sys-img-x86-android-10
-    #- sys-img-x86-android-18
-    #- sys-img-x86-android-19
   licenses:
     - android-sdk-license-bcbbd656
     - '.*intel.+'
@@ -89,7 +86,6 @@ before_script:
   - adb shell input keyevent 82 &
 
 script:
-  - ls -l
   - gradle connectedAndroidTest --stacktrace
   - gradle assembleRelease
 
