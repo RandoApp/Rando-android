@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle-experimental:0.8.0-alpha4'
+        classpath 'com.android.tools.build:gradle-experimental:0.8.+'
         classpath 'com.google.gms:google-services:3.0.0'
     }
 }
@@ -47,17 +47,14 @@ model {
             storeFile file(System.getenv("HOME") + "/.android/rando.keystore")
             storePassword keyStorePassword
             keyAlias 'rando'
-            keyPassword keyStorePassword
+            keyPassword keyStorePasswor
         }
     }
+
     */
 }
 
-/*connectedAndroidTest {
-    testLogging {
-        exceptionFormat = 'full'
-    }
-}*/
+
 
 dependencies {
     compile project(':volley')
