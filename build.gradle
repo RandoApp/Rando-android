@@ -9,6 +9,8 @@ buildscript {
 }
 apply plugin: 'com.android.model.application'
 
+def signConf // <-- Note the changes made here
+
 repositories {
     jcenter()
 }
@@ -42,19 +44,25 @@ model {
         exclude 'META-INF/LGPL2.1'
         exclude 'META-INF/maven/*'
     }
-/*    android.signingConfigs {
-        create("release") {
-            storeFile file(System.getenv("HOME") + "/.android/rando.keystore")
-            storePassword keyStorePassword
-            keyAlias 'rando'
-            keyPassword keyStorePasswor
+
+    android.buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles.add(file("proguard-rules.pro"))
+            signingConfig = signConf // <-- Note the changes made here
         }
     }
 
-    */
+    android.signingConfigs {
+        create("signRelease") {
+            storeFile file(System.getenv("HOME") + "/.android/rando.keystore")
+            storePassword keyStorePassword
+            keyAlias 'rando'
+            keyPassword keyStorePassword
+            signConf = it
+        }
+    }
 }
-
-
 
 dependencies {
     compile project(':volley')
