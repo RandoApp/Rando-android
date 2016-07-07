@@ -13,8 +13,10 @@ import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 import org.acra.sender.HttpSender;
 
+import static com.github.randoapp.Constants.LOG_URL;
+
 @ReportsCrashes(formKey="",
-        formUri = Constants.LOG_URL,
+        formUri = LOG_URL,
         reportType = HttpSender.Type.JSON,
         mode = ReportingInteractionMode.TOAST,
         customReportContent = { ReportField.APP_VERSION_CODE, ReportField.APP_VERSION_NAME, ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL, ReportField.STACK_TRACE},
