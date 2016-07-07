@@ -53,11 +53,11 @@ model {
     */
 }
 
-connectedAndroidTest {
+/*connectedAndroidTest {
     testLogging {
         exceptionFormat = 'full'
     }
-}
+}*/
 
 dependencies {
     compile project(':volley')
