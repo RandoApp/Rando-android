@@ -1,58 +1,71 @@
 language: android
+jdk: oraclejdk8
 android:
   components:
-    - build-tools-19.1.0
-    - android-19
-    - sysimg-19
-    - extra-android-support
+    #- tools
+    #- platform-tools
+    - build-tools-23.0.1
+    #- android-23
+    #- extra-android-support
+    #- extra-android-m2repository
+    #- extra-google-m2repository
+    #- extra-google-google_play_services
+    #- sys-img-x86-android-10
+    #- sys-img-x86-android-18
+    #- sys-img-x86-android-19
   licenses:
     - android-sdk-license-bcbbd656
     - '.*intel.+'
+git:
+  depth: 3
 # Not working for public repositories :(
 cache:
   - apt
   - directories:
     - $HOME/.m2
+    - $HOME/.gradle
+    #- $HOME/$DOWNLOADS_HOME
 env:
   matrix:
-    - ANDROID_SDKS=android-19,sysimg-19 ANDROID_TARGET=android-19 ANDROID_ABI=armeabi-v7a REPO="RandoApp/Rando-android" CI_HOME=$HOME/build/$REPO DOWNLOADS_HOME=downloads NEED_UPLOAD_APK=true
-    - ANDROID_SDKS=android-18,sysimg-18 ANDROID_TARGET=android-18 ANDROID_ABI=armeabi-v7a REPO="RandoApp/Rando-android" CI_HOME=$HOME/build/$REPO DOWNLOADS_HOME=downloads
-    - ANDROID_SDKS=android-10 ANDROID_TARGET=android-10 ANDROID_ABI=armeabi REPO="RandoApp/Rando-android" CI_HOME=$HOME/build/$REPO  DOWNLOADS_HOME=downloads
+    #- ANDROID_API=23 ANDROID_ABI=armeabi-v7a
+    - ANDROID_API=22 ANDROID_ABI=armeabi-v7a NEED_UPLOAD_APK=true
+    - ANDROID_API=21 ANDROID_ABI=armeabi-v7a
+    - ANDROID_API=19 ANDROID_ABI=armeabi-v7a
+    - ANDROID_API=10 ANDROID_ABI=armeabi
   global:
     - secure: Kq5NpWlyXvAvzZ5UUwAxtooG7Cwtdnzh1fhCNqE2Lx2441w9aEGntd5+ffCCTCF4orRHlFIbqfE4/D1YlH6cJtP9hW37SPI8swe3r6Zyfjftakbe3ld72bVfq0f2zx5T4zln63jppMs+XxKNYjg8UswC+9C8Vi2LeJdPUC/Zdzs=
+    - REPO="RandoApp/Rando-android"
+    - CI_HOME=$HOME/build/$REPO
+    - DOWNLOADS_HOME=downloads
+
 
 before_install:
-  - git submodule update --init --recursive
   # Install lftp for apk upload:
   - sudo apt-get update -qq
   - sudo apt-get install -qq lftp
+  # Install tree for directory structure debug
+  #- sudo apt-get install -qq tree
 
   # Install base Android SDK
   - cd ${HOME}
-  - if [ ! -f $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
-  - sudo apt-get update -qq
+  - if [ ! -d $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
   - cd $DOWNLOADS_HOME
 
   # Install Gradle
-  - if [ ! -f gradle-1.11-bin.zip ]; then  wget http://services.gradle.org/distributions/gradle-1.11-bin.zip > /dev/null; fi
-  - unzip gradle-1.11-bin.zip
-  - export GRADLE_HOME=$PWD/gradle-1.11
+  - if [ ! -f gradle-2.11-bin.zip ]; then  wget http://services.gradle.org/distributions/gradle-2.11-bin.zip > /dev/null; fi
+  - if [ ! -d gradle-2.11 ]; then unzip --qq gradle-2.11-bin.zip; fi
+  - export GRADLE_HOME=$PWD/gradle-2.11
   - export PATH=$GRADLE_HOME/bin:$PATH
 
   # Install NDK
-  - if [ ! -f android-ndk-r9d-linux-x86_64.tar.bz2 ]; then  wget https://dl.google.com/android/ndk/android-ndk-r9d-linux-x86_64.tar.bz2 > /dev/null; fi
-  - tar -jxf android-ndk-r9d-linux-x86_64.tar.bz2
-  - export NDK_HOME=$PWD/android-ndk-r9d
-  - export PATH=$NDK_HOME/bin:$PATH
-
-  # Create settings.gradle. Need for modules correct build
-  - cd ${CI_HOME}
-  - cd ..
-  - echo "include ':Rando-android:modules:cwac-camera:modules:AndroidJniBitmapOperations:JniBitmapOperationsLibrary',':Rando-android:modules:facebook:facebook', ':Rando-android:modules:volley', ':Rando-android:modules:two-way-gridview:lib', ':Rando-android:modules:cwac-camera:camera', ':Rando-android:modules:cwac-camera:camera-v9', ':Rando-android'" > settings.gradle
-  - echo "ndk.dir=$NDK_HOME" > local.properties
+  - if [ ! -f android-ndk-r11c-linux-x86_64.zip ]; then  wget https://dl.google.com/android/repository/android-ndk-r11c-linux-x86_64.zip > /dev/null; fi
+  - if [ ! -d android-ndk-r11c ]; then unzip -qq android-ndk-r11c-linux-x86_64.zip; fi
+  - export ANDROID_NDK_HOME=$PWD/android-ndk-r11c
+  - export PATH=$ANDROID_NDK_HOME/bin:$PATH
 
   # Create gradle.properties with secret stroke password:
-  - echo "keyStorePassword=$KEY_STROKE_PASSWORD" > Rando-android/gradle.properties
+  - cd ${CI_HOME}
+  - echo "keyStorePassword=$KEY_STROKE_PASSWORD" > gradle.properties
 
   #Download rando.keystore:
   - lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "get rando.keystore; ; bye";
@@ -60,21 +73,25 @@ before_install:
 
   # Install required components.
   # For a full list, run `android list sdk -a --extended`
-  - echo yes | android update sdk --filter build-tools-19.1.0 --all --no-ui --force > /dev/null
-
-  # Create and start emulator
-  - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
-  - emulator -avd test -no-skin -no-audio -no-window &
+  - echo yes | android update sdk --filter android-23 --all --no-ui --force
+  - echo yes | android update sdk --filter android-$ANDROID_API --all --no-ui --force
+  - echo yes | android update sdk --filter build-tools-23.0.1 --all --no-ui --force
+  - echo yes | android update sdk --filter extra-google-m2repository --all --no-ui --force
+  - echo yes | android update sdk --filter extra-android-m2repository --all --no-ui --force
+  - echo yes | android update sdk --filter sys-img-armeabi-v7a-android-$ANDROID_API --all --no-ui --force
 
 before_script:
-  - chmod +x Rando-android/ci/wait_for_emulator.sh
-  - Rando-android/ci/wait_for_emulator.sh
+# Create and start emulator
+  #- android list targets
+  - echo no | android create avd --force -n test -t android-$ANDROID_API --abi $ANDROID_ABI
+  - emulator -avd test -no-skin -no-audio -no-window &
+  - android-wait-for-emulator
   - adb shell input keyevent 82 &
 
 script:
+  - ls -l
   - gradle connectedAndroidTest --stacktrace
   - gradle assembleRelease
 
 after_script:
-    - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "put Rando-android/build/outputs/apk/Rando-android-release.apk; bye"; fi
-
+    - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "put build/outputs/apk/Rando-android-release.apk; bye"; fi

@@ -1,16 +1,19 @@
 package com.github.randoapp.test.task;
 
+import android.os.Handler;
 import android.test.AndroidTestCase;
 
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.RandoPair;
-import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.task.SyncTask;
+import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.test.db.RandoPairTestHelper;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Mockito.mock;
@@ -36,14 +39,21 @@ public class SyncTaskTest extends AndroidTestCase {
     }
 
     public void testNotChanged() throws Exception {
-        List<RandoPair> RandoPairs = createRandoPairs();
+        final List<RandoPair> RandoPairs = createRandoPairs();
 
         RandoDAO.insertRandoPairs(RandoPairs);
+        final CountDownLatch signal = new CountDownLatch(1);
+        new Handler(mContext.getMainLooper()).post(
+        new Runnable() {
+            public void run() {
+                SyncTask syncTask = new SyncTask(RandoPairs);
+                syncTask.executeSync();
 
-        SyncTask syncTask = new SyncTask(RandoPairs);
-        syncTask.executeSync();
-
-        RandoPairTestHelper.checkListsEqual(RandoDAO.getAllRandoPairs(), RandoPairs);
+                RandoPairTestHelper.checkListsEqual(RandoDAO.getAllRandoPairs(), RandoPairs);
+                signal.countDown();
+            }
+        });
+        signal.await(5, TimeUnit.SECONDS);
     }
 
     public void testRandoPairUpdated() throws Exception {
@@ -95,8 +105,8 @@ public class SyncTaskTest extends AndroidTestCase {
         OnOk okCallback = mock(OnOk.class);
 
         new SyncTask(RandoPairs)
-        .onOk(okCallback)
-        .executeSync();
+                .onOk(okCallback)
+                .executeSync();
 
         verify(okCallback, times(1)).onOk(anyMap());
     }
@@ -107,8 +117,8 @@ public class SyncTaskTest extends AndroidTestCase {
         OnOk okCallback = mock(OnOk.class);
 
         new SyncTask(RandoPairs)
-        .onOk(okCallback)
-        .executeSync();
+                .onOk(okCallback)
+                .executeSync();
 
         verify(okCallback, times(1)).onOk(anyMap());
     }
