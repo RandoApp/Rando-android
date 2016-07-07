@@ -43,7 +43,8 @@ before_install:
   # Install lftp for apk upload:
   - sudo apt-get update -qq
   - sudo apt-get install -qq lftp
-  - sudo apt-get install -qq tree
+  # Install tree for directory structure debug
+  #- sudo apt-get install -qq tree
 
   # Install base Android SDK
   - cd ${HOME}
@@ -62,13 +63,8 @@ before_install:
   - export ANDROID_NDK_HOME=$PWD/android-ndk-r11c
   - export PATH=$ANDROID_NDK_HOME/bin:$PATH
 
-  # Create settings.gradle. Need for modules correct build
-  - cd ${CI_HOME}
-  #- cd ..
-  #- echo "sdk.dir=/usr/local/android-sdk" >> local.properties
-  #- echo "ndk.dir=$ANDROID_NDK_HOME" >> local.properties
-
   # Create gradle.properties with secret stroke password:
+  - cd ${CI_HOME}
   - echo "keyStorePassword=$KEY_STROKE_PASSWORD" > gradle.properties
 
   #Download rando.keystore:
@@ -77,7 +73,6 @@ before_install:
 
   # Install required components.
   # For a full list, run `android list sdk -a --extended`
-  - android list sdk -a --extended
   - echo yes | android update sdk --filter android-23 --all --no-ui --force
   - echo yes | android update sdk --filter android-$ANDROID_API --all --no-ui --force
   - echo yes | android update sdk --filter build-tools-23.0.1 --all --no-ui --force
@@ -87,11 +82,10 @@ before_install:
 
 before_script:
 # Create and start emulator
-  - android list targets
+  #- android list targets
   - echo no | android create avd --force -n test -t android-$ANDROID_API --abi $ANDROID_ABI
   - emulator -avd test -no-skin -no-audio -no-window &
   - android-wait-for-emulator
-  #- ci/wait_for_emulator.sh
   - adb shell input keyevent 82 &
 
 script:
