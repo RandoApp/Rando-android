@@ -2,8 +2,8 @@ language: android
 jdk: oraclejdk8
 android:
   components:
-    #- tools
-    #- platform-tools
+    - tools
+    - platform-tools
     - build-tools-23.0.1
     #- android-23
     #- extra-android-support
