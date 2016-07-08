@@ -11,7 +11,6 @@
 
     <string name="empty_home_message">No pictures yet.\n Take your first picture and deliver it.</string>
 
-
     <string name="take_picture_screen_label">Take Picture</string>
     <string name="photo_upload_ok">Upload Finished Successfully.</string>
     <string name="photo_upload_failed">"Upload Failed. Please check you connection and try again."</string>
@@ -57,10 +56,9 @@
 
     <string name="no_location_services">No Location Services Enabled</string>
     <string name="enable_location_services">Enable Location Services</string>
-    <string name="image_crop_failed">Image convert Failed. Please take pic once again.</string>
+    <string name="image_crop_failed">Image convert Failegd. Please take pic once again.</string>
     <string name="camera_init_failed">Sorry, but you cannot use the camera now!</string>
     <string name="close_dialog">Close</string>
-
 
     <!-- Help Resources Start -->
     <string name="help_take_title">Take Rando</string>
