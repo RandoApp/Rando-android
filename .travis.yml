@@ -2,9 +2,9 @@ language: android
 jdk: oraclejdk8
 android:
   components:
-    - tools
-    - platform-tools
-    - build-tools-23.0.1
+    #- tools
+    #- platform-tools
+    #- build-tools-23.0.1
     #- android-23
     #- extra-android-support
     #- extra-android-m2repository
@@ -31,6 +31,7 @@ env:
     - ANDROID_API=22 ANDROID_ABI=armeabi-v7a NEED_UPLOAD_APK=true
     - ANDROID_API=21 ANDROID_ABI=armeabi-v7a
     - ANDROID_API=19 ANDROID_ABI=armeabi-v7a
+    - ANDROID_API=14 ANDROID_ABI=armeabi-v7a
     - ANDROID_API=10 ANDROID_ABI=armeabi
   global:
     - secure: Kq5NpWlyXvAvzZ5UUwAxtooG7Cwtdnzh1fhCNqE2Lx2441w9aEGntd5+ffCCTCF4orRHlFIbqfE4/D1YlH6cJtP9hW37SPI8swe3r6Zyfjftakbe3ld72bVfq0f2zx5T4zln63jppMs+XxKNYjg8UswC+9C8Vi2LeJdPUC/Zdzs=
