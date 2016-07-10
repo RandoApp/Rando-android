@@ -1,79 +1,96 @@
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.11.+'
+        classpath 'com.android.tools.build:gradle-experimental:0.8.+'
+        classpath 'com.google.gms:google-services:3.0.0'
     }
 }
-apply plugin: 'android'
+apply plugin: 'com.android.model.application'
+
+def signConf // <-- Note the changes made here
 
 repositories {
-    mavenCentral()
+    jcenter()
 }
+model {
+    android {
+        compileSdkVersion rootProject.ext.compileSdkVersion
+        buildToolsVersion rootProject.ext.buildToolsVersion
 
-android {
-    compileSdkVersion 19
-    buildToolsVersion '19.1.0'
-    enforceUniquePackageName=false
+        defaultConfig {
+            minSdkVersion.apiLevel 10
+            targetSdkVersion.apiLevel 23
+            testApplicationId 'com.github.randoapp.test'
+            testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+        }
 
-    signingConfigs {
+        configurations.all {
+            resolutionStrategy.force 'com.android.support:support-annotations:23.0.1'
+        }
+    }
+
+    android.packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+        exclude 'META-INF/maven/*'
+    }
+
+    android.buildTypes {
         release {
+            minifyEnabled = false
+            proguardFiles.add(file("proguard-rules.pro"))
+            signingConfig = signConf // <-- Note the changes made here
+        }
+    }
+
+    android.signingConfigs {
+        create("signRelease") {
             storeFile file(System.getenv("HOME") + "/.android/rando.keystore")
             storePassword keyStorePassword
             keyAlias 'rando'
             keyPassword keyStorePassword
+            signConf = it
         }
-    }
-
-    buildTypes {
-        release {
-            zipAlign true
-            signingConfig signingConfigs.release
-            /*runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'*/
-        }
-
-        debug {
-            zipAlign true
-        }
-    }
-
-    defaultConfig {
-        minSdkVersion 10
-        targetSdkVersion 19
-        testApplicationId 'com.github.randoapp.test'
-        testInstrumentationRunner 'com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner'
-    }
-
-    packagingOptions {
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/LICENSE'
     }
 }
 
 dependencies {
-    compile project(':Rando-android:modules:facebook:facebook')
-    compile project(':Rando-android:modules:volley')
-    compile project(':Rando-android:modules:cwac-camera:camera-v9')
+    compile project(':volley')
+    compile project(':camera-v9')
 
-    compile 'com.android.support:support-v4:19.0.+'
-    compile 'com.google.android.gms:play-services:4.0.30'
+    compile 'com.google.android.gms:play-services-auth:9.2.0'
     compile 'org.apache.httpcomponents:httpcore:4.3'
     compile 'org.apache.httpcomponents:httpmime:4.3.1'
-    compile 'ch.acra:acra:4.5.0'
+    compile 'ch.acra:acra:4.9.0'
     compile 'com.makeramen:roundedimageview:1.3.0'
+    compile 'com.facebook.android:facebook-android-sdk:3.23.+'
 
-    androidTestCompile files('libs/espresso-1.1.jar', 'libs/testrunner-1.1.jar', 'libs/testrunner-runtime-1.1.jar', 'libs/hamcrest-integration-1.1.jar', 'libs/hamcrest-library-1.1.jar')
+    androidTestCompile 'com.android.support.test:runner:0.5'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
     androidTestCompile 'com.squareup:javawriter:2.1.1'
     androidTestCompile 'javax.annotation:javax.annotation-api:1.2'
     androidTestCompile 'javax.inject:javax.inject:1'
     androidTestCompile 'com.google.code.findbugs:jsr305:1.3.9'
-    androidTestCompile 'com.google.guava:guava:14.0.1'
     androidTestCompile 'com.squareup.dagger:dagger:1.1.0'
     androidTestCompile 'com.squareup.dagger:dagger-compiler:1.1.0'
     androidTestCompile 'org.mockito:mockito-core:1.9.5'
-    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.0'
-    androidTestCompile 'com.google.dexmaker:dexmaker:1.0'
+    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
+    androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
 }
+
+ext {
+    compileSdkVersion = 23
+    buildToolsVersion = "23.0.1"
+}
+
+apply plugin: 'com.google.gms.google-services'

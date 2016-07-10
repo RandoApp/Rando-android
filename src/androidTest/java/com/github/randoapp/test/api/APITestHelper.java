@@ -2,15 +2,15 @@ package com.github.randoapp.test.api;
 
 import com.github.randoapp.network.VolleySingleton;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpUriRequest;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+
+import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.HttpResponse;
+import cz.msebera.android.httpclient.HttpStatus;
+import cz.msebera.android.httpclient.StatusLine;
+import cz.msebera.android.httpclient.client.HttpClient;
+import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
 
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
