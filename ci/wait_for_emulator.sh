@@ -14,7 +14,7 @@ until [[ "$bootanim" =~ "stopped" ]]; do
   if [[ "$bootanim" =~ "device not found" || "$bootanim" =~ "device offline"
     || "$bootanim" =~ "running" ]]; then
     let "failcounter += 5"
-    echo "Waiting for $failcounter seconds while timeout is $timeout_in_sec seconds"
+    echo "Waiting for $failcounter seconds while timeout is $timeout_in_sec seconds. Device animation state is: $bootanim"
     if [[ $failcounter -gt timeout_in_sec ]]; then
       echo "Timeout ($timeout_in_sec seconds) reached; failed to start emulator"
       exit 1
