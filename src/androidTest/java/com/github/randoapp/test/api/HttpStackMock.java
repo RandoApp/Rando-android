@@ -5,22 +5,11 @@ import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.HttpStack;
-import com.android.volley.toolbox.NoCache;
 import com.android.volley.toolbox.StringRequest;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
-
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.message.BasicHttpResponse;
-import org.apache.http.message.BasicStatusLine;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +21,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.HttpResponse;
+import cz.msebera.android.httpclient.HttpVersion;
+import cz.msebera.android.httpclient.entity.StringEntity;
+import cz.msebera.android.httpclient.message.BasicHeader;
+import cz.msebera.android.httpclient.message.BasicHttpResponse;
+import cz.msebera.android.httpclient.message.BasicStatusLine;
 
 public class HttpStackMock implements HttpStack {
     private static final String DEFAULT_STRING_RESPONSE = "Hello";
