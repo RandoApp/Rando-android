@@ -51,6 +51,9 @@ model {
             proguardFiles.add(file("proguard-rules.pro"))
             signingConfig = signConf // <-- Note the changes made here
         }
+        debug {
+
+        }
     }
 
     android.signingConfigs {
