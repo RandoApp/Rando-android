@@ -74,13 +74,12 @@ public class MainActivity extends FragmentActivity {
         activity = this;
 
         setContentView(R.layout.activity_main);
-
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.main_screen, getFragment())
                     .commit();
         }
-    }
+             }
 
     private Fragment getFragment() {
         if (isNotAuthorized()) {

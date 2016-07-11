@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="RandoTheme" parent="Theme.Sherlock.Light.NoActionBar">
+    <style name="RandoTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowNoTitle">true</item>
     </style>
 
@@ -17,7 +17,7 @@
         <item name="android:textSize">20sp</item>
     </style>
 
-    <style name="RandoThemeFullScreen" parent="@style/Theme.Sherlock.NoActionBar">
+    <style name="RandoThemeFullScreen" parent="@style/Theme.AppCompat.NoActionBar">
         <item name="android:windowFullscreen">true</item>
     </style>
 

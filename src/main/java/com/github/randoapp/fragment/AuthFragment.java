@@ -9,24 +9,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.github.randoapp.App;
-import com.github.randoapp.MainActivity;
 import com.github.randoapp.R;
 import com.github.randoapp.auth.EmailAndPasswordAuth;
 import com.github.randoapp.auth.GoogleAuth;
 import com.github.randoapp.auth.SkipAuth;
-import com.github.randoapp.util.AccountUtil;
-import com.google.android.gms.auth.GoogleAuthException;
-import com.google.android.gms.auth.GoogleAuthUtil;
-import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
-import com.google.android.gms.auth.UserRecoverableAuthException;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
-import java.io.IOException;
-
 import static android.view.View.VISIBLE;
-import static com.github.randoapp.Constants.GOOGLE_AUTH_SCOPE;
 import static com.google.android.gms.common.ConnectionResult.SUCCESS;
 
 public class AuthFragment extends Fragment {
@@ -52,7 +41,7 @@ public class AuthFragment extends Fragment {
             if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(rootView.getContext()) == SUCCESS) {
                 Button googleButton = (Button) rootView.findViewById(R.id.googleAuthButton);
                 googleButton.setVisibility(VISIBLE);
-                googleButton.setBackgroundDrawable(getResources().getDrawable(com.google.android.gms.R.drawable.common_signin_btn_text_normal_dark));
+                googleButton.setBackgroundDrawable(getResources().getDrawable(com.google.android.gms.R.drawable.common_google_signin_btn_text_dark_normal));
                 googleButton.setText(getResources().getString(com.google.android.gms.R.string.common_signin_button_text_long));
 
                 GoogleAuth googleAuthListener = new GoogleAuth(this, googleButton);

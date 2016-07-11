@@ -4,17 +4,6 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.github.randoapp.CameraActivity;
-import com.github.randoapp.R;
-import com.github.randoapp.test.api.APITestHelper;
-
-import java.io.IOException;
-
-import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
-import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
-import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
-import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
-import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
-import static org.hamcrest.CoreMatchers.not;
 
 public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<CameraActivity> implements ActivityTestI {
 

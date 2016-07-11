@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import com.github.randoapp.Constants;
 import com.github.randoapp.fragment.HomeListFragment;
 import com.github.randoapp.fragment.HomeMenuFragment;
-import com.github.randoapp.log.Log;
 
 public class HomePagerAdapter extends FragmentStatePagerAdapter {
 

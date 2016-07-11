@@ -29,15 +29,15 @@ public class GoogleAuth extends BaseAuth implements View.OnTouchListener {
     }
 
     private void setButtonFocused() {
-        googleButton.setBackgroundDrawable(authFragment.getResources().getDrawable(com.google.android.gms.R.drawable.common_signin_btn_text_focus_dark));
+        googleButton.setBackgroundDrawable(authFragment.getResources().getDrawable(com.google.android.gms.R.drawable.common_google_signin_btn_text_dark_focused));
     }
 
     private void setButtonPressed() {
-        googleButton.setBackgroundDrawable(authFragment.getResources().getDrawable(com.google.android.gms.R.drawable.common_signin_btn_text_pressed_dark));
+        googleButton.setBackgroundDrawable(authFragment.getResources().getDrawable(com.google.android.gms.R.drawable.common_google_signin_btn_text_dark_pressed));
     }
 
     private void setButtonNormal() {
-        googleButton.setBackgroundDrawable(authFragment.getResources().getDrawable(com.google.android.gms.R.drawable.common_signin_btn_text_normal_dark));
+        googleButton.setBackgroundDrawable(authFragment.getResources().getDrawable(com.google.android.gms.R.drawable.common_google_signin_btn_text_dark_normal));
     }
 
     @Override

@@ -2,22 +2,20 @@ package com.github.randoapp.test.api;
 
 import android.content.Context;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.NoCache;
 import com.github.randoapp.network.VolleySingleton;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+
+import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.HttpResponse;
+import cz.msebera.android.httpclient.HttpStatus;
+import cz.msebera.android.httpclient.StatusLine;
+import cz.msebera.android.httpclient.client.HttpClient;
+import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
 
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
@@ -239,7 +237,7 @@ public class APITestHelper {
         return clientMock;
     }
 
-    public static JSONObject getUserFetchJSONObject() throws JSONException{
+    public static JSONObject getUserFetchJSONObject() throws JSONException {
         return new JSONObject("{\n" +
                 "    'email': 'user@gmail.com',\n" +
                 "    'out': [\n" +

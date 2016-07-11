@@ -2,12 +2,14 @@ package com.github.randoapp.util;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
 import com.github.randoapp.Constants;
@@ -40,6 +42,12 @@ public class LocationHelper {
     }
 
     public void updateLocationAsync(){
+        if ( Build.VERSION.SDK_INT >= 23 &&
+                ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return  ;
+        }
+
         //setup the location manager
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         //create the location listener
@@ -97,6 +105,12 @@ public class LocationHelper {
      * Stop updates from the Location Service.
      */
     public void killLocationServices() {
+        if ( Build.VERSION.SDK_INT >= 23 &&
+                ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return  ;
+        }
+
         if (locationManager!=null && locationListener != null) {
             locationManager.removeUpdates(locationListener);
         }

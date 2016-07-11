@@ -13,12 +13,6 @@ import com.github.randoapp.api.callback.OnFetchUser;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.network.VolleySingleton;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.mockito.ArgumentCaptor;
 
 import java.io.BufferedReader;
@@ -28,6 +22,13 @@ import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Semaphore;
+
+import cz.msebera.android.httpclient.HttpResponse;
+import cz.msebera.android.httpclient.HttpStatus;
+import cz.msebera.android.httpclient.StatusLine;
+import cz.msebera.android.httpclient.client.HttpClient;
+import cz.msebera.android.httpclient.client.methods.HttpPost;
+import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
