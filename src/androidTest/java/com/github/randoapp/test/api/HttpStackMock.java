@@ -34,7 +34,6 @@ import cz.msebera.android.httpclient.message.BasicStatusLine;
 public class HttpStackMock implements HttpStack {
     private static final String DEFAULT_STRING_RESPONSE = "Hello";
     private static final String DEFAULT_JSON_RESPONSE = " {\"a\":1,\"b\":2,\"c\":3}";
-    private static final String URL_PREFIX = "http://example.com/";
     private static final String LOGGER_TAG = "STACK_OVER_FLOW";
 
     private static final int SIMULATED_DELAY_MS = 500;
