@@ -15,7 +15,6 @@ import com.github.randoapp.task.callback.OnError;
 import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.AccountUtil;
 import com.github.randoapp.view.Progress;
-import com.google.android.gms.auth.UserRecoverableAuthException;
 
 import java.util.Map;
 

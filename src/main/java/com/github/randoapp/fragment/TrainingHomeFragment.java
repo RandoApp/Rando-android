@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.randoapp.R;
-import com.github.randoapp.util.AccountUtil;
 
 public class TrainingHomeFragment extends Fragment {
 

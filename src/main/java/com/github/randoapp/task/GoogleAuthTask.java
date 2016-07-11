@@ -9,8 +9,8 @@ import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.api.API;
 import com.github.randoapp.fragment.AuthFragment;
-import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.log.Log;
+import com.github.randoapp.network.VolleySingleton;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
@@ -23,7 +23,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-import static com.github.randoapp.Constants.*;
+import static com.github.randoapp.Constants.GOOGLE_AUTH_SCOPE;
+import static com.github.randoapp.Constants.GOOGLE_FAMILY_NAME_PARAM;
+import static com.github.randoapp.Constants.GOOGLE_USER_INFO_URL;
 
 public class GoogleAuthTask extends BaseTask {
 

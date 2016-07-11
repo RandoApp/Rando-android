@@ -1,11 +1,11 @@
 package com.github.randoapp.task;
 
-import com.github.randoapp.Constants;
-import com.github.randoapp.api.API;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.model.GraphObject;
+import com.github.randoapp.Constants;
+import com.github.randoapp.api.API;
 
 public class FacebookAuthTask extends BaseTask {
 

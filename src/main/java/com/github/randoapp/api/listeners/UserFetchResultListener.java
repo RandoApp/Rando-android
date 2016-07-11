@@ -27,7 +27,6 @@ import static com.github.randoapp.Constants.MEDIUM_PARAM;
 import static com.github.randoapp.Constants.OUT_RANDOS_PARAM;
 import static com.github.randoapp.Constants.RANDO_ID_PARAM;
 import static com.github.randoapp.Constants.SMALL_PARAM;
-import static com.github.randoapp.Constants.USER_PARAM;
 
 public class UserFetchResultListener implements Response.Listener<JSONObject> {
     private OnFetchUser listener;

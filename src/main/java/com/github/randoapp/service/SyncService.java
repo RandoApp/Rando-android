@@ -14,17 +14,10 @@ import com.github.randoapp.Constants;
 import com.github.randoapp.api.API;
 import com.github.randoapp.api.beans.User;
 import com.github.randoapp.api.callback.OnFetchUser;
-import com.github.randoapp.db.RandoDAO;
-import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
-import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.ConnectionUtil;
-import com.github.randoapp.util.RandoUtil;
-
-import java.util.List;
 
 import static com.github.randoapp.Constants.SERVICE_LONG_PAUSE;
-import static com.github.randoapp.Constants.SERVICE_SHORT_PAUSE;
 
 public class SyncService extends IntentService {
 

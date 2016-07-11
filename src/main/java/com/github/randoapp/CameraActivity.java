@@ -5,18 +5,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
-import android.view.View;
 import android.widget.Toast;
 
 import com.commonsware.cwac.camera.CameraHost;
 import com.commonsware.cwac.camera.CameraHostProvider;
-import com.commonsware.cwac.camera.CameraView;
-import com.commonsware.cwac.camera.SimpleCameraHost;
 import com.github.randoapp.camera.CameraCaptureFragment;
 import com.github.randoapp.camera.CameraUploadFragment;
 import com.github.randoapp.camera.RandoCameraHost;

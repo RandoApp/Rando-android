@@ -7,6 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.widget.LoginButton;
 import com.github.randoapp.R;
 import com.github.randoapp.auth.BaseAuth;
 import com.github.randoapp.log.Log;
@@ -14,10 +18,6 @@ import com.github.randoapp.task.FacebookAuthTask;
 import com.github.randoapp.task.callback.OnDone;
 import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.view.Progress;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
-import com.facebook.widget.LoginButton;
 
 import java.util.Arrays;
 import java.util.Map;
