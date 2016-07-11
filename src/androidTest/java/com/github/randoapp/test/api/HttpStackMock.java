@@ -76,7 +76,7 @@ public class HttpStackMock implements HttpStack {
      * request to http://example.com/foo
      */
     private HttpEntity createEntity(Request request) throws UnsupportedEncodingException {
-        String resourceName = constructFakeResponseFileName(request);
+        String resourceName = constructFakeResponseFileName();
         int resourceId = context.getResources().getIdentifier(
                 resourceName, "raw", context.getApplicationContext().getPackageName());
         if (resourceId == 0) {
@@ -102,7 +102,7 @@ public class HttpStackMock implements HttpStack {
     /**
      * Map request URL to fake file name
      */
-    private String constructFakeResponseFileName(Request request) {
+    private String constructFakeResponseFileName() {
         return response;
     }
 }
