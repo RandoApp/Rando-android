@@ -93,7 +93,7 @@ before_script:
 script:
   - ls -l
   - gradle connectedAndroidTest --stacktrace
-  - if [ $NEED_UPLOAD_APK ]; then gradle assembleRelease
+  - if [ $NEED_UPLOAD_APK ]; then gradle assembleRelease; fi
 
 after_script:
     - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "put build/outputs/apk/Rando-android-release.apk; bye"; fi
