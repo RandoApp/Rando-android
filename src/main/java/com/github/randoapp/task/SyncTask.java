@@ -4,13 +4,9 @@ import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import static com.github.randoapp.Constants.NEED_NOTIFICATION;
-import static com.github.randoapp.Constants.NOT_PAIRED_RANDO_PAIRS_NUMBER;
 
 public class SyncTask extends BaseTask {
 

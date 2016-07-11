@@ -7,8 +7,6 @@ import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.db.model.RandoUpload;
 
-import org.hamcrest.Matchers;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
