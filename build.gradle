@@ -26,27 +26,6 @@ model {
             testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
         }
 
-        buildTypes {
-            debug {
-                buildConfigFields.with {
-                    create() {
-                        type = "String"
-                        name = "RANDO_HOST"
-                        value = '"dev.rando4.me"'
-                    }
-                }
-            }
-            release {
-                buildConfigFields.with {
-                    create() {
-                        type = "String"
-                        name = "RANDO_HOST"
-                        value = '"rando4.me"'
-                    }
-                }
-            }
-        }
-
         configurations.all {
             resolutionStrategy.force 'com.android.support:support-annotations:23.0.1'
         }
@@ -67,10 +46,26 @@ model {
     }
 
     android.buildTypes {
+        debug {
+            buildConfigFields.with {
+                create() {
+                    type = "String"
+                    name = "RANDO_HOST"
+                    value = '"dev.rando4.me"'
+                }
+            }
+        }
         release {
             minifyEnabled = false
             proguardFiles.add(file("proguard-rules.pro"))
             signingConfig = signConf // <-- Note the changes made here
+            buildConfigFields.with {
+                create() {
+                    type = "String"
+                    name = "RANDO_HOST"
+                    value = '"rando4.me"'
+                }
+            }
         }
     }
 
