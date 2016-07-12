@@ -32,7 +32,7 @@ model {
                     create() {
                         type = "String"
                         name = "RANDO_HOST"
-                        value = '"rando.dimhold.by"'
+                        value = '"dev.rando4.me"'
                     }
                 }
             }
