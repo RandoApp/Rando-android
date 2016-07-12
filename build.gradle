@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle-experimental:0.8.+'
+        classpath 'com.android.tools.build:gradle-experimental:0.8.0-alpha4'
         classpath 'com.google.gms:google-services:3.0.0'
     }
 }
@@ -46,10 +46,26 @@ model {
     }
 
     android.buildTypes {
+        debug {
+            buildConfigFields.with {
+                create() {
+                    type = "String"
+                    name = "RANDO_HOST"
+                    value = '"dev.rando4.me"'
+                }
+            }
+        }
         release {
             minifyEnabled = false
             proguardFiles.add(file("proguard-rules.pro"))
             signingConfig = signConf // <-- Note the changes made here
+            buildConfigFields.with {
+                create() {
+                    type = "String"
+                    name = "RANDO_HOST"
+                    value = '"rando4.me"'
+                }
+            }
         }
     }
 
