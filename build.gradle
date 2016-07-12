@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle-experimental:0.8.+'
+        classpath 'com.android.tools.build:gradle-experimental:0.8.0-alpha4'
         classpath 'com.google.gms:google-services:3.0.0'
     }
 }
@@ -24,6 +24,27 @@ model {
             targetSdkVersion.apiLevel 23
             testApplicationId 'com.github.randoapp.test'
             testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+        }
+
+        buildTypes {
+            debug {
+                buildConfigFields.with {
+                    create() {
+                        type = "String"
+                        name = "RANDO_HOST"
+                        value = '"rando.dimhold.by"'
+                    }
+                }
+            }
+            release {
+                buildConfigFields.with {
+                    create() {
+                        type = "String"
+                        name = "RANDO_HOST"
+                        value = '"rando4.me"'
+                    }
+                }
+            }
         }
 
         configurations.all {

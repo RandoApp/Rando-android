@@ -40,7 +40,7 @@ public class Constants {
     public static final int SIZE_LARGE = 1200;
     public static final double PICTURE_DESIRED_ASPECT_RATIO = 0.75;
 
-    public static final String SERVER_HOST = "rando4.me";
+    public static final String SERVER_HOST = BuildConfig.RANDO_HOST;
     public static final String SERVER_URL = "http://" + SERVER_HOST;
     public static final int ESTABLISH_CONNECTION_TIMEOUT = 5 * 60 * 1000;
     public static final int CONNECTION_TIMEOUT = 60 * 60 * 1000;
