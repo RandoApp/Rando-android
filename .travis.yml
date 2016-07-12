@@ -92,7 +92,7 @@ before_script:
 
 script:
   - ls -l
-  - gradle connectedAndroidTest --stacktrace
+  - gradle connectedAndroidTest coveralls --stacktrace
   - if [ $NEED_UPLOAD_APK ]; then gradle assembleRelease; fi
 
 after_script:

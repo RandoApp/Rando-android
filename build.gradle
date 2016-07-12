@@ -5,9 +5,11 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle-experimental:0.8.0-alpha2'
         classpath 'com.google.gms:google-services:3.0.0'
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3'
     }
 }
 apply plugin: 'com.android.model.application'
+apply plugin: 'com.github.kt3k.coveralls'
 
 def signConf // <-- Note the changes made here
 
@@ -70,6 +72,15 @@ model {
             signConf = it
         }
     }
+}
+
+coveralls {
+    jacocoReportPath = "${buildDir}/reports/coverage/debug/report.xml"
+}
+
+tasks.coveralls {
+    dependsOn 'connectedAndroidTest'
+    onlyIf { System.env.'CI' }
 }
 
 dependencies {
