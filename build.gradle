@@ -11,7 +11,7 @@ buildscript {
 apply plugin: 'com.android.model.application'
 apply plugin: 'com.github.kt3k.coveralls'
 
-def signConf
+def signConf // <-- Define "signConf"
 
 repositories {
     jcenter()
@@ -50,16 +50,30 @@ model {
     }
 
     android.buildTypes {
-        release {
-            proguardFiles.add(file("proguard-rules.pro"))
-            signingConfig = signConf
-            minifyEnabled false
-            testCoverageEnabled false
-        }
         debug {
             debuggable true
             minifyEnabled false
             testCoverageEnabled true
+            buildConfigFields.with {
+                create() {
+                    type = "String"
+                    name = "RANDO_HOST"
+                    value = '"dev.rando4.me"'
+                }
+            }
+        }
+        release {
+            proguardFiles.add(file("proguard-rules.pro"))
+            signingConfig = signConf // <-- Sign Config
+            minifyEnabled false
+            testCoverageEnabled false
+            buildConfigFields.with {
+                create() {
+                    type = "String"
+                    name = "RANDO_HOST"
+                    value = '"rando4.me"'
+                }
+            }
         }
     }
 
@@ -97,6 +111,7 @@ dependencies {
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
+    androidTestCompile 'com.android.support.test.espresso:espresso-contrib:2.2.2'
     androidTestCompile 'com.squareup:javawriter:2.1.1'
     androidTestCompile 'javax.annotation:javax.annotation-api:1.2'
     androidTestCompile 'javax.inject:javax.inject:1'
