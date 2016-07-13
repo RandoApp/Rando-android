@@ -24,7 +24,7 @@ cache:
   - directories:
     - $HOME/.m2
     - $HOME/.gradle
-    #- $HOME/$DOWNLOADS_HOME
+    - $HOME/$DOWNLOADS_HOME
 env:
   matrix:
     #- ANDROID_API=23 ANDROID_ABI=armeabi-v7a
