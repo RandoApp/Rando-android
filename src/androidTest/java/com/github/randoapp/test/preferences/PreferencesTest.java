@@ -2,10 +2,17 @@ package com.github.randoapp.test.preferences;
 
 import android.content.Context;
 import android.location.Location;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 import android.test.AndroidTestCase;
 
 import com.github.randoapp.App;
 import com.github.randoapp.preferences.Preferences;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Random;
 import java.util.UUID;
@@ -18,15 +25,18 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class PreferencesTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+@SmallTest
+public class PreferencesTest extends AndroidTestCase{
 
-    @Override
-    protected void setUp() throws Exception {
-        App.context = this.getContext();
+    @Before
+    public void setUp() throws Exception {
+        App.context =  InstrumentationRegistry.getTargetContext();
         App.context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE).edit().clear().commit();
     }
 
     //Auth Token Tests
+    @Test
     public void testGetAuthToken() {
         String value = UUID.randomUUID().toString();
 
@@ -35,6 +45,7 @@ public class PreferencesTest extends AndroidTestCase {
         assertThat(Preferences.getAuthToken(), is(value));
     }
 
+    @Test
     public void testSetEmptyAuthTokenReturnEmptyTokenOnGet() {
         String value = "";
 
@@ -43,12 +54,14 @@ public class PreferencesTest extends AndroidTestCase {
         assertThat(Preferences.getAuthToken(), is(value));
     }
 
+    @Test
     public void testGetAuthTokenAsNull() {
         Preferences.setAuthToken(null);
 
         assertThat(Preferences.getAuthToken(), is(AUTH_TOKEN_DEFAULT_VALUE));
     }
 
+    @Test
     public void testRemoveAuthToken() {
         String value = UUID.randomUUID().toString();
 
@@ -61,6 +74,7 @@ public class PreferencesTest extends AndroidTestCase {
     }
 
     // Location tests
+    @Test
     public void testGetLocation() {
         Random random = new Random();
         double lat = random.nextDouble();
@@ -76,6 +90,7 @@ public class PreferencesTest extends AndroidTestCase {
         assertThat(Preferences.getLocation().getLongitude(), is(lon));
     }
 
+    @Test
     public void testSetZeroLocationReturnDefaultLocationOnGet() {
         double lat = 0.0;
         double lon = 0.0;
@@ -91,6 +106,7 @@ public class PreferencesTest extends AndroidTestCase {
         assertThat(Preferences.getLocation().getLongitude(), is(lon));
     }
 
+    @Test
     public void testGetLocationSetAsNull() {
         Preferences.setLocation(null);
 
@@ -102,6 +118,7 @@ public class PreferencesTest extends AndroidTestCase {
         assertThat(Preferences.getLocation().getLongitude(), is(lon));
     }
 
+    @Test
     public void testRemoveLocation() {
         Random random = new Random();
         double lat = random.nextDouble();
@@ -122,6 +139,7 @@ public class PreferencesTest extends AndroidTestCase {
     }
 
     //This test should pass untill we implement Training logic
+    @Test
     public void testTrainingShownIsTrue() {
         assertThat(Preferences.isTrainingFragmentShown(), is(true));
         Preferences.removeTrainingFragmentShown();
@@ -135,6 +153,7 @@ public class PreferencesTest extends AndroidTestCase {
     }
 
     //Account Tests
+    @Test
     public void testGetAccount() {
         String value = UUID.randomUUID().toString();
 
@@ -143,6 +162,7 @@ public class PreferencesTest extends AndroidTestCase {
         assertThat(Preferences.getAccount(), is(value));
     }
 
+    @Test
     public void testSetEmptyAccountReturnEmptyTokenOnGet() {
         String value = "";
 
@@ -151,12 +171,14 @@ public class PreferencesTest extends AndroidTestCase {
         assertThat(Preferences.getAccount(), is(value));
     }
 
+    @Test
     public void testGetAccountAsNull() {
         Preferences.setAccount(null);
 
         assertThat(Preferences.getAccount(), is(ACCOUNT_DEFAULT_VALUE));
     }
 
+    @Test
     public void testRemoveAccount() {
         String value = UUID.randomUUID().toString();
 
@@ -169,18 +191,21 @@ public class PreferencesTest extends AndroidTestCase {
     }
 
     //Randos balance
+    @Test
     public void testIncrement() {
         int val = Preferences.getRandosBalance();
         Preferences.incrementRandosBalance();
         assertThat("Increment doesn't work",Preferences.getRandosBalance(), is(val+1));
     }
 
+    @Test
     public void testDecrement() {
         int val = Preferences.getRandosBalance();
         Preferences.decrementRandosBalance();
         assertThat("Increment doesn't work",Preferences.getRandosBalance(), is(val-1));
     }
 
+    @Test
     public void testSetZero() {
         Preferences.zeroRandosBalance();
         assertThat(Preferences.getRandosBalance(), is(0));
@@ -195,5 +220,4 @@ public class PreferencesTest extends AndroidTestCase {
         Preferences.zeroRandosBalance();
         assertThat(Preferences.getRandosBalance(), is(0));
     }
-
 }
