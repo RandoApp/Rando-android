@@ -40,7 +40,6 @@ env:
     - APPS_HOME=$HOME/apps
     - CI_HOME=$HOME/build/$REPO
 
-
 before_install:
   # Install lftp for apk upload:
   - sudo apt-get update -qq
