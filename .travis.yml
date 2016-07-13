@@ -65,14 +65,6 @@ before_install:
   - export ANDROID_NDK_HOME=$APPS_HOME/android-ndk-r11c
   - export PATH=$ANDROID_NDK_HOME/bin:$PATH
 
-  # Create gradle.properties with secret stroke password:
-  - cd ${CI_HOME}
-  - echo "keyStorePassword=$KEY_STROKE_PASSWORD" > gradle.properties
-
-  #Download rando.keystore:
-  - lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "get rando.keystore; ; bye";
-  - mv rando.keystore $HOME/.android/
-
   # Install required components.
   # For a full list, run `android list sdk -a --extended`
   - echo yes | android update sdk --filter android-23 --all --no-ui --force
@@ -91,8 +83,14 @@ before_script:
   #- ci/wait_for_emulator.sh
   - adb shell input keyevent 82 &
 
+  # Create gradle.properties with secret stroke password:
+  - cd ${CI_HOME}
+  - echo "keyStorePassword=$KEY_STROKE_PASSWORD" > gradle.properties
+  #Download rando.keystore:
+  - lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "get rando.keystore; ; bye";
+  - mv rando.keystore $HOME/.android/
+
 script:
-  - ls -l
   - gradle connectedAndroidTest coveralls --stacktrace
   - if [ $NEED_UPLOAD_APK ]; then gradle assembleRelease; fi
 
