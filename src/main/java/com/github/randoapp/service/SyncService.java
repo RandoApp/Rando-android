@@ -48,12 +48,6 @@ public class SyncService extends IntentService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(SyncService.class, "onStartCommand");
-        return Service.START_NOT_STICKY;
-    }
-
-    @Override
-    protected void onHandleIntent(Intent intent) {
-        Log.i(SyncService.class, "onHandleIntent");
         if (ConnectionUtil.isOnline(getApplicationContext())) {
             API.fetchUserAsync(new OnFetchUser() {
 
@@ -65,6 +59,12 @@ public class SyncService extends IntentService {
         } else {
             Log.i(SyncService.class, "onStartCommand", "no internet connection => not fetching.");
         }
+        return Service.START_NOT_STICKY;
+    }
+
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        Log.i(SyncService.class, "onHandleIntent");
     }
 
     @Override
