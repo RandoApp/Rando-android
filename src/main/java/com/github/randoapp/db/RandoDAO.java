@@ -173,13 +173,13 @@ public class RandoDAO {
         Log.w(RandoDAO.class, "Rando updated with id: ", String.valueOf(id));
     }
 
-    public static synchronized List<Rando> getAllRandos(boolean includeRealFromUploads) {
+    public static synchronized List<Rando> getAllRandos(boolean includeRandosFromUpload) {
         List<Rando> randos = new ArrayList<Rando>();
 
         List<RandoUpload> randosToUpload = getAllRandosToUpload();
         for (RandoUpload randoUpload : randosToUpload) {
             Rando rando = new Rando();
-            if (includeRealFromUploads) {
+            if (includeRandosFromUpload) {
                 rando.randoId = String.valueOf(randoUpload.id);
                 rando.date = randoUpload.date;
                 rando.imageURL = randoUpload.file;
@@ -189,9 +189,9 @@ public class RandoDAO {
             }
             randos.add(rando);
         }
-        List<Rando> randoPairs = getAllRandos();
-        randos.addAll(randoPairs);
-        Log.i(RandoDAO.class,"Size:", String.valueOf(randoPairs.size()), "include=", String.valueOf(includeRealFromUploads));
+        List<Rando> dbRandos = getAllRandos();
+        randos.addAll(dbRandos);
+        Log.i(RandoDAO.class,"Size:", String.valueOf(dbRandos.size()), "include=", String.valueOf(includeRandosFromUpload));
         return randos;
     }
 
@@ -258,13 +258,39 @@ public class RandoDAO {
 
     }
 
-
     /**
      * @return all outgoing rando instances found in DB
      */
     public static synchronized List<Rando> getAllOutRandos() {
         return getAllRandosByStatus(Rando.Status.OUT);
 
+    }
+
+    /**
+     * @return count of all randos instances found in DB by status
+     */
+    public static synchronized int countAllRandosByStatus(Rando.Status status) {
+        Cursor cursor = getDB().query(RandoDBHelper.RandoTable.NAME,
+                RandoDBHelper.RandoTable.ALL_COLUMNS, RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS
+                        + " = '" + status.name()+"'", null, null, null, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE + " DESC", null);
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
+    }
+
+    /**
+     * @return coint all incoming rando instances found in DB
+     */
+    public static synchronized int countAllInRandos() {
+        return countAllRandosByStatus(Rando.Status.IN);
+
+    }
+
+    /**
+     * @return count all outgoing rando instances found in DB
+     */
+    public static synchronized int countAllOutRandos() {
+        return countAllRandosByStatus(Rando.Status.OUT);
     }
 
     /**
@@ -279,7 +305,6 @@ public class RandoDAO {
         cursor.close();
         return result;
     }
-
 
     /**
      * Counts not paired randos amount in DB

@@ -14,10 +14,15 @@ import com.github.randoapp.Constants;
 import com.github.randoapp.api.API;
 import com.github.randoapp.api.beans.User;
 import com.github.randoapp.api.callback.OnFetchUser;
+import com.github.randoapp.db.RandoDAO;
+import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.util.ConnectionUtil;
 
+import java.util.List;
+
 import static com.github.randoapp.Constants.SERVICE_LONG_PAUSE;
+import static com.github.randoapp.Constants.SERVICE_SHORT_PAUSE;
 
 public class SyncService extends IntentService {
 
@@ -50,15 +55,26 @@ public class SyncService extends IntentService {
         Log.i(SyncService.class, "onStartCommand");
         if (ConnectionUtil.isOnline(getApplicationContext())) {
             API.fetchUserAsync(new OnFetchUser() {
-
                 @Override
                 public void onFetch(final User user) {
                     Log.i(SyncService.class, "Fetched ", user.toString(), " randos");
+                    List<Rando> dbRandos = RandoDAO.getAllRandos();
+                    if (!((user.randosIn.size() + user.randosOut.size()) == dbRandos.size()
+                            && dbRandos.containsAll(user.randosIn))
+                            && dbRandos.containsAll(user.randosOut)){
+                        RandoDAO.clearRandos();
+                        RandoDAO.insertRandos(user.randosIn);
+                        RandoDAO.insertRandos(user.randosIn);
+                        //TODO: change 0 to real number
+                        sendNotification(0);
+                    }
+
                 }
             });
         } else {
             Log.i(SyncService.class, "onStartCommand", "no internet connection => not fetching.");
         }
+        setTimeout(System.currentTimeMillis() + SERVICE_SHORT_PAUSE);
         return Service.START_NOT_STICKY;
     }
 
