@@ -14,6 +14,7 @@ import com.github.randoapp.Constants;
 import com.github.randoapp.api.API;
 import com.github.randoapp.api.beans.User;
 import com.github.randoapp.api.callback.OnFetchUser;
+import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.util.ConnectionUtil;
 
@@ -48,12 +49,14 @@ public class SyncService extends IntentService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(SyncService.class, "onStartCommand");
+        Log.i(SyncService.class, "Sync Service: "+Thread.currentThread().getId());
         if (ConnectionUtil.isOnline(getApplicationContext())) {
             API.fetchUserAsync(new OnFetchUser() {
-
                 @Override
                 public void onFetch(final User user) {
                     Log.i(SyncService.class, "Fetched ", user.toString(), " randos");
+                    Log.i(SyncService.class, "Sync Service onFetch: "+Thread.currentThread().getId());
+
                 }
             });
         } else {
@@ -61,6 +64,12 @@ public class SyncService extends IntentService {
         }
         return Service.START_NOT_STICKY;
     }
+
+    private boolean isConsistent(User user) {
+
+        return user.randosIn.size() == RandoDAO.getAllRandosNumber();
+    }
+
 
     @Override
     protected void onHandleIntent(Intent intent) {

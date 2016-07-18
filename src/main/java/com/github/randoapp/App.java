@@ -4,8 +4,11 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 
+import com.github.randoapp.log.Log;
 import com.github.randoapp.service.SyncService;
 import com.github.randoapp.service.UploadService;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.acra.ACRA;
 import org.acra.ReportField;
@@ -26,6 +29,10 @@ public class App extends Application {
         super.onCreate();
         context = getApplicationContext();
         startServices();
+
+        if (!FirebaseApp.getApps(this).isEmpty()) {
+            Log.i(App.class,  "Firebase" + FirebaseInstanceId.getInstance().getToken());
+        }
     }
 
     public static App getInstance(Context context) {

@@ -258,7 +258,6 @@ public class RandoDAO {
 
     }
 
-
     /**
      * @return all outgoing rando instances found in DB
      */
