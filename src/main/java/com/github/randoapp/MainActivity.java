@@ -19,7 +19,6 @@ import com.github.randoapp.fragment.TrainingHomeFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.service.UploadService;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import static com.github.randoapp.Constants.AUTH_FAILURE_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
@@ -34,7 +33,7 @@ public class MainActivity extends FragmentActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i(android.content.BroadcastReceiver.class, "Recieved event:", intent.getAction());
+            Log.i(BroadcastReceiver.class, "Recieved event:", intent.getAction());
 
             if (SYNC_SERVICE_BROADCAST_EVENT.equals(intent.getAction())) {
                 RelativeLayout emptyHome = (RelativeLayout) findViewById(R.id.empty_home);

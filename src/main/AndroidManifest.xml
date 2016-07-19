@@ -50,6 +50,18 @@
             android:process=":upload_process"
             android:enabled="true"
             android:label="@string/upload_service_name" />
+        <service
+            android:name=".service.RandoFirebaseInstanceIdService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name=".service.RandoMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
     </application>
 
     <uses-feature android:name="android.hardware.camera" />

@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "411525045399",
+    "firebase_url": "https://rando4me-61933.firebaseio.com",
+    "project_id": "rando4me-61933",
+    "storage_bucket": "rando4me-61933.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:411525045399:android:d305d34db8ad5af0",
+        "android_client_info": {
+          "package_name": "com.github.randoapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "411525045399-0cai5vmvcl2ckot446sth3u53jjck6ad.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.github.randoapp",
+            "certificate_hash": "030144723D23BA6EB2F1CBDDC500407009E516AF"
+          }
+        },
+        {
+          "client_id": "411525045399-2sunvahpon2c63m1l06mp3nemfllqp3r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.github.randoapp",
+            "certificate_hash": "9085D60D59C47C672BE7BA30DB12F8FB03E078BA"
+          }
+        },
+        {
+          "client_id": "411525045399-or7chjlbcr0l0n8bj3dq1kejhr8mjbvr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDbcnAgrOcJV7_sZTl2ltV9qKIjP1jBjs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "411525045399-or7chjlbcr0l0n8bj3dq1kejhr8mjbvr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

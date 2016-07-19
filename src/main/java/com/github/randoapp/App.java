@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.github.randoapp.log.Log;
+import com.github.randoapp.service.RandoMessagingService;
 import com.github.randoapp.service.SyncService;
 import com.github.randoapp.service.UploadService;
 import com.google.firebase.FirebaseApp;
@@ -30,8 +31,10 @@ public class App extends Application {
         context = getApplicationContext();
         startServices();
 
+        //Log.i(App.class,  "Firebase" + FirebaseInstanceId.getInstance().getToken());
+
         if (!FirebaseApp.getApps(this).isEmpty()) {
-            Log.i(App.class,  "Firebase" + FirebaseInstanceId.getInstance().getToken());
+            Log.i(App.class,  "Firebase: " + FirebaseInstanceId.getInstance().getToken());
         }
     }
 
@@ -43,6 +46,7 @@ public class App extends Application {
         //App onCreate called twice. Prevent double service run, if it is already created
         if (!SyncService.isRunning()) {
             SyncService.run();
+            startService(new Intent(context, RandoMessagingService.class));
             startService(new Intent(context, UploadService.class));
         }
     }
