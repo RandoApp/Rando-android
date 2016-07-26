@@ -43,7 +43,6 @@ public class App extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-
         try {
             if (!ACRA.isACRASenderServiceProcess()) {
                 final ACRAConfiguration config = new ConfigurationBuilder(this)
