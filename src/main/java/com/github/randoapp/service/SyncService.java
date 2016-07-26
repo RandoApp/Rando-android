@@ -53,10 +53,12 @@ public class SyncService extends IntentService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(SyncService.class, "onStartCommand");
+        Log.i(SyncService.class, "Current Thread SyncService.onStartCommand: ", Thread.currentThread().toString());
         if (ConnectionUtil.isOnline(getApplicationContext())) {
             API.fetchUserAsync(new OnFetchUser() {
                 @Override
                 public void onFetch(final User user) {
+                    Log.i(SyncService.class, "Current Thread onFetch: ", Thread.currentThread().toString());
                     Log.i(SyncService.class, "Fetched ", user.toString(), " randos");
                     List<Rando> dbRandos = RandoDAO.getAllRandos();
                     if (!((user.randosIn.size() + user.randosOut.size()) == dbRandos.size()

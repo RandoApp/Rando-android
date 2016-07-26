@@ -2,7 +2,6 @@ package com.github.randoapp.api;
 
 import android.location.Location;
 
-import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
@@ -12,10 +11,12 @@ import com.github.randoapp.api.exception.ForbiddenException;
 import com.github.randoapp.api.exception.RequestTooLongException;
 import com.github.randoapp.api.listeners.ErrorResponseListener;
 import com.github.randoapp.api.listeners.UserFetchResultListener;
+import com.github.randoapp.api.request.ProcessVolleyRequest;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.preferences.Preferences;
+import com.github.randoapp.service.SyncService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -166,7 +167,11 @@ public class API {
 
     public static void fetchUserAsync(final OnFetchUser listener) {
         Log.i(API.class, "API.fetchUser");
-        VolleySingleton.getInstance().getRequestQueue().add(new JsonObjectRequest(Request.Method.GET, getUrl(FETCH_USER_URL), null, new UserFetchResultListener(listener), new ErrorResponseListener()));
+        Log.i(SyncService.class, "Current Thread fetchUserAsync: ", Thread.currentThread().toString());
+        JsonObjectRequest request;// = new JsonObjectRequest(Request.Method.GET, getUrl(FETCH_USER_URL), null, new UserFetchResultListener(listener), new ErrorResponseListener());
+        //VolleySingleton.getInstance().getRequestQueue().add(request);
+        request = new ProcessVolleyRequest(getUrl(FETCH_USER_URL), null, new UserFetchResultListener(listener), new ErrorResponseListener());
+        VolleySingleton.getInstance().getRequestQueue().add(request);
     }
 
     public static Rando uploadImage(File randoFile, Location location) throws AuthenticationException, Exception {

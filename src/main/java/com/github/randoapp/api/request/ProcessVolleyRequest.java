@@ -10,13 +10,18 @@ import org.json.JSONObject;
 
 public class ProcessVolleyRequest extends JsonObjectRequest {
 
+
+    Response.Listener<JSONObject> listener;
+
     public ProcessVolleyRequest(String url, JSONObject jsonRequest, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-        super(url, jsonRequest, listener, errorListener);
+        super(Method.GET,url, jsonRequest, listener, errorListener);
+        this.listener = listener;
     }
 
     @Override
     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-        Log.i(SyncService.class, Thread.currentThread().toString());
-        return super.parseNetworkResponse(response);
+        Log.i(SyncService.class, "Current Thread VolleyRequest.parseNetworkResponse: ", Thread.currentThread().toString());
+        listener.onResponse(super.parseNetworkResponse(response).result);
+        return null;
     }
 }
