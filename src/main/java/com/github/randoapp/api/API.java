@@ -2,6 +2,7 @@ package com.github.randoapp.api;
 
 import android.location.Location;
 
+import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
@@ -11,7 +12,7 @@ import com.github.randoapp.api.exception.ForbiddenException;
 import com.github.randoapp.api.exception.RequestTooLongException;
 import com.github.randoapp.api.listeners.ErrorResponseListener;
 import com.github.randoapp.api.listeners.UserFetchResultListener;
-import com.github.randoapp.api.request.ProcessVolleyRequest;
+import com.github.randoapp.api.request.BackgroundPreprocessRequest;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
@@ -153,7 +154,7 @@ public class API {
         }
     }
 
-    public static void logout() throws AuthenticationException, Exception {
+    public static void logout() throws Exception {
         try {
             HttpPost request = new HttpPost(getUrl(LOGOUT_URL));
             HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
@@ -170,11 +171,11 @@ public class API {
         Log.i(SyncService.class, "Current Thread fetchUserAsync: ", Thread.currentThread().toString());
         JsonObjectRequest request;// = new JsonObjectRequest(Request.Method.GET, getUrl(FETCH_USER_URL), null, new UserFetchResultListener(listener), new ErrorResponseListener());
         //VolleySingleton.getInstance().getRequestQueue().add(request);
-        request = new ProcessVolleyRequest(getUrl(FETCH_USER_URL), null, new UserFetchResultListener(listener), new ErrorResponseListener());
+        request = new BackgroundPreprocessRequest(Request.Method.GET, getUrl(FETCH_USER_URL), null, new UserFetchResultListener(listener), null, new ErrorResponseListener());
         VolleySingleton.getInstance().getRequestQueue().add(request);
     }
 
-    public static Rando uploadImage(File randoFile, Location location) throws AuthenticationException, Exception {
+    public static Rando uploadImage(File randoFile, Location location) throws Exception {
         Log.i(API.class, "uploadImage");
         try {
             String latitude = "0.0";
@@ -230,7 +231,7 @@ public class API {
         }
     }
 
-    public static void report(String id) throws AuthenticationException, Exception {
+    public static void report(String id) throws Exception {
         try {
             HttpPost request = new HttpPost(getUrl(REPORT_URL + id));
 
@@ -247,7 +248,7 @@ public class API {
         }
     }
 
-    public static void uploadLog(String logs) throws AuthenticationException, Exception {
+    public static void uploadLog(String logs) throws Exception {
         Log.i(API.class, "uploadLog");
         try {
             HttpPost request = new HttpPost(getUrl(LOG_URL));
