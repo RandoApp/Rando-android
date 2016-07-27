@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 
-import com.github.randoapp.service.SyncService;
+import com.github.randoapp.api.API;
 import com.github.randoapp.service.UploadService;
 
 import org.acra.ACRA;
@@ -25,6 +25,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
+        API.syncUserAsync(null);
         startServices();
     }
 
@@ -34,9 +35,8 @@ public class App extends Application {
 
     private void startServices() {
         //App onCreate called twice. Prevent double service run, if it is already created
-        if (!SyncService.isRunning()) {
-            SyncService.run();
-            startService(new Intent(context, UploadService.class));
+        if (!UploadService.isRunning()) {
+            startService(new Intent(getApplicationContext(), UploadService.class));
         }
     }
 

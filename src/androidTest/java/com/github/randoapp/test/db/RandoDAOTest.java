@@ -254,33 +254,33 @@ public class RandoDAOTest extends AndroidTestCase {
         RandoDAO.addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
         RandoDAO.addToUpload(new RandoUpload("/path/to/file2", 23.33, 24.44, new Date()));
         RandoDAO.addToUpload(new RandoUpload("/path/to/file3", 33.33, 34.44, new Date()));
-        assertThat("Items number in table is not correct", RandoDAO.getAllRandosNumber(), is(3));
+        assertThat("Items number in table is not correct", RandoDAO.countAllRandosNumber(), is(3));
     }
 
     public void testGetAllRandosNumberOnlyPairs() {
         insertNRandomRandoPairs(4);
-        assertThat("Items number in table is not correct", RandoDAO.getAllRandosNumber(), is(4));
+        assertThat("Items number in table is not correct", RandoDAO.countAllRandosNumber(), is(4));
     }
 
     public void testGetAllRandosNumberPairsAndUploads() {
-        assertThat("Items number in table is not correct", RandoDAO.getAllRandosNumber(), is(0));
+        assertThat("Items number in table is not correct", RandoDAO.countAllRandosNumber(), is(0));
     }
 
     public void testGetAllRandosNumberEmptyTable() {
         RandoDAO.addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
         RandoDAO.addToUpload(new RandoUpload("/path/to/file2", 23.33, 34.44, new Date()));
         insertNRandomRandoPairs(3);
-        assertThat("Collection number is not correct", RandoDAO.getAllRandosNumber(), is(5));
+        assertThat("Collection number is not correct", RandoDAO.countAllRandosNumber(), is(5));
     }
 
     public void testGetRandosToUploadNumberEmptyTable() {
-        assertThat("Items number in table is not correct", RandoDAO.getAllRandosNumber(), is(0));
+        assertThat("Items number in table is not correct", RandoDAO.countAllRandosNumber(), is(0));
     }
 
     public void testGetRandosToUploadNumber() {
         RandoDAO.addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
         RandoDAO.addToUpload(new RandoUpload("/path/to/file2", 23.33, 34.44, new Date()));
-        assertThat("Items number in table is not correct", RandoDAO.getAllRandosNumber(), is(2));
+        assertThat("Items number in table is not correct", RandoDAO.countAllRandosNumber(), is(2));
     }
 
     public void testGetRandoByStatusEmptyDB(){

@@ -3,21 +3,24 @@ package com.github.randoapp.api;
 import android.location.Location;
 
 import com.android.volley.Request;
+import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
+import com.github.randoapp.api.beans.User;
 import com.github.randoapp.api.callback.OnFetchUser;
 import com.github.randoapp.api.exception.ForbiddenException;
 import com.github.randoapp.api.exception.RequestTooLongException;
 import com.github.randoapp.api.listeners.ErrorResponseListener;
 import com.github.randoapp.api.listeners.UserFetchResultListener;
 import com.github.randoapp.api.request.BackgroundPreprocessRequest;
+import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
+import com.github.randoapp.notification.Notification;
 import com.github.randoapp.preferences.Preferences;
-import com.github.randoapp.service.SyncService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -168,10 +171,29 @@ public class API {
 
     public static void fetchUserAsync(final OnFetchUser listener) {
         Log.i(API.class, "API.fetchUser");
-        Log.i(SyncService.class, "Current Thread fetchUserAsync: ", Thread.currentThread().toString());
-        JsonObjectRequest request;// = new JsonObjectRequest(Request.Method.GET, getUrl(FETCH_USER_URL), null, new UserFetchResultListener(listener), new ErrorResponseListener());
-        //VolleySingleton.getInstance().getRequestQueue().add(request);
-        request = new BackgroundPreprocessRequest(Request.Method.GET, getUrl(FETCH_USER_URL), null, new UserFetchResultListener(listener), null, new ErrorResponseListener());
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, getUrl(FETCH_USER_URL), null, new UserFetchResultListener(listener), new ErrorResponseListener());
+        VolleySingleton.getInstance().getRequestQueue().add(request);
+    }
+
+    public static void syncUserAsync(final Response.Listener<JSONObject> syncListener) {
+        Log.d(API.class, "API.syncUserAsync");
+        JsonObjectRequest request = new BackgroundPreprocessRequest(Request.Method.GET, getUrl(FETCH_USER_URL), null, new UserFetchResultListener(new OnFetchUser() {
+            @Override
+            public void onFetch(User user) {
+                Log.d(API.class, "Fetched ", user.toString(), " user. and procesing it in background thread.");
+                List<Rando> dbRandos = RandoDAO.getAllRandos();
+                if (!((user.randosIn.size() + user.randosOut.size()) == dbRandos.size()
+                        && dbRandos.containsAll(user.randosIn))
+                        && dbRandos.containsAll(user.randosOut)){
+                    RandoDAO.clearRandos();
+                    RandoDAO.insertRandos(user.randosIn);
+                    RandoDAO.insertRandos(user.randosIn);
+                    //TODO: change 0 to real number
+                    Notification.sendSyncNotification(0);
+                }
+
+            }
+        }), syncListener, new ErrorResponseListener());
         VolleySingleton.getInstance().getRequestQueue().add(request);
     }
 

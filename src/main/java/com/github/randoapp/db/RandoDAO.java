@@ -195,7 +195,7 @@ public class RandoDAO {
         return randos;
     }
 
-    public static synchronized int getAllRandosNumber() {
+    public static synchronized int countAllRandosNumber() {
         int randoPairsNumber = getRandosNumber();
         int randoToUploads = getRandosToUploadNumber();
         return randoPairsNumber + randoToUploads;
