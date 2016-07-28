@@ -182,12 +182,12 @@ public class API {
             public void onFetch(User user) {
                 Log.d(API.class, "Fetched ", user.toString(), " user. and procesing it in background thread.");
                 List<Rando> dbRandos = RandoDAO.getAllRandos();
-                if (!((user.randosIn.size() + user.randosOut.size()) == dbRandos.size()
-                        && dbRandos.containsAll(user.randosIn))
-                        && dbRandos.containsAll(user.randosOut)){
+                if (!(user.randosIn.size() + user.randosOut.size() == dbRandos.size())
+                        || (dbRandos.containsAll(user.randosIn)
+                        && dbRandos.containsAll(user.randosOut))){
                     RandoDAO.clearRandos();
                     RandoDAO.insertRandos(user.randosIn);
-                    RandoDAO.insertRandos(user.randosIn);
+                    RandoDAO.insertRandos(user.randosOut);
                     //TODO: change 0 to real number
                     Notification.sendSyncNotification(0);
                 }
