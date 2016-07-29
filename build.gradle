@@ -23,7 +23,7 @@ model {
 
         defaultConfig {
             minSdkVersion.apiLevel 10
-            targetSdkVersion.apiLevel 23
+            targetSdkVersion.apiLevel 22
             testApplicationId 'com.github.randoapp.test'
             testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
         }
