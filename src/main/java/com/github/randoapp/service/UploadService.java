@@ -1,5 +1,6 @@
 package com.github.randoapp.service;
 
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -7,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 
+import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.RandoUpload;
@@ -185,5 +187,15 @@ public class UploadService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.d(UploadService.class, "Service destroy");
+    }
+
+    public static boolean isRunning() {
+        ActivityManager manager = (ActivityManager) App.context.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (SyncService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

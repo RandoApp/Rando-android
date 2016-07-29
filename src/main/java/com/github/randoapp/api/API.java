@@ -3,18 +3,23 @@ package com.github.randoapp.api;
 import android.location.Location;
 
 import com.android.volley.Request;
+import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
+import com.github.randoapp.api.beans.User;
 import com.github.randoapp.api.callback.OnFetchUser;
 import com.github.randoapp.api.exception.ForbiddenException;
 import com.github.randoapp.api.exception.RequestTooLongException;
 import com.github.randoapp.api.listeners.ErrorResponseListener;
 import com.github.randoapp.api.listeners.UserFetchResultListener;
+import com.github.randoapp.api.request.BackgroundPreprocessRequest;
+import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
+import com.github.randoapp.notification.Notification;
 import com.github.randoapp.preferences.Preferences;
 
 import org.json.JSONException;
@@ -152,7 +157,7 @@ public class API {
         }
     }
 
-    public static void logout() throws AuthenticationException, Exception {
+    public static void logout() throws Exception {
         try {
             HttpPost request = new HttpPost(getUrl(LOGOUT_URL));
             HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
@@ -166,10 +171,33 @@ public class API {
 
     public static void fetchUserAsync(final OnFetchUser listener) {
         Log.i(API.class, "API.fetchUser");
-        VolleySingleton.getInstance().getRequestQueue().add(new JsonObjectRequest(Request.Method.GET, getUrl(FETCH_USER_URL), null, new UserFetchResultListener(listener), new ErrorResponseListener()));
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, getUrl(FETCH_USER_URL), null, new UserFetchResultListener(listener), new ErrorResponseListener());
+        VolleySingleton.getInstance().getRequestQueue().add(request);
     }
 
-    public static Rando uploadImage(File randoFile, Location location) throws AuthenticationException, Exception {
+    public static void syncUserAsync(final Response.Listener<JSONObject> syncListener) {
+        Log.d(API.class, "API.syncUserAsync");
+        JsonObjectRequest request = new BackgroundPreprocessRequest(Request.Method.GET, getUrl(FETCH_USER_URL), null, new UserFetchResultListener(new OnFetchUser() {
+            @Override
+            public void onFetch(User user) {
+                Log.d(API.class, "Fetched ", user.toString(), " user. and procesing it in background thread.");
+                List<Rando> dbRandos = RandoDAO.getAllRandos();
+                if (!(user.randosIn.size() + user.randosOut.size() == dbRandos.size())
+                        || !(dbRandos.containsAll(user.randosIn)
+                        && dbRandos.containsAll(user.randosOut))){
+                    RandoDAO.clearRandos();
+                    RandoDAO.insertRandos(user.randosIn);
+                    RandoDAO.insertRandos(user.randosOut);
+                    //TODO: change 0 to real number
+                    Notification.sendSyncNotification(0);
+                }
+
+            }
+        }), syncListener, new ErrorResponseListener());
+        VolleySingleton.getInstance().getRequestQueue().add(request);
+    }
+
+    public static Rando uploadImage(File randoFile, Location location) throws Exception {
         Log.i(API.class, "uploadImage");
         try {
             String latitude = "0.0";
@@ -225,7 +253,7 @@ public class API {
         }
     }
 
-    public static void report(String id) throws AuthenticationException, Exception {
+    public static void report(String id) throws Exception {
         try {
             HttpPost request = new HttpPost(getUrl(REPORT_URL + id));
 
@@ -242,7 +270,7 @@ public class API {
         }
     }
 
-    public static void uploadLog(String logs) throws AuthenticationException, Exception {
+    public static void uploadLog(String logs) throws Exception {
         Log.i(API.class, "uploadLog");
         try {
             HttpPost request = new HttpPost(getUrl(LOG_URL));
