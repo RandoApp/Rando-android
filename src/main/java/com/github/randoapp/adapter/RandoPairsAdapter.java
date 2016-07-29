@@ -61,7 +61,7 @@ public class RandoPairsAdapter extends BaseAdapter {
         if (isStranger) {
             randos = RandoDAO.getAllInRandos();
         } else {
-            randos = RandoDAO.getAllOutRandos();
+            randos = RandoDAO.getAllOutRandosWithUploadQueue();
         }
         size = randos.size();
     }

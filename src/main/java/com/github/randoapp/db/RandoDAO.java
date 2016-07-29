@@ -15,7 +15,8 @@ import java.util.List;
 
 public class RandoDAO {
 
-    private RandoDAO(){}
+    private RandoDAO() {
+    }
 
     public static synchronized void addToUpload(RandoUpload randoUpload) {
         if (randoUpload.file == null || randoUpload.date == null) {
@@ -145,7 +146,7 @@ public class RandoDAO {
      */
     public static synchronized void clearInRandos() {
         getDB().delete(RandoDBHelper.RandoTable.NAME, RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS
-                + " = '" + Rando.Status.IN.name()+"'", null);
+                + " = '" + Rando.Status.IN.name() + "'", null);
         Log.i(RandoDAO.class, "Randos table cleared");
     }
 
@@ -154,7 +155,7 @@ public class RandoDAO {
      */
     public static synchronized void clearOutRandos() {
         getDB().delete(RandoDBHelper.RandoTable.NAME, RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS
-                + " = '" + Rando.Status.OUT.name()+"'", null);
+                + " = '" + Rando.Status.OUT.name() + "'", null);
         Log.i(RandoDAO.class, "Randos table cleared");
     }
 
@@ -191,7 +192,7 @@ public class RandoDAO {
         }
         List<Rando> dbRandos = getAllRandos();
         randos.addAll(dbRandos);
-        Log.i(RandoDAO.class,"Size:", String.valueOf(dbRandos.size()), "include=", String.valueOf(includeRandosFromUpload));
+        Log.i(RandoDAO.class, "Size:", String.valueOf(dbRandos.size()), "include=", String.valueOf(includeRandosFromUpload));
         return randos;
     }
 
@@ -237,7 +238,7 @@ public class RandoDAO {
 
         Cursor cursor = getDB().query(RandoDBHelper.RandoTable.NAME,
                 RandoDBHelper.RandoTable.ALL_COLUMNS, RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS
-                        + " = '" + status.name()+"'", null, null, null, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE + " DESC", null);
+                        + " = '" + status.name() + "'", null, null, null, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE + " DESC", null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -267,12 +268,33 @@ public class RandoDAO {
     }
 
     /**
+     * @return all outgoing rando instances found in DB including Randos to Upload
+     */
+    public static synchronized List<Rando> getAllOutRandosWithUploadQueue() {
+        List<Rando> randos = new ArrayList<>();
+        List<RandoUpload> randosToUpload = getAllRandosToUpload();
+        for (RandoUpload randoUpload : randosToUpload) {
+            Rando rando = new Rando();
+            rando.randoId = String.valueOf(randoUpload.id);
+            rando.date = randoUpload.date;
+            rando.imageURL = randoUpload.file;
+            rando.imageURLSize.small = randoUpload.file;
+            rando.imageURLSize.medium = randoUpload.file;
+            rando.imageURLSize.large = randoUpload.file;
+            randos.add(rando);
+        }
+        randos.addAll(getAllRandosByStatus(Rando.Status.OUT));
+
+        return randos;
+    }
+
+    /**
      * @return count of all randos instances found in DB by status
      */
     public static synchronized int countAllRandosByStatus(Rando.Status status) {
         Cursor cursor = getDB().query(RandoDBHelper.RandoTable.NAME,
                 RandoDBHelper.RandoTable.ALL_COLUMNS, RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS
-                        + " = '" + status.name()+"'", null, null, null, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE + " DESC", null);
+                        + " = '" + status.name() + "'", null, null, null, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE + " DESC", null);
         int count = cursor.getCount();
         cursor.close();
         return count;
@@ -312,13 +334,13 @@ public class RandoDAO {
      * @return not paired randos amount in DB
      *
     public static synchronized int getNotPairedRandosNumber() {
-        Cursor cursor = getDB().query(RandoDBHelper.RandoTable.NAME,
-                RandoDBHelper.RandoTable.ALL_COLUMNS, RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_ID
-                        + " is null or " + RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_ID + " = ''", null, null, null, null
-        );
-        int result = cursor.getCount();
-        cursor.close();
-        return result;
+    Cursor cursor = getDB().query(RandoDBHelper.RandoTable.NAME,
+    RandoDBHelper.RandoTable.ALL_COLUMNS, RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_ID
+    + " is null or " + RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_ID + " = ''", null, null, null, null
+    );
+    int result = cursor.getCount();
+    cursor.close();
+    return result;
     }*/
 
     /**
@@ -338,7 +360,7 @@ public class RandoDAO {
         }
     }
 
-    private static synchronized SQLiteDatabase getDB(){
+    private static synchronized SQLiteDatabase getDB() {
         return RandoDBHelper.getDatabase(App.context);
     }
 
