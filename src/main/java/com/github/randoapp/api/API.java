@@ -183,7 +183,7 @@ public class API {
                 Log.d(API.class, "Fetched ", user.toString(), " user. and procesing it in background thread.");
                 List<Rando> dbRandos = RandoDAO.getAllRandos();
                 if (!(user.randosIn.size() + user.randosOut.size() == dbRandos.size())
-                        || (dbRandos.containsAll(user.randosIn)
+                        || !(dbRandos.containsAll(user.randosIn)
                         && dbRandos.containsAll(user.randosOut))){
                     RandoDAO.clearRandos();
                     RandoDAO.insertRandos(user.randosIn);
