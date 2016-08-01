@@ -21,6 +21,7 @@ import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.notification.Notification;
 import com.github.randoapp.preferences.Preferences;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,6 +60,7 @@ import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
 import static com.github.randoapp.Constants.ANONYMOUS_ID_PARAM;
 import static com.github.randoapp.Constants.ANONYMOUS_URL;
+import static com.github.randoapp.Constants.AUTHORIZATION_HEADER;
 import static com.github.randoapp.Constants.CREATION_PARAM;
 import static com.github.randoapp.Constants.ERROR_CODE_PARAM;
 import static com.github.randoapp.Constants.FACEBOOK_EMAIL_PARAM;
@@ -66,6 +68,8 @@ import static com.github.randoapp.Constants.FACEBOOK_ID_PARAM;
 import static com.github.randoapp.Constants.FACEBOOK_TOKEN_PARAM;
 import static com.github.randoapp.Constants.FACEBOOK_URL;
 import static com.github.randoapp.Constants.FETCH_USER_URL;
+import static com.github.randoapp.Constants.FIREBASE_INSTANCE_ID_HEADER;
+import static com.github.randoapp.Constants.FIREBASE_INSTANCE_ID_PARAM;
 import static com.github.randoapp.Constants.FORBIDDEN_CODE;
 import static com.github.randoapp.Constants.GOOGLE_EMAIL_PARAM;
 import static com.github.randoapp.Constants.GOOGLE_FAMILY_NAME_PARAM;
@@ -91,7 +95,7 @@ public class API {
     public static void signup(String email, String password) throws Exception {
         try {
             HttpPost request = new HttpPost(SIGNUP_URL);
-            addParamsToRequest(request, SIGNUP_EMAIL_PARAM, email, SIGNUP_PASSWORD_PARAM, password);
+            addParamsToRequest(request, SIGNUP_EMAIL_PARAM, email, SIGNUP_PASSWORD_PARAM, password, FIREBASE_INSTANCE_ID_PARAM, FirebaseInstanceId.getInstance().getToken());
             HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
@@ -108,7 +112,7 @@ public class API {
     public static void facebook(String id, String email, String token) throws Exception {
         try {
             HttpPost request = new HttpPost(FACEBOOK_URL);
-            addParamsToRequest(request, FACEBOOK_ID_PARAM, id, FACEBOOK_EMAIL_PARAM, email, FACEBOOK_TOKEN_PARAM, token);
+            addParamsToRequest(request, FACEBOOK_ID_PARAM, id, FACEBOOK_EMAIL_PARAM, email, FACEBOOK_TOKEN_PARAM, token, FIREBASE_INSTANCE_ID_PARAM, FirebaseInstanceId.getInstance().getToken());
             HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
@@ -125,7 +129,7 @@ public class API {
     public static void google(String email, String token, String familyName) throws Exception {
         try {
             HttpPost request = new HttpPost(GOOGLE_URL);
-            addParamsToRequest(request, GOOGLE_EMAIL_PARAM, email, GOOGLE_TOKEN_PARAM, token, GOOGLE_FAMILY_NAME_PARAM, familyName);
+            addParamsToRequest(request, GOOGLE_EMAIL_PARAM, email, GOOGLE_TOKEN_PARAM, token, GOOGLE_FAMILY_NAME_PARAM, familyName, FIREBASE_INSTANCE_ID_PARAM, FirebaseInstanceId.getInstance().getToken());
             HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
@@ -142,7 +146,7 @@ public class API {
     public static void anonymous(String uuid) throws Exception {
         try {
             HttpPost request = new HttpPost(ANONYMOUS_URL);
-            addParamsToRequest(request, ANONYMOUS_ID_PARAM, uuid);
+            addParamsToRequest(request, ANONYMOUS_ID_PARAM, uuid, FIREBASE_INSTANCE_ID_PARAM, FirebaseInstanceId.getInstance().getToken());
 
             HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
@@ -159,7 +163,10 @@ public class API {
 
     public static void logout() throws Exception {
         try {
-            HttpPost request = new HttpPost(getUrl(LOGOUT_URL));
+            HttpPost request = new HttpPost(LOGOUT_URL);
+            addAuthTokenHeader(request);
+            addFirebaseInstanceIdHeader(request);
+
             HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
             if (response.getStatusLine().getStatusCode() != SC_OK) {
                 throw processServerError(readJSON(response));
@@ -177,7 +184,7 @@ public class API {
 
     public static void syncUserAsync(final Response.Listener<JSONObject> syncListener) {
         Log.d(API.class, "API.syncUserAsync");
-        JsonObjectRequest request = new BackgroundPreprocessRequest(Request.Method.GET, getUrl(FETCH_USER_URL), null, new UserFetchResultListener(new OnFetchUser() {
+        BackgroundPreprocessRequest request = new BackgroundPreprocessRequest(Request.Method.GET, FETCH_USER_URL, null, new UserFetchResultListener(new OnFetchUser() {
             @Override
             public void onFetch(User user) {
                 Log.d(API.class, "Fetched ", user.toString(), " user. and procesing it in background thread.");
@@ -189,11 +196,13 @@ public class API {
                     RandoDAO.insertRandos(user.randosIn);
                     RandoDAO.insertRandos(user.randosOut);
                     //TODO: change 0 to real number
-                    Notification.sendSyncNotification(0);
+                    Notification.sendSyncNotification(1);
                 }
-
             }
         }), syncListener, new ErrorResponseListener());
+
+        request.addHeader(AUTHORIZATION_HEADER, "Token "+Preferences.getAuthToken());
+        request.addHeader(FIREBASE_INSTANCE_ID_HEADER, FirebaseInstanceId.getInstance().getToken());
         VolleySingleton.getInstance().getRequestQueue().add(request);
     }
 
@@ -207,7 +216,9 @@ public class API {
                 longitude = String.valueOf(location.getLongitude());
             }
 
-            HttpPost request = new HttpPost(getUrl(UPLOAD_RANDO_URL));
+            HttpPost request = new HttpPost(UPLOAD_RANDO_URL);
+            addAuthTokenHeader(request);
+            addFirebaseInstanceIdHeader(request);
 
             MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
             multipartEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
@@ -274,6 +285,7 @@ public class API {
         Log.i(API.class, "uploadLog");
         try {
             HttpPost request = new HttpPost(getUrl(LOG_URL));
+            addFirebaseInstanceIdHeader(request);
             request.setHeader("Content-Type", "application/json");
             request.setEntity(new StringEntity(logs, "UTF-8"));
             VolleySingleton.getInstance().getHttpClient().execute(request);
@@ -281,7 +293,6 @@ public class API {
             Log.e(API.class, "Can not upload logs, because: ", e.getMessage());
         }
     }
-
 
     private static void addParamsToRequest(HttpPost request, String... args) throws UnsupportedEncodingException {
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
@@ -317,6 +328,14 @@ public class API {
         return urlBuilder.toString();
     }
 
+    private static void addAuthTokenHeader(HttpPost request){
+        request.setHeader(AUTHORIZATION_HEADER, "Token " + Preferences.getAuthToken());
+    }
+
+    private static void addFirebaseInstanceIdHeader(HttpPost request){
+        request.setHeader(FIREBASE_INSTANCE_ID_HEADER, FirebaseInstanceId.getInstance().getToken());
+    }
+
     private static Exception processServerError(JSONObject json) {
         try {
             switch (json.getInt(ERROR_CODE_PARAM)) {
@@ -343,6 +362,7 @@ public class API {
             return processError(exc);
         }
     }
+
 
     private static Exception processError(Exception exc) {
         //We don't want to log Connectivity exceptions

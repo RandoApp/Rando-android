@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.widget.RelativeLayout;
 
+import com.github.randoapp.api.API;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.fragment.AuthFragment;
 import com.github.randoapp.fragment.EmptyHomeWallFragment;
@@ -39,7 +40,7 @@ public class MainActivity extends FragmentActivity {
                 RelativeLayout emptyHome = (RelativeLayout) findViewById(R.id.empty_home);
                 Bundle extra = intent.getExtras();
                 int randoPairsNumber = (Integer) extra.get(Constants.RANDO_PAIRS_NUMBER);
-                if (randoPairsNumber == 0 && emptyHome != null) {
+                if (randoPairsNumber == 0 && emptyHome == null) {
 
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.main_screen, new EmptyHomeWallFragment()).commit();
@@ -66,12 +67,14 @@ public class MainActivity extends FragmentActivity {
                     .add(R.id.main_screen, getFragment())
                     .commit();
         }
-             }
+    }
 
     private Fragment getFragment() {
         if (isNotAuthorized()) {
             return new AuthFragment();
         }
+
+        API.syncUserAsync(null);
 
         if (!Preferences.isTrainingFragmentShown()) {
             return new TrainingHomeFragment();

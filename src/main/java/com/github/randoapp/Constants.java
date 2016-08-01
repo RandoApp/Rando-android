@@ -94,6 +94,9 @@ public class Constants {
     public static final String LOCATION = "location";
     public static final String LATITUDE_PARAM = "latitude";
     public static final String LONGITUDE_PARAM = "longitude";
+    public static final String FIREBASE_INSTANCE_ID_PARAM = "firebaseInstanceId";
+    public static final String FIREBASE_INSTANCE_ID_HEADER = "FirebaseInstanceId";
+    public static final String AUTHORIZATION_HEADER = "Authorization";
 
     public static final String PAGE = "page";
 

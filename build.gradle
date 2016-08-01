@@ -101,9 +101,6 @@ dependencies {
     compile project(':volley')
     compile project(':camera-v9')
 
-    compile 'com.google.android.gms:play-services-auth:9.2.0'
-    compile 'com.google.firebase:firebase-core:9.2.0'
-    compile 'com.google.firebase:firebase-messaging:9.2.0'
     compile 'org.apache.httpcomponents:httpcore:4.3'
     compile 'org.apache.httpcomponents:httpmime:4.3.1'
     compile 'ch.acra:acra:4.9.0'
