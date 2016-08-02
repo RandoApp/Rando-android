@@ -21,7 +21,6 @@ import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.notification.Notification;
 import com.github.randoapp.preferences.Preferences;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -95,7 +94,7 @@ public class API {
     public static void signup(String email, String password) throws Exception {
         try {
             HttpPost request = new HttpPost(SIGNUP_URL);
-            addParamsToRequest(request, SIGNUP_EMAIL_PARAM, email, SIGNUP_PASSWORD_PARAM, password, FIREBASE_INSTANCE_ID_PARAM, FirebaseInstanceId.getInstance().getToken());
+            addParamsToRequest(request, SIGNUP_EMAIL_PARAM, email, SIGNUP_PASSWORD_PARAM, password, FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
             HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
@@ -112,7 +111,7 @@ public class API {
     public static void facebook(String id, String email, String token) throws Exception {
         try {
             HttpPost request = new HttpPost(FACEBOOK_URL);
-            addParamsToRequest(request, FACEBOOK_ID_PARAM, id, FACEBOOK_EMAIL_PARAM, email, FACEBOOK_TOKEN_PARAM, token, FIREBASE_INSTANCE_ID_PARAM, FirebaseInstanceId.getInstance().getToken());
+            addParamsToRequest(request, FACEBOOK_ID_PARAM, id, FACEBOOK_EMAIL_PARAM, email, FACEBOOK_TOKEN_PARAM, token, FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
             HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
@@ -129,7 +128,7 @@ public class API {
     public static void google(String email, String token, String familyName) throws Exception {
         try {
             HttpPost request = new HttpPost(GOOGLE_URL);
-            addParamsToRequest(request, GOOGLE_EMAIL_PARAM, email, GOOGLE_TOKEN_PARAM, token, GOOGLE_FAMILY_NAME_PARAM, familyName, FIREBASE_INSTANCE_ID_PARAM, FirebaseInstanceId.getInstance().getToken());
+            addParamsToRequest(request, GOOGLE_EMAIL_PARAM, email, GOOGLE_TOKEN_PARAM, token, GOOGLE_FAMILY_NAME_PARAM, familyName, FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
             HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
@@ -146,7 +145,7 @@ public class API {
     public static void anonymous(String uuid) throws Exception {
         try {
             HttpPost request = new HttpPost(ANONYMOUS_URL);
-            addParamsToRequest(request, ANONYMOUS_ID_PARAM, uuid, FIREBASE_INSTANCE_ID_PARAM, FirebaseInstanceId.getInstance().getToken());
+            addParamsToRequest(request, ANONYMOUS_ID_PARAM, uuid, FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
 
             HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
@@ -202,7 +201,9 @@ public class API {
         }), syncListener, new ErrorResponseListener());
 
         request.addHeader(AUTHORIZATION_HEADER, "Token "+Preferences.getAuthToken());
-        request.addHeader(FIREBASE_INSTANCE_ID_HEADER, FirebaseInstanceId.getInstance().getToken());
+        if (!Preferences.getFirebaseInstanceId().isEmpty()) {
+            request.addHeader(FIREBASE_INSTANCE_ID_HEADER, Preferences.getFirebaseInstanceId());
+        }
         VolleySingleton.getInstance().getRequestQueue().add(request);
     }
 
@@ -333,7 +334,9 @@ public class API {
     }
 
     private static void addFirebaseInstanceIdHeader(HttpPost request){
-        request.setHeader(FIREBASE_INSTANCE_ID_HEADER, FirebaseInstanceId.getInstance().getToken());
+        if (!Preferences.getFirebaseInstanceId().isEmpty()) {
+            request.setHeader(FIREBASE_INSTANCE_ID_HEADER, Preferences.getFirebaseInstanceId());
+        }
     }
 
     private static Exception processServerError(JSONObject json) {

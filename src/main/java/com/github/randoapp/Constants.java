@@ -62,6 +62,7 @@ public class Constants {
     //Shared Preferences
     public static final String PREFERENCES_FILE_NAME = "rando.prefs";
     public static final String AUTH_TOKEN = "auth.token";
+    public static final String FIREBASE_INSTANCE_ID = "firebase.instance.id";
     public static final String RANDOS_BALANCE = "randos.balance";
     public static final String ACCOUNT = "account";
     public static final String TRAINING_FRAGMENT_SHOWN = "training.fragment.shown";

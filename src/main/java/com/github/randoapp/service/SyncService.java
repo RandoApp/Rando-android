@@ -1,6 +1,5 @@
 package com.github.randoapp.service;
 
-import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
@@ -32,16 +31,6 @@ public class SyncService extends IntentService {
 
     public static void run() {
         App.context.startService(new Intent(App.context, SyncService.class));
-    }
-
-    public static boolean isRunning() {
-        ActivityManager manager = (ActivityManager) App.context.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (SyncService.class.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

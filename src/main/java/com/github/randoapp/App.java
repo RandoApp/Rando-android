@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.github.randoapp.log.Log;
+import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.service.RandoFirebaseInstanceIdService;
 import com.github.randoapp.service.RandoMessagingService;
 import com.github.randoapp.service.UploadService;
@@ -31,8 +32,8 @@ public class App extends Application {
         context = getApplicationContext();
         startServices();
         if (!FirebaseApp.getApps(this).isEmpty()) {
+            Preferences.setFirebaseInstanceId(FirebaseInstanceId.getInstance().getToken());
             Log.i(App.class,  "Firebase ID: " + FirebaseInstanceId.getInstance().getToken());
-            Log.i(App.class,  "Firebase App: " + FirebaseApp.getInstance());
         }
     }
 

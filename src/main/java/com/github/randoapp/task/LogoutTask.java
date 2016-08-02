@@ -4,15 +4,12 @@ import com.facebook.Session;
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.api.API;
+import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
 import com.google.android.gms.auth.GoogleAuthUtil;
 
-import java.util.HashMap;
-
 public class LogoutTask extends BaseTask {
-
-    private HashMap<String, Object> errors = new HashMap<String, Object>();
 
     @Override
     public Integer run() {
@@ -21,6 +18,9 @@ public class LogoutTask extends BaseTask {
             logoutFacebook();
             API.logout();
             Preferences.removeAuthToken();
+            RandoDAO.clearRandos();
+            RandoDAO.clearRandoToUpload();
+
             return OK;
         } catch (Exception exc) {
             data.put(Constants.ERROR, exc.getMessage());
