@@ -19,7 +19,7 @@ import com.github.randoapp.log.Log;
 import com.github.randoapp.notification.Notification;
 
 import static com.github.randoapp.Constants.REPORT_BROADCAST;
-import static com.github.randoapp.Constants.SYNC_SERVICE_BROADCAST_EVENT;
+import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
 
 public class HomeListFragment extends Fragment {
 
@@ -34,7 +34,7 @@ public class HomeListFragment extends Fragment {
             Log.i(BroadcastReceiver.class, "Recieved Update request");
             if (REPORT_BROADCAST.equals(intent.getAction())) {
                 toggleReportMode();
-            } else if (SYNC_SERVICE_BROADCAST_EVENT.equals(intent.getAction())) {
+            } else if (SYNC_BROADCAST_EVENT.equals(intent.getAction())) {
                 showNotification();
             }
         }
@@ -85,7 +85,7 @@ public class HomeListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         randoPairsAdapter.notifyDataSetChanged();
-        getActivity().registerReceiver(receiver, new IntentFilter(SYNC_SERVICE_BROADCAST_EVENT));
+        getActivity().registerReceiver(receiver, new IntentFilter(SYNC_BROADCAST_EVENT));
         getActivity().registerReceiver(receiver, new IntentFilter(REPORT_BROADCAST));
     }
 

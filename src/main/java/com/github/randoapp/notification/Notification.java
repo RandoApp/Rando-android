@@ -38,7 +38,7 @@ public class Notification {
     }
 
     public static void sendSyncNotification(int randosNumber) {
-        Intent intent = new Intent(Constants.SYNC_SERVICE_BROADCAST_EVENT);
+        Intent intent = new Intent(Constants.SYNC_BROADCAST_EVENT);
         intent.putExtra(Constants.RANDO_PAIRS_NUMBER, randosNumber);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(App.context, 0, intent, 0);
         AlarmManager alarmManager = (AlarmManager) App.context.getSystemService(Context.ALARM_SERVICE);

@@ -104,6 +104,8 @@ public class UploadService extends Service {
                         uploadAttemptsFail = 0;
                         deleteRando(rando);
                         setTimeout(0);  //go to next rando to upload immediately
+                        Intent intent = new Intent(Constants.UPLOAD_SERVICE_BROADCAST_EVENT);
+                        UploadService.this.sendBroadcast(intent);
                     }
                 }).onError(new OnError() {
             @Override

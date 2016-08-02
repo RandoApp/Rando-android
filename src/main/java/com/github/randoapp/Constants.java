@@ -15,7 +15,7 @@ public class Constants {
     public static final int DEFAULT_CACHE_SIZE = 20 * 1024 * 1024;
 
     public static final String CAMERA_BROADCAST_EVENT = "RANDO_CAMERA_EVENT";
-    public static final String SYNC_SERVICE_BROADCAST_EVENT = "Rando4MeSyncService";
+    public static final String SYNC_BROADCAST_EVENT = "Rando4MeSync";
     public static final String UPLOAD_SERVICE_BROADCAST_EVENT = "Rando4MeUploadService";
     public static final String AUTH_FAILURE_BROADCAST_EVENT = "Rando4MeUploadService";
 

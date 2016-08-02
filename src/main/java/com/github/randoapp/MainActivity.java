@@ -23,7 +23,7 @@ import com.github.randoapp.service.UploadService;
 
 import static com.github.randoapp.Constants.AUTH_FAILURE_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
-import static com.github.randoapp.Constants.SYNC_SERVICE_BROADCAST_EVENT;
+import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_BROADCAST_EVENT;
 
 public class MainActivity extends FragmentActivity {
@@ -36,7 +36,7 @@ public class MainActivity extends FragmentActivity {
         public void onReceive(Context context, Intent intent) {
             Log.i(BroadcastReceiver.class, "Recieved event:", intent.getAction());
 
-            if (SYNC_SERVICE_BROADCAST_EVENT.equals(intent.getAction())) {
+            if (SYNC_BROADCAST_EVENT.equals(intent.getAction())) {
                 RelativeLayout emptyHome = (RelativeLayout) findViewById(R.id.empty_home);
                 Bundle extra = intent.getExtras();
                 int randoPairsNumber = (Integer) extra.get(Constants.RANDO_PAIRS_NUMBER);
@@ -53,6 +53,8 @@ public class MainActivity extends FragmentActivity {
                 Preferences.removeAuthToken();
                 FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.main_screen, new AuthFragment()).commit();
+            } else if (UPLOAD_SERVICE_BROADCAST_EVENT.equals(intent.getAction())){
+                API.syncUserAsync(null);
             }
         }
     };
@@ -106,7 +108,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void registerReceivers() {
-        registerReceiver(receiver, new IntentFilter(SYNC_SERVICE_BROADCAST_EVENT));
+        registerReceiver(receiver, new IntentFilter(SYNC_BROADCAST_EVENT));
         registerReceiver(receiver, new IntentFilter(UPLOAD_SERVICE_BROADCAST_EVENT));
         registerReceiver(receiver, new IntentFilter(AUTH_FAILURE_BROADCAST_EVENT));
     }
