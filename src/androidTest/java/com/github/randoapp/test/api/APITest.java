@@ -13,6 +13,7 @@ import com.github.randoapp.api.callback.OnFetchUser;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.network.VolleySingleton;
 
+import org.hamcrest.CoreMatchers;
 import org.mockito.ArgumentCaptor;
 
 import java.io.BufferedReader;
@@ -207,7 +208,7 @@ public class APITest extends AndroidTestCase {
 
         verify(VolleySingleton.getInstance().httpClient).execute(captor.capture());
 
-        assertThat(params(captor.getValue()), is(Constants.SIGNUP_EMAIL_PARAM + "=user%40mail.com&" + Constants.SIGNUP_PASSWORD_PARAM + "=password"));
+        assertThat(params(captor.getValue()), CoreMatchers.startsWith(Constants.SIGNUP_EMAIL_PARAM + "=user%40mail.com&" + Constants.SIGNUP_PASSWORD_PARAM + "=password"));
         assertThat(captor.getValue().getURI().toString(), is(Constants.SIGNUP_URL));
     }
 

@@ -15,9 +15,9 @@ public class Constants {
     public static final int DEFAULT_CACHE_SIZE = 20 * 1024 * 1024;
 
     public static final String CAMERA_BROADCAST_EVENT = "RANDO_CAMERA_EVENT";
-    public static final String SYNC_SERVICE_BROADCAST_EVENT = "Rando4MeSyncService";
-    public static final String UPLOAD_SERVICE_BROADCAST_EVENT = "Rando4MeUploadService";
-    public static final String AUTH_FAILURE_BROADCAST_EVENT = "Rando4MeUploadService";
+    public static final String SYNC_BROADCAST_EVENT = "Rando4MeSyncEvent";
+    public static final String UPLOAD_SERVICE_BROADCAST_EVENT = "Rando4MeUploadDoneEvent";
+    public static final String AUTH_FAILURE_BROADCAST_EVENT = "Rando4MeAuthFailureEvent";
 
     public static final String RANDO_PHOTO_PATH = "RANDO_PHOTO_PATH";
 
@@ -62,6 +62,7 @@ public class Constants {
     //Shared Preferences
     public static final String PREFERENCES_FILE_NAME = "rando.prefs";
     public static final String AUTH_TOKEN = "auth.token";
+    public static final String FIREBASE_INSTANCE_ID = "firebase.instance.id";
     public static final String RANDOS_BALANCE = "randos.balance";
     public static final String ACCOUNT = "account";
     public static final String TRAINING_FRAGMENT_SHOWN = "training.fragment.shown";
@@ -94,6 +95,9 @@ public class Constants {
     public static final String LOCATION = "location";
     public static final String LATITUDE_PARAM = "latitude";
     public static final String LONGITUDE_PARAM = "longitude";
+    public static final String FIREBASE_INSTANCE_ID_PARAM = "firebaseInstanceId";
+    public static final String FIREBASE_INSTANCE_ID_HEADER = "FirebaseInstanceId";
+    public static final String AUTHORIZATION_HEADER = "Authorization";
 
     public static final String PAGE = "page";
 

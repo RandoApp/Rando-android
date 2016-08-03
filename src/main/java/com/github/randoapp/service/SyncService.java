@@ -1,6 +1,5 @@
 package com.github.randoapp.service;
 
-import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
@@ -34,16 +33,6 @@ public class SyncService extends IntentService {
         App.context.startService(new Intent(App.context, SyncService.class));
     }
 
-    public static boolean isRunning() {
-        ActivityManager manager = (ActivityManager) App.context.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (SyncService.class.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -53,17 +42,17 @@ public class SyncService extends IntentService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(SyncService.class, "onStartCommand");
-        Log.i(SyncService.class, "Current Thread SyncService.onStartCommand: ", Thread.currentThread().toString());
         if (ConnectionUtil.isOnline(getApplicationContext())) {
             API.fetchUserAsync(new OnFetchUser() {
                 @Override
                 public void onFetch(final User user) {
                     Log.i(SyncService.class, "Current Thread onFetch: ", Thread.currentThread().toString());
                     Log.i(SyncService.class, "Fetched ", user.toString(), " randos");
+                    Log.i(SyncService.class, "Sync Service onFetch: " + Thread.currentThread().getId());
                     List<Rando> dbRandos = RandoDAO.getAllRandos();
                     if (!((user.randosIn.size() + user.randosOut.size()) == dbRandos.size()
                             && dbRandos.containsAll(user.randosIn))
-                            && dbRandos.containsAll(user.randosOut)){
+                            && dbRandos.containsAll(user.randosOut)) {
                         RandoDAO.clearRandos();
                         RandoDAO.insertRandos(user.randosIn);
                         RandoDAO.insertRandos(user.randosIn);
@@ -102,7 +91,7 @@ public class SyncService extends IntentService {
     }
 
     private void sendNotification(int randoPairsNumber) {
-        Intent intent = new Intent(Constants.SYNC_SERVICE_BROADCAST_EVENT);
+        Intent intent = new Intent(Constants.SYNC_BROADCAST_EVENT);
         intent.putExtra(Constants.RANDO_PAIRS_NUMBER, randoPairsNumber);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(App.context, 0, intent, 0);
         AlarmManager alarmManager = (AlarmManager) App.context.getSystemService(Context.ALARM_SERVICE);

@@ -7,10 +7,10 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.github.randoapp.R;
+import com.github.randoapp.api.API;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.fragment.AuthFragment;
 import com.github.randoapp.fragment.EmptyHomeWallFragment;
-import com.github.randoapp.service.SyncService;
 import com.github.randoapp.view.Progress;
 
 public abstract class BaseAuth implements View.OnClickListener {
@@ -30,7 +30,7 @@ public abstract class BaseAuth implements View.OnClickListener {
         FragmentManager fragmentManager = fragmentActivity.getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.main_screen, new EmptyHomeWallFragment()).commit();
 
-        SyncService.run();
+        API.syncUserAsync(null);
     }
 
     private static void hideSoftKeyboard(FragmentActivity fragmentActivity) {

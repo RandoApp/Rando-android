@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.widget.RelativeLayout;
 
+import com.github.randoapp.api.API;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.fragment.AuthFragment;
 import com.github.randoapp.fragment.EmptyHomeWallFragment;
@@ -22,7 +23,7 @@ import com.github.randoapp.service.UploadService;
 
 import static com.github.randoapp.Constants.AUTH_FAILURE_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
-import static com.github.randoapp.Constants.SYNC_SERVICE_BROADCAST_EVENT;
+import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_BROADCAST_EVENT;
 
 public class MainActivity extends FragmentActivity {
@@ -33,13 +34,13 @@ public class MainActivity extends FragmentActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i(android.content.BroadcastReceiver.class, "Recieved event:", intent.getAction());
+            Log.i(BroadcastReceiver.class, "Recieved event:", intent.getAction());
 
-            if (SYNC_SERVICE_BROADCAST_EVENT.equals(intent.getAction())) {
+            if (SYNC_BROADCAST_EVENT.equals(intent.getAction())) {
                 RelativeLayout emptyHome = (RelativeLayout) findViewById(R.id.empty_home);
                 Bundle extra = intent.getExtras();
                 int randoPairsNumber = (Integer) extra.get(Constants.RANDO_PAIRS_NUMBER);
-                if (randoPairsNumber == 0 && emptyHome != null) {
+                if (randoPairsNumber == 0 && emptyHome == null) {
 
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.main_screen, new EmptyHomeWallFragment()).commit();
@@ -52,6 +53,8 @@ public class MainActivity extends FragmentActivity {
                 Preferences.removeAuthToken();
                 FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.main_screen, new AuthFragment()).commit();
+            } else if (UPLOAD_SERVICE_BROADCAST_EVENT.equals(intent.getAction())){
+                API.syncUserAsync(null);
             }
         }
     };
@@ -60,19 +63,20 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = this;
-
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.main_screen, getFragment())
                     .commit();
         }
-             }
+    }
 
     private Fragment getFragment() {
         if (isNotAuthorized()) {
             return new AuthFragment();
         }
+
+        API.syncUserAsync(null);
 
         if (!Preferences.isTrainingFragmentShown()) {
             return new TrainingHomeFragment();
@@ -104,7 +108,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void registerReceivers() {
-        registerReceiver(receiver, new IntentFilter(SYNC_SERVICE_BROADCAST_EVENT));
+        registerReceiver(receiver, new IntentFilter(SYNC_BROADCAST_EVENT));
         registerReceiver(receiver, new IntentFilter(UPLOAD_SERVICE_BROADCAST_EVENT));
         registerReceiver(receiver, new IntentFilter(AUTH_FAILURE_BROADCAST_EVENT));
     }

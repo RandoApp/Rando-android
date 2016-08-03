@@ -17,6 +17,8 @@ import com.github.randoapp.task.UploadTask;
 import com.github.randoapp.task.callback.OnError;
 import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.ConnectionUtil;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.Date;
 import java.util.List;
@@ -28,7 +30,6 @@ import static com.github.randoapp.Constants.FILE_NOT_FOUND_ERROR;
 import static com.github.randoapp.Constants.FORBIDDEN_ERROR;
 import static com.github.randoapp.Constants.INCORRECT_ARGS_ERROR;
 import static com.github.randoapp.Constants.REQUEST_TOO_LONG_ERROR;
-import static com.github.randoapp.Constants.SERVICE_SHORT_PAUSE;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_ATTEMPTS_FAIL;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_FORBIDDEN_PAUSE;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_INTERVAL;
@@ -50,6 +51,10 @@ public class UploadService extends Service {
     public void onCreate() {
         Log.d(UploadService.class, "Upload service created");
         super.onCreate();
+        if (!FirebaseApp.getApps(this).isEmpty()) {
+            Log.i(UploadService.class,  "Firebase ID: " + FirebaseInstanceId.getInstance().getToken());
+            Log.i(UploadService.class,  "Firebase App: " + FirebaseApp.getInstance());
+        }
         setInterval(UPLOAD_SERVICE_INTERVAL);
     }
 
@@ -77,7 +82,6 @@ public class UploadService extends Service {
                 if (pastFromLastTry >= Constants.UPLOAD_RETRY_TIMEOUT){
                     randoToUpload.lastTry = new Date();
                     RandoDAO.updateRandoToUpload(randoToUpload);
-
                     uploadFile(randoToUpload);
                     isNeedTryAgain = false;
                     //One service call = one file upload
@@ -92,17 +96,6 @@ public class UploadService extends Service {
         }
     }
 
-    private void sync() {
-        //Get server time to pairing and sync after that
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                SyncService.run();
-            }
-        }, SERVICE_SHORT_PAUSE);
-    }
-
     private void uploadFile(final RandoUpload rando) {
         new UploadTask(rando)
                 .onOk(new OnOk() {
@@ -110,8 +103,14 @@ public class UploadService extends Service {
                     public void onOk(Map<String, Object> data) {
                         uploadAttemptsFail = 0;
                         deleteRando(rando);
-                        sync();
                         setTimeout(0);  //go to next rando to upload immediately
+                        try {
+                            Thread.sleep(5000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        Intent intent = new Intent(Constants.UPLOAD_SERVICE_BROADCAST_EVENT);
+                        UploadService.this.sendBroadcast(intent);
                     }
                 }).onError(new OnError() {
             @Override
