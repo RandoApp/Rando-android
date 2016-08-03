@@ -27,6 +27,7 @@ public class ErrorResponseListener implements Response.ErrorListener {
         if (e instanceof AuthFailureError) {
             Intent intent = new Intent(Constants.AUTH_FAILURE_BROADCAST_EVENT);
             App.context.sendBroadcast(intent);
+            Log.d(ErrorResponseListener.class, "AuthFailureError: ", e.getStackTrace().toString());
         } else if (e instanceof NetworkError) {
         } else if (e instanceof ServerError) {
         } else if (e instanceof ParseError) {
