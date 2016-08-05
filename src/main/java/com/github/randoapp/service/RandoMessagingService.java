@@ -11,7 +11,7 @@ public class RandoMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         API.syncUserAsync(null);
-        Log.i(RandoMessagingService.class, "Firebase RandoMessage: "+ remoteMessage.toString());
+        Log.d(RandoMessagingService.class, "Firebase RandoMessage: "+ remoteMessage.toString());
         Log.d(RandoMessagingService.class, "Firebase From: " + remoteMessage.getFrom());
         Log.d(RandoMessagingService.class, "Firebase Notification Message Body: " + remoteMessage.getData().toString());
     }

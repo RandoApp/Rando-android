@@ -162,6 +162,7 @@ public class API {
 
     public static void logout() throws Exception {
         try {
+
             HttpPost request = new HttpPost(LOGOUT_URL);
             addAuthTokenHeader(request);
             addFirebaseInstanceIdHeader(request);
@@ -190,7 +191,7 @@ public class API {
                 List<Rando> dbRandos = RandoDAO.getAllRandos();
                 if (!(user.randosIn.size() + user.randosOut.size() == dbRandos.size())
                         || !(dbRandos.containsAll(user.randosIn)
-                        && dbRandos.containsAll(user.randosOut))){
+                        && dbRandos.containsAll(user.randosOut))) {
                     RandoDAO.clearRandos();
                     RandoDAO.insertRandos(user.randosIn);
                     RandoDAO.insertRandos(user.randosOut);
@@ -200,7 +201,7 @@ public class API {
             }
         }), syncListener, new ErrorResponseListener());
 
-        request.addHeader(AUTHORIZATION_HEADER, "Token "+Preferences.getAuthToken());
+        request.addHeader(AUTHORIZATION_HEADER, "Token " + Preferences.getAuthToken());
         if (!Preferences.getFirebaseInstanceId().isEmpty()) {
             request.addHeader(FIREBASE_INSTANCE_ID_HEADER, Preferences.getFirebaseInstanceId());
         }
@@ -285,7 +286,8 @@ public class API {
     public static void uploadLog(String logs) throws Exception {
         Log.i(API.class, "uploadLog");
         try {
-            HttpPost request = new HttpPost(getUrl(LOG_URL));
+            HttpPost request = new HttpPost(LOG_URL);
+            addAuthTokenHeader(request);
             addFirebaseInstanceIdHeader(request);
             request.setHeader("Content-Type", "application/json");
             request.setEntity(new StringEntity(logs, "UTF-8"));
@@ -329,11 +331,11 @@ public class API {
         return urlBuilder.toString();
     }
 
-    private static void addAuthTokenHeader(HttpPost request){
+    private static void addAuthTokenHeader(HttpPost request) {
         request.setHeader(AUTHORIZATION_HEADER, "Token " + Preferences.getAuthToken());
     }
 
-    private static void addFirebaseInstanceIdHeader(HttpPost request){
+    private static void addFirebaseInstanceIdHeader(HttpPost request) {
         if (!Preferences.getFirebaseInstanceId().isEmpty()) {
             request.setHeader(FIREBASE_INSTANCE_ID_HEADER, Preferences.getFirebaseInstanceId());
         }
