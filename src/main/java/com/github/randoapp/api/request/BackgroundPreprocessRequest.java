@@ -16,7 +16,6 @@ public class BackgroundPreprocessRequest extends JsonObjectRequest {
     private  Response.Listener<JSONObject> mBackgroundListener;
     private  Response.Listener<JSONObject> mListener;
 
-
     public BackgroundPreprocessRequest(int method, String url, JSONObject jsonRequest, Response.Listener<JSONObject> backgroundListener, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         super(method, url, jsonRequest, listener, errorListener);
         this.mListener = listener;

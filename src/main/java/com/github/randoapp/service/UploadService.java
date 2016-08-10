@@ -30,7 +30,6 @@ import static com.github.randoapp.Constants.FILE_NOT_FOUND_ERROR;
 import static com.github.randoapp.Constants.FORBIDDEN_ERROR;
 import static com.github.randoapp.Constants.INCORRECT_ARGS_ERROR;
 import static com.github.randoapp.Constants.REQUEST_TOO_LONG_ERROR;
-import static com.github.randoapp.Constants.SERVICE_SHORT_PAUSE;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_ATTEMPTS_FAIL;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_FORBIDDEN_PAUSE;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_INTERVAL;
@@ -53,8 +52,8 @@ public class UploadService extends Service {
         Log.d(UploadService.class, "Upload service created");
         super.onCreate();
         if (!FirebaseApp.getApps(this).isEmpty()) {
-            Log.i(UploadService.class, "Firebase ID: " + FirebaseInstanceId.getInstance().getToken());
-            Log.i(UploadService.class, "Firebase App: " + FirebaseApp.getInstance());
+            Log.i(UploadService.class,  "Firebase ID: " + FirebaseInstanceId.getInstance().getToken());
+            Log.i(UploadService.class,  "Firebase App: " + FirebaseApp.getInstance());
         }
         setInterval(UPLOAD_SERVICE_INTERVAL);
     }
@@ -105,14 +104,13 @@ public class UploadService extends Service {
                         uploadAttemptsFail = 0;
                         deleteRando(rando);
                         setTimeout(0);  //go to next rando to upload immediately
-                        Timer timer = new Timer();
-                        timer.schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                Intent intent = new Intent(Constants.UPLOAD_SERVICE_BROADCAST_EVENT);
-                                UploadService.this.sendBroadcast(intent);
-                            }
-                        }, SERVICE_SHORT_PAUSE);
+                        try {
+                            Thread.sleep(5000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        Intent intent = new Intent(Constants.UPLOAD_SERVICE_BROADCAST_EVENT);
+                        UploadService.this.sendBroadcast(intent);
                     }
                 }).onError(new OnError() {
             @Override

@@ -141,7 +141,6 @@ public class API {
         try {
             HttpPost request = new HttpPost(GOOGLE_URL);
             addParamsToRequest(request, GOOGLE_EMAIL_PARAM, email, GOOGLE_TOKEN_PARAM, token, GOOGLE_FAMILY_NAME_PARAM, familyName, FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
-            response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
                 String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
@@ -226,7 +225,7 @@ public class API {
             }
         }), syncListener, new ErrorResponseListener());
 
-        request.addHeader(AUTHORIZATION_HEADER, "Token " + Preferences.getAuthToken());
+        request.addHeader(AUTHORIZATION_HEADER, "Token "+Preferences.getAuthToken());
         if (!Preferences.getFirebaseInstanceId().isEmpty()) {
             request.addHeader(FIREBASE_INSTANCE_ID_HEADER, Preferences.getFirebaseInstanceId());
         }
@@ -371,11 +370,11 @@ public class API {
         return urlBuilder.toString();
     }
 
-    private static void addAuthTokenHeader(HttpPost request) {
+    private static void addAuthTokenHeader(HttpPost request){
         request.setHeader(AUTHORIZATION_HEADER, "Token " + Preferences.getAuthToken());
     }
 
-    private static void addFirebaseInstanceIdHeader(HttpPost request) {
+    private static void addFirebaseInstanceIdHeader(HttpPost request){
         if (!Preferences.getFirebaseInstanceId().isEmpty()) {
             request.setHeader(FIREBASE_INSTANCE_ID_HEADER, Preferences.getFirebaseInstanceId());
         }
