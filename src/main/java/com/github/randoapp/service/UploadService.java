@@ -77,9 +77,9 @@ public class UploadService extends Service {
         Log.d(UploadService.class, "Need upload ", String.valueOf(randosToUpload.size()), " randos");
         if (randosToUpload.size() > 0) {
             boolean isNeedTryAgain = true;
-            for (RandoUpload randoToUpload: randosToUpload) {
+            for (RandoUpload randoToUpload : randosToUpload) {
                 long pastFromLastTry = new Date().getTime() - randoToUpload.lastTry.getTime();
-                if (pastFromLastTry >= Constants.UPLOAD_RETRY_TIMEOUT){
+                if (pastFromLastTry >= Constants.UPLOAD_RETRY_TIMEOUT) {
                     randoToUpload.lastTry = new Date();
                     RandoDAO.updateRandoToUpload(randoToUpload);
                     uploadFile(randoToUpload);

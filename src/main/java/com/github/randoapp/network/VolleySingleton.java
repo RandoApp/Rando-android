@@ -4,7 +4,7 @@ import com.android.volley.Network;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HttpClientStack;
+import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.ImageLoader;
 import com.github.randoapp.App;
 import com.github.randoapp.cache.LruMemCache;
@@ -73,7 +73,7 @@ public class VolleySingleton {
 
     private RequestQueue createRequestQueue() {
         File cacheDir = new File(App.context.getCacheDir(), DEFAULT_CACHE_DIR);
-        Network network = new BasicNetwork(new HttpClientStack(httpClient));
+        Network network = new BasicNetwork(new HurlStack());
         RequestQueue queue = new RequestQueue(new DiskBasedCache(cacheDir, DEFAULT_CACHE_SIZE), network);
         queue.start();
         return queue;

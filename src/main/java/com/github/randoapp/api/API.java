@@ -56,6 +56,7 @@ import cz.msebera.android.httpclient.entity.mime.HttpMultipartMode;
 import cz.msebera.android.httpclient.entity.mime.MultipartEntityBuilder;
 import cz.msebera.android.httpclient.entity.mime.content.FileBody;
 import cz.msebera.android.httpclient.message.BasicNameValuePair;
+import cz.msebera.android.httpclient.util.EntityUtils;
 
 import static com.github.randoapp.Constants.ANONYMOUS_ID_PARAM;
 import static com.github.randoapp.Constants.ANONYMOUS_URL;
@@ -92,10 +93,11 @@ import static org.apache.http.HttpStatus.SC_REQUEST_TOO_LONG;
 public class API {
 
     public static void signup(String email, String password) throws Exception {
+        HttpResponse response = null;
         try {
             HttpPost request = new HttpPost(SIGNUP_URL);
             addParamsToRequest(request, SIGNUP_EMAIL_PARAM, email, SIGNUP_PASSWORD_PARAM, password, FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
-            HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
+            response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
                 String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
@@ -105,14 +107,19 @@ public class API {
             }
         } catch (IOException e) {
             throw processError(e);
+        } finally {
+            if (response != null) {
+                EntityUtils.consume(response.getEntity());
+            }
         }
     }
 
     public static void facebook(String id, String email, String token) throws Exception {
+        HttpResponse response = null;
         try {
             HttpPost request = new HttpPost(FACEBOOK_URL);
             addParamsToRequest(request, FACEBOOK_ID_PARAM, id, FACEBOOK_EMAIL_PARAM, email, FACEBOOK_TOKEN_PARAM, token, FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
-            HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
+            response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
                 String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
@@ -122,14 +129,18 @@ public class API {
             }
         } catch (IOException e) {
             throw processError(e);
+        } finally {
+            if (response != null) {
+                EntityUtils.consume(response.getEntity());
+            }
         }
     }
 
     public static void google(String email, String token, String familyName) throws Exception {
+        HttpResponse response = null;
         try {
             HttpPost request = new HttpPost(GOOGLE_URL);
             addParamsToRequest(request, GOOGLE_EMAIL_PARAM, email, GOOGLE_TOKEN_PARAM, token, GOOGLE_FAMILY_NAME_PARAM, familyName, FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
-            HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
                 String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
@@ -139,15 +150,20 @@ public class API {
             }
         } catch (IOException e) {
             throw processError(e);
+        } finally {
+            if (response != null) {
+                EntityUtils.consume(response.getEntity());
+            }
         }
     }
 
     public static void anonymous(String uuid) throws Exception {
+        HttpResponse response = null;
         try {
             HttpPost request = new HttpPost(ANONYMOUS_URL);
             addParamsToRequest(request, ANONYMOUS_ID_PARAM, uuid, FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
 
-            HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
+            response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
                 String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
@@ -157,21 +173,30 @@ public class API {
             }
         } catch (IOException e) {
             throw processError(e);
+        } finally {
+            if (response != null) {
+                EntityUtils.consume(response.getEntity());
+            }
         }
     }
 
     public static void logout() throws Exception {
+        HttpResponse response = null;
         try {
             HttpPost request = new HttpPost(LOGOUT_URL);
             addAuthTokenHeader(request);
             addFirebaseInstanceIdHeader(request);
 
-            HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
+             response = VolleySingleton.getInstance().getHttpClient().execute(request);
             if (response.getStatusLine().getStatusCode() != SC_OK) {
                 throw processServerError(readJSON(response));
             }
         } catch (IOException e) {
             throw processError(e);
+        } finally {
+            if (response != null) {
+                EntityUtils.consume(response.getEntity());
+            }
         }
     }
 
@@ -190,7 +215,7 @@ public class API {
                 List<Rando> dbRandos = RandoDAO.getAllRandos();
                 if (!(user.randosIn.size() + user.randosOut.size() == dbRandos.size())
                         || !(dbRandos.containsAll(user.randosIn)
-                        && dbRandos.containsAll(user.randosOut))){
+                        && dbRandos.containsAll(user.randosOut))) {
                     RandoDAO.clearRandos();
                     RandoDAO.insertRandos(user.randosIn);
                     RandoDAO.insertRandos(user.randosOut);
@@ -209,6 +234,7 @@ public class API {
 
     public static Rando uploadImage(File randoFile, Location location) throws Exception {
         Log.i(API.class, "uploadImage");
+        HttpResponse response = null;
         try {
             String latitude = "0.0";
             String longitude = "0.0";
@@ -228,7 +254,7 @@ public class API {
             multipartEntity.addTextBody(LONGITUDE_PARAM, longitude);
             request.setEntity(multipartEntity.build());
 
-            HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
+            response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
                 JSONObject json = readJSON(response);
@@ -262,14 +288,19 @@ public class API {
         } catch (IOException e) {
             Log.w(API.class, "Unknown exception ", e.getMessage());
             throw e;
+        } finally {
+            if (response != null) {
+                EntityUtils.consume(response.getEntity());
+            }
         }
     }
 
     public static void report(String id) throws Exception {
+        HttpResponse response = null;
         try {
             HttpPost request = new HttpPost(getUrl(REPORT_URL + id));
 
-            HttpResponse response = VolleySingleton.getInstance().getHttpClient().execute(request);
+            response = VolleySingleton.getInstance().getHttpClient().execute(request);
             if (response.getStatusLine().getStatusCode() != SC_OK) {
                 throw processServerError(readJSON(response));
             }
@@ -279,19 +310,29 @@ public class API {
             throw processError(e);
         } catch (IOException e) {
             throw processError(e);
+        } finally {
+            if (response != null) {
+                EntityUtils.consume(response.getEntity());
+            }
         }
     }
 
     public static void uploadLog(String logs) throws Exception {
         Log.i(API.class, "uploadLog");
+        HttpResponse response = null;
         try {
-            HttpPost request = new HttpPost(getUrl(LOG_URL));
+            HttpPost request = new HttpPost(LOG_URL);
+            addAuthTokenHeader(request);
             addFirebaseInstanceIdHeader(request);
             request.setHeader("Content-Type", "application/json");
             request.setEntity(new StringEntity(logs, "UTF-8"));
-            VolleySingleton.getInstance().getHttpClient().execute(request);
+            response = VolleySingleton.getInstance().getHttpClient().execute(request);
         } catch (IOException e) {
             Log.e(API.class, "Can not upload logs, because: ", e.getMessage());
+        } finally {
+            if (response != null) {
+                EntityUtils.consume(response.getEntity());
+            }
         }
     }
 
