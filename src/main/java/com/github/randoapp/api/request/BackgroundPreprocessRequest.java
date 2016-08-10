@@ -12,9 +12,9 @@ import java.util.Map;
 
 public class BackgroundPreprocessRequest extends JsonObjectRequest {
 
-    Map<String, String> mHeaders;
-    Response.Listener<JSONObject> mBackgroundListener;
-    Response.Listener<JSONObject> mListener;
+    private  Map<String, String> mHeaders;
+    private  Response.Listener<JSONObject> mBackgroundListener;
+    private  Response.Listener<JSONObject> mListener;
 
 
     public BackgroundPreprocessRequest(int method, String url, JSONObject jsonRequest, Response.Listener<JSONObject> backgroundListener, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
