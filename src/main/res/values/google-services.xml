@@ -2,11 +2,4 @@
 <resources>
     <!--Created manually according: https://developers.google.com/android/guides/google-services-plugin since gradle-experimental doesn't pick up google-services.json  -->
     <string name="google_app_id" translatable="false">1:411525045399:android:d305d34db8ad5af0</string>
-
-    <!-- Present in applications with the appropriate services configured -->
-    <string name="gcm_defaultSenderId" translatable="false">411525045399</string>
-    <string name="default_web_client_id" translatable="false">411525045399-or7chjlbcr0l0n8bj3dq1kejhr8mjbvr.apps.googleusercontent.com</string>
-    <string name="firebase_database_url" translatable="false">https://rando4me-61933.firebaseio.com</string>
-    <string name="google_api_key" translatable="false">AIzaSyBDbcnAgrOcJV7_sZTl2ltV9qKIjP1jBjs</string>
-    <!-- string name="google_crash_reporting_api_key" translatable="false">AIzaSyBDbcnAgrOcJV7_sZTl2ltV9qKIjP1jBjs</string -->
 </resources>

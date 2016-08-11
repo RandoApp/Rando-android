@@ -191,7 +191,7 @@ public class UploadService extends Service {
     public static boolean isRunning() {
         ActivityManager manager = (ActivityManager) App.context.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (SyncService.class.getName().equals(service.service.getClassName())) {
+            if (UploadService.class.getName().equals(service.service.getClassName())) {
                 return true;
             }
         }

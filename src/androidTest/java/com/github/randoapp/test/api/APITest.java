@@ -102,32 +102,6 @@ public class APITest extends AndroidTestCase {
         }
     }
 
-    /*@SmallTest
-    public void testFetchUser() throws Exception {
-        APITestHelper.mockAPIForFetchUserNewAPI(getContext());
-
-        final Semaphore semaphore = new Semaphore(0);
-
-        API.fetchUserAsync(new OnFetchUser() {
-            @Override
-            public void onFetch(final List<Rando> randos) {
-                assertThat(randos.size(), is(2));
-
-                assertThat(randos.get(0).randoId, is("ddddcwef3242f32f"));
-                assertThat(randos.get(0).imageURL, is("http://rando4.me/image/dddd/ddddcwef3242f32f.jpg"));
-                assertThat(randos.get(0).mapURL, is("http://rando4.me/map/eeee/eeeewef3242f32f.jpg"));
-                assertThat(randos.get(0).date.compareTo(new Date(1383690800877l)), is(0));
-
-                assertThat(randos.get(1).randoId, is("abcdw0ef3242f32f"));
-                assertThat(randos.get(1).imageURL, is("http://rando4.me/image/abcd/abcdw0ef3242f32f.jpg"));
-                assertThat(randos.get(1).mapURL, is("http://rando4.me/map/bcde/bcdecwef3242f32f.jpg"));
-                assertThat(randos.get(1).date.compareTo(new Date(1383670400877l)), is(0));
-                semaphore.release();
-            }
-        });
-        semaphore.acquire();
-    }*/
-
     @SmallTest
     public void testFetchUserWithEmptyFoods() throws Exception {
         APITestHelper.mockAPI(HttpStatus.SC_OK, "{'email': 'user@mail.com', 'randos': []}");
@@ -139,31 +113,6 @@ public class APITest extends AndroidTestCase {
             }
         });
     }
-
-    /*@SmallTest
-    public void testFetchUserWithError() throws Exception {
-        APITestHelper.mockAPIWithError();
-
-        try {
-            API.fetchUser();
-            fail();
-        } catch (Exception e) {
-            assertThat(e.getMessage(), is("Internal Server Error"));
-        }
-    }
-
-    @SmallTest
-    public void testFetchUserWithUnknownError() throws Exception {
-        APITestHelper.mockAPI(HttpStatus.SC_INTERNAL_SERVER_ERROR, "not a json, that throw JSONException");
-        App.context = this.getContext();
-
-        try {
-            API.fetchUser();
-            fail();
-        } catch (Exception e) {
-            assertThat(e.getMessage(), is(App.context.getResources().getString(R.string.error_unknown_err)));
-        }
-    }*/
 
     @SmallTest
     public void testReport() throws Exception {

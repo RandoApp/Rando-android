@@ -41,7 +41,6 @@ public class APITestHelper {
     }
 
     public static void mockAPIForFetchUser() throws IOException {
-        //mock(VolleySingleton.getInstance())
         VolleySingleton.getInstance().httpClient = mockClient(HttpStatus.SC_OK, "{'email': 'user@mail.com'," +
                 "'randos': [" +
                 "{" +
