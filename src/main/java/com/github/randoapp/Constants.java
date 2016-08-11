@@ -138,4 +138,7 @@ public class Constants {
     public static final String REQUEST_TOO_LONG_ERROR = "RequestTooLongException";
     public static final String INCORRECT_ARGS_ERROR = "IncorrectArgs";
 
+    public static final String PUSH_NOTIFICATION_LANDED = "landed";
+    public static final String PUSH_NOTIFICATION_RECEIVED = "received";
+
 }

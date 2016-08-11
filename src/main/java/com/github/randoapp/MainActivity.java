@@ -54,7 +54,7 @@ public class MainActivity extends FragmentActivity {
                 FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.main_screen, new AuthFragment()).commit();
             } else if (UPLOAD_SERVICE_BROADCAST_EVENT.equals(intent.getAction())){
-                API.syncUserAsync(null);
+                //TODO: handle Rando Uploaded event
             }
         }
     };

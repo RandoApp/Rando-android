@@ -122,6 +122,23 @@ public class RandoDAO {
     }
 
     /**
+     * Finds rando instance.
+     *
+     * @param randoId Rando id to get
+     * @return Rando instance or null if rando hasn't been found
+     */
+
+    public static synchronized Rando getRandoByRandoId(String randoId) {
+        Cursor cursor = getDB().query(RandoDBHelper.RandoTable.NAME,
+                RandoDBHelper.RandoTable.ALL_COLUMNS, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_ID + " = '" + randoId+"'", null,
+                null, null, null);
+        cursor.moveToFirst();
+        Rando rando = cursorToRando(cursor);
+        cursor.close();
+        return rando;
+    }
+
+    /**
      * Deletes rando instance from DB.
      *
      * @param rando Rando to delete
