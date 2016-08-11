@@ -26,7 +26,6 @@ public class UserFetchResultListenerTest  extends AndroidTestCase {
         OnFetchUser onFetchUseMock = spy(new OnFetchUserAssertions());
         new UserFetchResultListener(onFetchUseMock).onResponse(APITestHelper.getUserFetchJSONObject());
         verify(onFetchUseMock, times(1)).onFetch((User)argThat(new InstanceOf(User.class)));
-
     }
 
     public class OnFetchUserAssertions implements OnFetchUser{
@@ -73,8 +72,6 @@ public class UserFetchResultListenerTest  extends AndroidTestCase {
             assertThat(user.randosOut.get(1).mapURLSize.medium, is("http://rando4.me/map/medium/c425b557fcbde6cd337150d22811837d.jpg"));
             assertThat(user.randosOut.get(1).mapURLSize.small, is("http://rando4.me/map/small/c425b557fcbde6cd337150d22811837d.jpg"));
             assertThat(user.randosOut.get(1).date.compareTo(new Date(1402667703607l)), is(0));
-
         }
     }
-
 }

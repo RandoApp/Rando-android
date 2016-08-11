@@ -1,15 +1,16 @@
 package com.github.randoapp.test.activity;
 
-import android.support.test.espresso.Espresso;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.github.randoapp.CameraActivity;
 import com.github.randoapp.R;
-import static android.support.test.espresso.Espresso.*;
-import static android.support.test.espresso.matcher.ViewMatchers.*;
-import static android.support.test.espresso.assertion.ViewAssertions.*;
-import static org.hamcrest.Matchers.*;
+
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static org.hamcrest.Matchers.not;
 
 public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<CameraActivity> implements ActivityTestI {
 
@@ -44,7 +45,7 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ca
     // Methods whose names are prefixed with test will automatically be run
     @LargeTest
     public void ignoretestTakePictureOnStart() {
-        Espresso.onView(withId(R.id.camera_screen)).check(matches(isDisplayed()));
+        onView(withId(R.id.camera_screen)).check(matches(isDisplayed()));
         onView(withId(R.id.capture_button)).check(matches(isDisplayed()));
         onView(withId(R.id.upload_button)).check(matches(not(isDisplayed())));
     }
