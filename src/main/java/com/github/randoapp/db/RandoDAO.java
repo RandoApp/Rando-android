@@ -327,21 +327,6 @@ public class RandoDAO {
     }
 
     /**
-     * Counts not paired randos amount in DB
-     *
-     * @return not paired randos amount in DB
-     *
-    public static synchronized int getNotPairedRandosNumber() {
-    Cursor cursor = getDB().query(RandoDBHelper.RandoTable.NAME,
-    RandoDBHelper.RandoTable.ALL_COLUMNS, RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_ID
-    + " is null or " + RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_ID + " = ''", null, null, null, null
-    );
-    int result = cursor.getCount();
-    cursor.close();
-    return result;
-    }*/
-
-    /**
      * Inserts list of randos into DB
      *
      * @param randos Rando list to insert
