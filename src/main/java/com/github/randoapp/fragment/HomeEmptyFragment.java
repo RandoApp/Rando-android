@@ -8,11 +8,12 @@ import android.view.ViewGroup;
 
 import com.github.randoapp.R;
 
-public class TrainingHomeFragment extends Fragment {
-
+public class HomeEmptyFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.training_home, container, false);
-        return rootView;
+        final View rootView = inflater.inflate(R.layout.home_empty, container, false);
+
+        return  rootView;
     }
+
 }

@@ -1,5 +1,6 @@
 package com.github.randoapp.notification;
 
+import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -9,6 +10,7 @@ import android.media.RingtoneManager;
 import android.support.v4.app.NotificationCompat;
 
 import com.github.randoapp.App;
+import com.github.randoapp.Constants;
 import com.github.randoapp.MainActivity;
 import com.github.randoapp.R;
 
@@ -33,5 +35,13 @@ public class Notification {
 
         NotificationManager manager = (NotificationManager) App.context.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(1, notification.build());
+    }
+
+    public static void sendSyncNotification(int randosNumber) {
+        Intent intent = new Intent(Constants.SYNC_BROADCAST_EVENT);
+        intent.putExtra(Constants.RANDO_PAIRS_NUMBER, randosNumber);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(App.context, 0, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) App.context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pendingIntent);
     }
 }

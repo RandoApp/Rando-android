@@ -1,13 +1,10 @@
 package com.github.randoapp.adapter;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
@@ -16,16 +13,15 @@ import android.widget.ViewSwitcher;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.animation.AnimationFactory;
 import com.github.randoapp.animation.AnimationListenerAdapter;
 import com.github.randoapp.db.RandoDAO;
-import com.github.randoapp.db.model.RandoPair;
+import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.util.BitmapUtil;
-import com.github.randoapp.util.RandoPairUtil;
+import com.github.randoapp.util.RandoUtil;
 import com.makeramen.RoundedImageView;
 
 import java.util.List;
@@ -36,7 +32,7 @@ public class RandoPairsAdapter extends BaseAdapter {
 
     private boolean isStranger;
 
-    private List<RandoPair> randoPairs;
+    private List<Rando> randos;
     private int imageSize;
 
     private int size;
@@ -48,7 +44,7 @@ public class RandoPairsAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return randoPairs.get(position);
+        return randos.get(position);
     }
 
     @Override
@@ -62,8 +58,12 @@ public class RandoPairsAdapter extends BaseAdapter {
     }
 
     private void initData() {
-        randoPairs = RandoDAO.getAllRandos(!isStranger);
-        size = randoPairs.size();
+        if (isStranger) {
+            randos = RandoDAO.getAllInRandos();
+        } else {
+            randos = RandoDAO.getAllOutRandosWithUploadQueue();
+        }
+        size = randos.size();
     }
 
     @Override
@@ -74,7 +74,7 @@ public class RandoPairsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup container) {
-        final RandoPair randoPair = randoPairs.get(position);
+        final Rando rando = randos.get(position);
         final ViewHolder holder;
 
         if (imageSize == 0) {
@@ -93,7 +93,7 @@ public class RandoPairsAdapter extends BaseAdapter {
         }
 
         recycle(holder);
-        loadImages(holder, randoPair);
+        loadImages(holder, rando);
         setAnimations(holder);
         return convertView;
     }
@@ -198,14 +198,14 @@ public class RandoPairsAdapter extends BaseAdapter {
         });
     }
 
-    private void loadImages(final ViewHolder holder, final RandoPair randoPair) {
-        if (randoPair.user.imageURLSize.small != null && !URLUtil.isNetworkUrl(randoPair.user.imageURLSize.small) && !randoPair.user.imageURLSize.small.isEmpty()) {
-            loadFile(holder, randoPair.user.imageURL);
+    private void loadImages(final ViewHolder holder, final Rando rando) {
+        if (rando.imageURLSize.small != null && !URLUtil.isNetworkUrl(rando.imageURLSize.small) && !rando.imageURLSize.small.isEmpty()) {
+            loadFile(holder, rando.imageURL);
             return;
         }
 
-        loadImage(holder, RandoPairUtil.getUrlByImageSize(imageSize, isStranger ? randoPair.stranger.imageURLSize : randoPair.user.imageURLSize), Priority.HIGH);
-        loadMapImage(holder, RandoPairUtil.getUrlByImageSize(imageSize, isStranger ? randoPair.stranger.mapURLSize : randoPair.user.mapURLSize), Priority.LOW);
+        loadImage(holder, RandoUtil.getUrlByImageSize(imageSize, isStranger ? rando.imageURLSize : rando.imageURLSize), Priority.HIGH);
+        loadMapImage(holder, RandoUtil.getUrlByImageSize(imageSize, isStranger ? rando.mapURLSize : rando.mapURLSize), Priority.LOW);
     }
 
     private void loadFile(final ViewHolder holder, final String filePath) {

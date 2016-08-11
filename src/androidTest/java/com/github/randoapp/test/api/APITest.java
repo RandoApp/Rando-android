@@ -8,9 +8,12 @@ import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.api.API;
-import com.github.randoapp.db.model.RandoPair;
+import com.github.randoapp.api.beans.User;
+import com.github.randoapp.api.callback.OnFetchUser;
+import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.network.VolleySingleton;
 
+import org.hamcrest.CoreMatchers;
 import org.mockito.ArgumentCaptor;
 
 import java.io.BufferedReader;
@@ -18,7 +21,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Date;
-import java.util.List;
 
 import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.HttpStatus;
@@ -51,9 +53,9 @@ public class APITest extends AndroidTestCase {
         when(locationMock.getLatitude()).thenReturn(123.45);
         when(locationMock.getLongitude()).thenReturn(567.89);
 
-        RandoPair randoPair = API.uploadImage(file, locationMock);
-        String actual = randoPair.user.imageURL;
-        assertThat(new Date(1383670800877l).compareTo(randoPair.user.date), is(0));
+        Rando rando = API.uploadImage(file, locationMock);
+        String actual = rando.imageURL;
+        assertThat(new Date(1383670800877l).compareTo(rando.date), is(0));
         assertThat(actual, is("http://rando4.me/image/abcd/abcdadfwefwef.jpg"));
     }
 
@@ -61,10 +63,10 @@ public class APITest extends AndroidTestCase {
     public void testUploadFoodWithNullLocation() throws Exception {
         APITestHelper.mockAPIForUploadFood();
 
-        RandoPair randoPair = API.uploadImage(file, null);
+        Rando rando = API.uploadImage(file, null);
 
-        String actual = randoPair.user.imageURL;
-        assertThat(new Date(1383670800877l).compareTo(randoPair.user.date), is(0));
+        String actual = rando.imageURL;
+        assertThat(new Date(1383670800877l).compareTo(rando.date), is(0));
         assertThat(actual, is("http://rando4.me/image/abcd/abcdadfwefwef.jpg"));
         //TODO: verify that lat and long is 0.0 in request
     }
@@ -101,62 +103,15 @@ public class APITest extends AndroidTestCase {
     }
 
     @SmallTest
-    public void testFetchUser() throws Exception {
-        APITestHelper.mockAPIForFetchUser();
-
-        List<RandoPair> randos = API.fetchUser();
-
-        assertThat(randos.size(), is(2));
-
-        assertThat(randos.get(0).user.randoId, is("ddddcwef3242f32f"));
-        assertThat(randos.get(0).user.imageURL, is("http://rando4.me/image/dddd/ddddcwef3242f32f.jpg"));
-        assertThat(randos.get(0).user.mapURL, is("http://rando4.me/map/eeee/eeeewef3242f32f.jpg"));
-        assertThat(randos.get(0).user.date.compareTo(new Date(1383690800877l)), is(0));
-        assertThat(randos.get(0).stranger.randoId, is("abcwef3242f32f"));
-        assertThat(randos.get(0).stranger.imageURL, is("http://rando4.me/image/abc/abcwef3242f32f.jpg"));
-        assertThat(randos.get(0).stranger.mapURL, is("http://rando4.me/map/azca/azcacwef3242f32f.jpg"));
-
-        assertThat(randos.get(1).user.randoId, is("abcdw0ef3242f32f"));
-        assertThat(randos.get(1).user.imageURL, is("http://rando4.me/image/abcd/abcdw0ef3242f32f.jpg"));
-        assertThat(randos.get(1).user.mapURL, is("http://rando4.me/map/bcde/bcdecwef3242f32f.jpg"));
-        assertThat(randos.get(1).user.date.compareTo(new Date(1383670400877l)), is(0));
-        assertThat(randos.get(1).stranger.randoId, is("abcd3cwef3242f32f"));
-        assertThat(randos.get(1).stranger.imageURL, is("http://rando4.me/image/abcd/abcd3cwef3242f32f.jpg"));
-        assertThat(randos.get(1).stranger.mapURL, is("http://rando4.me/map/abcd/abcd5wef3242f32f.jpg"));
-    }
-
-    @SmallTest
     public void testFetchUserWithEmptyFoods() throws Exception {
         APITestHelper.mockAPI(HttpStatus.SC_OK, "{'email': 'user@mail.com', 'randos': []}");
 
-        List<RandoPair> randos = API.fetchUser();
-
-        assertThat(randos.size(), is(0));
-    }
-
-    @SmallTest
-    public void testFetchUserWithError() throws Exception {
-        APITestHelper.mockAPIWithError();
-
-        try {
-            API.fetchUser();
-            fail();
-        } catch (Exception e) {
-            assertThat(e.getMessage(), is("Internal Server Error"));
-        }
-    }
-
-    @SmallTest
-    public void testFetchUserWithUnknownError() throws Exception {
-        APITestHelper.mockAPI(HttpStatus.SC_INTERNAL_SERVER_ERROR, "not a json, that throw JSONException");
-        App.context = this.getContext();
-
-        try {
-            API.fetchUser();
-            fail();
-        } catch (Exception e) {
-            assertThat(e.getMessage(), is(App.context.getResources().getString(R.string.error_unknown_err)));
-        }
+        API.fetchUserAsync(new OnFetchUser() {
+            @Override
+            public void onFetch(final User user) {
+                assertThat(user.randosIn.size(), is(0));
+            }
+        });
     }
 
     @SmallTest
@@ -202,7 +157,7 @@ public class APITest extends AndroidTestCase {
 
         verify(VolleySingleton.getInstance().httpClient).execute(captor.capture());
 
-        assertThat(params(captor.getValue()), is(Constants.SIGNUP_EMAIL_PARAM + "=user%40mail.com&" + Constants.SIGNUP_PASSWORD_PARAM + "=password"));
+        assertThat(params(captor.getValue()), CoreMatchers.startsWith(Constants.SIGNUP_EMAIL_PARAM + "=user%40mail.com&" + Constants.SIGNUP_PASSWORD_PARAM + "=password"));
         assertThat(captor.getValue().getURI().toString(), is(Constants.SIGNUP_URL));
     }
 

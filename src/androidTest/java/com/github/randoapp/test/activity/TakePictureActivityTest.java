@@ -4,6 +4,13 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.github.randoapp.CameraActivity;
+import com.github.randoapp.R;
+
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static org.hamcrest.Matchers.not;
 
 public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<CameraActivity> implements ActivityTestI {
 
@@ -38,76 +45,9 @@ public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<Ca
     // Methods whose names are prefixed with test will automatically be run
     @LargeTest
     public void ignoretestTakePictureOnStart() {
-       /* onView(withId(R.id.camera_preview)).check(matches(isDisplayed()));
+        onView(withId(R.id.camera_screen)).check(matches(isDisplayed()));
         onView(withId(R.id.capture_button)).check(matches(isDisplayed()));
-        onView(withId(R.id.back_button)).check(matches(isDisplayed()));
-        onView(withId(R.id.upload_button)).check(matches(not(isDisplayed())));*/
-    }
-
-/*    @LargeTest
-    public void testTakePictureOnReStart() {
-        assertNotNull(takePictureActivity);
-        getInstrumentation().callActivityOnDestroy(takePictureActivity);
-        takePictureActivity.finish();
-        setActivity(null);
-
-        takePictureActivity = getActivity();
-        //Sleep is necessary because Camera Service is not always freed in time and Activity not starts properly
-        try {
-            Thread.sleep(ONE_SECOND * UGLY_DELAY_FOR_TRAVIS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        takePictureActivity = getActivity();
-        onView(withId(R.id.cameraPreview)).check(matches(isDisplayed()));
-        onView(withId(R.id.select_photo_button)).check(matches(isDisplayed()));
-        onView(withId(R.id.take_picture_button)).check(matches(isDisplayed()));
-        onView(withId(R.id.back_button)).check(matches(isDisplayed()));
-        onView(withId(R.id.upload_photo_button)).check(matches(not(isDisplayed())));
-    }*/
-
-    //TODO: Findout how to work with external Activities in tests (looks like impossible)
-    // Methods whose names are prefixed with test will automatically be run
-        /*public void testTakePictureAfterPhotoSelected(){
-            onView(withId(R.id.select_photo_button)).perform(click());
-            onView(withId(R.id.cameraPreview)).check(matches(isDisplayed()));
-            onView(withId(R.id.select_photo_button)).check(matches(isDisplayed()));
-            onView(withId(R.id.take_picture_button)).check(matches(isDisplayed()));
-            onView(withId(R.id.back_button)).check(matches(isDisplayed()));
-            onView(withId(R.id.upload_photo_button)).check(doesNotExist());
-        }*/
-
-    // Methods whose names are prefixed with test will automatically be run
-    @LargeTest
-    public void ignoretestTakePictureAfterPictureTaken() {
-        /*onView(withId(R.id.capture_button)).perform(click());
-        onView(withId(R.id.camera_preview)).check(matches(isDisplayed()));
-        onView(withId(R.id.capture_button)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.back_button)).check(matches(isDisplayed()));
-        onView(withId(R.id.upload_button)).check(matches(isDisplayed()));*/
-    }
-
-    // Methods whose names are prefixed with test will automatically be run
-    @LargeTest
-    public void ignoretestTakePictureAndUpload() {
-        /*onView(withId(R.id.capture_button)).check(matches(isDisplayed()));
-        onView(withId(R.id.capture_button)).perform(click());
-        //Sleep is necessary because Camera produces picture on callback
-        try {
-            Thread.sleep(ONE_SECOND * UGLY_DELAY_FOR_TRAVIS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        onView(withId(R.id.camera_preview)).check(matches(isDisplayed()));
-        onView(withId(R.id.capture_button)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.back_button)).check(matches(isDisplayed()));
-        onView(withId(R.id.upload_button)).check(matches(isDisplayed()));
-        try {
-            APITestHelper.mockAPIForUploadFood();
-        } catch (IOException e) {
-            fail("API mock failed.");
-        }
-        onView(withId(R.id.upload_button)).perform(click());*/
+        onView(withId(R.id.upload_button)).check(matches(not(isDisplayed())));
     }
 }
 

@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.github.randoapp.App;
-import com.github.randoapp.db.model.RandoPair;
+import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.db.model.RandoUpload;
 import com.github.randoapp.log.Log;
 
@@ -15,7 +15,8 @@ import java.util.List;
 
 public class RandoDAO {
 
-    private RandoDAO(){}
+    private RandoDAO() {
+    }
 
     public static synchronized void addToUpload(RandoUpload randoUpload) {
         if (randoUpload.file == null || randoUpload.date == null) {
@@ -87,100 +88,116 @@ public class RandoDAO {
     }
 
     /**
-     * Creates randoPair and returns instance of created randoPair.
+     * Creates rando and returns instance of created rando.
      *
-     * @param randoPair RandoPair to insert
-     * @return returns instance of created randoPair or null
+     * @param rando Rando to insert
+     * @return returns instance of created rando or null
      */
 
-    public static synchronized RandoPair createRandoPair(RandoPair randoPair) {
-        if (randoPair == null) {
+    public static synchronized Rando createRando(Rando rando) {
+        if (rando == null) {
             return null;
         }
-        ContentValues values = randoPairToContentValues(randoPair);
+        ContentValues values = randoToContentValues(rando);
         long insertId = getDB().insert(RandoDBHelper.RandoTable.NAME, null,
                 values);
-        return getRandoPairById(insertId);
+        return getRandoById(insertId);
     }
 
     /**
      * Finds rando instance.
      *
-     * @param id RandoPair id to get
-     * @return RandoPair instance or null if rando hasn't been found
+     * @param id Rando id to get
+     * @return Rando instance or null if rando hasn't been found
      */
 
-    public static synchronized RandoPair getRandoPairById(long id) {
+    public static synchronized Rando getRandoById(long id) {
         Cursor cursor = getDB().query(RandoDBHelper.RandoTable.NAME,
                 RandoDBHelper.RandoTable.ALL_COLUMNS, RandoDBHelper.RandoTable.COLUMN_ID + " = " + id, null,
                 null, null, null);
         cursor.moveToFirst();
-        RandoPair newRandoPair = cursorToRandoPair(cursor);
+        Rando newRando = cursorToRando(cursor);
         cursor.close();
-        return newRandoPair;
+        return newRando;
     }
 
     /**
-     * Deletes randoPair instance from DB.
+     * Deletes rando instance from DB.
      *
-     * @param randoPair RandoPair to delete
+     * @param rando Rando to delete
      */
-    public static synchronized void deleteRandoPair(RandoPair randoPair) {
-        long id = randoPair.id;
+    public static synchronized void deleteRando(Rando rando) {
+        long id = rando.id;
         getDB().delete(RandoDBHelper.RandoTable.NAME, RandoDBHelper.RandoTable.COLUMN_ID
                 + " = " + id, null);
-        Log.i(RandoDAO.class, "RandoPair deleted with id: ", String.valueOf(id));
+        Log.i(RandoDAO.class, "Rando deleted with id: ", String.valueOf(id));
     }
 
     /**
      * clear rando pairs Table in DB.
      */
-    public static synchronized void clearRandoPairs() {
+    public static synchronized void clearRandos() {
         getDB().delete(RandoDBHelper.RandoTable.NAME, "", null);
-        Log.i(RandoDAO.class, "RandoPairs cleared");
+        Log.i(RandoDAO.class, "Randos table cleared");
+    }
+
+    /**
+     * clear rando pairs Table in DB.
+     */
+    public static synchronized void clearInRandos() {
+        getDB().delete(RandoDBHelper.RandoTable.NAME, RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS
+                + " = '" + Rando.Status.IN.name() + "'", null);
+        Log.i(RandoDAO.class, "Randos table cleared");
+    }
+
+    /**
+     * clear rando pairs Table in DB.
+     */
+    public static synchronized void clearOutRandos() {
+        getDB().delete(RandoDBHelper.RandoTable.NAME, RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS
+                + " = '" + Rando.Status.OUT.name() + "'", null);
+        Log.i(RandoDAO.class, "Randos table cleared");
     }
 
 
     /**
-     * Updates randoPair instance from DB.
+     * Updates rando instance from DB.
      *
-     * @param randoPair RandoPair to update
+     * @param rando Rando to update
      */
-    public static synchronized void updateRandoPair(RandoPair randoPair) {
-        long id = randoPair.id;
+    public static synchronized void updateRando(Rando rando) {
+        long id = rando.id;
 
-        ContentValues values = randoPairToContentValues(randoPair);
+        ContentValues values = randoToContentValues(rando);
 
         getDB().update(RandoDBHelper.RandoTable.NAME, values, RandoDBHelper.RandoTable.COLUMN_ID + " = " + id, null);
-        Log.w(RandoDAO.class, "RandoPair updated with id: ", String.valueOf(id));
+        Log.w(RandoDAO.class, "Rando updated with id: ", String.valueOf(id));
     }
 
-    public static synchronized List<RandoPair> getAllRandos(boolean includeRealFromUploads) {
-        List<RandoPair> randos = new ArrayList<RandoPair>();
+    public static synchronized List<Rando> getAllRandos(boolean includeRandosFromUpload) {
+        List<Rando> randos = new ArrayList<Rando>();
 
         List<RandoUpload> randosToUpload = getAllRandosToUpload();
         for (RandoUpload randoUpload : randosToUpload) {
-            RandoPair randoPair = new RandoPair();
-            if (includeRealFromUploads) {
-                randoPair.user.randoId = String.valueOf(randoUpload.id);
-                randoPair.user.date = randoUpload.date;
-                randoPair.user.imageURL = randoUpload.file;
-                randoPair.user.imageURLSize.small = randoUpload.file;
-                randoPair.user.imageURLSize.medium = randoUpload.file;
-                randoPair.user.imageURLSize.large = randoUpload.file;
+            Rando rando = new Rando();
+            if (includeRandosFromUpload) {
+                rando.randoId = String.valueOf(randoUpload.id);
+                rando.date = randoUpload.date;
+                rando.imageURL = randoUpload.file;
+                rando.imageURLSize.small = randoUpload.file;
+                rando.imageURLSize.medium = randoUpload.file;
+                rando.imageURLSize.large = randoUpload.file;
             }
-            randos.add(randoPair);
+            randos.add(rando);
         }
-        List<RandoPair> randoPairs = getAllRandoPairs();
-        randos.addAll(randoPairs);
-        Log.i(RandoDAO.class,"Size:", String.valueOf(randoPairs.size()), "include=", String.valueOf(includeRealFromUploads));
+        List<Rando> dbRandos = getAllRandos();
+        randos.addAll(dbRandos);
+        Log.i(RandoDAO.class, "Size:", String.valueOf(dbRandos.size()), "include=", String.valueOf(includeRandosFromUpload));
         return randos;
     }
 
-    public static synchronized int getAllRandosNumber() {
-        int randoPairsNumber = getRandoPairsNumber();
-        int randoToUploads = getRandosToUploadNumber();
-        return randoPairsNumber + randoToUploads;
+    public static synchronized int countAllRandosNumber() {
+        return getRandosNumber() + getRandosToUploadNumber();
     }
 
     public static synchronized int getRandosToUploadNumber() {
@@ -194,21 +211,106 @@ public class RandoDAO {
     /**
      * @return all rando instances found in DB
      */
-    public static synchronized List<RandoPair> getAllRandoPairs() {
-        List<RandoPair> randoPairs = new ArrayList<RandoPair>();
+    public static synchronized List<Rando> getAllRandos() {
+        List<Rando> randos = new ArrayList<Rando>();
 
         Cursor cursor = getDB().query(RandoDBHelper.RandoTable.NAME,
                 RandoDBHelper.RandoTable.ALL_COLUMNS, null, null, null, null, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE + " DESC", null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            RandoPair randoPair = cursorToRandoPair(cursor);
-            randoPairs.add(randoPair);
+            Rando rando = cursorToRando(cursor);
+            randos.add(rando);
             cursor.moveToNext();
         }
         cursor.close();
 
-        return randoPairs;
+        return randos;
+    }
+
+    /**
+     * @return all incoming rando instances found in DB
+     */
+    public static synchronized List<Rando> getAllRandosByStatus(Rando.Status status) {
+        List<Rando> randos = new ArrayList<Rando>();
+
+        Cursor cursor = getDB().query(RandoDBHelper.RandoTable.NAME,
+                RandoDBHelper.RandoTable.ALL_COLUMNS, RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS
+                        + " = '" + status.name() + "'", null, null, null, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE + " DESC", null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Rando rando = cursorToRando(cursor);
+            randos.add(rando);
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+        return randos;
+    }
+
+    /**
+     * @return all incoming rando instances found in DB
+     */
+    public static synchronized List<Rando> getAllInRandos() {
+        return getAllRandosByStatus(Rando.Status.IN);
+
+    }
+
+    /**
+     * @return all outgoing rando instances found in DB
+     */
+    public static synchronized List<Rando> getAllOutRandos() {
+        return getAllRandosByStatus(Rando.Status.OUT);
+
+    }
+
+    /**
+     * @return all outgoing rando instances found in DB including Randos to Upload
+     */
+    public static synchronized List<Rando> getAllOutRandosWithUploadQueue() {
+        List<Rando> randos = new ArrayList<>();
+        List<RandoUpload> randosToUpload = getAllRandosToUpload();
+        for (RandoUpload randoUpload : randosToUpload) {
+            Rando rando = new Rando();
+            rando.randoId = String.valueOf(randoUpload.id);
+            rando.date = randoUpload.date;
+            rando.imageURL = randoUpload.file;
+            rando.imageURLSize.small = randoUpload.file;
+            rando.imageURLSize.medium = randoUpload.file;
+            rando.imageURLSize.large = randoUpload.file;
+            randos.add(rando);
+        }
+        randos.addAll(getAllRandosByStatus(Rando.Status.OUT));
+
+        return randos;
+    }
+
+    /**
+     * @return count of all randos instances found in DB by status
+     */
+    public static synchronized int countAllRandosByStatus(Rando.Status status) {
+        Cursor cursor = getDB().query(RandoDBHelper.RandoTable.NAME,
+                RandoDBHelper.RandoTable.ALL_COLUMNS, RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS
+                        + " = '" + status.name() + "'", null, null, null, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE + " DESC", null);
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
+    }
+
+    /**
+     * @return coint all incoming rando instances found in DB
+     */
+    public static synchronized int countAllInRandos() {
+        return countAllRandosByStatus(Rando.Status.IN);
+
+    }
+
+    /**
+     * @return count all outgoing rando instances found in DB
+     */
+    public static synchronized int countAllOutRandos() {
+        return countAllRandosByStatus(Rando.Status.OUT);
     }
 
     /**
@@ -216,7 +318,7 @@ public class RandoDAO {
      *
      * @return randos amount in DB
      */
-    public static synchronized int getRandoPairsNumber() {
+    public static synchronized int getRandosNumber() {
         Cursor cursor = getDB().query(RandoDBHelper.RandoTable.NAME,
                 RandoDBHelper.RandoTable.ALL_COLUMNS, null, null, null, null, null);
         int result = cursor.getCount();
@@ -224,32 +326,16 @@ public class RandoDAO {
         return result;
     }
 
-
     /**
-     * Counts not paired randos amount in DB
+     * Inserts list of randos into DB
      *
-     * @return not paired randos amount in DB
+     * @param randos Rando list to insert
      */
-    public static synchronized int getNotPairedRandosNumber() {
-        Cursor cursor = getDB().query(RandoDBHelper.RandoTable.NAME,
-                RandoDBHelper.RandoTable.ALL_COLUMNS, RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_ID
-                        + " is null or " + RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_ID + " = ''", null, null, null, null
-        );
-        int result = cursor.getCount();
-        cursor.close();
-        return result;
-    }
-
-    /**
-     * Inserts list of randoPairs into DB
-     *
-     * @param randoPairs RandoPair list to insert
-     */
-    public static synchronized void insertRandoPairs(List<RandoPair> randoPairs) {
+    public static synchronized void insertRandos(List<Rando> randos) {
         getDB().beginTransaction();
         try {
-            for (RandoPair randoPair : randoPairs) {
-                createRandoPair(randoPair);
+            for (Rando rando : randos) {
+                createRando(rando);
             }
             getDB().setTransactionSuccessful();
         } finally {
@@ -257,82 +343,61 @@ public class RandoDAO {
         }
     }
 
-    private static synchronized SQLiteDatabase getDB(){
+    private static synchronized SQLiteDatabase getDB() {
         return RandoDBHelper.getDatabase(App.context);
     }
 
     /**
-     * Extracts RandoPair object from Cursor object
+     * Extracts Rando object from Cursor object
      *
      * @param cursor Cursor pointing to row
      * @return rando object extracted from cursor
      */
 
-    private static RandoPair cursorToRandoPair(Cursor cursor) {
+    private static Rando cursorToRando(Cursor cursor) {
         if (cursor.getCount() == 0) {
             return null;
         } else {
-            RandoPair randoPair = new RandoPair();
-            randoPair.id = cursor.getInt(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_ID));
+            Rando rando = new Rando();
+            rando.id = cursor.getInt(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_ID));
 
-            randoPair.user.randoId = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_ID));
-            randoPair.user.imageURL = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL));
-            randoPair.user.imageURLSize.small = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL_SMALL));
-            randoPair.user.imageURLSize.medium = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL_MEDIUM));
-            randoPair.user.imageURLSize.large = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL_LARGE));
+            rando.randoId = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_ID));
+            rando.imageURL = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL));
+            rando.imageURLSize.small = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL_SMALL));
+            rando.imageURLSize.medium = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL_MEDIUM));
+            rando.imageURLSize.large = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL_LARGE));
             long userDate = cursor.getLong(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE));
-            randoPair.user.date = userDate != 0 ? new Date(userDate) : null;
-            randoPair.user.mapURL = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL));
-            randoPair.user.mapURLSize.small = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_SMALL));
-            randoPair.user.mapURLSize.medium = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_MEDIUM));
-            randoPair.user.mapURLSize.large = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_LARGE));
+            rando.date = userDate != 0 ? new Date(userDate) : null;
+            rando.mapURL = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL));
+            rando.mapURLSize.small = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_SMALL));
+            rando.mapURLSize.medium = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_MEDIUM));
+            rando.mapURLSize.large = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_LARGE));
+            rando.status = Rando.Status.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS)));
 
-            randoPair.stranger.randoId = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_ID));
-            randoPair.stranger.imageURL = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_URL));
-            randoPair.stranger.imageURLSize.small = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_URL_SMALL));
-            randoPair.stranger.imageURLSize.medium = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_URL_MEDIUM));
-            randoPair.stranger.imageURLSize.large = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_URL_LARGE));
-            long strangerDate = cursor.getLong(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_DATE));
-            randoPair.stranger.date = strangerDate != 0 ? new Date(strangerDate) : null;
-            randoPair.stranger.mapURL = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_STRANGER_MAP_URL));
-            randoPair.stranger.mapURLSize.small = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_STRANGER_MAP_URL_SMALL));
-            randoPair.stranger.mapURLSize.medium = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_STRANGER_MAP_URL_MEDIUM));
-            randoPair.stranger.mapURLSize.large = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_STRANGER_MAP_URL_LARGE));
-
-            return randoPair;
+            return rando;
         }
     }
 
     /**
-     * Converts RandoPair object into ContentValues object
+     * Converts Rando object into ContentValues object
      *
-     * @param randoPair RandoPair to convert
-     * @return ContentValues representing randoPair
+     * @param rando Rando to convert
+     * @return ContentValues representing rando
      */
-    private static ContentValues randoPairToContentValues(RandoPair randoPair) {
+    private static ContentValues randoToContentValues(Rando rando) {
         ContentValues values = new ContentValues();
 
-        values.put(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_ID, randoPair.user.randoId);
-        values.put(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL, randoPair.user.imageURL);
-        values.put(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL_SMALL, randoPair.user.imageURLSize.small);
-        values.put(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL_MEDIUM, randoPair.user.imageURLSize.medium);
-        values.put(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL_LARGE, randoPair.user.imageURLSize.large);
-        values.put(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE, randoPair.user.date.getTime());
-        values.put(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL, randoPair.user.mapURL);
-        values.put(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_SMALL, randoPair.user.mapURLSize.small);
-        values.put(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_MEDIUM, randoPair.user.mapURLSize.medium);
-        values.put(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_LARGE, randoPair.user.mapURLSize.large);
-
-        values.put(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_ID, randoPair.stranger.randoId);
-        values.put(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_URL, randoPair.stranger.imageURL);
-        values.put(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_URL_SMALL, randoPair.stranger.imageURLSize.small);
-        values.put(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_URL_MEDIUM, randoPair.stranger.imageURLSize.medium);
-        values.put(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_URL_LARGE, randoPair.stranger.imageURLSize.large);
-        values.put(RandoDBHelper.RandoTable.COLUMN_STRANGER_RANDO_DATE, randoPair.stranger.date != null ? randoPair.stranger.date.getTime() : null);
-        values.put(RandoDBHelper.RandoTable.COLUMN_STRANGER_MAP_URL, randoPair.stranger.mapURL);
-        values.put(RandoDBHelper.RandoTable.COLUMN_STRANGER_MAP_URL_SMALL, randoPair.stranger.mapURLSize.small);
-        values.put(RandoDBHelper.RandoTable.COLUMN_STRANGER_MAP_URL_MEDIUM, randoPair.stranger.mapURLSize.medium);
-        values.put(RandoDBHelper.RandoTable.COLUMN_STRANGER_MAP_URL_LARGE, randoPair.stranger.mapURLSize.large);
+        values.put(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_ID, rando.randoId);
+        values.put(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL, rando.imageURL);
+        values.put(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL_SMALL, rando.imageURLSize.small);
+        values.put(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL_MEDIUM, rando.imageURLSize.medium);
+        values.put(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_URL_LARGE, rando.imageURLSize.large);
+        values.put(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE, rando.date.getTime());
+        values.put(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL, rando.mapURL);
+        values.put(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_SMALL, rando.mapURLSize.small);
+        values.put(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_MEDIUM, rando.mapURLSize.medium);
+        values.put(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_LARGE, rando.mapURLSize.large);
+        values.put(RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS, rando.status.name());
 
         return values;
     }

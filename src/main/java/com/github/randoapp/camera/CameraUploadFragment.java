@@ -28,14 +28,12 @@ import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 public class CameraUploadFragment extends Fragment {
 
     private String picFileName;
-    private RoundedImageView preview;
-    private ImageView uploadButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.camera_upload, container, false);
 
-        preview = (RoundedImageView) rootView.findViewById(R.id.preview);
+        RoundedImageView preview = (RoundedImageView) rootView.findViewById(R.id.preview);
 
         WindowManager windowManager = (WindowManager) getActivity().getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
@@ -45,7 +43,7 @@ public class CameraUploadFragment extends Fragment {
         picFileName = bundle.getString(Constants.FILEPATH);
         preview.setImageBitmap(BitmapUtil.decodeSampledBitmap(picFileName, previewSize, previewSize));
 
-        uploadButton = (ImageView) rootView.findViewById(R.id.upload_button);
+        ImageView uploadButton = (ImageView) rootView.findViewById(R.id.upload_button);
         uploadButton.setOnClickListener(new UploadButtonListner());
         return rootView;
     }
