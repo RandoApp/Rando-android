@@ -11,7 +11,7 @@ buildscript {
 apply plugin: 'com.android.model.application'
 apply plugin: 'com.github.kt3k.coveralls'
 
-def signConf // <-- Define "signConf"
+def signConf
 
 repositories {
     jcenter()
@@ -124,7 +124,6 @@ dependencies {
     androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
     androidTestCompile 'com.google.guava:guava:19.0'
     androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
-    //androidTestCompile 'com.squareup.assertj:assertj-android:1.1.1'
 }
 
 ext {
