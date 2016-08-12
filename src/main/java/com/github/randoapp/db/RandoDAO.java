@@ -105,6 +105,31 @@ public class RandoDAO {
     }
 
     /**
+     * Creates rando and returns instance of created rando.
+     *
+     * @param rando Rando to insert
+     * @return returns instance of created rando or null
+     */
+
+    public static synchronized Rando createOrUpdateRandoCheckingByRandoId(Rando rando) {
+        if (rando == null) {
+            return null;
+        }
+        Rando dbRando = getRandoByRandoId(rando.randoId);
+        long dbId;
+        if (dbRando != null){
+            rando.id = dbRando.id;
+            dbId = dbRando.id;
+            updateRando(rando);
+        } else {
+            ContentValues values = randoToContentValues(rando);
+            dbId = getDB().insert(RandoDBHelper.RandoTable.NAME, null,
+                    values);
+        }
+        return getRandoById(dbId);
+    }
+
+    /**
      * Finds rando instance.
      *
      * @param id Rando id to get
