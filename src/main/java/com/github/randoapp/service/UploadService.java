@@ -11,6 +11,7 @@ import android.os.IBinder;
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.db.RandoDAO;
+import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.db.model.RandoUpload;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.task.UploadTask;
@@ -29,6 +30,7 @@ import java.util.TimerTask;
 import static com.github.randoapp.Constants.FILE_NOT_FOUND_ERROR;
 import static com.github.randoapp.Constants.FORBIDDEN_ERROR;
 import static com.github.randoapp.Constants.INCORRECT_ARGS_ERROR;
+import static com.github.randoapp.Constants.RANDO_PARAM;
 import static com.github.randoapp.Constants.REQUEST_TOO_LONG_ERROR;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_ATTEMPTS_FAIL;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_FORBIDDEN_PAUSE;
@@ -101,6 +103,10 @@ public class UploadService extends Service {
                 .onOk(new OnOk() {
                     @Override
                     public void onOk(Map<String, Object> data) {
+                        Rando randoUploaded = (Rando) data.get(RANDO_PARAM);
+                        if (randoUploaded != null){
+                            RandoDAO.createRando(randoUploaded);
+                        }
                         uploadAttemptsFail = 0;
                         deleteRando(rando);
                         setTimeout(0);  //go to next rando to upload immediately

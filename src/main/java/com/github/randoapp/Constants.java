@@ -88,7 +88,7 @@ public class Constants {
     public static final String CREATION_PARAM = "creation";
     public static final String USER_PARAM = "user";
     public static final String STRANGER_PARAM = "stranger";
-    public static final String RANDOS_PARAM = "randos";
+    public static final String RANDO_PARAM = "rando";
     public static final String IN_RANDOS_PARAM = "in";
     public static final String OUT_RANDOS_PARAM = "out";
     public static final String EMAIL_PARAM = "email";
