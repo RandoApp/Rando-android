@@ -13,7 +13,6 @@ import com.github.randoapp.api.callback.OnFetchUser;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.network.VolleySingleton;
 
-import org.hamcrest.CoreMatchers;
 import org.mockito.ArgumentCaptor;
 
 import java.io.BufferedReader;
@@ -29,8 +28,7 @@ import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.client.methods.HttpPost;
 import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -55,8 +53,8 @@ public class APITest extends AndroidTestCase {
 
         Rando rando = API.uploadImage(file, locationMock);
         String actual = rando.imageURL;
-        assertThat(new Date(1383670800877l).compareTo(rando.date), is(0));
-        assertThat(actual, is("http://rando4.me/image/abcd/abcdadfwefwef.jpg"));
+        assertThat(new Date(1471081017405l)).isEqualTo(rando.date);
+        assertThat(actual).isEqualToIgnoringCase("http://dev.img.l.rando4me.s3.amazonaws.com/24975aff328fc4d5cedbb7ca7d235d6f0bfde1781b.jpg");
     }
 
     @SmallTest
@@ -66,8 +64,8 @@ public class APITest extends AndroidTestCase {
         Rando rando = API.uploadImage(file, null);
 
         String actual = rando.imageURL;
-        assertThat(new Date(1383670800877l).compareTo(rando.date), is(0));
-        assertThat(actual, is("http://rando4.me/image/abcd/abcdadfwefwef.jpg"));
+        assertThat(new Date(1471081017405l)).isEqualTo(rando.date);
+        assertThat(actual).isEqualToIgnoringCase("http://dev.img.l.rando4me.s3.amazonaws.com/24975aff328fc4d5cedbb7ca7d235d6f0bfde1781b.jpg");
         //TODO: verify that lat and long is 0.0 in request
     }
 
@@ -82,7 +80,7 @@ public class APITest extends AndroidTestCase {
             API.uploadImage(file, locationMock);
             fail();
         } catch (Exception e) {
-            assertThat(e.getMessage(), is("Internal Server Error"));
+            assertThat(e.getMessage()).isEqualToIgnoringCase("Internal Server Error");
         }
     }
 
@@ -98,7 +96,7 @@ public class APITest extends AndroidTestCase {
             API.uploadImage(file, locationMock);
             fail();
         } catch (Exception e) {
-            assertThat(e.getMessage(), is(App.context.getResources().getString(R.string.error_unknown_err)));
+            assertThat(e.getMessage()).isEqualTo(App.context.getResources().getString(R.string.error_unknown_err));
         }
     }
 
@@ -109,7 +107,8 @@ public class APITest extends AndroidTestCase {
         API.fetchUserAsync(new OnFetchUser() {
             @Override
             public void onFetch(final User user) {
-                assertThat(user.randosIn.size(), is(0));
+                assertThat(user.randosIn).isEmpty();
+                assertThat(user.randosOut).isEmpty();
             }
         });
     }
@@ -128,7 +127,7 @@ public class APITest extends AndroidTestCase {
 
         verify(VolleySingleton.getInstance().httpClient).execute(captor.capture());
 
-        assertThat(captor.getValue().getURI().toString().contains(Constants.REPORT_URL + "2222"), is(true));
+        assertThat(captor.getValue().getURI().toString()).contains(Constants.REPORT_URL + "2222");
     }
 
     @SmallTest
@@ -139,7 +138,7 @@ public class APITest extends AndroidTestCase {
             API.report("2222");
             fail();
         } catch (Exception e) {
-            assertThat(e.getMessage(), is("Internal Server Error"));
+            assertThat(e.getMessage()).isEqualTo("Internal Server Error");
         }
     }
 
@@ -157,8 +156,8 @@ public class APITest extends AndroidTestCase {
 
         verify(VolleySingleton.getInstance().httpClient).execute(captor.capture());
 
-        assertThat(params(captor.getValue()), CoreMatchers.startsWith(Constants.SIGNUP_EMAIL_PARAM + "=user%40mail.com&" + Constants.SIGNUP_PASSWORD_PARAM + "=password"));
-        assertThat(captor.getValue().getURI().toString(), is(Constants.SIGNUP_URL));
+        assertThat(params(captor.getValue())).startsWith(Constants.SIGNUP_EMAIL_PARAM + "=user%40mail.com&" + Constants.SIGNUP_PASSWORD_PARAM + "=password");
+        assertThat(captor.getValue().getURI().toString()).isEqualTo(Constants.SIGNUP_URL);
     }
 
     @SmallTest
@@ -169,7 +168,7 @@ public class APITest extends AndroidTestCase {
             API.signup("user@mail.com", "password");
             fail();
         } catch (Exception e) {
-            assertThat(e.getMessage(), is("Internal Server Error"));
+            assertThat(e.getMessage()).isEqualToIgnoringCase("Internal Server Error");
         }
     }
 

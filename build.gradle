@@ -47,6 +47,7 @@ model {
         exclude 'META-INF/maven/*'
         exclude 'META-INF/maven/com.google.guava/guava/pom.properties'
         exclude 'META-INF/maven/com.google.guava/guava/pom.xml'
+        exclude 'asm-license.txt'
     }
 
     android.buildTypes {
@@ -124,6 +125,7 @@ dependencies {
     androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
     androidTestCompile 'com.google.guava:guava:19.0'
     androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
+    androidTestCompile 'com.squareup.assertj:assertj-android:1.1.1'
 }
 
 ext {
