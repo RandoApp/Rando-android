@@ -80,7 +80,6 @@ import static com.github.randoapp.Constants.LATITUDE_PARAM;
 import static com.github.randoapp.Constants.LOGOUT_URL;
 import static com.github.randoapp.Constants.LOG_URL;
 import static com.github.randoapp.Constants.LONGITUDE_PARAM;
-import static com.github.randoapp.Constants.RANDO_PARAM;
 import static com.github.randoapp.Constants.REPORT_URL;
 import static com.github.randoapp.Constants.SIGNUP_EMAIL_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_PASSWORD_PARAM;
@@ -258,12 +257,7 @@ public class API {
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
                 JSONObject json = readJSON(response);
-                String randoJson = json.getString(RANDO_PARAM);
-                Rando rando = null;
-                if (randoJson != null) {
-                    rando = RandoUtil.parseRando(randoJson, Rando.Status.OUT);
-                }
-                return rando;
+                return RandoUtil.parseRando(json, Rando.Status.OUT);
             } else if (response.getStatusLine().getStatusCode() == SC_REQUEST_TOO_LONG) {
                 throw new RequestTooLongException(App.context.getResources().getString(R.string.error_image_too_big));
             } else {
@@ -401,9 +395,12 @@ public class API {
                     }
                     return new ForbiddenException(App.context.getResources().getString(R.string.error_411) + " " + resetTime);
                 }
+                default:
+                {
+                    //TODO: implement all code handling in switch and replace server "message" with default value.
+                    return new Exception(json.getString("message"));
+                }
             }
-            //TODO: implement all code handling in switch and replace server "message" with default value.
-            return new Exception(json.getString("message"));
         } catch (JSONException exc) {
             return processError(exc);
         }
