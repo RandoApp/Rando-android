@@ -21,6 +21,7 @@ import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.notification.Notification;
 import com.github.randoapp.preferences.Preferences;
+import com.github.randoapp.util.RandoUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,7 +62,6 @@ import cz.msebera.android.httpclient.util.EntityUtils;
 import static com.github.randoapp.Constants.ANONYMOUS_ID_PARAM;
 import static com.github.randoapp.Constants.ANONYMOUS_URL;
 import static com.github.randoapp.Constants.AUTHORIZATION_HEADER;
-import static com.github.randoapp.Constants.CREATION_PARAM;
 import static com.github.randoapp.Constants.ERROR_CODE_PARAM;
 import static com.github.randoapp.Constants.FACEBOOK_EMAIL_PARAM;
 import static com.github.randoapp.Constants.FACEBOOK_ID_PARAM;
@@ -76,7 +76,6 @@ import static com.github.randoapp.Constants.GOOGLE_FAMILY_NAME_PARAM;
 import static com.github.randoapp.Constants.GOOGLE_TOKEN_PARAM;
 import static com.github.randoapp.Constants.GOOGLE_URL;
 import static com.github.randoapp.Constants.IMAGE_PARAM;
-import static com.github.randoapp.Constants.IMAGE_URL_PARAM;
 import static com.github.randoapp.Constants.LATITUDE_PARAM;
 import static com.github.randoapp.Constants.LOGOUT_URL;
 import static com.github.randoapp.Constants.LOG_URL;
@@ -258,10 +257,7 @@ public class API {
 
             if (response.getStatusLine().getStatusCode() == SC_OK) {
                 JSONObject json = readJSON(response);
-                Rando rando = new Rando();
-                rando.imageURL = json.getString(IMAGE_URL_PARAM);
-                rando.date = new Date(json.getLong(CREATION_PARAM));
-                return rando;
+                return RandoUtil.parseRando(json, Rando.Status.OUT);
             } else if (response.getStatusLine().getStatusCode() == SC_REQUEST_TOO_LONG) {
                 throw new RequestTooLongException(App.context.getResources().getString(R.string.error_image_too_big));
             } else {
@@ -399,9 +395,12 @@ public class API {
                     }
                     return new ForbiddenException(App.context.getResources().getString(R.string.error_411) + " " + resetTime);
                 }
+                default:
+                {
+                    //TODO: implement all code handling in switch and replace server "message" with default value.
+                    return new Exception(json.getString("message"));
+                }
             }
-            //TODO: implement all code handling in switch and replace server "message" with default value.
-            return new Exception(json.getString("message"));
         } catch (JSONException exc) {
             return processError(exc);
         }

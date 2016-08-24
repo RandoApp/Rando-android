@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.github.randoapp.api.API;
 import com.github.randoapp.api.exception.ForbiddenException;
 import com.github.randoapp.api.exception.RequestTooLongException;
+import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.db.model.RandoUpload;
 import com.github.randoapp.log.Log;
 
@@ -15,6 +16,7 @@ import java.io.FileNotFoundException;
 import static com.github.randoapp.Constants.FILE_NOT_FOUND_ERROR;
 import static com.github.randoapp.Constants.FORBIDDEN_ERROR;
 import static com.github.randoapp.Constants.INCORRECT_ARGS_ERROR;
+import static com.github.randoapp.Constants.RANDO_PARAM;
 import static com.github.randoapp.Constants.REQUEST_TOO_LONG_ERROR;
 
 public class UploadTask extends BaseTask {
@@ -42,9 +44,9 @@ public class UploadTask extends BaseTask {
             data.put("error", INCORRECT_ARGS_ERROR);
             return ERROR;
         }
-
         try {
-            API.uploadImage(new File(fileToUpload), location);
+            Rando rando = API.uploadImage(new File(fileToUpload), location);
+            data.put(RANDO_PARAM, rando);
             return OK;
         } catch (FileNotFoundException e) {
             data.put("error", FILE_NOT_FOUND_ERROR);

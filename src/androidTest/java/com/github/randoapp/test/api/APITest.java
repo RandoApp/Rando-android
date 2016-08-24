@@ -1,8 +1,10 @@
 package com.github.randoapp.test.api;
 
+import android.content.Context;
 import android.location.Location;
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
@@ -13,7 +15,9 @@ import com.github.randoapp.api.callback.OnFetchUser;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.network.VolleySingleton;
 
-import org.hamcrest.CoreMatchers;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 
 import java.io.BufferedReader;
@@ -29,24 +33,27 @@ import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.client.methods.HttpPost;
 import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static com.github.randoapp.Constants.PREFERENCES_FILE_NAME;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+@RunWith(AndroidJUnit4.class)
+@SmallTest
+public class APITest {
 
-public class APITest extends AndroidTestCase {
-
-    @Override
-    protected void setUp() throws Exception {
-        App.context = this.getContext();
+    @Before
+    public void setUp() throws Exception {
+        App.context = InstrumentationRegistry.getTargetContext();
+        App.context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE).edit().clear().commit();
     }
 
     private File file = new File(".");
 
-    @SmallTest
-    public void testUploadFood() throws Exception {
+    @Test
+    public void shouldUploadRando() throws Exception {
         APITestHelper.mockAPIForUploadFood();
 
         Location locationMock = mock(Location.class);
@@ -55,24 +62,24 @@ public class APITest extends AndroidTestCase {
 
         Rando rando = API.uploadImage(file, locationMock);
         String actual = rando.imageURL;
-        assertThat(new Date(1383670800877l).compareTo(rando.date), is(0));
-        assertThat(actual, is("http://rando4.me/image/abcd/abcdadfwefwef.jpg"));
+        assertThat(new Date(1471081017405l)).isEqualTo(rando.date);
+        assertThat(actual).isEqualToIgnoringCase("http://dev.img.l.rando4me.s3.amazonaws.com/24975aff328fc4d5cedbb7ca7d235d6f0bfde1781b.jpg");
     }
 
-    @SmallTest
-    public void testUploadFoodWithNullLocation() throws Exception {
+    @Test
+    public void shouldUploadRandoWhenNullLocationIsPassed() throws Exception {
         APITestHelper.mockAPIForUploadFood();
 
         Rando rando = API.uploadImage(file, null);
 
         String actual = rando.imageURL;
-        assertThat(new Date(1383670800877l).compareTo(rando.date), is(0));
-        assertThat(actual, is("http://rando4.me/image/abcd/abcdadfwefwef.jpg"));
+        assertThat(new Date(1471081017405l)).isEqualTo(rando.date);
+        assertThat(actual).isEqualToIgnoringCase("http://dev.img.l.rando4me.s3.amazonaws.com/24975aff328fc4d5cedbb7ca7d235d6f0bfde1781b.jpg");
         //TODO: verify that lat and long is 0.0 in request
     }
 
-    @SmallTest
-    public void testUploadFoodWithError() throws Exception {
+    @Test
+    public void testUploadRandoWithError() throws Exception {
         APITestHelper.mockAPIWithError();
 
         Location locationMock = mock(Location.class);
@@ -80,41 +87,41 @@ public class APITest extends AndroidTestCase {
         when(locationMock.getLongitude()).thenReturn(567.89);
         try {
             API.uploadImage(file, locationMock);
-            fail();
+            fail("Exception should be thrown before.");
         } catch (Exception e) {
-            assertThat(e.getMessage(), is("Internal Server Error"));
+            assertThat(e.getMessage()).isEqualToIgnoringCase("Internal Server Error");
         }
     }
 
-    @SmallTest
-    public void testUploadFoodWithUnknownError() throws Exception {
+    @Test
+    public void testUploadRandoWithUnknownError() throws Exception {
         APITestHelper.mockAPI(HttpStatus.SC_INTERNAL_SERVER_ERROR, "not a json, that throw JSONException");
-        App.context = this.getContext();
 
         Location locationMock = mock(Location.class);
         when(locationMock.getLatitude()).thenReturn(123.45);
         when(locationMock.getLongitude()).thenReturn(567.89);
         try {
             API.uploadImage(file, locationMock);
-            fail();
+            fail("Exception should be thrown before.");
         } catch (Exception e) {
-            assertThat(e.getMessage(), is(App.context.getResources().getString(R.string.error_unknown_err)));
+            assertThat(e.getMessage()).isEqualTo(App.context.getResources().getString(R.string.error_unknown_err));
         }
     }
 
-    @SmallTest
+    @Test
     public void testFetchUserWithEmptyFoods() throws Exception {
         APITestHelper.mockAPI(HttpStatus.SC_OK, "{'email': 'user@mail.com', 'randos': []}");
 
         API.fetchUserAsync(new OnFetchUser() {
             @Override
             public void onFetch(final User user) {
-                assertThat(user.randosIn.size(), is(0));
+                assertThat(user.randosIn).isEmpty();
+                assertThat(user.randosOut).isEmpty();
             }
         });
     }
 
-    @SmallTest
+    @Test
     public void testReport() throws Exception {
         VolleySingleton.getInstance().httpClient = mock(HttpClient.class);
         StatusLine statusLineMock = mock(StatusLine.class);
@@ -128,22 +135,22 @@ public class APITest extends AndroidTestCase {
 
         verify(VolleySingleton.getInstance().httpClient).execute(captor.capture());
 
-        assertThat(captor.getValue().getURI().toString().contains(Constants.REPORT_URL + "2222"), is(true));
+        assertThat(captor.getValue().getURI().toString()).contains(Constants.REPORT_URL + "2222");
     }
 
-    @SmallTest
+    @Test
     public void testReportWithError() throws Exception {
         APITestHelper.mockAPIWithError();
 
         try {
             API.report("2222");
-            fail();
+            fail("Exception should be thrown before.");
         } catch (Exception e) {
-            assertThat(e.getMessage(), is("Internal Server Error"));
+            assertThat(e.getMessage()).isEqualTo("Internal Server Error");
         }
     }
 
-    @SmallTest
+    @Test
     public void testSignup() throws Exception {
         APITestHelper.mockAPI(HttpStatus.SC_OK, "{}");
 
@@ -157,19 +164,19 @@ public class APITest extends AndroidTestCase {
 
         verify(VolleySingleton.getInstance().httpClient).execute(captor.capture());
 
-        assertThat(params(captor.getValue()), CoreMatchers.startsWith(Constants.SIGNUP_EMAIL_PARAM + "=user%40mail.com&" + Constants.SIGNUP_PASSWORD_PARAM + "=password"));
-        assertThat(captor.getValue().getURI().toString(), is(Constants.SIGNUP_URL));
+        assertThat(params(captor.getValue())).startsWith(Constants.SIGNUP_EMAIL_PARAM + "=user%40mail.com&" + Constants.SIGNUP_PASSWORD_PARAM + "=password");
+        assertThat(captor.getValue().getURI().toString()).isEqualTo(Constants.SIGNUP_URL);
     }
 
-    @SmallTest
+    @Test
     public void testSignupWithError() throws Exception {
         APITestHelper.mockAPIWithError();
 
         try {
             API.signup("user@mail.com", "password");
-            fail();
+            fail("Exception should be thrown before.");
         } catch (Exception e) {
-            assertThat(e.getMessage(), is("Internal Server Error"));
+            assertThat(e.getMessage()).isEqualToIgnoringCase("Internal Server Error");
         }
     }
 

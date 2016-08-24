@@ -6,7 +6,21 @@ import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.preferences.Preferences;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Date;
 import java.util.List;
+
+import static com.github.randoapp.Constants.CREATION_PARAM;
+import static com.github.randoapp.Constants.IMAGE_URL_PARAM;
+import static com.github.randoapp.Constants.IMAGE_URL_SIZES_PARAM;
+import static com.github.randoapp.Constants.LARGE_PARAM;
+import static com.github.randoapp.Constants.MAP_URL_PARAM;
+import static com.github.randoapp.Constants.MAP_URL_SIZES_PARAM;
+import static com.github.randoapp.Constants.MEDIUM_PARAM;
+import static com.github.randoapp.Constants.RANDO_ID_PARAM;
+import static com.github.randoapp.Constants.SMALL_PARAM;
 
 public class RandoUtil {
 
@@ -55,6 +69,35 @@ public class RandoUtil {
             Preferences.zeroRandosBalance();
         }
         return userToDBResult;
+    }
+
+    public static Rando parseRando(String jsonRandoString, Rando.Status status) {
+        try {
+            return parseRando(new JSONObject(jsonRandoString), status);
+        } catch (JSONException e){
+            return null;
+        }
+    }
+
+    public static Rando parseRando(JSONObject jsonRando, Rando.Status status) throws JSONException {
+        Rando rando = new Rando();
+        JSONObject userRandoUrlSizes = jsonRando.getJSONObject(IMAGE_URL_SIZES_PARAM);
+        JSONObject userMapUrlSizes = jsonRando.getJSONObject(MAP_URL_SIZES_PARAM);
+
+        rando.randoId = jsonRando.getString(RANDO_ID_PARAM);
+        rando.imageURL = jsonRando.getString(IMAGE_URL_PARAM);
+        rando.status = status;
+        rando.imageURLSize.small = userRandoUrlSizes.getString(SMALL_PARAM);
+        rando.imageURLSize.medium = userRandoUrlSizes.getString(MEDIUM_PARAM);
+        rando.imageURLSize.large = userRandoUrlSizes.getString(LARGE_PARAM);
+
+        rando.mapURL = jsonRando.getString(MAP_URL_PARAM);
+        rando.mapURLSize.small = userMapUrlSizes.getString(SMALL_PARAM);
+        rando.mapURLSize.medium = userMapUrlSizes.getString(MEDIUM_PARAM);
+        rando.mapURLSize.large = userMapUrlSizes.getString(LARGE_PARAM);
+
+        rando.date = new Date(jsonRando.getLong(CREATION_PARAM));
+        return rando;
     }
 
 }

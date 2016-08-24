@@ -105,6 +105,31 @@ public class RandoDAO {
     }
 
     /**
+     * Creates rando and returns instance of created rando.
+     *
+     * @param rando Rando to insert
+     * @return returns instance of created rando or null
+     */
+
+    public static synchronized Rando createOrUpdateRandoCheckingByRandoId(Rando rando) {
+        if (rando == null) {
+            return null;
+        }
+        Rando dbRando = getRandoByRandoId(rando.randoId);
+        long dbId;
+        if (dbRando != null){
+            rando.id = dbRando.id;
+            dbId = dbRando.id;
+            updateRando(rando);
+        } else {
+            ContentValues values = randoToContentValues(rando);
+            dbId = getDB().insert(RandoDBHelper.RandoTable.NAME, null,
+                    values);
+        }
+        return getRandoById(dbId);
+    }
+
+    /**
      * Finds rando instance.
      *
      * @param id Rando id to get
@@ -119,6 +144,23 @@ public class RandoDAO {
         Rando newRando = cursorToRando(cursor);
         cursor.close();
         return newRando;
+    }
+
+    /**
+     * Finds rando instance.
+     *
+     * @param randoId Rando id to get
+     * @return Rando instance or null if rando hasn't been found
+     */
+
+    public static synchronized Rando getRandoByRandoId(String randoId) {
+        Cursor cursor = getDB().query(RandoDBHelper.RandoTable.NAME,
+                RandoDBHelper.RandoTable.ALL_COLUMNS, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_ID + " = '" + randoId+"'", null,
+                null, null, null);
+        cursor.moveToFirst();
+        Rando rando = cursorToRando(cursor);
+        cursor.close();
+        return rando;
     }
 
     /**
