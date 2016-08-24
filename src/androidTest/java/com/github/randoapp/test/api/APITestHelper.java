@@ -31,11 +31,11 @@ public class APITestHelper {
 
     public static void mockAPIForUploadFood() throws IOException {
         VolleySingleton.getInstance().httpClient = mockClient(HttpStatus.SC_OK,
-                "{rando:{\"imageURL\":\"http:\\/\\/dev.img.l.rando4me.s3.amazonaws.com\\/24975aff328fc4d5cedbb7ca7d235d6f0bfde1781b.jpg\"" +
+                "{\"imageURL\":\"http:\\/\\/dev.img.l.rando4me.s3.amazonaws.com\\/24975aff328fc4d5cedbb7ca7d235d6f0bfde1781b.jpg\"" +
                         ",\"mapURL\":\"http:\\/\\/rando4.me\\/map\\/large\\/c425b557fcbde6cd337150d22811837d.jpg\"," +
                         "\"imageSizeURL\":{\"small\":\"http:\\/\\/dev.img.s.rando4me.s3.amazonaws.com\\/24975aff328fc4d5cedbb7ca7d235d6f0bfde1781b.jpg\",\"large\":\"http:\\/\\/dev.img.l.rando4me.s3.amazonaws.com\\/24975aff328fc4d5cedbb7ca7d235d6f0bfde1781b.jpg\",\"medium\":\"http:\\/\\/dev.img.m.rando4me.s3.amazonaws.com\\/24975aff328fc4d5cedbb7ca7d235d6f0bfde1781b.jpg\"}," +
                         "\"randoId\":\"24975aff328fc4d5cedbb7ca7d235d6f0bfde1781b\",\"mapSizeURL\":{\"small\":\"http:\\/\\/rando4.me\\/map\\/small\\/c425b557fcbde6cd337150d22811837d.jpg\",\"large\":\"http:\\/\\/rando4.me\\/map\\/large\\/c425b557fcbde6cd337150d22811837d.jpg\",\"medium\":\"http:\\/\\/rando4.me\\/map\\/medium\\/c425b557fcbde6cd337150d22811837d.jpg\"}," +
-                        "\"creation\":1471081017405}}");
+                        "\"creation\":1471081017405}");
 
 
                 /*"{" +

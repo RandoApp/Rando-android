@@ -5,7 +5,6 @@ import android.location.Location;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.AndroidTestCase;
 
 import com.github.randoapp.App;
 import com.github.randoapp.preferences.Preferences;
@@ -27,11 +26,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 @SmallTest
-public class PreferencesTest extends AndroidTestCase{
+public class PreferencesTest{
 
     @Before
     public void setUp() throws Exception {
-        App.context =  InstrumentationRegistry.getTargetContext();
+        App.context = InstrumentationRegistry.getTargetContext();
         App.context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE).edit().clear().commit();
     }
 
