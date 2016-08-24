@@ -55,10 +55,6 @@ public class VolleySingleton {
         return instance;
     }
 
-    public static void setInstance(VolleySingleton instance) {
-        VolleySingleton.instance = instance;
-    }
-
     public HttpClient getHttpClient() {
         return httpClient;
     }

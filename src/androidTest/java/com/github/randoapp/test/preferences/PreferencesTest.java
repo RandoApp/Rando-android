@@ -219,4 +219,43 @@ public class PreferencesTest{
         Preferences.zeroRandosBalance();
         assertThat(Preferences.getRandosBalance(), is(0));
     }
+
+
+    //FirebaseInstanceId Tests
+    @Test
+    public void shouldSetAndGetFirebaseInstanceId() {
+        String value = UUID.randomUUID().toString();
+
+        Preferences.setFirebaseInstanceId(value);
+
+        assertThat(Preferences.getFirebaseInstanceId(), is(value));
+    }
+
+    @Test
+    public void shouldSetEmptyFirebaseInstanceIdAndReturnEmptyFirebaseInstanceIdOnGet() {
+        String value = "";
+
+        Preferences.setFirebaseInstanceId(value);
+
+        assertThat(Preferences.getFirebaseInstanceId(), is(value));
+    }
+
+    @Test
+    public void shouldGetDefaultFirebaseInstanceIdWhenSetAsNull() {
+        Preferences.setFirebaseInstanceId(null);
+
+        assertThat(Preferences.getFirebaseInstanceId(), is(AUTH_TOKEN_DEFAULT_VALUE));
+    }
+
+    @Test
+    public void shouldRemoveFirebaseInstanceId() {
+        String value = UUID.randomUUID().toString();
+
+        Preferences.setFirebaseInstanceId(value);
+        assertThat(Preferences.getFirebaseInstanceId(), is(value));
+
+        Preferences.removeFirebaseInstanceId();
+
+        assertThat(Preferences.getFirebaseInstanceId(), is(AUTH_TOKEN_DEFAULT_VALUE));
+    }
 }
