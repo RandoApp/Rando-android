@@ -13,6 +13,7 @@ import com.github.randoapp.CameraActivity;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.adapter.HomePagerAdapter;
+import com.google.firebase.crash.FirebaseCrash;
 
 public class HomeWallFragment extends Fragment {
 
@@ -31,6 +32,7 @@ public class HomeWallFragment extends Fragment {
                 startActivityForResult(intent, Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE);
             }
         });
+        FirebaseCrash.report(new Exception("My first Firebase Android non-fatal error"));
         return  rootView;
     }
 }
