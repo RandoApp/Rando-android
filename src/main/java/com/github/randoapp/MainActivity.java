@@ -66,7 +66,6 @@ public class MainActivity extends FragmentActivity {
                     .add(R.id.main_screen, getFragment())
                     .commit();
         }
-        throw new NullPointerException("dsd");
     }
 
     private Fragment getFragment() {
