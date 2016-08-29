@@ -53,9 +53,9 @@ before_install:
   - if [ ! -d $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
 
   # Install Gradle
-  - if [ ! -f $DOWNLOADS_HOME/gradle.zip ]; then  wget http://services.gradle.org/distributions/gradle-2.14-bin.zip -O $DOWNLOADS_HOME/gradle.zip > /dev/null; fi
-  - if [ ! -d $APPS_HOME/gradle-2.14 ]; then unzip --qq $DOWNLOADS_HOME/gradle.zip -d $APPS_HOME; fi
-  - export GRADLE_HOME=$APPS_HOME/gradle-2.14
+  - if [ ! -f $DOWNLOADS_HOME/gradle.zip ]; then  wget http://services.gradle.org/distributions/gradle-2.14.1-bin.zip -O $DOWNLOADS_HOME/gradle.zip > /dev/null; fi
+  - if [ ! -d $APPS_HOME/gradle-2.14.1 ]; then unzip --qq $DOWNLOADS_HOME/gradle.zip -d $APPS_HOME; fi
+  - export GRADLE_HOME=$APPS_HOME/gradle-2.14.1
   - export PATH=$GRADLE_HOME/bin:$PATH
 
   # Install NDK
