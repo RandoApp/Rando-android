@@ -87,8 +87,8 @@ before_script:
   # Create gradle.properties with secret stroke password:
   - cd ${CI_HOME}
   - echo "keyStorePassword=$KEY_STROKE_PASSWORD" > gradle.properties
-  - echo "reportsUser=$REPORTS_USER" >> gradle.properties
-  - echo "reportsPassword=$REPORTS_PASSWORD" >> gradle.properties
+  - echo reportsUser=\"$REPORTS_USER\" >> gradle.properties
+  - echo reportsPassword=\"$REPORTS_PASSWORD\" >> gradle.properties
   #Download rando.keystore:
   - lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "get rando.keystore; ; bye";
   - mv rando.keystore $HOME/.android/
