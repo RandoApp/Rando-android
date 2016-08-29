@@ -35,6 +35,7 @@ env:
     #- ANDROID_API=10 ANDROID_ABI=armeabi
   global:
     - secure: Kq5NpWlyXvAvzZ5UUwAxtooG7Cwtdnzh1fhCNqE2Lx2441w9aEGntd5+ffCCTCF4orRHlFIbqfE4/D1YlH6cJtP9hW37SPI8swe3r6Zyfjftakbe3ld72bVfq0f2zx5T4zln63jppMs+XxKNYjg8UswC+9C8Vi2LeJdPUC/Zdzs=
+    - secure: MzSzLZjb4MYrhrAUurrXX8KiRHRaYJzrzS1iADerSRx9FmEO1NOFCQ07o06uy4EfeQCjaD8+dPyz26rCjgjiBrmO0bhphwn8NYW9ERfgC1oMScHo+ByU9WEuCJSiYc1luxi3GjPESI8pWEMCK5OQl6QjahWKfjKzk2Y1mkVOw90=
     - REPO="RandoApp/Rando-android"
     - DOWNLOADS_HOME=$HOME/downloads
     - APPS_HOME=$HOME/apps

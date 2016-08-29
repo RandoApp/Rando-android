@@ -13,15 +13,23 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.acra.ACRA;
-import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
-import org.acra.config.ACRAConfiguration;
-import org.acra.config.ACRAConfigurationException;
-import org.acra.config.ConfigurationBuilder;
-import org.acra.sender.HttpSender;
+import org.acra.annotation.ReportsCrashes;
 
-import static com.github.randoapp.Constants.LOG_URL;
+import static org.acra.sender.HttpSender.Method;
+import static org.acra.sender.HttpSender.Type;
 
+
+@ReportsCrashes(
+        formUri = "http://reports.rnd4.me/"+BuildConfig.RANDO_REPORTS_ACRA_DB+"/_design/acra-storage/_update/report",
+        reportType = Type.JSON,
+        httpMethod = Method.PUT,
+        formUriBasicAuthLogin=BuildConfig.RANDO_REPORTS_USER,
+        formUriBasicAuthPassword=BuildConfig.RANDO_REPORTS_PASSWORD,
+        // Your usual ACRA configuration
+        mode = ReportingInteractionMode.TOAST,
+        resToastText = R.string.crash_toast_text
+)
 public class App extends Application {
 
     public static Context context;
@@ -35,6 +43,7 @@ public class App extends Application {
             Preferences.setFirebaseInstanceId(FirebaseInstanceId.getInstance().getToken());
             Log.i(App.class,  "Firebase ID: " + FirebaseInstanceId.getInstance().getToken());
         }
+        ACRA.init(this);
     }
 
     public static App getInstance(Context context) {
@@ -47,25 +56,6 @@ public class App extends Application {
                 startService(new Intent(context, RandoFirebaseInstanceIdService.class));
                 startService(new Intent(context, RandoMessagingService.class));
                 startService(new Intent(getApplicationContext(), UploadService.class));
-        }
-    }
-
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        try {
-            if (!ACRA.isACRASenderServiceProcess()) {
-                final ACRAConfiguration config = new ConfigurationBuilder(this)
-                        .setFormUri(LOG_URL)
-                        .setReportType(HttpSender.Type.JSON)
-                        .setReportingInteractionMode(ReportingInteractionMode.TOAST)
-                        .setCustomReportContent(ReportField.APP_VERSION_CODE, ReportField.APP_VERSION_NAME, ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL, ReportField.STACK_TRACE)
-                        .setResToastText(R.string.crash_toast_text)
-                        .build();
-                ACRA.init(this, config);
-            }
-        } catch (ACRAConfigurationException e) {
-            e.printStackTrace();
         }
     }
 }
