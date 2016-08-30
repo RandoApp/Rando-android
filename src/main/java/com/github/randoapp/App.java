@@ -43,7 +43,6 @@ public class App extends Application {
             Preferences.setFirebaseInstanceId(FirebaseInstanceId.getInstance().getToken());
             Log.i(App.class,  "Firebase ID: " + FirebaseInstanceId.getInstance().getToken());
         }
-        ACRA.init(this);
     }
 
     public static App getInstance(Context context) {
@@ -57,5 +56,12 @@ public class App extends Application {
                 startService(new Intent(context, RandoMessagingService.class));
                 startService(new Intent(getApplicationContext(), UploadService.class));
         }
+    }
+    @Override
+
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        // Initialise ACRA
+        ACRA.init(this);
     }
 }
