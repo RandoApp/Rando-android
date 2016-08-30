@@ -26,7 +26,6 @@ import static org.acra.sender.HttpSender.Type;
         httpMethod = Method.PUT,
         formUriBasicAuthLogin=BuildConfig.RANDO_REPORTS_USER,
         formUriBasicAuthPassword=BuildConfig.RANDO_REPORTS_PASSWORD,
-        // Your usual ACRA configuration
         mode = ReportingInteractionMode.TOAST,
         resToastText = R.string.crash_toast_text
 )
@@ -58,10 +57,8 @@ public class App extends Application {
         }
     }
     @Override
-
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        // Initialise ACRA
         ACRA.init(this);
     }
 }
