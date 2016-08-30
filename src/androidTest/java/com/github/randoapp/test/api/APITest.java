@@ -109,19 +109,6 @@ public class APITest {
     }
 
     @Test
-    public void testFetchUserWithEmptyFoods() throws Exception {
-        APITestHelper.mockAPI(HttpStatus.SC_OK, "{'email': 'user@mail.com', 'randos': []}");
-
-        API.fetchUserAsync(new OnFetchUser() {
-            @Override
-            public void onFetch(final User user) {
-                assertThat(user.randosIn).isEmpty();
-                assertThat(user.randosOut).isEmpty();
-            }
-        });
-    }
-
-    @Test
     public void testReport() throws Exception {
         VolleySingleton.getInstance().httpClient = mock(HttpClient.class);
         StatusLine statusLineMock = mock(StatusLine.class);

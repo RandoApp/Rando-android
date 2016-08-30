@@ -199,12 +199,6 @@ public class API {
         }
     }
 
-    public static void fetchUserAsync(final OnFetchUser listener) {
-        Log.i(API.class, "API.fetchUser");
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, getUrl(FETCH_USER_URL), null, new UserFetchResultListener(listener), new ErrorResponseListener());
-        VolleySingleton.getInstance().getRequestQueue().add(request);
-    }
-
     public static void syncUserAsync(final Response.Listener<JSONObject> syncListener) {
         Log.d(API.class, "API.syncUserAsync");
         BackgroundPreprocessRequest request = new BackgroundPreprocessRequest(Request.Method.GET, FETCH_USER_URL, null, new UserFetchResultListener(new OnFetchUser() {
