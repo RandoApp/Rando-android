@@ -3,12 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ListView
+    <com.github.randoapp.view.PullToRefreshListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="@null"
-        android:dividerHeight="0dp"/>
+        android:dividerHeight="0dp" />
 
     <ImageView
         android:layout_width="@dimen/ic_home_size"
