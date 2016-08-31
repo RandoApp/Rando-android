@@ -6,17 +6,22 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.android.volley.Response;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.adapter.RandoPairsAdapter;
+import com.github.randoapp.api.API;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.notification.Notification;
+
+import org.json.JSONObject;
 
 import static com.github.randoapp.Constants.REPORT_BROADCAST;
 import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
@@ -54,7 +59,7 @@ public class HomeListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -75,6 +80,18 @@ public class HomeListFragment extends Fragment {
         randoPairsAdapter = new RandoPairsAdapter(isStranger);
         listView.setAdapter(randoPairsAdapter);
 
+        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                API.syncUserAsync(new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+            }
+        });
         return rootView;
     }
 
