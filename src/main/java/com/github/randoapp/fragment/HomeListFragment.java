@@ -76,7 +76,7 @@ public class HomeListFragment extends Fragment {
             icHome.setVisibility(View.VISIBLE);
         }
 
-        ListView listView = (ListView) rootView.findViewById(R.id.listView);
+        final ListView listView = (ListView) rootView.findViewById(R.id.listView);
         randoPairsAdapter = new RandoPairsAdapter(isStranger);
         listView.setAdapter(randoPairsAdapter);
 
@@ -92,6 +92,7 @@ public class HomeListFragment extends Fragment {
                 });
             }
         });
+
         return rootView;
     }
 
