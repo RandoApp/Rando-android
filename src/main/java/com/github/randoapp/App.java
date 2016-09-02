@@ -51,6 +51,7 @@ public class App extends Application {
     private void startServices() {
         //App onCreate called twice. Prevent double service run, if it is already created
             if (!UploadService.isRunning()) {
+                Log.d(UploadService.class, "Starting Upload Service");
                 startService(new Intent(context, RandoFirebaseInstanceIdService.class));
                 startService(new Intent(context, RandoMessagingService.class));
                 startService(new Intent(getApplicationContext(), UploadService.class));

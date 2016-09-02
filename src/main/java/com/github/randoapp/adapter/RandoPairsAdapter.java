@@ -64,6 +64,7 @@ public class RandoPairsAdapter extends BaseAdapter {
             randos = RandoDAO.getAllOutRandosWithUploadQueue();
         }
         size = randos.size();
+            ++size;
     }
 
     @Override
@@ -74,6 +75,7 @@ public class RandoPairsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup container) {
+
         final Rando rando = randos.get(position);
         final ViewHolder holder;
 
