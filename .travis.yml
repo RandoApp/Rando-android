@@ -54,10 +54,10 @@ before_install:
   - if [ ! -d $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
 
   # Install Gradle
-  - if [ ! -f $DOWNLOADS_HOME/gradle.zip ]; then  wget http://services.gradle.org/distributions/gradle-2.14-bin.zip -O $DOWNLOADS_HOME/gradle.zip > /dev/null; fi
-  - if [ ! -d $APPS_HOME/gradle-2.14 ]; then unzip --qq $DOWNLOADS_HOME/gradle.zip -d $APPS_HOME; fi
-  - export GRADLE_HOME=$APPS_HOME/gradle-2.14
-  - export PATH=$GRADLE_HOME/bin:$PATH
+#  - if [ ! -f $DOWNLOADS_HOME/gradle.zip ]; then  wget http://services.gradle.org/distributions/gradle-2.14-bin.zip -O $DOWNLOADS_HOME/gradle.zip > /dev/null; fi
+ # - if [ ! -d $APPS_HOME/gradle-2.14 ]; then unzip --qq $DOWNLOADS_HOME/gradle.zip -d $APPS_HOME; fi
+  #- export GRADLE_HOME=$APPS_HOME/gradle-2.14
+  #- export PATH=$GRADLE_HOME/bin:$PATH
 
   # Install NDK
   - cd $DOWNLOADS_HOME
@@ -86,6 +86,7 @@ before_script:
 
   # Create gradle.properties with secret stroke password:
   - cd ${CI_HOME}
+  - gradle wrapper --gradle-version 2.14.1
   - echo "keyStorePassword=$KEY_STROKE_PASSWORD" > gradle.properties
   - echo "reportsUser=\"$REPORTS_USER\"" >> gradle.properties
   - echo "reportsPassword=\"$REPORTS_PASSWORD\"" >> gradle.properties
@@ -94,8 +95,8 @@ before_script:
   - mv rando.keystore $HOME/.android/
 
 script:
-  - gradle connectedAndroidTest coveralls --stacktrace
-  - if [ $NEED_UPLOAD_APK ]; then gradle assembleRelease; fi
+  - ./gradlew connectedAndroidTest coveralls --stacktrace
+  - if [ $NEED_UPLOAD_APK ]; then ./gradlew assembleRelease; fi
 
 after_script:
     - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "put build/outputs/apk/Rando-android-release.apk; bye"; fi
