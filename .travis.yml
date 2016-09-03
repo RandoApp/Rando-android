@@ -44,20 +44,12 @@ env:
 
 before_install:
   # Install lftp for apk upload:
-  - sudo apt-get update -qq
+  #- sudo apt-get update -qq
   - sudo apt-get install -qq lftp
-  # Install tree for directory structure debug
-  #- sudo apt-get install -qq tree
 
   # Install base Android SDK
   - cd ${HOME}
   - if [ ! -d $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
-
-  # Install Gradle
-#  - if [ ! -f $DOWNLOADS_HOME/gradle.zip ]; then  wget http://services.gradle.org/distributions/gradle-2.14-bin.zip -O $DOWNLOADS_HOME/gradle.zip > /dev/null; fi
- # - if [ ! -d $APPS_HOME/gradle-2.14 ]; then unzip --qq $DOWNLOADS_HOME/gradle.zip -d $APPS_HOME; fi
-  #- export GRADLE_HOME=$APPS_HOME/gradle-2.14
-  #- export PATH=$GRADLE_HOME/bin:$PATH
 
   # Install NDK
   - cd $DOWNLOADS_HOME
@@ -81,7 +73,6 @@ before_script:
   - echo no | android create avd --force -n test -t android-$ANDROID_API --abi $ANDROID_ABI
   - emulator -avd test -no-skin -no-audio -no-window &
   - android-wait-for-emulator
-  #- ci/wait_for_emulator.sh
   - adb shell input keyevent 82 &
 
   # Create gradle.properties with secret stroke password:
