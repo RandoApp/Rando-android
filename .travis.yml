@@ -86,7 +86,7 @@ before_script:
 
   # Create gradle.properties with secret stroke password:
   - cd ${CI_HOME}
-  - gradle wrapper --gradle-version 2.14.1
+  - gradle wrapper
   - echo "keyStorePassword=$KEY_STROKE_PASSWORD" > gradle.properties
   - echo "reportsUser=\"$REPORTS_USER\"" >> gradle.properties
   - echo "reportsPassword=\"$REPORTS_PASSWORD\"" >> gradle.properties

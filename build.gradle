@@ -123,6 +123,10 @@ tasks.coveralls {
     onlyIf { System.env.'CI' }
 }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.14.1'
+}
+
 dependencies {
     compile project(':volley')
     compile project(':camera-v9')
