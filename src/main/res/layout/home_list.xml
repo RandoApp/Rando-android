@@ -2,9 +2,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <Button
+        android:id="@+id/forceSyncButton"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="@string/tap_tp_update"
+        android:textColor="@color/rando_dark_grey"
+        android:textSize="18dp"
+        style="@style/GrayButton"
+        android:visibility="gone"/>
 
     <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/swipe_refresh_layout"
+        android:layout_below="@+id/forceSyncButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     <ListView

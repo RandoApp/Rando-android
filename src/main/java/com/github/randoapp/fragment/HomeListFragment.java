@@ -20,6 +20,8 @@ import com.github.randoapp.adapter.RandoPairsAdapter;
 import com.github.randoapp.api.API;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.notification.Notification;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.json.JSONObject;
 
@@ -92,7 +94,7 @@ public class HomeListFragment extends Fragment {
                 });
             }
         });
-
+        showForceSyncButtonIfNecessary();
         return rootView;
     }
 
@@ -111,4 +113,11 @@ public class HomeListFragment extends Fragment {
         getActivity().registerReceiver(receiver, new IntentFilter(UPLOAD_SERVICE_BROADCAST_EVENT));
     }
 
+    private void showForceSyncButtonIfNecessary(){
+        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+        int status = googleApiAvailability.isGooglePlayServicesAvailable(getContext());
+        if(status != ConnectionResult.SUCCESS) {
+
+        }
+    }
 }

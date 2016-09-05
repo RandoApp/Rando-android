@@ -20,10 +20,16 @@ import com.github.randoapp.fragment.TrainingHomeFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.service.UploadService;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import static com.github.randoapp.Constants.AUTH_FAILURE_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
 import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
+import static com.github.randoapp.Constants.UPDATE_PLAY_SERVICES_REQUEST_CODE;
 
 public class MainActivity extends FragmentActivity {
 
@@ -66,15 +72,14 @@ public class MainActivity extends FragmentActivity {
                     .add(R.id.main_screen, getFragment())
                     .commit();
         }
+        showUpdatePlayServicesDialogIfNecessary();
     }
 
     private Fragment getFragment() {
         if (isNotAuthorized()) {
             return new AuthFragment();
         }
-
         API.syncUserAsync(null);
-
         if (!Preferences.isTrainingFragmentShown()) {
             return new TrainingHomeFragment();
         }
@@ -109,13 +114,27 @@ public class MainActivity extends FragmentActivity {
         registerReceiver(receiver, new IntentFilter(AUTH_FAILURE_BROADCAST_EVENT));
     }
 
+    private void showUpdatePlayServicesDialogIfNecessary(){
+        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+        int status = googleApiAvailability.isGooglePlayServicesAvailable(this);
+        if(status != ConnectionResult.SUCCESS) {
+            if(googleApiAvailability.isUserResolvableError(status)
+                    && (TimeUnit.MINUTES.toDays(System.currentTimeMillis() - Preferences.getUpdatePlayServicesDateShown().getTime()) > 5)){
+                Preferences.setUpdatePlayServicesDateShown(new Date());
+                //googleApiAvailability.getErrorResolutionPendingIntent();
+                googleApiAvailability.showErrorDialogFragment(this, status, UPDATE_PLAY_SERVICES_REQUEST_CODE);
+            }
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (resultCode == CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
+        } else if (requestCode == UPDATE_PLAY_SERVICES_REQUEST_CODE){
+            showUpdatePlayServicesDialogIfNecessary();
         }
     }
 }

@@ -64,7 +64,6 @@ public class RandoPairsAdapter extends BaseAdapter {
             randos = RandoDAO.getAllOutRandosWithUploadQueue();
         }
         size = randos.size();
-            ++size;
     }
 
     @Override
