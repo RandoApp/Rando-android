@@ -94,7 +94,7 @@ public class HomeListFragment extends Fragment {
                 });
             }
         });
-        showForceSyncButtonIfNecessary();
+        showForceSyncButtonIfNecessary(rootView);
         return rootView;
     }
 
@@ -113,11 +113,13 @@ public class HomeListFragment extends Fragment {
         getActivity().registerReceiver(receiver, new IntentFilter(UPLOAD_SERVICE_BROADCAST_EVENT));
     }
 
-    private void showForceSyncButtonIfNecessary(){
+    private void showForceSyncButtonIfNecessary(View rootView){
         GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
         int status = googleApiAvailability.isGooglePlayServicesAvailable(getContext());
         if(status != ConnectionResult.SUCCESS) {
-
+            rootView.findViewById(R.id.forceSyncButton).setVisibility(View.VISIBLE);
+        } else {
+            rootView.findViewById(R.id.forceSyncButton).setVisibility(View.GONE);
         }
     }
 }

@@ -18,7 +18,6 @@ android:
     - '.*intel.+'
 git:
   depth: 3
-# Not working for public repositories :(
 cache:
   - apt
   - directories:

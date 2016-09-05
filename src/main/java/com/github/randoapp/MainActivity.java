@@ -1,6 +1,7 @@
 package com.github.randoapp;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +10,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.github.randoapp.api.API;
 import com.github.randoapp.db.RandoDAO;
@@ -22,6 +27,8 @@ import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.service.UploadService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+
+import org.acra.ACRA;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -119,10 +126,12 @@ public class MainActivity extends FragmentActivity {
         int status = googleApiAvailability.isGooglePlayServicesAvailable(this);
         if(status != ConnectionResult.SUCCESS) {
             if(googleApiAvailability.isUserResolvableError(status)
-                    && (TimeUnit.MINUTES.toDays(System.currentTimeMillis() - Preferences.getUpdatePlayServicesDateShown().getTime()) > 5)){
+                    && (TimeUnit.MINUTES.toDays(System.currentTimeMillis() - Preferences.getUpdatePlayServicesDateShown().getTime()) > 0)){
                 Preferences.setUpdatePlayServicesDateShown(new Date());
-                //googleApiAvailability.getErrorResolutionPendingIntent();
-                googleApiAvailability.showErrorDialogFragment(this, status, UPDATE_PLAY_SERVICES_REQUEST_CODE);
+                ACRA.getErrorReporter().putCustomData("Play Services Problem ", googleApiAvailability.getErrorString(status));
+                ACRA.getErrorReporter().handleSilentException(null);
+                Dialog dialog = googleApiAvailability.getErrorDialog(this, status, UPDATE_PLAY_SERVICES_REQUEST_CODE);
+                dialog.show();
             }
         }
     }
@@ -134,7 +143,6 @@ public class MainActivity extends FragmentActivity {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
         } else if (requestCode == UPDATE_PLAY_SERVICES_REQUEST_CODE){
-            showUpdatePlayServicesDialogIfNecessary();
         }
     }
 }
