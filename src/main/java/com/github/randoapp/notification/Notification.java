@@ -37,9 +37,10 @@ public class Notification {
         manager.notify(1, notification.build());
     }
 
-    public static void sendSyncNotification(int randosNumber) {
+    public static void sendSyncNotification(int randosNumber, String updateStaus) {
         Intent intent = new Intent(Constants.SYNC_BROADCAST_EVENT);
-        intent.putExtra(Constants.RANDO_PAIRS_NUMBER, randosNumber);
+        intent.putExtra(Constants.TOTAL_RANDOS_NUMBER, randosNumber);
+        intent.putExtra(Constants.UPDATE_STATUS, updateStaus);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(App.context, 0, intent, 0);
         AlarmManager alarmManager = (AlarmManager) App.context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pendingIntent);

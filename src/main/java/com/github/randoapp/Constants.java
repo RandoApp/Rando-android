@@ -7,9 +7,14 @@ public class Constants {
     public static final String ALBUM_NAME = "Rando";
 
     public static final String FILEPATH = "FILEPATH";
-    public static final String RANDO_PAIRS_NUMBER = "RANDO_PAIRS_NUMBER";
+    public static final String TOTAL_RANDOS_NUMBER = "TOTAL_RANDOS_NUMBER";
+    public static final String UPDATE_STATUS = "UPDATE_STATUS";
+    public static final String UPDATED = "UPDATED";
+    public static final String NOT_UPDATED = "NOT_UPDATED";
 
-    /** Default on-disk cache directory. */
+    /**
+     * Default on-disk cache directory.
+     */
     public static final String DEFAULT_CACHE_DIR = "volley";
     public static final int DEFAULT_CACHE_SIZE = 20 * 1024 * 1024;
 
@@ -24,7 +29,7 @@ public class Constants {
     public static final String IMAGE_PREFIX = "IMG_";
     public static final String IMAGE_POSTFIX = ".jpg";
 
-    public static final long LOCATION_DETECT_TIMEOUT = 5*60*1000; //in milliseconds
+    public static final long LOCATION_DETECT_TIMEOUT = 5 * 60 * 1000; //in milliseconds
 
     public static final String ERROR = "error";
     public static final int UNAUTHORIZED_CODE = 400;

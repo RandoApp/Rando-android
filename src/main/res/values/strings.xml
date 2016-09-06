@@ -77,6 +77,10 @@
     <string name="update_play_services_dialog_positive">Install/Update</string>
     <string name="update_play_services_dialog_negative">Cancel</string>
     <!-- Update Play Services Dialog Resources End -->
+    
+    <string name="sync_nothing_new">Nothing new</string>
+    <string name="sync_randos_updated">Randos are updated</string>
+    
 
     <string name="pull_to_refresh_pull_label">Pull to refresh...</string>
     <string name="pull_to_refresh_release_label">Release to refresh...</string>
