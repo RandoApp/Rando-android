@@ -38,7 +38,7 @@
     <string name="logout_progress">Logout…</string>
     <string name="cropping_progress">Prepairing to Upload…</string>
     <string name="uploading_progress">Uploading…</string>
-    <string name="tap_tp_update">Tap to update randos list</string>
+    <string name="tap_to_update">Tap to update randos</string>
 
     <string name="version">Version: </string>
     <string name="account">Account: </string>
@@ -80,7 +80,6 @@
     
     <string name="sync_nothing_new">Nothing new</string>
     <string name="sync_randos_updated">Randos are updated</string>
-    
 
     <string name="pull_to_refresh_pull_label">Pull to refresh...</string>
     <string name="pull_to_refresh_release_label">Release to refresh...</string>

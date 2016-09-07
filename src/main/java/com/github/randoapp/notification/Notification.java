@@ -41,7 +41,7 @@ public class Notification {
         Intent intent = new Intent(Constants.SYNC_BROADCAST_EVENT);
         intent.putExtra(Constants.TOTAL_RANDOS_NUMBER, randosNumber);
         intent.putExtra(Constants.UPDATE_STATUS, updateStaus);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(App.context, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(App.context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) App.context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pendingIntent);
     }
