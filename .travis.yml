@@ -17,7 +17,7 @@ android:
     - android-sdk-license-bcbbd656
     - '.*intel.+'
 git:
-  depth: 3
+  depth: 10
 cache:
   - apt
   - directories:
