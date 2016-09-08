@@ -85,7 +85,7 @@ public class MainActivity extends FragmentActivity {
         if (isNotAuthorized()) {
             return new AuthFragment();
         }
-        API.syncUserAsync(null);
+        API.syncUserAsync(null, null);
         if (!Preferences.isTrainingFragmentShown()) {
             return new TrainingHomeFragment();
         }

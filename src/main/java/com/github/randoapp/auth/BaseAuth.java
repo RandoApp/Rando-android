@@ -30,7 +30,7 @@ public abstract class BaseAuth implements View.OnClickListener {
         FragmentManager fragmentManager = fragmentActivity.getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.main_screen, new EmptyHomeWallFragment()).commit();
 
-        API.syncUserAsync(null);
+        API.syncUserAsync(null, null);
     }
 
     private static void hideSoftKeyboard(FragmentActivity fragmentActivity) {

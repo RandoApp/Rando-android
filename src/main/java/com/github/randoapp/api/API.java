@@ -200,7 +200,7 @@ public class API {
         }
     }
 
-    public static void syncUserAsync(final Response.Listener<JSONObject> syncListener) {
+    public static void syncUserAsync(final Response.Listener<JSONObject> syncListener, ErrorResponseListener errorResponseListener) {
         Log.d(API.class, "API.syncUserAsync");
         BackgroundPreprocessRequest request = new BackgroundPreprocessRequest(Request.Method.GET, FETCH_USER_URL, null, new UserFetchResultListener(new OnFetchUser() {
             @Override
@@ -219,7 +219,7 @@ public class API {
                     Notification.sendSyncNotification(totalUserRandos, NOT_UPDATED);
                 }
             }
-        }), syncListener, new ErrorResponseListener());
+        }), syncListener, errorResponseListener);
 
         request.addHeader(AUTHORIZATION_HEADER, "Token "+Preferences.getAuthToken());
         if (!Preferences.getFirebaseInstanceId().isEmpty()) {

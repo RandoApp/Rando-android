@@ -16,10 +16,12 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.adapter.RandoPairsAdapter;
 import com.github.randoapp.api.API;
+import com.github.randoapp.api.listeners.ErrorResponseListener;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.util.ConnectionUtil;
 import com.google.android.gms.common.ConnectionResult;
@@ -94,6 +96,11 @@ public class HomeListFragment extends Fragment {
                         public void onResponse(JSONObject response) {
                             swipeRefreshLayout.setRefreshing(false);
                         }
+                    }, new ErrorResponseListener(){
+                        @Override
+                        public void onErrorResponse(VolleyError e) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
                     });
                 } else {
                     swipeRefreshLayout.setRefreshing(false);
@@ -135,6 +142,11 @@ public class HomeListFragment extends Fragment {
                         API.syncUserAsync(new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
+                        }, new ErrorResponseListener(){
+                            @Override
+                            public void onErrorResponse(VolleyError e) {
                                 swipeRefreshLayout.setRefreshing(false);
                             }
                         });
