@@ -1,7 +1,6 @@
 package com.github.randoapp;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +38,8 @@ import static com.github.randoapp.Constants.UPDATE_PLAY_SERVICES_REQUEST_CODE;
 public class MainActivity extends FragmentActivity {
 
     public static Activity activity;
+
+    private int playServicesStatus;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -129,9 +130,10 @@ public class MainActivity extends FragmentActivity {
             if(googleApiAvailability.isUserResolvableError(status)
                     && (TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - Preferences.getUpdatePlayServicesDateShown().getTime()) > 15)){
                 Preferences.setUpdatePlayServicesDateShown(new Date());
-                Dialog dialog = googleApiAvailability.getErrorDialog(this, status, UPDATE_PLAY_SERVICES_REQUEST_CODE);
-                dialog.show();
+                googleApiAvailability.getErrorDialog(this, status, UPDATE_PLAY_SERVICES_REQUEST_CODE).show();
             }
+
+            playServicesStatus = status;
         }
     }
 
@@ -142,6 +144,11 @@ public class MainActivity extends FragmentActivity {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
         } else if (requestCode == UPDATE_PLAY_SERVICES_REQUEST_CODE){
+            int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
+            if(status != ConnectionResult.SUCCESS && status != playServicesStatus) {
+                Preferences.removeUpdatePlayServicesDateShown();
+            }
         }
     }
+
 }
