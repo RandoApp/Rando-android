@@ -130,8 +130,9 @@ public class MainActivity extends FragmentActivity {
         GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
         int status = googleApiAvailability.isGooglePlayServicesAvailable(this);
         if(status != ConnectionResult.SUCCESS) {
-            ACRA.getErrorReporter().putCustomData("Play Services Problem ", googleApiAvailability.getErrorString(status));
+            ACRA.getErrorReporter().putCustomData("PlayServicesProblem", googleApiAvailability.getErrorString(status));
             ACRA.getErrorReporter().handleSilentException(null);
+            ACRA.getErrorReporter().removeCustomData("PlayServicesProblem");
             if(googleApiAvailability.isUserResolvableError(status)
                     && (TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - Preferences.getUpdatePlayServicesDateShown().getTime()) > 15)){
                 Preferences.setUpdatePlayServicesDateShown(new Date());
