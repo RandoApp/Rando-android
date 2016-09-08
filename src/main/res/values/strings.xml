@@ -80,5 +80,7 @@
     
     <string name="sync_nothing_new">Nothing new</string>
     <string name="sync_randos_updated">Randos are updated</string>
-</resources>
 
+    <string name="rando_landed">Your Rando has landed</string>
+    <string name="rando_received">You have received new Rando</string>
+</resources>
