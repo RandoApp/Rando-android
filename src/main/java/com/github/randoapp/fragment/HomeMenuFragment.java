@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.preferences.Preferences;
@@ -34,7 +33,7 @@ public class HomeMenuFragment extends Fragment {
         rootView.findViewById(R.id.logoutButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Progress.show(App.context.getResources().getString(R.string.logout_progress));
+                Progress.show(getActivity().getResources().getString(R.string.logout_progress));
                 new LogoutTask()
                         .onDone(new OnDone() {
                             @Override
