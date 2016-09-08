@@ -214,7 +214,6 @@ public class API {
                     RandoDAO.clearRandos();
                     RandoDAO.insertRandos(user.randosIn);
                     RandoDAO.insertRandos(user.randosOut);
-                    //TODO: change 0 to real number
                     Notification.sendSyncNotification(totalUserRandos, UPDATED);
                 } else {
                     Notification.sendSyncNotification(totalUserRandos, NOT_UPDATED);
