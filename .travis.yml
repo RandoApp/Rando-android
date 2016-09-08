@@ -77,7 +77,7 @@ before_install:
 
 before_script:
   # Create and start emulator
-  #- android list targets
+  # For a full list of android targets, run "android list targets"
   - echo no | android create avd --force -n test -t android-$ANDROID_API --abi $ANDROID_ABI
   - emulator -avd test -no-skin -no-audio -no-window &
   - android-wait-for-emulator
