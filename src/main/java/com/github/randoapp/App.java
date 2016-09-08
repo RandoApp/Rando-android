@@ -21,11 +21,11 @@ import static org.acra.sender.HttpSender.Type;
 
 
 @ReportsCrashes(
-        formUri = "http://reports.rnd4.me/"+BuildConfig.RANDO_REPORTS_ACRA_DB+"/_design/acra-storage/_update/report",
+        formUri = "http://reports.rnd4.me/" + BuildConfig.RANDO_REPORTS_ACRA_DB + "/_design/acra-storage/_update/report",
         reportType = Type.JSON,
         httpMethod = Method.PUT,
-        formUriBasicAuthLogin=BuildConfig.RANDO_REPORTS_USER,
-        formUriBasicAuthPassword=BuildConfig.RANDO_REPORTS_PASSWORD,
+        formUriBasicAuthLogin = BuildConfig.RANDO_REPORTS_USER,
+        formUriBasicAuthPassword = BuildConfig.RANDO_REPORTS_PASSWORD,
         mode = ReportingInteractionMode.TOAST,
         resToastText = R.string.crash_toast_text
 )
@@ -40,7 +40,7 @@ public class App extends Application {
         startServices();
         if (!FirebaseApp.getApps(this).isEmpty()) {
             Preferences.setFirebaseInstanceId(FirebaseInstanceId.getInstance().getToken());
-            Log.i(App.class,  "Firebase ID: " + FirebaseInstanceId.getInstance().getToken());
+            Log.i(App.class, "Firebase ID: " + FirebaseInstanceId.getInstance().getToken());
         }
     }
 
@@ -50,13 +50,15 @@ public class App extends Application {
 
     private void startServices() {
         //App onCreate called twice. Prevent double service run, if it is already created
-            if (!UploadService.isRunning()) {
-                Log.d(UploadService.class, "Starting Upload Service");
-                startService(new Intent(getApplicationContext(), UploadService.class));
-                startService(new Intent(context, RandoFirebaseInstanceIdService.class));
-                startService(new Intent(context, RandoMessagingService.class));
+        if (!UploadService.isRunning()) {
+            startService(new Intent(getApplicationContext(), UploadService.class));
+        }
+        if (!RandoMessagingService.isRunning()) {
+            startService(new Intent(context, RandoFirebaseInstanceIdService.class));
+            startService(new Intent(context, RandoMessagingService.class));
         }
     }
+
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
