@@ -79,7 +79,6 @@ public class MainActivity extends FragmentActivity {
                     .add(R.id.main_screen, getFragment())
                     .commit();
         }
-        showUpdatePlayServicesDialogIfNecessary();
     }
 
     private Fragment getFragment() {
@@ -107,6 +106,12 @@ public class MainActivity extends FragmentActivity {
     protected void onPause() {
         unregisterReceiver(receiver);
         super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        showUpdatePlayServicesDialogIfNecessary();
     }
 
     @Override
