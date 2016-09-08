@@ -27,6 +27,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.json.JSONObject;
 
+import static com.github.randoapp.Constants.PUSH_NOTIFICATION_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.REPORT_BROADCAST;
 import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_BROADCAST_EVENT;
@@ -49,6 +50,8 @@ public class HomeListFragment extends Fragment {
             } else if (SYNC_BROADCAST_EVENT.equals(intent.getAction())) {
                 randoPairsAdapter.notifyDataSetChanged();
             } else if (UPLOAD_SERVICE_BROADCAST_EVENT.equals(intent.getAction())) {
+                randoPairsAdapter.notifyDataSetChanged();
+            } else if (PUSH_NOTIFICATION_BROADCAST_EVENT.equals(intent.getAction())){
                 randoPairsAdapter.notifyDataSetChanged();
             }
         }
@@ -115,6 +118,7 @@ public class HomeListFragment extends Fragment {
         getActivity().registerReceiver(receiver, new IntentFilter(SYNC_BROADCAST_EVENT));
         getActivity().registerReceiver(receiver, new IntentFilter(REPORT_BROADCAST));
         getActivity().registerReceiver(receiver, new IntentFilter(UPLOAD_SERVICE_BROADCAST_EVENT));
+        getActivity().registerReceiver(receiver, new IntentFilter(PUSH_NOTIFICATION_BROADCAST_EVENT));
     }
 
     private void showForceSyncButtonIfNecessary(View rootView) {

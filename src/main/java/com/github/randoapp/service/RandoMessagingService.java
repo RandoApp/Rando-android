@@ -2,6 +2,7 @@ package com.github.randoapp.service;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
@@ -37,6 +38,8 @@ public class RandoMessagingService extends FirebaseMessagingService {
                     Log.d(RandoMessagingService.class, "Inserting/Updating newly Received Rando" + rando.toString());
                 }
             }
+            Intent intent = new Intent(Constants.UPLOAD_SERVICE_BROADCAST_EVENT);
+            RandoMessagingService.this.sendBroadcast(intent);
         }
     }
 
