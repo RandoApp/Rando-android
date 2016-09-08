@@ -42,7 +42,7 @@ public class RandoMessagingService extends FirebaseMessagingService {
                 }
             }
             Intent intent = new Intent(Constants.UPLOAD_SERVICE_BROADCAST_EVENT);
-            RandoMessagingService.this.sendBroadcast(intent);
+            sendBroadcast(intent);
         }
     }
 }
