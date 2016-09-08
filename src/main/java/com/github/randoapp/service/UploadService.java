@@ -18,8 +18,6 @@ import com.github.randoapp.task.UploadTask;
 import com.github.randoapp.task.callback.OnError;
 import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.ConnectionUtil;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.Date;
 import java.util.List;
@@ -53,10 +51,6 @@ public class UploadService extends Service {
     public void onCreate() {
         Log.d(UploadService.class, "Upload service created");
         super.onCreate();
-        if (!FirebaseApp.getApps(this).isEmpty()) {
-            Log.i(UploadService.class,  "Firebase ID: " + FirebaseInstanceId.getInstance().getToken());
-            Log.i(UploadService.class,  "Firebase App: " + FirebaseApp.getInstance());
-        }
         setInterval(UPLOAD_SERVICE_INTERVAL);
     }
 

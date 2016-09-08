@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.github.randoapp.api.API;
 import com.github.randoapp.db.RandoDAO;
@@ -20,14 +21,25 @@ import com.github.randoapp.fragment.TrainingHomeFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.service.UploadService;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+
+import org.acra.ACRA;
+
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import static com.github.randoapp.Constants.AUTH_FAILURE_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
 import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
+import static com.github.randoapp.Constants.UPDATED;
+import static com.github.randoapp.Constants.UPDATE_PLAY_SERVICES_REQUEST_CODE;
 
 public class MainActivity extends FragmentActivity {
 
     public static Activity activity;
+
+    private int playServicesStatus;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -38,16 +50,17 @@ public class MainActivity extends FragmentActivity {
             if (SYNC_BROADCAST_EVENT.equals(intent.getAction())) {
                 RelativeLayout emptyHome = (RelativeLayout) findViewById(R.id.empty_home);
                 Bundle extra = intent.getExtras();
-                int randoPairsNumber = (Integer) extra.get(Constants.RANDO_PAIRS_NUMBER);
-                if (randoPairsNumber == 0 && emptyHome == null) {
-
+                int randosNumber = (Integer) extra.get(Constants.TOTAL_RANDOS_NUMBER);
+                boolean isUpdated = UPDATED.equals(extra.get(Constants.UPDATE_STATUS));
+                if (randosNumber == 0 && emptyHome == null) {
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.main_screen, new EmptyHomeWallFragment()).commit();
                 }
-                if (randoPairsNumber > 0 && emptyHome != null) {
+                if (randosNumber > 0 && emptyHome != null) {
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
                 }
+                Toast.makeText(MainActivity.this, (isUpdated ? R.string.sync_randos_updated : R.string.sync_nothing_new), Toast.LENGTH_LONG).show();
             } else if(AUTH_FAILURE_BROADCAST_EVENT.equals(intent.getAction())){
                 Preferences.removeAuthToken();
                 FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
@@ -72,9 +85,7 @@ public class MainActivity extends FragmentActivity {
         if (isNotAuthorized()) {
             return new AuthFragment();
         }
-
-        API.syncUserAsync(null);
-
+        API.syncUserAsync(null, null);
         if (!Preferences.isTrainingFragmentShown()) {
             return new TrainingHomeFragment();
         }
@@ -98,6 +109,12 @@ public class MainActivity extends FragmentActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        showUpdatePlayServicesDialogIfNecessary();
+    }
+
+    @Override
     protected void onPostResume() {
         super.onPostResume();
         registerReceivers();
@@ -109,13 +126,35 @@ public class MainActivity extends FragmentActivity {
         registerReceiver(receiver, new IntentFilter(AUTH_FAILURE_BROADCAST_EVENT));
     }
 
+    private void showUpdatePlayServicesDialogIfNecessary(){
+        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+        int status = googleApiAvailability.isGooglePlayServicesAvailable(this);
+        if(status != ConnectionResult.SUCCESS) {
+            ACRA.getErrorReporter().putCustomData("PlayServicesProblem", googleApiAvailability.getErrorString(status));
+            ACRA.getErrorReporter().handleSilentException(null);
+            ACRA.getErrorReporter().removeCustomData("PlayServicesProblem");
+            if(googleApiAvailability.isUserResolvableError(status)
+                    && (TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - Preferences.getUpdatePlayServicesDateShown().getTime()) > 15)){
+                Preferences.setUpdatePlayServicesDateShown(new Date());
+                googleApiAvailability.getErrorDialog(this, status, UPDATE_PLAY_SERVICES_REQUEST_CODE).show();
+            }
+
+            playServicesStatus = status;
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (resultCode == CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
+        } else if (requestCode == UPDATE_PLAY_SERVICES_REQUEST_CODE){
+            int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
+            if(status != ConnectionResult.SUCCESS && status != playServicesStatus) {
+                Preferences.removeUpdatePlayServicesDateShown();
+            }
         }
     }
+
 }

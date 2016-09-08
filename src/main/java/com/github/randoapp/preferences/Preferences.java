@@ -6,6 +6,8 @@ import android.location.Location;
 
 import com.github.randoapp.App;
 
+import java.util.Date;
+
 import static com.github.randoapp.Constants.ACCOUNT;
 import static com.github.randoapp.Constants.AUTH_TOKEN;
 import static com.github.randoapp.Constants.FIREBASE_INSTANCE_ID;
@@ -15,6 +17,7 @@ import static com.github.randoapp.Constants.LONGITUDE_PARAM;
 import static com.github.randoapp.Constants.PREFERENCES_FILE_NAME;
 import static com.github.randoapp.Constants.RANDOS_BALANCE;
 import static com.github.randoapp.Constants.TRAINING_FRAGMENT_SHOWN;
+import static com.github.randoapp.Constants.UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE;
 
 public class Preferences {
     public static final String AUTH_TOKEN_DEFAULT_VALUE = "";
@@ -102,10 +105,24 @@ public class Preferences {
         }
     }
 
+    //UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE
+    public static void removeUpdatePlayServicesDateShown() {
+        getSharedPreferences().edit().remove(UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE).commit();
+    }
+
+    public static Date getUpdatePlayServicesDateShown() {
+        return new Date(getSharedPreferences().getLong(UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE, 0L));
+    }
+
+    public static void setUpdatePlayServicesDateShown(Date time) {
+        if (time != null) {
+            getSharedPreferences().edit().putLong(UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE, time.getTime()).commit();
+        }
+    }
+
     public static void removeFirebaseInstanceId() {
         getSharedPreferences().edit().remove(FIREBASE_INSTANCE_ID).commit();
     }
-
 
     //Randos balance
     public static int getRandosBalance() {

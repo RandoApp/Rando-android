@@ -2,13 +2,28 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <Button
+        android:id="@+id/forceSyncButton"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/tap_to_update"
+        android:textColor="@color/rando_dark_grey"
+        android:textSize="18dp"
+        style="@style/GrayButton"
+        android:visibility="visible"/>
 
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_below="@+id/forceSyncButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="@null"
-        android:dividerHeight="0dp"/>
+        android:dividerHeight="0dp" />
 
     <ImageView
         android:layout_width="@dimen/ic_home_size"
@@ -19,4 +34,5 @@
         android:layout_marginRight="@dimen/ic_home_margin_right"
         android:id="@+id/ic_home"
         android:visibility="gone"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>

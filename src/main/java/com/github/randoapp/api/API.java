@@ -4,7 +4,6 @@ import android.location.Location;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
@@ -80,11 +79,13 @@ import static com.github.randoapp.Constants.LATITUDE_PARAM;
 import static com.github.randoapp.Constants.LOGOUT_URL;
 import static com.github.randoapp.Constants.LOG_URL;
 import static com.github.randoapp.Constants.LONGITUDE_PARAM;
+import static com.github.randoapp.Constants.NOT_UPDATED;
 import static com.github.randoapp.Constants.REPORT_URL;
 import static com.github.randoapp.Constants.SIGNUP_EMAIL_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_PASSWORD_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_URL;
 import static com.github.randoapp.Constants.UNAUTHORIZED_CODE;
+import static com.github.randoapp.Constants.UPDATED;
 import static com.github.randoapp.Constants.UPLOAD_RANDO_URL;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.apache.http.HttpStatus.SC_REQUEST_TOO_LONG;
@@ -199,24 +200,26 @@ public class API {
         }
     }
 
-    public static void syncUserAsync(final Response.Listener<JSONObject> syncListener) {
+    public static void syncUserAsync(final Response.Listener<JSONObject> syncListener, ErrorResponseListener errorResponseListener) {
         Log.d(API.class, "API.syncUserAsync");
         BackgroundPreprocessRequest request = new BackgroundPreprocessRequest(Request.Method.GET, FETCH_USER_URL, null, new UserFetchResultListener(new OnFetchUser() {
             @Override
             public void onFetch(User user) {
                 Log.d(API.class, "Fetched ", user.toString(), " user. and procesing it in background thread.");
                 List<Rando> dbRandos = RandoDAO.getAllRandos();
-                if (user.randosIn.size() + user.randosOut.size() != dbRandos.size()
+                int totalUserRandos = user.randosIn.size() + user.randosOut.size();
+                if (totalUserRandos != dbRandos.size()
                         || !(dbRandos.containsAll(user.randosIn)
                         && dbRandos.containsAll(user.randosOut))) {
                     RandoDAO.clearRandos();
                     RandoDAO.insertRandos(user.randosIn);
                     RandoDAO.insertRandos(user.randosOut);
-                    //TODO: change 0 to real number
-                    Notification.sendSyncNotification(1);
+                    Notification.sendSyncNotification(totalUserRandos, UPDATED);
+                } else {
+                    Notification.sendSyncNotification(totalUserRandos, NOT_UPDATED);
                 }
             }
-        }), syncListener, new ErrorResponseListener());
+        }), syncListener, errorResponseListener);
 
         request.addHeader(AUTHORIZATION_HEADER, "Token "+Preferences.getAuthToken());
         if (!Preferences.getFirebaseInstanceId().isEmpty()) {

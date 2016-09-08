@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Rando [New]</string>
+    <string name="app_name">Rando4Me</string>
     <string name="app_name_official">Rando 4Me</string>
     <string name="email">Email:</string>
     <string name="password">Password:</string>
@@ -38,6 +38,7 @@
     <string name="logout_progress">Logout…</string>
     <string name="cropping_progress">Prepairing to Upload…</string>
     <string name="uploading_progress">Uploading…</string>
+    <string name="tap_to_update">Tap to update randos</string>
 
     <string name="version">Version: </string>
     <string name="account">Account: </string>
@@ -69,4 +70,17 @@
 
     <string name="help_guide_title">How to use</string>
     <!-- Help Resources End -->
+
+    <!-- Update Play Services Dialog Resources Start -->
+    <string name="update_play_services_dialog_title">Google Play Services</string>
+    <string name="update_play_services_dialog_message"></string>
+    <string name="update_play_services_dialog_positive">Install/Update</string>
+    <string name="update_play_services_dialog_negative">Cancel</string>
+    <!-- Update Play Services Dialog Resources End -->
+    
+    <string name="sync_nothing_new">Nothing new</string>
+    <string name="sync_randos_updated">Randos are updated</string>
+
+    <string name="rando_landed">Your Rando has landed</string>
+    <string name="rando_received">You have received new Rando</string>
 </resources>

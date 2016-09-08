@@ -7,10 +7,14 @@ public class Constants {
     public static final String ALBUM_NAME = "Rando";
 
     public static final String FILEPATH = "FILEPATH";
-    public static final String RANDO_PAIRS_NUMBER = "RANDO_PAIRS_NUMBER";
-    public static final String NOT_PAIRED_RANDO_PAIRS_NUMBER = "NOT_PAIRED_RANDO_PAIRS_NUMBER";
+    public static final String TOTAL_RANDOS_NUMBER = "TOTAL_RANDOS_NUMBER";
+    public static final String UPDATE_STATUS = "UPDATE_STATUS";
+    public static final String UPDATED = "UPDATED";
+    public static final String NOT_UPDATED = "NOT_UPDATED";
 
-    /** Default on-disk cache directory. */
+    /**
+     * Default on-disk cache directory.
+     */
     public static final String DEFAULT_CACHE_DIR = "volley";
     public static final int DEFAULT_CACHE_SIZE = 20 * 1024 * 1024;
 
@@ -18,15 +22,15 @@ public class Constants {
     public static final String SYNC_BROADCAST_EVENT = "Rando4MeSyncEvent";
     public static final String UPLOAD_SERVICE_BROADCAST_EVENT = "Rando4MeUploadDoneEvent";
     public static final String AUTH_FAILURE_BROADCAST_EVENT = "Rando4MeAuthFailureEvent";
+    public static final String PUSH_NOTIFICATION_BROADCAST_EVENT = "Rando4MePushNotificationEvent";
 
     public static final String RANDO_PHOTO_PATH = "RANDO_PHOTO_PATH";
 
     public static final String IMAGE_FILTER = "image/*";
     public static final String IMAGE_PREFIX = "IMG_";
     public static final String IMAGE_POSTFIX = ".jpg";
-    public static final int JPEG_QUALITY = 75;
 
-    public static final long LOCATION_DETECT_TIMEOUT = 5*60*1000; //in milliseconds
+    public static final long LOCATION_DETECT_TIMEOUT = 5 * 60 * 1000; //in milliseconds
 
     public static final String ERROR = "error";
     public static final int UNAUTHORIZED_CODE = 400;
@@ -45,9 +49,6 @@ public class Constants {
     public static final int ESTABLISH_CONNECTION_TIMEOUT = 5 * 60 * 1000;
     public static final int CONNECTION_TIMEOUT = 60 * 60 * 1000;
 
-    public static final long SERVICE_SHORT_PAUSE = 30 * 1000;
-    public static final long SERVICE_LONG_PAUSE = AlarmManager.INTERVAL_HALF_HOUR;
-
     public static final long UPLOAD_SERVICE_INTERVAL = AlarmManager.INTERVAL_HOUR * 3;
 
     public static final int UPLOAD_RETRY_TIMEOUT = 30 * 60 * 1000;
@@ -63,6 +64,7 @@ public class Constants {
     public static final String PREFERENCES_FILE_NAME = "rando.prefs";
     public static final String AUTH_TOKEN = "auth.token";
     public static final String FIREBASE_INSTANCE_ID = "firebase.instance.id";
+    public static final String UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE = "play.services.update.dialog.shown.date";
     public static final String RANDOS_BALANCE = "randos.balance";
     public static final String ACCOUNT = "account";
     public static final String TRAINING_FRAGMENT_SHOWN = "training.fragment.shown";
@@ -119,9 +121,6 @@ public class Constants {
 
     public static final String REPORT_BROADCAST = "Report";
 
-
-    public static final String NEED_NOTIFICATION = "Notification";
-
     public static final String GOOGLE_AUTH_SCOPE = "oauth2:https://www.googleapis.com/auth/userinfo.profile";
     public static final String GOOGLE_USER_INFO_URL = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=";
 
@@ -132,6 +131,7 @@ public class Constants {
 
     public static final int CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE = 628;
     public static final int CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE = 623;
+    public static final int UPDATE_PLAY_SERVICES_REQUEST_CODE = 2404;
 
     public static final String FORBIDDEN_ERROR = "ForbiddenException";
     public static final String FILE_NOT_FOUND_ERROR = "FileNotFound";

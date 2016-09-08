@@ -25,12 +25,12 @@ public abstract class BaseAuth implements View.OnClickListener {
         Progress.hide();
 
         hideSoftKeyboard(fragmentActivity);
-        clearDBForChangeAccount(fragmentActivity.getApplicationContext());
+        clearDBForChangeAccount();
 
         FragmentManager fragmentManager = fragmentActivity.getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.main_screen, new EmptyHomeWallFragment()).commit();
 
-        API.syncUserAsync(null);
+        API.syncUserAsync(null, null);
     }
 
     private static void hideSoftKeyboard(FragmentActivity fragmentActivity) {
@@ -44,8 +44,9 @@ public abstract class BaseAuth implements View.OnClickListener {
         }
     }
 
-    private static void clearDBForChangeAccount(Context context) {
+    private static void clearDBForChangeAccount() {
         RandoDAO.clearRandos();
+        RandoDAO.clearRandoToUpload();
     }
 
 }
