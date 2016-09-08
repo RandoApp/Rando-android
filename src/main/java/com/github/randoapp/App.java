@@ -6,8 +6,6 @@ import android.content.Intent;
 
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
-import com.github.randoapp.service.RandoFirebaseInstanceIdService;
-import com.github.randoapp.service.RandoMessagingService;
 import com.github.randoapp.service.UploadService;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -52,10 +50,6 @@ public class App extends Application {
         //App onCreate called twice. Prevent double service run, if it is already created
         if (!UploadService.isRunning()) {
             startService(new Intent(getApplicationContext(), UploadService.class));
-        }
-        if (!RandoMessagingService.isRunning()) {
-            startService(new Intent(context, RandoFirebaseInstanceIdService.class));
-            startService(new Intent(context, RandoMessagingService.class));
         }
     }
 

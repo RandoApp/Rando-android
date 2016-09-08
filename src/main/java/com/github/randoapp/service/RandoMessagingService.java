@@ -1,10 +1,7 @@
 package com.github.randoapp.service;
 
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
 
-import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
@@ -41,15 +38,5 @@ public class RandoMessagingService extends FirebaseMessagingService {
             Intent intent = new Intent(Constants.UPLOAD_SERVICE_BROADCAST_EVENT);
             RandoMessagingService.this.sendBroadcast(intent);
         }
-    }
-
-    public static boolean isRunning() {
-        ActivityManager manager = (ActivityManager) App.context.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (FirebaseMessagingService.class.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
     }
 }
