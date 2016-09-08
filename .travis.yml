@@ -48,7 +48,21 @@ before_install:
   # Install tree for directory structure debug
   #- sudo apt-get install -qq tree
 
-  # Install base Android SDK
+  # Install required components.
+  # For a full list, run `android list sdk -a --extended`
+  - echo yes | android update sdk --filter android-23 --all --no-ui --force
+  - echo yes | android update sdk --filter android-$ANDROID_API --all --no-ui --force
+  - echo yes | android update sdk --filter build-tools-23.0.1 --all --no-ui --force
+  - echo yes | android update sdk --filter extra-google-m2repository --all --no-ui --force
+  - echo yes | android update sdk --filter extra-android-m2repository --all --no-ui --force
+  - echo yes | android update sdk --filter sys-img-armeabi-v7a-android-$ANDROID_API --all --no-ui --force
+
+  # Create and start emulator
+  - android list targets
+  - echo no | android create avd --force -n test -t android-$ANDROID_API --abi $ANDROID_ABI
+  - emulator -avd test -no-skin -no-audio -no-window &
+
+  # Create Downloads folder
   - cd ${HOME}
   - if [ ! -d $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
 
@@ -66,24 +80,11 @@ before_install:
   - export ANDROID_NDK_HOME=$APPS_HOME/android-ndk-r11c
   - export PATH=$ANDROID_NDK_HOME/bin:$PATH
 
-  # Install required components.
-  # For a full list, run `android list sdk -a --extended`
-  - echo yes | android update sdk --filter android-23 --all --no-ui --force
-  - echo yes | android update sdk --filter android-$ANDROID_API --all --no-ui --force
-  - echo yes | android update sdk --filter build-tools-23.0.1 --all --no-ui --force
-  - echo yes | android update sdk --filter extra-google-m2repository --all --no-ui --force
-  - echo yes | android update sdk --filter extra-android-m2repository --all --no-ui --force
-  - echo yes | android update sdk --filter sys-img-armeabi-v7a-android-$ANDROID_API --all --no-ui --force
-
-before_script:
-# Create and start emulator
-  - android list targets
-  - echo no | android create avd --force -n test -t android-$ANDROID_API --abi $ANDROID_ABI
-  - emulator -avd test -no-skin -no-audio -no-window &
+  # wait for emulator
   - android-wait-for-emulator
-  #- ci/wait_for_emulator.sh
   - adb shell input keyevent 82 &
 
+before_script:
   # Create gradle.properties with secret stroke password:
   - cd ${CI_HOME}
   - echo "keyStorePassword=$KEY_STROKE_PASSWORD" > gradle.properties
