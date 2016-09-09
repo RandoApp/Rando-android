@@ -54,9 +54,9 @@ before_install:
   - if [ ! -d $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
 
   # Install Gradle
-  - if [ ! -f $DOWNLOADS_HOME/gradle.zip ]; then  wget http://services.gradle.org/distributions/gradle-2.14-bin.zip -O $DOWNLOADS_HOME/gradle.zip > /dev/null; fi
-  - if [ ! -d $APPS_HOME/gradle-2.14 ]; then unzip --qq $DOWNLOADS_HOME/gradle.zip -d $APPS_HOME; fi
-  - export GRADLE_HOME=$APPS_HOME/gradle-2.14
+  - if [ ! -f $DOWNLOADS_HOME/gradle.zip ]; then  wget http://services.gradle.org/distributions/gradle-2.14.1-bin.zip -O $DOWNLOADS_HOME/gradle.zip > /dev/null; fi
+  - if [ ! -d $APPS_HOME/gradle-2.14.1 ]; then unzip --qq $DOWNLOADS_HOME/gradle.zip -d $APPS_HOME; fi
+  - export GRADLE_HOME=$APPS_HOME/gradle-2.14.1
   - export PATH=$GRADLE_HOME/bin:$PATH
 
   # Install NDK
@@ -77,11 +77,10 @@ before_install:
 
 before_script:
 # Create and start emulator
-  - android list targets
+  # For a full list of android targets, run "android list targets"
   - echo no | android create avd --force -n test -t android-$ANDROID_API --abi $ANDROID_ABI
   - emulator -avd test -no-skin -no-audio -no-window &
   - android-wait-for-emulator
-  #- ci/wait_for_emulator.sh
   - adb shell input keyevent 82 &
 
   # Create gradle.properties with secret stroke password:
@@ -97,5 +96,5 @@ script:
   - gradle connectedAndroidTest coveralls --stacktrace
   - if [ $NEED_UPLOAD_APK ]; then gradle assembleRelease; fi
 
-after_script:
+after_success:
     - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "put build/outputs/apk/Rando-android-release.apk; bye"; fi
