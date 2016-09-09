@@ -17,7 +17,8 @@ android:
     - android-sdk-license-bcbbd656
     - '.*intel.+'
 git:
-  depth: 10
+  depth: 3
+# Not working for public repositories :(
 cache:
   - apt
   - directories:
@@ -48,24 +49,14 @@ before_install:
   # Install tree for directory structure debug
   #- sudo apt-get install -qq tree
 
-  # Install required components.
-  # For a full list, run `android list sdk -a --extended`
-  - echo yes | android update sdk --filter android-23 --all --no-ui --force
-  - echo yes | android update sdk --filter android-$ANDROID_API --all --no-ui --force
-  - echo yes | android update sdk --filter build-tools-23.0.1 --all --no-ui --force
-  - echo yes | android update sdk --filter extra-google-m2repository --all --no-ui --force
-  - echo yes | android update sdk --filter extra-android-m2repository --all --no-ui --force
-  - echo yes | android update sdk --filter sys-img-armeabi-v7a-android-$ANDROID_API --all --no-ui --force
-
-  # Create Downloads folder
+  # Install base Android SDK
   - cd ${HOME}
   - if [ ! -d $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
 
   # Install Gradle
-  - export GRADLE_VERSION=2.14.1
-  - if [ ! -f $DOWNLOADS_HOME/gradle.zip ]; then  wget http://services.gradle.org/distributions/gradle-2.14.1-bin.zip -O $DOWNLOADS_HOME/gradle.zip > /dev/null; fi
-  - if [ ! -d $APPS_HOME/gradle-2.14.1 ]; then unzip --qq $DOWNLOADS_HOME/gradle.zip -d $APPS_HOME; fi
-  - export GRADLE_HOME=$APPS_HOME/gradle-2.14.1
+  - if [ ! -f $DOWNLOADS_HOME/gradle.zip ]; then  wget http://services.gradle.org/distributions/gradle-2.14-bin.zip -O $DOWNLOADS_HOME/gradle.zip > /dev/null; fi
+  - if [ ! -d $APPS_HOME/gradle-2.14 ]; then unzip --qq $DOWNLOADS_HOME/gradle.zip -d $APPS_HOME; fi
+  - export GRADLE_HOME=$APPS_HOME/gradle-2.14
   - export PATH=$GRADLE_HOME/bin:$PATH
 
   # Install NDK
@@ -75,12 +66,22 @@ before_install:
   - export ANDROID_NDK_HOME=$APPS_HOME/android-ndk-r11c
   - export PATH=$ANDROID_NDK_HOME/bin:$PATH
 
+  # Install required components.
+  # For a full list, run `android list sdk -a --extended`
+  - echo yes | android update sdk --filter android-23 --all --no-ui --force
+  - echo yes | android update sdk --filter android-$ANDROID_API --all --no-ui --force
+  - echo yes | android update sdk --filter build-tools-23.0.1 --all --no-ui --force
+  - echo yes | android update sdk --filter extra-google-m2repository --all --no-ui --force
+  - echo yes | android update sdk --filter extra-android-m2repository --all --no-ui --force
+  - echo yes | android update sdk --filter sys-img-armeabi-v7a-android-$ANDROID_API --all --no-ui --force
+
 before_script:
-  # Create and start emulator
-  # For a full list of android targets, run "android list targets"
+# Create and start emulator
+  - android list targets
   - echo no | android create avd --force -n test -t android-$ANDROID_API --abi $ANDROID_ABI
   - emulator -avd test -no-skin -no-audio -no-window &
   - android-wait-for-emulator
+  #- ci/wait_for_emulator.sh
   - adb shell input keyevent 82 &
 
   # Create gradle.properties with secret stroke password:
@@ -96,5 +97,5 @@ script:
   - gradle connectedAndroidTest coveralls --stacktrace
   - if [ $NEED_UPLOAD_APK ]; then gradle assembleRelease; fi
 
-after_success:
+after_script:
     - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "put build/outputs/apk/Rando-android-release.apk; bye"; fi
