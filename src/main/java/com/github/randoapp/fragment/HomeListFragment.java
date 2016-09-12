@@ -128,7 +128,7 @@ public class HomeListFragment extends Fragment {
         getActivity().registerReceiver(receiver, new IntentFilter(PUSH_NOTIFICATION_BROADCAST_EVENT));
     }
 
-    private void showForceSyncButtonIfNecessary(View rootView) {
+    private void showForceSyncButtonIfNecessary(final View rootView) {
         GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
         int status = googleApiAvailability.isGooglePlayServicesAvailable(getContext());
         Button forceSyncButton = (Button) rootView.findViewById(R.id.forceSyncButton);
