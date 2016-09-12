@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!--Created manually according: https://developers.google.com/android/guides/google-services-plugin since gradle-experimental doesn't pick up google-services.json  -->
-    <string name="google_app_id" translatable="false">1:411525045399:android:d305d34db8ad5af0</string>
-</resources>

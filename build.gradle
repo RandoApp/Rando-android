@@ -14,6 +14,7 @@ apply plugin: 'com.github.kt3k.coveralls'
 def signConf
 def reportsUserLocal = reportsUser
 def reportsPasswordLocal = reportsPassword
+def googleAppIdLocal = googleAppId
 
 repositories {
     jcenter()
@@ -35,9 +36,16 @@ model {
                     name = "RANDO_REPORTS_USER"
                     value = reportsUserLocal
                 }
+
                 create() {
                     type = "String"
                     name = "RANDO_REPORTS_PASSWORD"
+                    value = reportsPasswordLocal
+                }
+
+                create() {
+                    type = "String"
+                    name = "google_app_id"
                     value = reportsPasswordLocal
                 }
             }
