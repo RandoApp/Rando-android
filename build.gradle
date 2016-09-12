@@ -30,22 +30,23 @@ model {
             testApplicationId 'com.github.randoapp.test'
             testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
 
+            resValues.with {
+                create() {
+                    type = "string"
+                    name = "google_app_id"
+                    value = googleAppIdLocal
+                }
+            }
+
             buildConfigFields.with {
                 create() {
                     type = "String"
                     name = "RANDO_REPORTS_USER"
                     value = reportsUserLocal
                 }
-
                 create() {
                     type = "String"
                     name = "RANDO_REPORTS_PASSWORD"
-                    value = reportsPasswordLocal
-                }
-
-                create() {
-                    type = "String"
-                    name = "google_app_id"
                     value = reportsPasswordLocal
                 }
             }
