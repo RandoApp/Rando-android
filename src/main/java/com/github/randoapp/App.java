@@ -19,7 +19,7 @@ import static org.acra.sender.HttpSender.Type;
 
 
 @ReportsCrashes(
-        formUri = "http://reports.rando4.me/" + BuildConfig.RANDO_REPORTS_ACRA_DB + "/_design/acra-storage/_update/report",
+        formUri = "https://reports.rando4.me/" + BuildConfig.RANDO_REPORTS_ACRA_DB + "/_design/acra-storage/_update/report",
         reportType = Type.JSON,
         httpMethod = Method.PUT,
         formUriBasicAuthLogin = BuildConfig.RANDO_REPORTS_USER,
