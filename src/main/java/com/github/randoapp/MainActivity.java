@@ -21,6 +21,7 @@ import com.github.randoapp.fragment.TrainingHomeFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.service.UploadService;
+import com.github.randoapp.util.GPSUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
@@ -133,7 +134,8 @@ public class MainActivity extends FragmentActivity {
             ACRA.getErrorReporter().putCustomData("PlayServicesProblem", googleApiAvailability.getErrorString(status));
             ACRA.getErrorReporter().handleSilentException(null);
             ACRA.getErrorReporter().removeCustomData("PlayServicesProblem");
-            if(googleApiAvailability.isUserResolvableError(status)
+            if ((status == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED && GPSUtil.isGPSUpateRequired(getPackageManager()))
+                && googleApiAvailability.isUserResolvableError(status)
                     && (TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - Preferences.getUpdatePlayServicesDateShown().getTime()) > 15)){
                 Preferences.setUpdatePlayServicesDateShown(new Date());
                 googleApiAvailability.getErrorDialog(this, status, UPDATE_PLAY_SERVICES_REQUEST_CODE).show();
