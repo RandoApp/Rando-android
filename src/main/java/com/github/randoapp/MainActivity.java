@@ -134,9 +134,9 @@ public class MainActivity extends FragmentActivity {
             ACRA.getErrorReporter().putCustomData("PlayServicesProblem", googleApiAvailability.getErrorString(status));
             ACRA.getErrorReporter().handleSilentException(null);
             ACRA.getErrorReporter().removeCustomData("PlayServicesProblem");
-            if ((status == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED && GPSUtil.isGPSUpateRequired(getPackageManager()))
-                && googleApiAvailability.isUserResolvableError(status)
-                    && (TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - Preferences.getUpdatePlayServicesDateShown().getTime()) > 15)){
+            if ((status == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED && GPSUtil.isGPSVersionLowerThanRequired(getPackageManager()))
+                || (status != ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED && googleApiAvailability.isUserResolvableError(status)
+                    && (TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - Preferences.getUpdatePlayServicesDateShown().getTime()) > 15))){
                 Preferences.setUpdatePlayServicesDateShown(new Date());
                 googleApiAvailability.getErrorDialog(this, status, UPDATE_PLAY_SERVICES_REQUEST_CODE).show();
             }

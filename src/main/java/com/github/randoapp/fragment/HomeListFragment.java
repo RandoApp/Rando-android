@@ -134,7 +134,7 @@ public class HomeListFragment extends Fragment {
         int status = googleApiAvailability.isGooglePlayServicesAvailable(getContext());
         Button forceSyncButton = (Button) rootView.findViewById(R.id.forceSyncButton);
         if (status != ConnectionResult.SUCCESS
-                && (status == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED && GPSUtil.isGPSUpateRequired(getActivity().getPackageManager()))) {
+                && (status == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED && GPSUtil.isGPSVersionLowerThanRequired(getActivity().getPackageManager()))) {
             forceSyncButton.setVisibility(View.VISIBLE);
             forceSyncButton.setOnClickListener(new View.OnClickListener() {
                 @Override

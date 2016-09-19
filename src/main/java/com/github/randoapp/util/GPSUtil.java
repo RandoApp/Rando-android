@@ -7,7 +7,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 public class GPSUtil {
 
-    public static boolean isGPSUpateRequired(PackageManager packageManager){
+    public static boolean isGPSVersionLowerThanRequired(PackageManager packageManager){
 
         boolean isUpdateRequired = true;
         int versionCode = 0;
