@@ -119,8 +119,8 @@ public class API {
         try {
             HttpPost request = new HttpPost(FACEBOOK_URL);
             addParamsToRequest(request, FACEBOOK_ID_PARAM, id, FACEBOOK_EMAIL_PARAM, email, FACEBOOK_TOKEN_PARAM, token, FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
-            response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
+            response = VolleySingleton.getInstance().getHttpClient().execute(request);
             if (response.getStatusLine().getStatusCode() == SC_OK) {
                 String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
                 Preferences.setAuthToken(authToken);
@@ -142,6 +142,7 @@ public class API {
             HttpPost request = new HttpPost(GOOGLE_URL);
             addParamsToRequest(request, GOOGLE_EMAIL_PARAM, email, GOOGLE_TOKEN_PARAM, token, GOOGLE_FAMILY_NAME_PARAM, familyName, FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
 
+            response = VolleySingleton.getInstance().getHttpClient().execute(request);
             if (response.getStatusLine().getStatusCode() == SC_OK) {
                 String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
                 Preferences.setAuthToken(authToken);
