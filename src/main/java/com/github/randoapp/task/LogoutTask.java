@@ -17,15 +17,19 @@ public class LogoutTask extends BaseTask {
             logoutGoogle();
             logoutFacebook();
             API.logout();
-            Preferences.removeAuthToken();
-            RandoDAO.clearRandos();
-            RandoDAO.clearRandoToUpload();
-
             return OK;
         } catch (Exception exc) {
             data.put(Constants.ERROR, exc.getMessage());
             return ERROR;
+        } finally {
+           cleanUp();
         }
+    }
+
+    private void cleanUp(){
+        Preferences.removeAuthToken();
+        RandoDAO.clearRandos();
+        RandoDAO.clearRandoToUpload();
     }
 
     private void logoutFacebook() {

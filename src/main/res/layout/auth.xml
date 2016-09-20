@@ -23,7 +23,7 @@
             android:layout_marginTop="28dp"
             android:orientation="vertical">
 
-            <Button
+            <com.google.android.gms.common.SignInButton
                 android:id="@+id/googleAuthButton"
                 android:layout_width="match_parent"
                 android:layout_height="62dp"
