@@ -27,6 +27,8 @@ import static com.github.randoapp.Constants.GOOGLE_USER_INFO_URL;
 public class GoogleAuthTask extends BaseTask {
 
     private String email;
+    private String token;
+    private String familyName;
     private AuthFragment authFragment;
 
 
@@ -35,11 +37,16 @@ public class GoogleAuthTask extends BaseTask {
         this.authFragment = authFragment;
     }
 
+    public GoogleAuthTask(String email, String token, String familyName, AuthFragment authFragment) {
+        this.email = email;
+        this.authFragment = authFragment;
+        this.token = token;
+        this.familyName = familyName;
+    }
+
     @Override
     public Integer run() {
         try {
-            String token = fetchToken(email);
-            String familyName = fetchFamilyName(token);
 
             if (token != null && familyName != null) {
                 API.google(email, token, familyName);

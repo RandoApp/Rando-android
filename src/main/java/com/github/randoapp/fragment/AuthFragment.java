@@ -11,10 +11,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.github.randoapp.R;
-import com.github.randoapp.api.API;
 import com.github.randoapp.auth.EmailAndPasswordAuth;
 import com.github.randoapp.auth.SkipAuth;
 import com.github.randoapp.log.Log;
+import com.github.randoapp.task.GoogleAuthTask;
 import com.github.randoapp.util.GPSUtil;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -61,6 +61,7 @@ public class AuthFragment extends Fragment implements GoogleApiClient.OnConnecti
                 //googleButton. setText(getResources().getString(com.google.android.gms.R.string.common_signin_button_text_long));
 
                 GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken("dddd")
                         .requestEmail()
                         .build();
                 googleButton.setScopes(gso.getScopeArray());
@@ -90,12 +91,10 @@ public class AuthFragment extends Fragment implements GoogleApiClient.OnConnecti
             if (result.isSuccess()) {
                 // Signed in successfully, show authenticated UI.
                 GoogleSignInAccount acct = result.getSignInAccount();
-                try {
-                    API.google(acct.getEmail(), acct.getIdToken(), acct.getFamilyName());
-                } catch (Exception e){
-
-                }
+                Log.d(AuthFragment.class, "Handle SignIn Result:" + acct.getIdToken() + acct.getFamilyName());
+                new GoogleAuthTask(acct.getEmail(), acct.getIdToken(), acct.getFamilyName(), this).execute();
             } else {
+                googleButton.setEnabled(false);
                 // Signed out, show unauthenticated UI.
             }
         }
