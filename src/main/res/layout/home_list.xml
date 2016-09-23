@@ -24,7 +24,7 @@
         android:layout_height="match_parent"
         android:divider="@null"
         android:dividerHeight="0dp" />
-
+    </android.support.v4.widget.SwipeRefreshLayout>
     <ImageView
         android:layout_width="@dimen/ic_home_size"
         android:layout_height="@dimen/ic_home_size"
@@ -34,5 +34,4 @@
         android:layout_marginRight="@dimen/ic_home_margin_right"
         android:id="@+id/ic_home"
         android:visibility="gone"/>
-    </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>
