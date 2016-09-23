@@ -1,7 +1,5 @@
 package com.github.randoapp.task;
 
-import android.app.Dialog;
-
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
@@ -15,7 +13,6 @@ import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
 import com.google.android.gms.auth.UserRecoverableAuthException;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,7 +46,6 @@ public class GoogleAuthTask extends BaseTask {
                 return OK;
             }
         } catch (GooglePlayServicesAvailabilityException playEx) {
-            Dialog alert = GooglePlayServicesUtil.getErrorDialog(playEx.getConnectionStatusCode(), authFragment.getActivity(), Constants.GOOGLE_ACTIVITIES_AUTH_REQUEST_CODE);
             Log.e(GoogleAuthTask.class, "Google Play service exception: ", playEx.getMessage());
             return ERROR;
         } catch (UserRecoverableAuthException userRecoverableException) {
