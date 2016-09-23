@@ -13,7 +13,7 @@ import com.github.randoapp.R;
 import com.github.randoapp.auth.EmailAndPasswordAuth;
 import com.github.randoapp.auth.GoogleAuth;
 import com.github.randoapp.auth.SkipAuth;
-import com.github.randoapp.util.GPSUtil;
+import com.github.randoapp.util.GooglePlayServicesUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
@@ -42,7 +42,7 @@ public class AuthFragment extends Fragment {
         try {
             int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(rootView.getContext());
             if (status == SUCCESS
-                    || (status == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED && !GPSUtil.isGPSVersionLowerThanRequired(getActivity().getPackageManager()))) {
+                    || (status == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED && !GooglePlayServicesUtil.isGPSVersionLowerThanRequired(getActivity().getPackageManager()))) {
                 Button googleButton = (Button) rootView.findViewById(R.id.googleAuthButton);
                 googleButton.setVisibility(VISIBLE);
                 googleButton.setBackgroundDrawable(getResources().getDrawable(com.google.android.gms.R.drawable.common_google_signin_btn_text_dark_normal));

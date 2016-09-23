@@ -24,7 +24,7 @@ import com.github.randoapp.api.API;
 import com.github.randoapp.api.listeners.ErrorResponseListener;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.util.ConnectionUtil;
-import com.github.randoapp.util.GPSUtil;
+import com.github.randoapp.util.GooglePlayServicesUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
@@ -134,7 +134,7 @@ public class HomeListFragment extends Fragment {
         int status = googleApiAvailability.isGooglePlayServicesAvailable(getContext());
         Button forceSyncButton = (Button) rootView.findViewById(R.id.forceSyncButton);
         if (status != ConnectionResult.SUCCESS
-                && (status == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED && GPSUtil.isGPSVersionLowerThanRequired(getActivity().getPackageManager()))) {
+                && (status == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED && GooglePlayServicesUtil.isGPSVersionLowerThanRequired(getActivity().getPackageManager()))) {
             forceSyncButton.setVisibility(View.VISIBLE);
             forceSyncButton.setOnClickListener(new View.OnClickListener() {
                 @Override

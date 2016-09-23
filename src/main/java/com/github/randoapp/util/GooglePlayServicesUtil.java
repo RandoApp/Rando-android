@@ -2,23 +2,22 @@ package com.github.randoapp.util;
 
 import android.content.pm.PackageManager;
 
+import com.github.randoapp.log.Log;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 
-public class GPSUtil {
+public class GooglePlayServicesUtil {
+
+    private  static int MIN_GPS_VERISON = 5000000;
 
     public static boolean isGPSVersionLowerThanRequired(PackageManager packageManager){
 
-        boolean isUpdateRequired = true;
         int versionCode = 0;
         try {
              versionCode = packageManager.getPackageInfo(GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE, 0 ).versionCode;
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            Log.d(GooglePlayServicesUtil.class, "Google Play Services not installed at all");
         }
-        if (versionCode>5000000){
-            isUpdateRequired = false;
-        }
-        return isUpdateRequired;
+        return versionCode <= MIN_GPS_VERISON;
     }
 }
