@@ -13,28 +13,38 @@ import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.MainActivity;
 import com.github.randoapp.R;
+import com.github.randoapp.log.Log;
 
 public class Notification {
 
+    private static final int NOTIFICATION_MIN_API_LEVEL = 11;
+    private static final int LED_MS_TO_BE_ON = 3000;
+    private static final int LED_MS_TO_BE_OFF = 3000;
+
     public static void show(Context context, String title, String text) {
-        Intent notificationIntent = new Intent(context, MainActivity.class);
+        Log.d(Notification.class, "Show with following params: title -> " + title + " text -> " + text);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+        if (android.os.Build.VERSION.SDK_INT < NOTIFICATION_MIN_API_LEVEL) {
+            Log.i(Notification.class, "Cannot show notification, because API level less than notification min api level");
+            return;
+        }
 
-        NotificationCompat.Builder notification = new NotificationCompat.Builder(context)
+        NotificationCompat.Builder notificationBuilder =
+            new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle(title)
                 .setContentText(text)
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+                .setAutoCancel(true)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setLights(Color.RED, LED_MS_TO_BE_ON, LED_MS_TO_BE_OFF);
 
-        notification.setContentIntent(contentIntent);
-        notification.setAutoCancel(true);
-        notification.setLights(Color.BLUE, 500, 500);
-        notification.setStyle(new NotificationCompat.InboxStyle());
+        Intent resultIntent = new Intent(context, MainActivity.class);
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(1, notification.build());
+        notificationBuilder.setContentIntent(resultPendingIntent);
+
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        notificationManager.notify(1, notificationBuilder.build());
     }
 
     public static void sendSyncNotification(int randosNumber, String updateStatus) {
