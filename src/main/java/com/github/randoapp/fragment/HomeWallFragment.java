@@ -1,5 +1,6 @@
 package com.github.randoapp.fragment;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,9 @@ import com.github.randoapp.CameraActivity;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.adapter.HomePagerAdapter;
+import com.github.randoapp.util.PermissionUtils;
+
+import static com.github.randoapp.Constants.CAMERA_PERMISSION_REQUEST_CODE;
 
 public class HomeWallFragment extends Fragment {
 
@@ -27,10 +31,12 @@ public class HomeWallFragment extends Fragment {
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(rootView.getContext(), CameraActivity.class);
-                startActivityForResult(intent, Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE);
+                if (!PermissionUtils.checkAndRequestMissingPermissions(getActivity(), CAMERA_PERMISSION_REQUEST_CODE, Manifest.permission.CAMERA)) {
+                    Intent intent = new Intent(rootView.getContext(), CameraActivity.class);
+                    startActivityForResult(intent, Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE);
+                }
             }
         });
-        return  rootView;
+        return rootView;
     }
 }

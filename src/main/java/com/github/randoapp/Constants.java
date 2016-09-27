@@ -133,6 +133,13 @@ public class Constants {
     public static final int CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE = 623;
     public static final int UPDATE_PLAY_SERVICES_REQUEST_CODE = 2404;
 
+
+    public static final int ALL_PERMISSIONS_REQUEST_CODE = 701;
+    public static final int CAMERA_PERMISSION_REQUEST_CODE = 702;
+    public static final int LOCATION_PERMISSION_REQUEST_CODE = 703;
+    public static final int CONTACTS_PERMISSION_REQUEST_CODE = 704;
+    public static final int STORAGE_PERMISSION_REQUEST_CODE = 705;
+
     public static final String FORBIDDEN_ERROR = "ForbiddenException";
     public static final String FILE_NOT_FOUND_ERROR = "FileNotFound";
     public static final String REQUEST_TOO_LONG_ERROR = "RequestTooLongException";
