@@ -18,7 +18,7 @@ import com.github.randoapp.view.Progress;
 
 import java.util.Map;
 
-import static com.github.randoapp.Constants.STORAGE_PERMISSION_REQUEST_CODE;
+import static com.github.randoapp.Constants.CONTACTS_PERMISSION_REQUEST_CODE;
 
 public class EmailAndPasswordAuth extends BaseAuth {
 
@@ -34,7 +34,7 @@ public class EmailAndPasswordAuth extends BaseAuth {
     }
 
     private void setEmailFromAccount(EditText emailText) {
-        if (!PermissionUtils.checkAndRequestMissingPermissions(authFragment.getActivity(), STORAGE_PERMISSION_REQUEST_CODE, Manifest.permission.GET_ACCOUNTS)) {
+        if (!PermissionUtils.checkAndRequestMissingPermissions(authFragment.getActivity(), CONTACTS_PERMISSION_REQUEST_CODE, Manifest.permission.GET_ACCOUNTS)) {
             String[] accounts = AccountUtil.getAccountNames();
             if (accounts.length > 0) {
                 emailText.setText(accounts[0]);

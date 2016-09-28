@@ -26,7 +26,6 @@ import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.service.UploadService;
 import com.github.randoapp.util.GooglePlayServicesUtil;
-import com.github.randoapp.util.PermissionUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
@@ -56,6 +55,15 @@ public class MainActivity extends FragmentActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.i(BroadcastReceiver.class, "Recieved event:", intent.getAction());
+
+            switch (intent.getAction()){
+                case SYNC_BROADCAST_EVENT:
+                    break;
+                case AUTH_FAILURE_BROADCAST_EVENT:
+                    Preferences.removeAuthToken();
+                    getSupportFragmentManager();
+                    break;
+            }
 
             if (SYNC_BROADCAST_EVENT.equals(intent.getAction())) {
                 RelativeLayout emptyHome = (RelativeLayout) findViewById(R.id.empty_home);
@@ -89,7 +97,6 @@ public class MainActivity extends FragmentActivity {
                     .add(R.id.main_screen, getFragment())
                     .commit();
         }
-        PermissionUtils.checkAndRequestMissingPermissions(this, STORAGE_PERMISSION_REQUEST_CODE, android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     private Fragment getFragment() {
