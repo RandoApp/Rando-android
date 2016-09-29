@@ -11,9 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.github.randoapp.api.API;
@@ -21,11 +19,13 @@ import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.fragment.AuthFragment;
 import com.github.randoapp.fragment.EmptyHomeWallFragment;
 import com.github.randoapp.fragment.HomeWallFragment;
+import com.github.randoapp.fragment.MissingStoragePermissionFragment;
 import com.github.randoapp.fragment.TrainingHomeFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.service.UploadService;
 import com.github.randoapp.util.GooglePlayServicesUtil;
+import com.github.randoapp.util.PermissionUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
@@ -56,33 +56,19 @@ public class MainActivity extends FragmentActivity {
         public void onReceive(Context context, Intent intent) {
             Log.i(BroadcastReceiver.class, "Recieved event:", intent.getAction());
 
-            switch (intent.getAction()){
+            switch (intent.getAction()) {
                 case SYNC_BROADCAST_EVENT:
+                    Bundle extra = intent.getExtras();
+                    boolean isUpdated = UPDATED.equals(extra.get(Constants.UPDATE_STATUS));
+                    Toast.makeText(MainActivity.this, (isUpdated ? R.string.sync_randos_updated : R.string.sync_nothing_new), Toast.LENGTH_LONG).show();
                     break;
                 case AUTH_FAILURE_BROADCAST_EVENT:
                     Preferences.removeAuthToken();
-                    getSupportFragmentManager();
                     break;
             }
-
-            if (SYNC_BROADCAST_EVENT.equals(intent.getAction())) {
-                RelativeLayout emptyHome = (RelativeLayout) findViewById(R.id.empty_home);
-                Bundle extra = intent.getExtras();
-                int randosNumber = (Integer) extra.get(Constants.TOTAL_RANDOS_NUMBER);
-                boolean isUpdated = UPDATED.equals(extra.get(Constants.UPDATE_STATUS));
-                if (randosNumber == 0 && emptyHome == null) {
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.main_screen, new EmptyHomeWallFragment()).commit();
-                }
-                if (randosNumber > 0 && emptyHome != null) {
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
-                }
-                Toast.makeText(MainActivity.this, (isUpdated ? R.string.sync_randos_updated : R.string.sync_nothing_new), Toast.LENGTH_LONG).show();
-            } else if (AUTH_FAILURE_BROADCAST_EVENT.equals(intent.getAction())) {
-                Preferences.removeAuthToken();
-                FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.main_screen, new AuthFragment()).commit();
+            Fragment fragment = getFragment();
+            if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName()) == null) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
             }
         }
     };
@@ -103,7 +89,10 @@ public class MainActivity extends FragmentActivity {
         if (isNotAuthorized()) {
             return new AuthFragment();
         }
-        API.syncUserAsync(null, null);
+        if (PermissionUtils.checkAndRequestMissingPermissions(this, STORAGE_PERMISSION_REQUEST_CODE, android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            return new MissingStoragePermissionFragment();
+        }
+
         if (!Preferences.isTrainingFragmentShown()) {
             return new TrainingHomeFragment();
         }
@@ -164,24 +153,37 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if ((grantResults.length > 0) && (permissions.length > 0)
-                && ActivityCompat.shouldShowRequestPermissionRationale(activity, permissions[0])) {
+        if ((grantResults.length > 0) && (permissions.length > 0)) {
             switch (requestCode) {
                 case STORAGE_PERMISSION_REQUEST_CODE:
                     if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                        new AlertDialog.Builder(this).setTitle(R.string.storage_needed_title).setMessage(R.string.storage_needed_message).setPositiveButton(R.string.permission_positive_button, null).create().show();
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permissions[0])) {
+                            new AlertDialog.Builder(this).setTitle(R.string.storage_needed_title).setMessage(R.string.storage_needed_message).setPositiveButton(R.string.permission_positive_button, null).create().show();
+                        }
+                    } else {
+                        API.syncUserAsync(null, null);
                     }
                     break;
                 case CONTACTS_PERMISSION_REQUEST_CODE:
                     if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                        new AlertDialog.Builder(this).setTitle(R.string.contact_needed_title).setMessage(R.string.contact_needed_message).setPositiveButton(R.string.permission_positive_button, null).create().show();
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permissions[0])) {
+                            new AlertDialog.Builder(this).setTitle(R.string.contact_needed_title).setMessage(R.string.contact_needed_message).setPositiveButton(R.string.permission_positive_button, null).create().show();
+                        }
                     }
                     break;
                 case LOCATION_PERMISSION_REQUEST_CODE:
-                    new AlertDialog.Builder(activity).setTitle(R.string.location_needed_title).setMessage(R.string.location_needed_message).setPositiveButton(R.string.permission_positive_button, null).create().show();
+                    if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permissions[0])) {
+                            new AlertDialog.Builder(activity).setTitle(R.string.location_needed_title).setMessage(R.string.location_needed_message).setPositiveButton(R.string.permission_positive_button, null).create().show();
+                        }
+                    }
                     break;
                 case CAMERA_PERMISSION_REQUEST_CODE:
-                    new AlertDialog.Builder(activity).setTitle(R.string.camera_needed_title).setMessage(R.string.camera_needed_message).setPositiveButton(R.string.permission_positive_button, null).create().show();
+                    if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permissions[0])) {
+                            new AlertDialog.Builder(activity).setTitle(R.string.camera_needed_title).setMessage(R.string.camera_needed_message).setPositiveButton(R.string.permission_positive_button, null).create().show();
+                        }
+                    }
                     break;
             }
         }
@@ -191,8 +193,7 @@ public class MainActivity extends FragmentActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
         } else if (requestCode == UPDATE_PLAY_SERVICES_REQUEST_CODE) {
             int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
             if (status != ConnectionResult.SUCCESS && status != playServicesStatus) {
