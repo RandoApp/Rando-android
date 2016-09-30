@@ -36,9 +36,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.github.randoapp.Constants.AUTH_FAILURE_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
-import static com.github.randoapp.Constants.CAMERA_PERMISSION_REQUEST_CODE;
 import static com.github.randoapp.Constants.CONTACTS_PERMISSION_REQUEST_CODE;
-import static com.github.randoapp.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static com.github.randoapp.Constants.STORAGE_PERMISSION_REQUEST_CODE;
 import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.UPDATED;
@@ -168,20 +166,6 @@ public class MainActivity extends FragmentActivity {
                     if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                         if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permissions[0])) {
                             new AlertDialog.Builder(this).setTitle(R.string.contact_needed_title).setMessage(R.string.contact_needed_message).setPositiveButton(R.string.permission_positive_button, null).create().show();
-                        }
-                    }
-                    break;
-                case LOCATION_PERMISSION_REQUEST_CODE:
-                    if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permissions[0])) {
-                            new AlertDialog.Builder(activity).setTitle(R.string.location_needed_title).setMessage(R.string.location_needed_message).setPositiveButton(R.string.permission_positive_button, null).create().show();
-                        }
-                    }
-                    break;
-                case CAMERA_PERMISSION_REQUEST_CODE:
-                    if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permissions[0])) {
-                            new AlertDialog.Builder(activity).setTitle(R.string.camera_needed_title).setMessage(R.string.camera_needed_message).setPositiveButton(R.string.permission_positive_button, null).create().show();
                         }
                     }
                     break;

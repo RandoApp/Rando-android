@@ -5,7 +5,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
@@ -16,9 +18,11 @@ import com.commonsware.cwac.camera.CameraHostProvider;
 import com.github.randoapp.camera.CameraCaptureFragment;
 import com.github.randoapp.camera.CameraUploadFragment;
 import com.github.randoapp.camera.RandoCameraHost;
+import com.github.randoapp.util.PermissionUtils;
 
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
+import static com.github.randoapp.Constants.CAMERA_PERMISSION_REQUEST_CODE;
 
 public class CameraActivity extends FragmentActivity implements CameraHostProvider {
 
@@ -39,8 +43,7 @@ public class CameraActivity extends FragmentActivity implements CameraHostProvid
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     fragmentManager.beginTransaction().addToBackStack("CameraCaptureFragment").replace(R.id.camera_screen, uploadFragment).commit();
                     return;
-                }
-                else  {
+                } else {
                     Toast.makeText(CameraActivity.this, getResources().getText(R.string.image_crop_failed),
                             Toast.LENGTH_LONG).show();
                 }
@@ -57,9 +60,11 @@ public class CameraActivity extends FragmentActivity implements CameraHostProvid
         setContentView(R.layout.activity_camera);
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.camera_screen, CameraCaptureFragment.newInstance(false))
-                    .commit();
+            if (!PermissionUtils.checkAndRequestMissingPermissions(this, CAMERA_PERMISSION_REQUEST_CODE, android.Manifest.permission.CAMERA)) {
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.camera_screen, CameraCaptureFragment.newInstance(false))
+                        .commit();
+            }
         }
     }
 
@@ -87,4 +92,18 @@ public class CameraActivity extends FragmentActivity implements CameraHostProvid
         super.onDestroy();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if ((grantResults.length > 0) && (permissions.length > 0)) {
+            switch (requestCode) {
+                case CAMERA_PERMISSION_REQUEST_CODE:
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        getSupportFragmentManager().beginTransaction()
+                                .add(R.id.camera_screen, CameraCaptureFragment.newInstance(false))
+                                .commit();
+                    }
+                    break;
+            }
+        }
+    }
 }
