@@ -42,7 +42,6 @@ public class AuthFragment extends Fragment {
 
         EditText emailText = (EditText) rootView.findViewById(R.id.emailEditText);
         setEmailFromAccount(emailText);
-
         return rootView;
     }
 

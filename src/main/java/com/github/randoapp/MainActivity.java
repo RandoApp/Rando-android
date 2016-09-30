@@ -119,20 +119,15 @@ public class MainActivity extends FragmentActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onPostResume() {
+        super.onPostResume();
+        registerReceivers();
         showUpdatePlayServicesDialogIfNecessary();
+        startService(new Intent(getApplicationContext(), UploadService.class));
         Fragment fragment = getFragment();
         if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName()) == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
         }
-    }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        registerReceivers();
-        startService(new Intent(getApplicationContext(), UploadService.class));
     }
 
     private void registerReceivers() {
@@ -176,11 +171,6 @@ public class MainActivity extends FragmentActivity {
                     if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                         if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permissions[0])) {
                             new AlertDialog.Builder(this).setTitle(R.string.contact_needed_title).setMessage(R.string.contact_needed_message).setPositiveButton(R.string.permission_positive_button, null).create().show();
-                        }
-                    } else {
-                        Fragment fragment = getFragment();
-                        if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName()) == null) {
-                            getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
                         }
                     }
                     break;

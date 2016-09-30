@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.api.API;
 import com.github.randoapp.db.RandoDAO;
@@ -29,7 +28,7 @@ public abstract class BaseAuth implements View.OnClickListener {
 
         API.syncUserAsync(null, null);
         Intent intent = new Intent(Constants.AUTH_SUCCCESS_BROADCAST_EVENT);
-        App.context.sendBroadcast(intent);
+        fragmentActivity.sendBroadcast(intent);
     }
 
     private static void hideSoftKeyboard(FragmentActivity fragmentActivity) {

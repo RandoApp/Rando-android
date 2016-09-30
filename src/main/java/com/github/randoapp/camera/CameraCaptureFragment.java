@@ -1,7 +1,6 @@
 package com.github.randoapp.camera;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,6 +9,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +64,8 @@ public class CameraCaptureFragment extends CameraFragment {
         requestLoacation = false;
     }
 
+
+
     private class CaptureButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -114,10 +116,10 @@ public class CameraCaptureFragment extends CameraFragment {
             if (LOCATION_PERMISSION_REQUEST_CODE == requestCode) {
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), permissions[0])) {
-                        new android.support.v7.app.AlertDialog.Builder(getActivity()).setTitle(R.string.location_needed_title).setMessage(R.string.location_needed_message).setPositiveButton(R.string.permission_positive_button, null).create().show();
+                        new AlertDialog.Builder(getActivity()).setTitle(R.string.location_needed_title).setMessage(R.string.location_needed_message).setPositiveButton(R.string.permission_positive_button, null).create().show();
                     }
                 } else {
-                    updateLocation();
+                    requestLoacation = true;
                 }
             }
         }

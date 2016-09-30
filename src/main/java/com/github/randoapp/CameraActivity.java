@@ -55,6 +55,9 @@ public class CameraActivity extends FragmentActivity implements CameraHostProvid
         }
     };
 
+
+    private  boolean isReturningFromCameraPermissionRequest = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +84,17 @@ public class CameraActivity extends FragmentActivity implements CameraHostProvid
     }
 
     @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        if (isReturningFromCameraPermissionRequest){
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.camera_screen, CameraCaptureFragment.newInstance(false))
+                    .commit();
+        }
+        isReturningFromCameraPermissionRequest = false;
+    }
+
+    @Override
     protected void onPause() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         super.onPause();
@@ -99,9 +113,7 @@ public class CameraActivity extends FragmentActivity implements CameraHostProvid
             switch (requestCode) {
                 case CAMERA_PERMISSION_REQUEST_CODE:
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        getSupportFragmentManager().beginTransaction()
-                                .add(R.id.camera_screen, CameraCaptureFragment.newInstance(false))
-                                .commit();
+                        isReturningFromCameraPermissionRequest = true;
                     } else {
                         setResult(CAMERA_ACTIVITY_CAMERA_PERMISSION_REQUIRED);
                         finish();

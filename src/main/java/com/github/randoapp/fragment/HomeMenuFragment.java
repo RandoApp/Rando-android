@@ -24,6 +24,8 @@ import java.util.Map;
 
 public class HomeMenuFragment extends Fragment {
 
+    private TextView accountName;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -56,15 +58,21 @@ public class HomeMenuFragment extends Fragment {
             }
         });
 
+        accountName = (TextView) rootView.findViewById(R.id.accountName);
         initVersion(rootView);
-        initAccountName(rootView);
+        initAccountName();
         initHelp(rootView);
 
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        initAccountName();
+    }
 
-    private void  initVersion(View rootView){
+    private void initVersion(View rootView) {
         TextView versionText = (TextView) rootView.findViewById(R.id.app_version);
         PackageManager manager = getActivity().getPackageManager();
         PackageInfo info = null;
@@ -81,21 +89,20 @@ public class HomeMenuFragment extends Fragment {
         versionText.setText(versionText.getText() + " " + version);
     }
 
-    private void initAccountName(View rootView){
-        TextView accountName = (TextView) rootView.findViewById(R.id.accountName);
-        accountName.setText(accountName.getText() + " " + Preferences.getAccount());
+    private void initAccountName() {
+        accountName.setText(getActivity().getString(R.string.account) + " " + Preferences.getAccount());
     }
 
-    private void initHelp(View rootView){
+    private void initHelp(View rootView) {
         //init Take section
         View view = rootView.findViewById(R.id.help_layout_take);
-        ((ImageView)view.findViewById(R.id.help_section_imageview_icon)).setImageDrawable(rootView.getContext().getResources().getDrawable(R.drawable.ic_launcher));
-        ((TextView)view.findViewById(R.id.help_section_textview_title)).setText(rootView.getContext().getResources().getString(R.string.help_take_title));
-        ((TextView)view.findViewById(R.id.help_section_textview_description)).setText(rootView.getContext().getResources().getString(R.string.help_take_description));
+        ((ImageView) view.findViewById(R.id.help_section_imageview_icon)).setImageDrawable(rootView.getContext().getResources().getDrawable(R.drawable.ic_launcher));
+        ((TextView) view.findViewById(R.id.help_section_textview_title)).setText(rootView.getContext().getResources().getString(R.string.help_take_title));
+        ((TextView) view.findViewById(R.id.help_section_textview_description)).setText(rootView.getContext().getResources().getString(R.string.help_take_description));
 
         view = rootView.findViewById(R.id.help_layout_location);
-       ((ImageView)view.findViewById(R.id.help_section_imageview_icon)).setImageDrawable(rootView.getContext().getResources().getDrawable(R.drawable.ic_globe));
-        ((TextView)view.findViewById(R.id.help_section_textview_title)).setText(rootView.getContext().getResources().getString(R.string.help_location_title));
-        ((TextView)view.findViewById(R.id.help_section_textview_description)).setText(rootView.getContext().getResources().getString(R.string.help_location_description));
+        ((ImageView) view.findViewById(R.id.help_section_imageview_icon)).setImageDrawable(rootView.getContext().getResources().getDrawable(R.drawable.ic_globe));
+        ((TextView) view.findViewById(R.id.help_section_textview_title)).setText(rootView.getContext().getResources().getString(R.string.help_location_title));
+        ((TextView) view.findViewById(R.id.help_section_textview_description)).setText(rootView.getContext().getResources().getString(R.string.help_location_description));
     }
 }
