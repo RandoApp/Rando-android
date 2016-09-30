@@ -133,6 +133,7 @@ public class Constants {
     public static final int CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE = 628;
     public static final int CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE = 623;
     public static final int UPDATE_PLAY_SERVICES_REQUEST_CODE = 2404;
+    public static final int CAMERA_ACTIVITY_CAMERA_PERMISSION_REQUIRED = 629;
 
 
     public static final int ALL_PERMISSIONS_REQUEST_CODE = 701;

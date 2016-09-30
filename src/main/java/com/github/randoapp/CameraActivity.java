@@ -20,6 +20,7 @@ import com.github.randoapp.camera.CameraUploadFragment;
 import com.github.randoapp.camera.RandoCameraHost;
 import com.github.randoapp.util.PermissionUtils;
 
+import static com.github.randoapp.Constants.CAMERA_ACTIVITY_CAMERA_PERMISSION_REQUIRED;
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.CAMERA_PERMISSION_REQUEST_CODE;
@@ -101,6 +102,9 @@ public class CameraActivity extends FragmentActivity implements CameraHostProvid
                         getSupportFragmentManager().beginTransaction()
                                 .add(R.id.camera_screen, CameraCaptureFragment.newInstance(false))
                                 .commit();
+                    } else {
+                        setResult(CAMERA_ACTIVITY_CAMERA_PERMISSION_REQUIRED);
+                        finish();
                     }
                     break;
             }
