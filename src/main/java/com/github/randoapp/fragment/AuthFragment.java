@@ -27,6 +27,8 @@ import static com.google.android.gms.common.ConnectionResult.SUCCESS;
 
 public class AuthFragment extends Fragment {
 
+    private EditText emailText;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -40,9 +42,18 @@ public class AuthFragment extends Fragment {
 
         createGoogleAuthButton(rootView);
 
-        EditText emailText = (EditText) rootView.findViewById(R.id.emailEditText);
-        setEmailFromAccount(emailText);
+        emailText = (EditText) rootView.findViewById(R.id.emailEditText);
+        PermissionUtils.checkAndRequestMissingPermissions(getActivity(), CONTACTS_PERMISSION_REQUEST_CODE, Manifest.permission.GET_ACCOUNTS);
+
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.GET_ACCOUNTS) == PackageManager.PERMISSION_GRANTED) {
+        setEmailFromFirstAccount();
+        //}
     }
 
     private void createGoogleAuthButton(View rootView) {
@@ -76,13 +87,10 @@ public class AuthFragment extends Fragment {
         }
     }
 
-    private void setEmailFromAccount(EditText emailText) {
-        if (!PermissionUtils.checkAndRequestMissingPermissions(getActivity(), CONTACTS_PERMISSION_REQUEST_CODE, Manifest.permission.GET_ACCOUNTS)) {
-            String[] accounts = AccountUtil.getAccountNames();
-            if (accounts.length > 0) {
-                emailText.setText(accounts[0]);
-            }
+    private void setEmailFromFirstAccount() {
+        String[] accounts = AccountUtil.getAccountNames();
+        if (accounts.length > 0) {
+            emailText.setText(accounts[0]);
         }
     }
-
 }
