@@ -24,9 +24,11 @@ import java.util.Map;
 public class GoogleAuth extends BaseAuth implements View.OnTouchListener {
 
     private Button googleButton;
+    private AuthFragment authFragment;
 
     public GoogleAuth(@NonNull AuthFragment authFragment, Button googleButton) {
         super(authFragment);
+        this.authFragment = authFragment;
         this.googleButton = googleButton;
     }
 
@@ -54,6 +56,8 @@ public class GoogleAuth extends BaseAuth implements View.OnTouchListener {
                 Toast.makeText(authFragment.getActivity(), authFragment.getResources().getString(R.string.no_google_account), Toast.LENGTH_LONG).show();
                 setButtonNormal();
             }
+        } else {
+            authFragment.isGoogleLoginPressed = true;
         }
     }
 

@@ -128,9 +128,16 @@ tasks.coveralls {
     onlyIf { System.env.'CI' }
 }
 
+configurations.all {
+    resolutionStrategy {
+        force 'com.android.support:support-annotations:24.2.1'
+    }
+}
+
 dependencies {
     compile project(':volley')
     compile project(':camera-v9')
+    compile 'com.android.support:appcompat-v7:24+'
     compile 'org.apache.httpcomponents:httpcore:4.3'
     compile 'org.apache.httpcomponents:httpmime:4.3.1'
     compile 'ch.acra:acra:4.9.0'
