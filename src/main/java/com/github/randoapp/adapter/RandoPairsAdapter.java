@@ -286,7 +286,7 @@ public class RandoPairsAdapter extends BaseAdapter {
                 }
             }, ImageView.ScaleType.CENTER, 0, 0, priority);
         } else {
-            Log.e(RandoPairsAdapter.class, "Ignore map image because url: ", url, " incorrect");
+            Log.d(RandoPairsAdapter.class, "Ignore map image because url: ", url, " incorrect");
             if (viewHolder.map != null) {
                 viewHolder.map.setImageResource(R.drawable.rando_error);
             } else {

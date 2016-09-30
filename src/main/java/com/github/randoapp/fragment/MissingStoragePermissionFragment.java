@@ -14,7 +14,7 @@ import com.github.randoapp.util.PermissionUtils;
 
 public class MissingStoragePermissionFragment extends Fragment {
 
-    private boolean isStorageAlreadyRequested = false;
+    private boolean requestStorageOnStart = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -28,5 +28,14 @@ public class MissingStoragePermissionFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (requestStorageOnStart){
+            PermissionUtils.checkAndRequestMissingPermissions(getActivity(), Constants.STORAGE_PERMISSION_REQUEST_CODE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            requestStorageOnStart = false;
+        }
     }
 }
