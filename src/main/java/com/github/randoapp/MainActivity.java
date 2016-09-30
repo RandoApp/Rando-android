@@ -1,5 +1,6 @@
 package com.github.randoapp;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
@@ -25,7 +27,6 @@ import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.service.UploadService;
 import com.github.randoapp.util.GooglePlayServicesUtil;
-import com.github.randoapp.util.PermissionUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
@@ -35,6 +36,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.randoapp.Constants.AUTH_FAILURE_BROADCAST_EVENT;
+import static com.github.randoapp.Constants.AUTH_SUCCCESS_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
 import static com.github.randoapp.Constants.CONTACTS_PERMISSION_REQUEST_CODE;
 import static com.github.randoapp.Constants.STORAGE_PERMISSION_REQUEST_CODE;
@@ -63,6 +65,8 @@ public class MainActivity extends FragmentActivity {
                 case AUTH_FAILURE_BROADCAST_EVENT:
                     Preferences.removeAuthToken();
                     break;
+                case AUTH_SUCCCESS_BROADCAST_EVENT:
+                    break;
             }
             Fragment fragment = getFragment();
             if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName()) == null) {
@@ -87,7 +91,8 @@ public class MainActivity extends FragmentActivity {
         if (isNotAuthorized()) {
             return new AuthFragment();
         }
-        if (PermissionUtils.checkAndRequestMissingPermissions(this, STORAGE_PERMISSION_REQUEST_CODE, android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (ContextCompat.checkSelfPermission(activity, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             return new MissingStoragePermissionFragment();
         }
 
@@ -117,6 +122,10 @@ public class MainActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         showUpdatePlayServicesDialogIfNecessary();
+        Fragment fragment = getFragment();
+        if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName()) == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
+        }
     }
 
     @Override
@@ -129,6 +138,7 @@ public class MainActivity extends FragmentActivity {
     private void registerReceivers() {
         registerReceiver(receiver, new IntentFilter(SYNC_BROADCAST_EVENT));
         registerReceiver(receiver, new IntentFilter(AUTH_FAILURE_BROADCAST_EVENT));
+        registerReceiver(receiver, new IntentFilter(AUTH_SUCCCESS_BROADCAST_EVENT));
     }
 
     private void showUpdatePlayServicesDialogIfNecessary() {
@@ -166,6 +176,11 @@ public class MainActivity extends FragmentActivity {
                     if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                         if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permissions[0])) {
                             new AlertDialog.Builder(this).setTitle(R.string.contact_needed_title).setMessage(R.string.contact_needed_message).setPositiveButton(R.string.permission_positive_button, null).create().show();
+                        }
+                    } else {
+                        Fragment fragment = getFragment();
+                        if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName()) == null) {
+                            getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
                         }
                     }
                     break;

@@ -1,6 +1,5 @@
 package com.github.randoapp.auth;
 
-import android.Manifest;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
@@ -12,13 +11,9 @@ import com.github.randoapp.fragment.AuthFragment;
 import com.github.randoapp.task.SignupTask;
 import com.github.randoapp.task.callback.OnError;
 import com.github.randoapp.task.callback.OnOk;
-import com.github.randoapp.util.AccountUtil;
-import com.github.randoapp.util.PermissionUtils;
 import com.github.randoapp.view.Progress;
 
 import java.util.Map;
-
-import static com.github.randoapp.Constants.CONTACTS_PERMISSION_REQUEST_CODE;
 
 public class EmailAndPasswordAuth extends BaseAuth {
 
@@ -29,17 +24,6 @@ public class EmailAndPasswordAuth extends BaseAuth {
         super(authFragment);
         this.emailText = (EditText) rootView.findViewById(R.id.emailEditText);
         this.passwordText = (EditText) rootView.findViewById(R.id.passwordEditText);
-
-        setEmailFromAccount(emailText);
-    }
-
-    private void setEmailFromAccount(EditText emailText) {
-        if (!PermissionUtils.checkAndRequestMissingPermissions(authFragment.getActivity(), CONTACTS_PERMISSION_REQUEST_CODE, Manifest.permission.GET_ACCOUNTS)) {
-            String[] accounts = AccountUtil.getAccountNames();
-            if (accounts.length > 0) {
-                emailText.setText(accounts[0]);
-            }
-        }
     }
 
     @Override

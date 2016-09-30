@@ -1,5 +1,6 @@
 package com.github.randoapp.fragment;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,17 +8,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.github.randoapp.R;
 import com.github.randoapp.auth.EmailAndPasswordAuth;
 import com.github.randoapp.auth.GoogleAuth;
 import com.github.randoapp.auth.SkipAuth;
+import com.github.randoapp.util.AccountUtil;
 import com.github.randoapp.util.GooglePlayServicesUtil;
+import com.github.randoapp.util.PermissionUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import static android.view.View.VISIBLE;
+import static com.github.randoapp.Constants.CONTACTS_PERMISSION_REQUEST_CODE;
 import static com.google.android.gms.common.ConnectionResult.SUCCESS;
 
 public class AuthFragment extends Fragment {
@@ -34,6 +39,9 @@ public class AuthFragment extends Fragment {
         signupButton.setOnClickListener(new EmailAndPasswordAuth(rootView, this));
 
         createGoogleAuthButton(rootView);
+
+        EditText emailText = (EditText) rootView.findViewById(R.id.emailEditText);
+        setEmailFromAccount(emailText);
 
         return rootView;
     }
@@ -67,7 +75,15 @@ public class AuthFragment extends Fragment {
             GoogleAuth googleAuthListener = new GoogleAuth(this, googleButton);
             googleAuthListener.onClick(googleButton);
         }
+    }
 
+    private void setEmailFromAccount(EditText emailText) {
+        if (!PermissionUtils.checkAndRequestMissingPermissions(getActivity(), CONTACTS_PERMISSION_REQUEST_CODE, Manifest.permission.GET_ACCOUNTS)) {
+            String[] accounts = AccountUtil.getAccountNames();
+            if (accounts.length > 0) {
+                emailText.setText(accounts[0]);
+            }
+        }
     }
 
 }
