@@ -2,19 +2,16 @@ language: android
 jdk: oraclejdk8
 android:
   components:
-    #- tools
-    #- platform-tools
-    #- build-tools-23.0.1
-    #- android-23
-    #- extra-android-support
-    #- extra-android-m2repository
-    #- extra-google-m2repository
-    #- extra-google-google_play_services
-    #- sys-img-x86-android-10
-    #- sys-img-x86-android-18
-    #- sys-img-x86-android-19
+    - tools
+    - platform-tools
+    - build-tools-24.0.3
+    - android-24
+    - extra-android-m2repository
+    - extra-google-m2repository
   licenses:
-    - android-sdk-license-bcbbd656
+    - 'android-sdk-preview-license-.+'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
     - '.*intel.+'
 git:
   depth: 3
@@ -27,12 +24,10 @@ cache:
     - $DOWNLOADS_HOME
 env:
   matrix:
-    #- ANDROID_API=23 ANDROID_ABI=armeabi-v7a
-    - ANDROID_API=22 ANDROID_ABI=armeabi-v7a NEED_UPLOAD_APK=true
-    - ANDROID_API=21 ANDROID_ABI=armeabi-v7a
+    - ANDROID_API=24 ANDROID_ABI=armeabi-v7a NEED_UPLOAD_APK=true
+    - ANDROID_API=22 ANDROID_ABI=armeabi-v7a
     - ANDROID_API=19 ANDROID_ABI=armeabi-v7a
-    #- ANDROID_API=14 ANDROID_ABI=armeabi-v7a
-    #- ANDROID_API=10 ANDROID_ABI=armeabi
+    - ANDROID_API=10 ANDROID_ABI=armeabi
   global:
     - secure: Kq5NpWlyXvAvzZ5UUwAxtooG7Cwtdnzh1fhCNqE2Lx2441w9aEGntd5+ffCCTCF4orRHlFIbqfE4/D1YlH6cJtP9hW37SPI8swe3r6Zyfjftakbe3ld72bVfq0f2zx5T4zln63jppMs+XxKNYjg8UswC+9C8Vi2LeJdPUC/Zdzs=
     - secure: X6INcg26b1Bm48QDfDDhLnbRJm5tOffr+AWVcXkgaSbYybqPvYQmSLX7ai1ArCzDgTYqz12tUTVLgrgMlsXkQGFj41hoD+IEtO9zJOmHdtwUDkkh4yVvNwoJ7TTT/N7wL7ZAU556khWy76sS7/biv4iPohCy//R91LWki2d1240=
@@ -69,18 +64,14 @@ before_install:
 
   # Install required components.
   # For a full list, run `android list sdk -a --extended`
-  - echo yes | android update sdk --filter android-23 --all --no-ui --force
-  - echo yes | android update sdk --filter android-$ANDROID_API --all --no-ui --force
-  - echo yes | android update sdk --filter build-tools-23.0.1 --all --no-ui --force
-  - echo yes | android update sdk --filter extra-google-m2repository --all --no-ui --force
-  - echo yes | android update sdk --filter extra-android-m2repository --all --no-ui --force
+  - if [ "$ANDROID_API" -ne "24" ]; then echo yes | android update sdk --filter android-$ANDROID_API --all --no-ui --force ; fi
   - echo yes | android update sdk --filter sys-img-armeabi-v7a-android-$ANDROID_API --all --no-ui --force
 
 before_script:
 # Create and start emulator
   # For a full list of android targets, run "android list targets"
   - echo no | android create avd --force -n test -t android-$ANDROID_API --abi $ANDROID_ABI
-  - emulator -avd test -no-skin -no-audio -no-window &
+  - emulator -memory 1536 -avd test -no-skin -no-audio -no-window &
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
 
