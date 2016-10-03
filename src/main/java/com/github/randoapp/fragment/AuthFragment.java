@@ -17,6 +17,7 @@ import com.github.randoapp.R;
 import com.github.randoapp.auth.EmailAndPasswordAuth;
 import com.github.randoapp.auth.GoogleAuth;
 import com.github.randoapp.auth.SkipAuth;
+import com.github.randoapp.log.Log;
 import com.github.randoapp.util.AccountUtil;
 import com.github.randoapp.util.GooglePlayServicesUtil;
 import com.github.randoapp.util.PermissionUtils;
@@ -35,6 +36,8 @@ public class AuthFragment extends Fragment {
 
     public boolean isGoogleLoginPressed = false;
 
+    private boolean requestAccountsOnFirstLoad = true;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -45,21 +48,22 @@ public class AuthFragment extends Fragment {
 
         Button signupButton = (Button) rootView.findViewById(R.id.signupButton);
         signupButton.setOnClickListener(new EmailAndPasswordAuth(rootView, this));
-
         createGoogleAuthButton(rootView);
 
         emailText = (EditText) rootView.findViewById(R.id.emailEditText);
-        PermissionUtils.checkAndRequestMissingPermissions(getActivity(), CONTACTS_PERMISSION_REQUEST_CODE, Manifest.permission.GET_ACCOUNTS);
-
         return rootView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (isGoogleLoginPressed && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.GET_ACCOUNTS) == PackageManager.PERMISSION_GRANTED) {
+        if (requestAccountsOnFirstLoad) {
+            PermissionUtils.checkAndRequestMissingPermissions(getActivity(), CONTACTS_PERMISSION_REQUEST_CODE, Manifest.permission.GET_ACCOUNTS);
+            requestAccountsOnFirstLoad = false;
+        } else if (isGoogleLoginPressed && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.GET_ACCOUNTS) == PackageManager.PERMISSION_GRANTED) {
             googleButton.performClick();
         }
+        Log.i(AuthFragment.class, this.toString());
         isGoogleLoginPressed = false;
         setEmailFromFirstAccount();
     }

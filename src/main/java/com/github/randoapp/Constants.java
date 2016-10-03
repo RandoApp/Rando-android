@@ -22,6 +22,7 @@ public class Constants {
     public static final String SYNC_BROADCAST_EVENT = "Rando4MeSyncEvent";
     public static final String UPLOAD_SERVICE_BROADCAST_EVENT = "Rando4MeUploadDoneEvent";
     public static final String AUTH_FAILURE_BROADCAST_EVENT = "Rando4MeAuthFailureEvent";
+    public static final String LOGOUT_BROADCAST_EVENT = "Rando4MeLogoutEvent";
     public static final String AUTH_SUCCCESS_BROADCAST_EVENT = "Rando4MeAuthSuccessEvent";
     public static final String PUSH_NOTIFICATION_BROADCAST_EVENT = "Rando4MePushNotificationEvent";
 

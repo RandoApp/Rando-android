@@ -39,6 +39,7 @@ import static com.github.randoapp.Constants.AUTH_FAILURE_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.AUTH_SUCCCESS_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
 import static com.github.randoapp.Constants.CONTACTS_PERMISSION_REQUEST_CODE;
+import static com.github.randoapp.Constants.LOGOUT_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.STORAGE_PERMISSION_REQUEST_CODE;
 import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.UPDATED;
@@ -63,6 +64,7 @@ public class MainActivity extends FragmentActivity {
                     Toast.makeText(MainActivity.this, (isUpdated ? R.string.sync_randos_updated : R.string.sync_nothing_new), Toast.LENGTH_LONG).show();
                     break;
                 case AUTH_FAILURE_BROADCAST_EVENT:
+                case LOGOUT_BROADCAST_EVENT:
                     Preferences.removeAuthToken();
                     break;
                 case AUTH_SUCCCESS_BROADCAST_EVENT:
@@ -80,11 +82,6 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         activity = this;
         setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.main_screen, getFragment())
-                    .commit();
-        }
     }
 
     private Fragment getFragment() {
@@ -95,11 +92,9 @@ public class MainActivity extends FragmentActivity {
                 ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             return new MissingStoragePermissionFragment();
         }
-
         if (!Preferences.isTrainingFragmentShown()) {
             return new TrainingHomeFragment();
         }
-
         if (RandoDAO.countAllRandosNumber() == 0) {
             return new EmptyHomeWallFragment();
         } else {
@@ -133,6 +128,7 @@ public class MainActivity extends FragmentActivity {
         registerReceiver(receiver, new IntentFilter(SYNC_BROADCAST_EVENT));
         registerReceiver(receiver, new IntentFilter(AUTH_FAILURE_BROADCAST_EVENT));
         registerReceiver(receiver, new IntentFilter(AUTH_SUCCCESS_BROADCAST_EVENT));
+        registerReceiver(receiver, new IntentFilter(LOGOUT_BROADCAST_EVENT));
     }
 
     private void showUpdatePlayServicesDialogIfNecessary() {
@@ -181,7 +177,8 @@ public class MainActivity extends FragmentActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, new HomeWallFragment()).commit();
+            Fragment fragment = getFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
         } else if (requestCode == UPDATE_PLAY_SERVICES_REQUEST_CODE) {
             int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
             if (status != ConnectionResult.SUCCESS && status != playServicesStatus) {

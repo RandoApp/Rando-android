@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,8 +39,8 @@ public class HomeMenuFragment extends Fragment {
                         .onDone(new OnDone() {
                             @Override
                             public void onDone(Map<String, Object> data) {
-                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                fragmentManager.beginTransaction().replace(R.id.main_screen, new AuthFragment()).commit();
+                                Intent intent = new Intent(Constants.LOGOUT_BROADCAST_EVENT);
+                                getActivity().sendBroadcast(intent);
                                 Progress.hide();
                             }
                         })
