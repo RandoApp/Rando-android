@@ -29,8 +29,8 @@ cache:
     - $DOWNLOADS_HOME
 env:
   matrix:
-    - ANDROID_API=24 ANDROID_ABI=armeabi-v7a
-    - ANDROID_API=22 ANDROID_ABI=armeabi-v7a NEED_UPLOAD_APK=true
+    - ANDROID_API=24 ANDROID_ABI=armeabi-v7a NEED_UPLOAD_APK=true
+    - ANDROID_API=22 ANDROID_ABI=armeabi-v7a
     - ANDROID_API=21 ANDROID_ABI=armeabi-v7a
     - ANDROID_API=19 ANDROID_ABI=armeabi-v7a
     #- ANDROID_API=14 ANDROID_ABI=armeabi-v7a
