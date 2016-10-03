@@ -136,8 +136,8 @@ public class CameraActivity extends FragmentActivity implements CameraHostProvid
         if ((grantResults.length > 0) && (permissions.length > 0)) {
             switch (requestCode) {
                 case CAMERA_PERMISSION_REQUEST_CODE:
-                    isReturningFromCameraPermissionRequest = true;
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        isReturningFromCameraPermissionRequest = true;
                     } else {
                         setResult(CAMERA_ACTIVITY_CAMERA_PERMISSION_REQUIRED);
                         finish();
@@ -152,6 +152,9 @@ public class CameraActivity extends FragmentActivity implements CameraHostProvid
                             updateLocation();
                         }
                     }
+                    break;
+                default:
+                    break;
             }
         }
     }

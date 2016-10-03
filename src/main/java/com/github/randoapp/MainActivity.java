@@ -69,6 +69,8 @@ public class MainActivity extends FragmentActivity {
                     break;
                 case AUTH_SUCCCESS_BROADCAST_EVENT:
                     break;
+                default:
+                    break;
             }
             Fragment fragment = getFragment();
             if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName()) == null) {
@@ -163,11 +165,12 @@ public class MainActivity extends FragmentActivity {
                     }
                     break;
                 case CONTACTS_PERMISSION_REQUEST_CODE:
-                    if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permissions[0])) {
-                            new AlertDialog.Builder(this).setTitle(R.string.contact_needed_title).setMessage(R.string.contact_needed_message).setPositiveButton(R.string.permission_positive_button, null).create().show();
-                        }
+                    if (grantResults[0] == PackageManager.PERMISSION_DENIED
+                            && ActivityCompat.shouldShowRequestPermissionRationale(activity, permissions[0])) {
+                        new AlertDialog.Builder(this).setTitle(R.string.contact_needed_title).setMessage(R.string.contact_needed_message).setPositiveButton(R.string.permission_positive_button, null).create().show();
                     }
+                    break;
+                default:
                     break;
             }
         }

@@ -2,7 +2,6 @@ package com.github.randoapp.camera;
 
 import android.hardware.Camera;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,11 +61,4 @@ public class CameraCaptureFragment extends CameraFragment {
             }
         }
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if ((grantResults.length > 0) && (permissions.length > 0)) {
-        }
-    }
-
 }
