@@ -72,7 +72,7 @@ before_install:
   # Install required components.
   # For a full list, run `android list sdk -a --extended`
   #- echo yes | android update sdk --filter android-24 --all --no-ui --force
-  - if [ "$ANDROID_API" -ne "24" ] echo yes | android update sdk --filter android-$ANDROID_API --all --no-ui --force
+  - if [ "$ANDROID_API" -ne "24" ]; then echo yes | android update sdk --filter android-$ANDROID_API --all --no-ui --force ; fi
   #- echo yes | android update sdk --filter build-tools-23.0.1 --all --no-ui --force
   #- echo yes | android update sdk --filter extra-google-m2repository --all --no-ui --force
   #- echo yes | android update sdk --filter extra-android-m2repository --all --no-ui --force
