@@ -13,6 +13,7 @@ import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
 import com.google.android.gms.auth.UserRecoverableAuthException;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 import static com.github.randoapp.Constants.GOOGLE_AUTH_SCOPE;
 import static com.github.randoapp.Constants.GOOGLE_FAMILY_NAME_PARAM;
 import static com.github.randoapp.Constants.GOOGLE_USER_INFO_URL;
+import static com.github.randoapp.Constants.UPDATE_PLAY_SERVICES_REQUEST_CODE;
 
 public class GoogleAuthTask extends BaseTask {
 
@@ -31,6 +33,7 @@ public class GoogleAuthTask extends BaseTask {
 
 
     public GoogleAuthTask(String email, AuthFragment authFragment) {
+        Log.d(GoogleAuthTask.class, "Auth Task started for email: ", email);
         this.email = email;
         this.authFragment = authFragment;
     }
@@ -46,6 +49,10 @@ public class GoogleAuthTask extends BaseTask {
                 return OK;
             }
         } catch (GooglePlayServicesAvailabilityException playEx) {
+            GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+            if (googleApiAvailability.isUserResolvableError(playEx.getConnectionStatusCode())){
+                googleApiAvailability.getErrorDialog(authFragment.getActivity(), playEx.getConnectionStatusCode(), UPDATE_PLAY_SERVICES_REQUEST_CODE).show();
+            }
             Log.e(GoogleAuthTask.class, "Google Play service exception: ", playEx.getMessage());
             return ERROR;
         } catch (UserRecoverableAuthException userRecoverableException) {
