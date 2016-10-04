@@ -48,11 +48,16 @@ public class GoogleAuthTask extends BaseTask {
                 API.google(email, token, familyName);
                 return OK;
             }
-        } catch (GooglePlayServicesAvailabilityException playEx) {
-            GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
-            if (googleApiAvailability.isUserResolvableError(playEx.getConnectionStatusCode())){
-                googleApiAvailability.getErrorDialog(authFragment.getActivity(), playEx.getConnectionStatusCode(), UPDATE_PLAY_SERVICES_REQUEST_CODE).show();
-            }
+        } catch (final GooglePlayServicesAvailabilityException playEx) {
+            authFragment.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+                    if (googleApiAvailability.isUserResolvableError(playEx.getConnectionStatusCode())) {
+                        googleApiAvailability.getErrorDialog(authFragment.getActivity(), playEx.getConnectionStatusCode(), UPDATE_PLAY_SERVICES_REQUEST_CODE).show();
+                    }
+                }
+            });
             Log.e(GoogleAuthTask.class, "Google Play service exception: ", playEx.getMessage());
             return ERROR;
         } catch (UserRecoverableAuthException userRecoverableException) {
