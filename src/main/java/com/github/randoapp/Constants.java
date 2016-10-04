@@ -22,6 +22,8 @@ public class Constants {
     public static final String SYNC_BROADCAST_EVENT = "Rando4MeSyncEvent";
     public static final String UPLOAD_SERVICE_BROADCAST_EVENT = "Rando4MeUploadDoneEvent";
     public static final String AUTH_FAILURE_BROADCAST_EVENT = "Rando4MeAuthFailureEvent";
+    public static final String LOGOUT_BROADCAST_EVENT = "Rando4MeLogoutEvent";
+    public static final String AUTH_SUCCCESS_BROADCAST_EVENT = "Rando4MeAuthSuccessEvent";
     public static final String PUSH_NOTIFICATION_BROADCAST_EVENT = "Rando4MePushNotificationEvent";
 
     public static final String RANDO_PHOTO_PATH = "RANDO_PHOTO_PATH";
@@ -132,6 +134,14 @@ public class Constants {
     public static final int CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE = 628;
     public static final int CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE = 623;
     public static final int UPDATE_PLAY_SERVICES_REQUEST_CODE = 2404;
+    public static final int CAMERA_ACTIVITY_CAMERA_PERMISSION_REQUIRED = 629;
+
+
+    public static final int ALL_PERMISSIONS_REQUEST_CODE = 701;
+    public static final int CAMERA_PERMISSION_REQUEST_CODE = 702;
+    public static final int LOCATION_PERMISSION_REQUEST_CODE = 703;
+    public static final int CONTACTS_PERMISSION_REQUEST_CODE = 704;
+    public static final int STORAGE_PERMISSION_REQUEST_CODE = 705;
 
     public static final String FORBIDDEN_ERROR = "ForbiddenException";
     public static final String FILE_NOT_FOUND_ERROR = "FileNotFound";

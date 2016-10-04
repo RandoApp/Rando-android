@@ -1,11 +1,7 @@
 package com.github.randoapp.camera;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +11,6 @@ import com.commonsware.cwac.camera.CameraView;
 import com.commonsware.cwac.camera.acl.CameraFragment;
 import com.github.randoapp.R;
 import com.github.randoapp.log.Log;
-import com.github.randoapp.util.LocationHelper;
 
 public class CameraCaptureFragment extends CameraFragment {
     private static final String KEY_USE_FFC = "com.commonsware.cwac.camera.demo.USE_FFC";
@@ -42,15 +37,14 @@ public class CameraCaptureFragment extends CameraFragment {
         captureButton = (ImageView) rootView.findViewById(R.id.capture_button);
         captureButton.setOnClickListener(new CaptureButtonListener());
         captureButton.setEnabled(false);
-
         return rootView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        updateLocation();
     }
+
 
     private class CaptureButtonListener implements View.OnClickListener {
         @Override
@@ -67,33 +61,4 @@ public class CameraCaptureFragment extends CameraFragment {
             }
         }
     }
-
-    private void updateLocation() {
-        if (LocationHelper.isGpsEnabled(getActivity())) {
-
-            LocationHelper locationHelper = new LocationHelper(getActivity());
-            locationHelper.updateLocationAsync();
-        } else {
-            new AlertDialog.Builder(getActivity())
-                    .setMessage(getResources().getString(R.string.no_location_services))
-                    .setPositiveButton(getResources().getString(R.string.enable_location_services),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int id) {
-                                    startActivity(new Intent(
-                                            Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                                }
-                            }
-                    )
-                    .setNegativeButton(getResources().getString(R.string.close_dialog),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int id) {
-                                    dialog.cancel();
-                                }
-                            }
-                    ).create().show();
-        }
-    }
-
 }

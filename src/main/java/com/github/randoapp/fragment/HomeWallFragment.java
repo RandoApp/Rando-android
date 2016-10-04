@@ -31,6 +31,6 @@ public class HomeWallFragment extends Fragment {
                 startActivityForResult(intent, Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE);
             }
         });
-        return  rootView;
+        return rootView;
     }
 }

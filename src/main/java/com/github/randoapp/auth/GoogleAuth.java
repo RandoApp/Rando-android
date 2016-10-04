@@ -2,11 +2,13 @@ package com.github.randoapp.auth;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.fragment.AuthFragment;
 import com.github.randoapp.task.GoogleAuthTask;
@@ -14,6 +16,7 @@ import com.github.randoapp.task.callback.OnDone;
 import com.github.randoapp.task.callback.OnError;
 import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.AccountUtil;
+import com.github.randoapp.util.PermissionUtils;
 import com.github.randoapp.view.Progress;
 
 import java.util.Map;
@@ -21,9 +24,11 @@ import java.util.Map;
 public class GoogleAuth extends BaseAuth implements View.OnTouchListener {
 
     private Button googleButton;
+    private AuthFragment authFragment;
 
-    public GoogleAuth(AuthFragment authFragment, Button googleButton) {
+    public GoogleAuth(@NonNull AuthFragment authFragment, Button googleButton) {
         super(authFragment);
+        this.authFragment = authFragment;
         this.googleButton = googleButton;
     }
 
@@ -41,14 +46,18 @@ public class GoogleAuth extends BaseAuth implements View.OnTouchListener {
 
     @Override
     public void onClick(View v) {
-        String[] names = AccountUtil.getAccountNames();
-        if (names.length == 1) {
-            fetchUserToken(names[0]);
-        } else if (names.length > 1) {
-            selectAccount(names);
-        } else if (names.length == 0) {
-            Toast.makeText(authFragment.getActivity(), authFragment.getResources().getString(R.string.no_google_account), Toast.LENGTH_LONG).show();
-            setButtonNormal();
+        if (!PermissionUtils.checkAndRequestMissingPermissions(authFragment.getActivity(), Constants.CONTACTS_PERMISSION_REQUEST_CODE, android.Manifest.permission.GET_ACCOUNTS)) {
+            String[] names = AccountUtil.getAccountNames();
+            if (names.length == 1) {
+                fetchUserToken(names[0]);
+            } else if (names.length > 1) {
+                selectAccount(names);
+            } else if (names.length == 0) {
+                Toast.makeText(authFragment.getActivity(), authFragment.getResources().getString(R.string.no_google_account), Toast.LENGTH_LONG).show();
+                setButtonNormal();
+            }
+        } else {
+            authFragment.isGoogleLoginPressed = true;
         }
     }
 

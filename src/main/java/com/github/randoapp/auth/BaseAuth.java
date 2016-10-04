@@ -1,16 +1,15 @@
 package com.github.randoapp.auth;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import com.github.randoapp.R;
+import com.github.randoapp.Constants;
 import com.github.randoapp.api.API;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.fragment.AuthFragment;
-import com.github.randoapp.fragment.EmptyHomeWallFragment;
 import com.github.randoapp.view.Progress;
 
 public abstract class BaseAuth implements View.OnClickListener {
@@ -27,10 +26,9 @@ public abstract class BaseAuth implements View.OnClickListener {
         hideSoftKeyboard(fragmentActivity);
         clearDBForChangeAccount();
 
-        FragmentManager fragmentManager = fragmentActivity.getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.main_screen, new EmptyHomeWallFragment()).commit();
-
         API.syncUserAsync(null, null);
+        Intent intent = new Intent(Constants.AUTH_SUCCCESS_BROADCAST_EVENT);
+        fragmentActivity.sendBroadcast(intent);
     }
 
     private static void hideSoftKeyboard(FragmentActivity fragmentActivity) {

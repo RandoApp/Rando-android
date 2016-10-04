@@ -10,6 +10,7 @@
     <string name="action_settings">Settings</string>
 
     <string name="empty_home_message">No pictures yet.\n Take your first picture and deliver it.</string>
+    <string name="missing_storage_permission_message">Device Storage access permission is required to take, download and view Randos. Application won\'t run without this permission.</string>
 
     <string name="take_picture_screen_label">Take Picture</string>
     <string name="photo_upload_ok">Upload Finished Successfully.</string>
@@ -77,10 +78,24 @@
     <string name="update_play_services_dialog_positive">Install/Update</string>
     <string name="update_play_services_dialog_negative">Cancel</string>
     <!-- Update Play Services Dialog Resources End -->
-    
+
     <string name="sync_nothing_new">Nothing new</string>
     <string name="sync_randos_updated">Randos are updated</string>
 
     <string name="rando_landed">Your Rando has landed</string>
     <string name="rando_received">You have received new Rando</string>
+
+    <!-- Permission strings Start -->
+    <string name="permission_positive_button">Ok</string>
+    <string name="location_needed_title">Location Access</string>
+    <string name="location_needed_message">Tagging Rando with your rough location requires access this device\'s location</string>
+    <string name="camera_needed_title">Camera Access</string>
+    <string name="camera_needed_message">Taking Randos, requires camera access</string>
+    <string name="storage_needed_title">Storage Access</string>
+    <string name="storage_needed_message">Receiving and saving Randos requires access photos, media and files on your device. Application will not run without this permission.</string>
+    <string name="contact_needed_title">Contacts Access</string>
+    <string name="contact_needed_message">Being able to sign in using social accounts requires access contacts on your device</string>
+    <string name="storage_permission_allow">Allow Storage Access</string>
+    <!-- Permission strings END -->
+
 </resources>
