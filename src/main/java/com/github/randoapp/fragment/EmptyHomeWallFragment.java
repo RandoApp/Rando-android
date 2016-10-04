@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import com.github.randoapp.CameraActivity;
 import com.github.randoapp.R;
 import com.github.randoapp.adapter.EmptyHomePagerAdapter;
+import com.github.randoapp.api.API;
 
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE;
 
@@ -36,4 +37,9 @@ public class EmptyHomeWallFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        API.syncUserAsync(null, null);
+    }
 }
