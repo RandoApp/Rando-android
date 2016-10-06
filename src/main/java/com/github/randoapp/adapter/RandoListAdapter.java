@@ -1,18 +1,23 @@
 package com.github.randoapp.adapter;
 
 import android.content.Context;
+import android.os.Build;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.github.randoapp.App;
 import com.github.randoapp.R;
 import com.github.randoapp.animation.AnimationFactory;
 import com.github.randoapp.animation.AnimationListenerAdapter;
@@ -76,7 +81,7 @@ public class RandoListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup container) {
 
         final Rando rando = randos.get(position);
-        final ViewHolder holder;
+        final RandoViewHolder holder;
 
         if (imageSize == 0) {
             imageSize = getRandoImageSize(container);
@@ -85,7 +90,7 @@ public class RandoListAdapter extends BaseAdapter {
         Log.i(RandoListAdapter.class, "isStranger", String.valueOf(isStranger), "Size:", String.valueOf(size), "Position", String.valueOf(position));
 
         if (convertView != null) {
-            holder = (ViewHolder) convertView.getTag();
+            holder = (RandoViewHolder) convertView.getTag();
         } else {
             LayoutInflater inflater = (LayoutInflater) container.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.rando_item, container, false);
@@ -95,17 +100,19 @@ public class RandoListAdapter extends BaseAdapter {
 
         recycle(holder);
         loadImages(holder, rando);
+        holder.randoId = rando.randoId;
         setAnimations(holder);
         return convertView;
     }
 
-    private ViewHolder createHolder(View convertView) {
-        ViewHolder holder = new ViewHolder();
+    private RandoViewHolder createHolder(View convertView) {
+        RandoViewHolder holder = new RandoViewHolder();
 
         holder.viewSwitcher = (ViewSwitcher) convertView.findViewWithTag("viewSwitcher");
 
         holder.image = (RoundedImageView) convertView.findViewWithTag("image");
         holder.map = (RoundedImageView) convertView.findViewWithTag("map");
+        holder.deleteButton = (Button) convertView.findViewWithTag("delete_button");
         ViewSwitcher.LayoutParams randoImagesLayout = new ViewSwitcher.LayoutParams(imageSize, imageSize);
         holder.image.setLayoutParams(randoImagesLayout);
         holder.map.setLayoutParams(randoImagesLayout);
@@ -114,31 +121,62 @@ public class RandoListAdapter extends BaseAdapter {
         return holder;
     }
 
-    private void addListenersToHolder(final ViewHolder holder) {
+    private void addListenersToHolder(final RandoViewHolder holder) {
         View.OnClickListener randoOnClickListener = createRandoOnClickListener(holder);
         holder.image.setOnClickListener(randoOnClickListener);
         holder.map.setOnClickListener(randoOnClickListener);
-        //holder.image.setAlpha(0.25f);
-        holder.image.setOnLongClickListener(new View.OnLongClickListener() {
+
+        View.OnLongClickListener randoOnLongClickListener = createRandoOnLongClickListener(holder);
+        holder.image.setOnLongClickListener(randoOnLongClickListener);
+        holder.map.setOnLongClickListener(randoOnLongClickListener);
+
+        final Animation scale = AnimationUtils.loadAnimation(App.context, R.anim.scale);
+        holder.deleteButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onLongClick(View view) {
-                return false;
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                    view.startAnimation(scale);
+                } else {
+                    //view.clearAnimation();
+                }
+                return true;
             }
         });
     }
 
-    private View.OnClickListener createRandoOnClickListener(final ViewHolder holder) {
+    private View.OnClickListener createRandoOnClickListener(final RandoViewHolder holder) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (holder.animationInProgress) return;
+                if (holder.deleteButton.getVisibility() != View.GONE) {
+                    removeDeleteButton(holder);
+                    return;
+                } else if (holder.animationInProgress) return;
 
                 holder.viewSwitcher.showNext();
             }
         };
     }
 
-    private void recycle(ViewHolder holder) {
+    private View.OnLongClickListener createRandoOnLongClickListener(final RandoViewHolder holder) {
+        return new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                holder.deleteButton.setVisibility(View.VISIBLE);
+                if (Build.VERSION.SDK_INT < 11) {
+                    holder.image.setAlpha(64);
+                    holder.map.setAlpha(64);
+                } else {
+                    holder.image.setAlpha(0.25f);
+                    holder.map.setAlpha(0.25f);
+                }
+
+                return true;
+            }
+        };
+    }
+
+    private void recycle(RandoViewHolder holder) {
         holder.animationInProgress = false;
 
         cancelRequests(holder);
@@ -147,9 +185,23 @@ public class RandoListAdapter extends BaseAdapter {
 
         holder.image.setImageBitmap(null);
         holder.map.setImageBitmap(null);
+        removeDeleteButton(holder);
     }
 
-    private void cancelRequests(ViewHolder holder) {
+    private void removeDeleteButton(RandoViewHolder randoViewHolder) {
+        if (Build.VERSION.SDK_INT < 11) {
+            randoViewHolder.image.setAlpha(255);
+            randoViewHolder.map.setAlpha(255);
+        } else {
+            randoViewHolder.image.setAlpha(1f);
+            randoViewHolder.map.setAlpha(1f);
+        }
+
+        randoViewHolder.deleteButton.setVisibility(View.GONE);
+
+    }
+
+    private void cancelRequests(RandoViewHolder holder) {
         if (holder.randoContainer != null) {
             holder.randoContainer.cancelRequest();
             holder.randoContainer = null;
@@ -172,7 +224,7 @@ public class RandoListAdapter extends BaseAdapter {
                 - container.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right);
     }
 
-    private void setAnimations(final ViewHolder holder) {
+    private void setAnimations(final RandoViewHolder holder) {
         final Animation[] leftToRightAnimation = AnimationFactory.flipAnimation(imageSize, AnimationFactory.FlipDirection.LEFT_RIGHT, 350, null);
         final Animation[] rightToLeftAnimation = AnimationFactory.flipAnimation(imageSize, AnimationFactory.FlipDirection.RIGHT_LEFT, 350, null);
 
@@ -206,7 +258,7 @@ public class RandoListAdapter extends BaseAdapter {
         });
     }
 
-    private void loadImages(final ViewHolder holder, final Rando rando) {
+    private void loadImages(final RandoViewHolder holder, final Rando rando) {
         if (rando.imageURLSize.small != null && !URLUtil.isNetworkUrl(rando.imageURLSize.small) && !rando.imageURLSize.small.isEmpty()) {
             loadFile(holder, rando.imageURL);
             return;
@@ -216,7 +268,7 @@ public class RandoListAdapter extends BaseAdapter {
         loadMapImage(holder, RandoUtil.getUrlByImageSize(imageSize, isStranger ? rando.mapURLSize : rando.mapURLSize), Priority.LOW);
     }
 
-    private void loadFile(final ViewHolder holder, final String filePath) {
+    private void loadFile(final RandoViewHolder holder, final String filePath) {
         if (holder.image != null) {
             holder.image.setImageBitmap(BitmapUtil.decodeSampledBitmap(filePath, imageSize, imageSize));
         }
@@ -227,92 +279,94 @@ public class RandoListAdapter extends BaseAdapter {
         }
     }
 
-    private void loadImage(final ViewHolder viewHolder, final String url, Priority priority) {
+    private void loadImage(final RandoViewHolder randoViewHolder, final String url, Priority priority) {
         if (TextUtils.isEmpty(url)) {
-            if (viewHolder.image != null) {
-                viewHolder.image.setImageResource(R.drawable.rando_pairing);
+            if (randoViewHolder.image != null) {
+                randoViewHolder.image.setImageResource(R.drawable.rando_pairing);
             } else {
-                viewHolder.needSetPairing = true;
+                randoViewHolder.needSetPairing = true;
             }
             return;
         }
 
         if (URLUtil.isValidUrl(url)) {
             Log.d(RandoListAdapter.class, "image url: ", url);
-            viewHolder.randoContainer = VolleySingleton.getInstance().getImageLoader().get(url, new ImageLoader.ImageListener() {
+            randoViewHolder.randoContainer = VolleySingleton.getInstance().getImageLoader().get(url, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                    if (viewHolder.image != null && response.getBitmap() != null) {
-                        viewHolder.image.setImageBitmap(response.getBitmap());
-                    } else if (viewHolder.image != null && response.getBitmap() == null) {
-                        viewHolder.image.setImageResource(R.drawable.rando_loading);
+                    if (randoViewHolder.image != null && response.getBitmap() != null) {
+                        randoViewHolder.image.setImageBitmap(response.getBitmap());
+                    } else if (randoViewHolder.image != null && response.getBitmap() == null) {
+                        randoViewHolder.image.setImageResource(R.drawable.rando_loading);
                     }
                 }
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e(RandoListAdapter.class, "VolleyError when load rando image: ", url, "with imageSize = ", String.valueOf(imageSize), " , because ", error.getMessage());
-                    if (viewHolder.image != null) {
-                        viewHolder.image.setImageResource(R.drawable.rando_error);
+                    if (randoViewHolder.image != null) {
+                        randoViewHolder.image.setImageResource(R.drawable.rando_error);
                     } else {
-                        viewHolder.needSetImageError = true;
+                        randoViewHolder.needSetImageError = true;
                     }
                 }
             }, ImageView.ScaleType.CENTER, 0, 0, priority);
         } else {
             Log.e(RandoListAdapter.class, "Ignore rando image because url: ", url, " incorrect");
-            if (viewHolder.image != null) {
-                viewHolder.image.setImageResource(R.drawable.rando_error);
+            if (randoViewHolder.image != null) {
+                randoViewHolder.image.setImageResource(R.drawable.rando_error);
             } else {
-                viewHolder.needSetImageError = true;
+                randoViewHolder.needSetImageError = true;
             }
         }
     }
 
-    private void loadMapImage(final ViewHolder viewHolder, final String url, Priority priority) {
+    private void loadMapImage(final RandoViewHolder randoViewHolder, final String url, Priority priority) {
         if (URLUtil.isValidUrl(url)) {
             Log.d(RandoListAdapter.class, "map url: ", url);
-            viewHolder.mapContainer = VolleySingleton.getInstance().getImageLoader().get(url, new ImageLoader.ImageListener() {
+            randoViewHolder.mapContainer = VolleySingleton.getInstance().getImageLoader().get(url, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                    if (viewHolder.map != null && response.getBitmap() != null) {
-                        viewHolder.map.setImageBitmap(response.getBitmap());
-                    } else if (viewHolder.map != null && response.getBitmap() == null) {
-                        viewHolder.map.setImageResource(R.drawable.rando_loading);
+                    if (randoViewHolder.map != null && response.getBitmap() != null) {
+                        randoViewHolder.map.setImageBitmap(response.getBitmap());
+                    } else if (randoViewHolder.map != null && response.getBitmap() == null) {
+                        randoViewHolder.map.setImageResource(R.drawable.rando_loading);
                     }
                 }
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e(RandoListAdapter.class, "VolleyError when load map image: ", url, "with imageSize = ", String.valueOf(imageSize), " , because ", error.getMessage());
-                    if (viewHolder.map != null) {
-                        viewHolder.map.setImageResource(R.drawable.rando_error);
+                    if (randoViewHolder.map != null) {
+                        randoViewHolder.map.setImageResource(R.drawable.rando_error);
                     } else {
-                        viewHolder.needSetMapError = true;
+                        randoViewHolder.needSetMapError = true;
                     }
                 }
             }, ImageView.ScaleType.CENTER, 0, 0, priority);
         } else {
             Log.d(RandoListAdapter.class, "Ignore map image because url: ", url, " incorrect");
-            if (viewHolder.map != null) {
-                viewHolder.map.setImageResource(R.drawable.rando_error);
+            if (randoViewHolder.map != null) {
+                randoViewHolder.map.setImageResource(R.drawable.rando_error);
             } else {
-                viewHolder.needSetMapError = true;
+                randoViewHolder.needSetMapError = true;
             }
         }
     }
 
-    public static class ViewHolder {
+    public static class RandoViewHolder {
         public boolean animationInProgress = false;
 
         public ViewSwitcher viewSwitcher;
-
         public RoundedImageView image;
         public RoundedImageView map;
-
         public ImageLoader.ImageContainer randoContainer;
-        public ImageLoader.ImageContainer mapContainer;
 
+        public ImageLoader.ImageContainer mapContainer;
+        public Button deleteButton;
+
+
+        public String randoId;
         public boolean needSetImageError = false;
         public boolean needSetMapError = false;
 

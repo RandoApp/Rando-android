@@ -289,10 +289,10 @@ public class API {
         }
     }
 
-    public static void report(String id) throws Exception {
+    public static void report(String randoId) throws Exception {
         HttpResponse response = null;
         try {
-            HttpPost request = new HttpPost(getUrl(REPORT_URL + id));
+            HttpPost request = new HttpPost(getUrl(REPORT_URL + randoId));
 
             response = VolleySingleton.getInstance().getHttpClient().execute(request);
             if (response.getStatusLine().getStatusCode() != SC_OK) {

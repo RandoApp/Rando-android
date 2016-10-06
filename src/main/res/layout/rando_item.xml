@@ -45,5 +45,6 @@
         android:textColor="@android:color/white"
         android:layout_centerHorizontal="true"
         android:layout_centerInParent="true"
+        android:visibility="gone"
         />
 </RelativeLayout>
