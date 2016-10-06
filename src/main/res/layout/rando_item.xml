@@ -26,13 +26,24 @@
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
                 android:tag="image"
-                app:oval="true" />
+                app:oval="true"
+                android:alpha="0.25"/>
 
             <com.makeramen.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:tag="map"
-                app:oval="true" />
+                app:oval="true"
+                android:alpha="0.25" />
         </ViewSwitcher>
     </LinearLayout>
+    <Button
+        android:tag="delete_button"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:background="@drawable/trash72black"
+        android:textColor="@android:color/white"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        />
 </RelativeLayout>

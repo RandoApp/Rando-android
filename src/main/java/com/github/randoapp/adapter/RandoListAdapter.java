@@ -28,7 +28,7 @@ import java.util.List;
 
 import static com.android.volley.Request.Priority;
 
-public class RandoPairsAdapter extends BaseAdapter {
+public class RandoListAdapter extends BaseAdapter {
 
     private boolean isStranger;
 
@@ -52,7 +52,7 @@ public class RandoPairsAdapter extends BaseAdapter {
         return 0;
     }
 
-    public RandoPairsAdapter(boolean isStranger) {
+    public RandoListAdapter(boolean isStranger) {
         this.isStranger = isStranger;
         initData();
     }
@@ -82,7 +82,7 @@ public class RandoPairsAdapter extends BaseAdapter {
             imageSize = getRandoImageSize(container);
         }
 
-        Log.i(RandoPairsAdapter.class, "isStranger", String.valueOf(isStranger), "Size:", String.valueOf(size), "Position", String.valueOf(position));
+        Log.i(RandoListAdapter.class, "isStranger", String.valueOf(isStranger), "Size:", String.valueOf(size), "Position", String.valueOf(position));
 
         if (convertView != null) {
             holder = (ViewHolder) convertView.getTag();
@@ -118,6 +118,13 @@ public class RandoPairsAdapter extends BaseAdapter {
         View.OnClickListener randoOnClickListener = createRandoOnClickListener(holder);
         holder.image.setOnClickListener(randoOnClickListener);
         holder.map.setOnClickListener(randoOnClickListener);
+        //holder.image.setAlpha(0.25f);
+        holder.image.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                return false;
+            }
+        });
     }
 
     private View.OnClickListener createRandoOnClickListener(final ViewHolder holder) {
@@ -231,7 +238,7 @@ public class RandoPairsAdapter extends BaseAdapter {
         }
 
         if (URLUtil.isValidUrl(url)) {
-            Log.d(RandoPairsAdapter.class, "image url: ", url);
+            Log.d(RandoListAdapter.class, "image url: ", url);
             viewHolder.randoContainer = VolleySingleton.getInstance().getImageLoader().get(url, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
@@ -244,7 +251,7 @@ public class RandoPairsAdapter extends BaseAdapter {
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.e(RandoPairsAdapter.class, "VolleyError when load rando image: ", url, "with imageSize = ", String.valueOf(imageSize), " , because ", error.getMessage());
+                    Log.e(RandoListAdapter.class, "VolleyError when load rando image: ", url, "with imageSize = ", String.valueOf(imageSize), " , because ", error.getMessage());
                     if (viewHolder.image != null) {
                         viewHolder.image.setImageResource(R.drawable.rando_error);
                     } else {
@@ -253,7 +260,7 @@ public class RandoPairsAdapter extends BaseAdapter {
                 }
             }, ImageView.ScaleType.CENTER, 0, 0, priority);
         } else {
-            Log.e(RandoPairsAdapter.class, "Ignore rando image because url: ", url, " incorrect");
+            Log.e(RandoListAdapter.class, "Ignore rando image because url: ", url, " incorrect");
             if (viewHolder.image != null) {
                 viewHolder.image.setImageResource(R.drawable.rando_error);
             } else {
@@ -264,7 +271,7 @@ public class RandoPairsAdapter extends BaseAdapter {
 
     private void loadMapImage(final ViewHolder viewHolder, final String url, Priority priority) {
         if (URLUtil.isValidUrl(url)) {
-            Log.d(RandoPairsAdapter.class, "map url: ", url);
+            Log.d(RandoListAdapter.class, "map url: ", url);
             viewHolder.mapContainer = VolleySingleton.getInstance().getImageLoader().get(url, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
@@ -277,7 +284,7 @@ public class RandoPairsAdapter extends BaseAdapter {
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.e(RandoPairsAdapter.class, "VolleyError when load map image: ", url, "with imageSize = ", String.valueOf(imageSize), " , because ", error.getMessage());
+                    Log.e(RandoListAdapter.class, "VolleyError when load map image: ", url, "with imageSize = ", String.valueOf(imageSize), " , because ", error.getMessage());
                     if (viewHolder.map != null) {
                         viewHolder.map.setImageResource(R.drawable.rando_error);
                     } else {
@@ -286,7 +293,7 @@ public class RandoPairsAdapter extends BaseAdapter {
                 }
             }, ImageView.ScaleType.CENTER, 0, 0, priority);
         } else {
-            Log.d(RandoPairsAdapter.class, "Ignore map image because url: ", url, " incorrect");
+            Log.d(RandoListAdapter.class, "Ignore map image because url: ", url, " incorrect");
             if (viewHolder.map != null) {
                 viewHolder.map.setImageResource(R.drawable.rando_error);
             } else {

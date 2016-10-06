@@ -19,7 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
-import com.github.randoapp.adapter.RandoPairsAdapter;
+import com.github.randoapp.adapter.RandoListAdapter;
 import com.github.randoapp.api.API;
 import com.github.randoapp.api.listeners.ErrorResponseListener;
 import com.github.randoapp.log.Log;
@@ -37,7 +37,7 @@ import static com.github.randoapp.Constants.UPLOAD_SERVICE_BROADCAST_EVENT;
 
 public class HomeListFragment extends Fragment {
 
-    private RandoPairsAdapter randoPairsAdapter;
+    private RandoListAdapter randoPairsAdapter;
 
     private boolean isStranger;
 
@@ -84,7 +84,7 @@ public class HomeListFragment extends Fragment {
         }
 
         final ListView listView = (ListView) rootView.findViewById(R.id.listView);
-        randoPairsAdapter = new RandoPairsAdapter(isStranger);
+        randoPairsAdapter = new RandoListAdapter(isStranger);
         listView.setAdapter(randoPairsAdapter);
 
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
