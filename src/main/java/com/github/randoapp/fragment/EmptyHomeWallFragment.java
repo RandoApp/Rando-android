@@ -23,7 +23,7 @@ public class EmptyHomeWallFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.empty_home, container, false);
 
         ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.colums_pager);
-        viewPager.setAdapter(new EmptyHomePagerAdapter(getActivity().getSupportFragmentManager()));
+        viewPager.setAdapter(new EmptyHomePagerAdapter(getChildFragmentManager()));
         viewPager.setCurrentItem(1);
 
         ImageView takePictureButton = (ImageView) rootView.findViewById(R.id.camera_button);
