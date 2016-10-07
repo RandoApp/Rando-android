@@ -1,6 +1,7 @@
 package com.github.randoapp.adapter;
 
 import android.content.Context;
+import android.os.Build;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
@@ -21,6 +23,7 @@ import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.util.BitmapUtil;
+import com.github.randoapp.util.ConnectionUtil;
 import com.github.randoapp.util.RandoUtil;
 import com.makeramen.RoundedImageView;
 
@@ -95,6 +98,7 @@ public class RandoListAdapter extends BaseAdapter {
 
         recycle(holder);
         loadImages(holder, rando);
+        holder.randdoId = rando.randoId;
         setAnimations(holder);
         return convertView;
     }
@@ -110,6 +114,8 @@ public class RandoListAdapter extends BaseAdapter {
         holder.image.setLayoutParams(randoImagesLayout);
         holder.map.setLayoutParams(randoImagesLayout);
 
+        holder.deleteButton = (Button) convertView.findViewWithTag("delete_button");
+
         convertView.setTag(holder);
         return holder;
     }
@@ -118,19 +124,43 @@ public class RandoListAdapter extends BaseAdapter {
         View.OnClickListener randoOnClickListener = createRandoOnClickListener(holder);
         holder.image.setOnClickListener(randoOnClickListener);
         holder.map.setOnClickListener(randoOnClickListener);
-        //holder.image.setAlpha(0.25f);
-        holder.image.setOnLongClickListener(new View.OnLongClickListener() {
+        View.OnLongClickListener onLongClickListener = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                return false;
+                holder.deleteButton.setVisibility(View.VISIBLE);
+                setAlpha(holder.image, 0.25f);
+                setAlpha(holder.map, 0.25f);
+                return true;
             }
-        });
+        };
+        holder.image.setOnLongClickListener(onLongClickListener);
+        holder.map.setOnLongClickListener(onLongClickListener);
+
+        holder.deleteButton.setOnClickListener(createDeleteOnClickListener(holder));
+    }
+
+    private View.OnClickListener createDeleteOnClickListener(final ViewHolder holder) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!ConnectionUtil.isOnline(holder.deleteButton.getContext())){
+
+                    return;
+                }
+            }
+        };
     }
 
     private View.OnClickListener createRandoOnClickListener(final ViewHolder holder) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (holder.deleteButton.getVisibility() == View.VISIBLE) {
+                    holder.deleteButton.setVisibility(View.GONE);
+                    setAlpha(holder.image, 1f);
+                    setAlpha(holder.map, 1f);
+                    return;
+                }
                 if (holder.animationInProgress) return;
 
                 holder.viewSwitcher.showNext();
@@ -147,6 +177,8 @@ public class RandoListAdapter extends BaseAdapter {
 
         holder.image.setImageBitmap(null);
         holder.map.setImageBitmap(null);
+
+        holder.randdoId = "";
     }
 
     private void cancelRequests(ViewHolder holder) {
@@ -165,6 +197,14 @@ public class RandoListAdapter extends BaseAdapter {
         viewSwitcher.setInAnimation(null);
         viewSwitcher.setOutAnimation(null);
         viewSwitcher.setDisplayedChild(0);
+    }
+
+    private void setAlpha(RoundedImageView view, float alpha) {
+        if (Build.VERSION.SDK_INT < 11) {
+            view.setAlpha((int) (255 * alpha));
+        } else {
+            view.setAlpha(alpha);
+        }
     }
 
     private int getRandoImageSize(ViewGroup container) {
@@ -303,12 +343,16 @@ public class RandoListAdapter extends BaseAdapter {
     }
 
     public static class ViewHolder {
+        String randdoId = "";
+
         public boolean animationInProgress = false;
 
         public ViewSwitcher viewSwitcher;
 
         public RoundedImageView image;
         public RoundedImageView map;
+
+        public Button deleteButton;
 
         public ImageLoader.ImageContainer randoContainer;
         public ImageLoader.ImageContainer mapContainer;

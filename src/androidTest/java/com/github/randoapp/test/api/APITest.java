@@ -10,8 +10,6 @@ import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.api.API;
-import com.github.randoapp.api.beans.User;
-import com.github.randoapp.api.callback.OnFetchUser;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.network.VolleySingleton;
 
@@ -109,7 +107,7 @@ public class APITest {
     }
 
     @Test
-    public void testReport() throws Exception {
+    public void testDelete() throws Exception {
         VolleySingleton.getInstance().httpClient = mock(HttpClient.class);
         StatusLine statusLineMock = mock(StatusLine.class);
         when(statusLineMock.getStatusCode()).thenReturn(HttpStatus.SC_OK);
@@ -118,7 +116,7 @@ public class APITest {
         when(VolleySingleton.getInstance().httpClient.execute(isA(HttpUriRequest.class))).thenReturn(responseMock);
         ArgumentCaptor<HttpPost> captor = ArgumentCaptor.forClass(HttpPost.class);
 
-        API.report("2222");
+        API.delete("2222");
 
         verify(VolleySingleton.getInstance().httpClient).execute(captor.capture());
 
@@ -130,7 +128,7 @@ public class APITest {
         APITestHelper.mockAPIWithError();
 
         try {
-            API.report("2222");
+            API.delete("2222");
             fail("Exception should be thrown before.");
         } catch (Exception e) {
             assertThat(e.getMessage()).isEqualTo("Internal Server Error");

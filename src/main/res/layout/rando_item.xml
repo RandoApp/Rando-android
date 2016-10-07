@@ -26,15 +26,13 @@
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
                 android:tag="image"
-                app:oval="true"
-                android:alpha="0.25"/>
+                app:oval="true" />
 
             <com.makeramen.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:tag="map"
-                app:oval="true"
-                android:alpha="0.25" />
+                app:oval="true" />
         </ViewSwitcher>
     </LinearLayout>
     <Button
@@ -45,5 +43,6 @@
         android:textColor="@android:color/white"
         android:layout_centerHorizontal="true"
         android:layout_centerInParent="true"
+        android:visibility="gone"
         />
 </RelativeLayout>

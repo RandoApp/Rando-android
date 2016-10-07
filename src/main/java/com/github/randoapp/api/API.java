@@ -289,7 +289,7 @@ public class API {
         }
     }
 
-    public static void report(String id) throws Exception {
+    public static void delete(String id) throws Exception {
         HttpResponse response = null;
         try {
             HttpPost request = new HttpPost(getUrl(REPORT_URL + id));
