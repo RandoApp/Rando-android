@@ -13,6 +13,7 @@ import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.ViewSwitcher;
 
 import com.android.volley.VolleyError;
@@ -112,10 +113,15 @@ public class RandoListAdapter extends BaseAdapter {
 
         holder.image = (RoundedImageView) convertView.findViewWithTag("image");
         holder.map = (RoundedImageView) convertView.findViewWithTag("map");
-        holder.deleteButton = (Button) convertView.findViewWithTag("delete_button");
         ViewSwitcher.LayoutParams randoImagesLayout = new ViewSwitcher.LayoutParams(imageSize, imageSize);
         holder.image.setLayoutParams(randoImagesLayout);
         holder.map.setLayoutParams(randoImagesLayout);
+
+        holder.actionsLayer = (RelativeLayout) convertView.findViewWithTag("actions_layer");
+        RelativeLayout.LayoutParams actionsLayerLayoutParams = (RelativeLayout.LayoutParams) holder.actionsLayer.getLayoutParams();
+        actionsLayerLayoutParams.height = imageSize;
+        holder.actionsLayer.setLayoutParams(actionsLayerLayoutParams);
+
 
         convertView.setTag(holder);
         return holder;
@@ -131,10 +137,10 @@ public class RandoListAdapter extends BaseAdapter {
         holder.map.setOnLongClickListener(randoOnLongClickListener);
 
         final Animation scale = AnimationUtils.loadAnimation(App.context, R.anim.scale);
-        holder.deleteButton.setOnTouchListener(new View.OnTouchListener() {
+        holder.actionsLayer.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     view.startAnimation(scale);
                 } else {
                     //view.clearAnimation();
@@ -148,11 +154,7 @@ public class RandoListAdapter extends BaseAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (holder.deleteButton.getVisibility() != View.GONE) {
-                    removeDeleteButton(holder);
-                    return;
-                } else if (holder.animationInProgress) return;
-
+                if (holder.animationInProgress) return;
                 holder.viewSwitcher.showNext();
             }
         };
@@ -162,7 +164,7 @@ public class RandoListAdapter extends BaseAdapter {
         return new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                holder.deleteButton.setVisibility(View.VISIBLE);
+                holder.actionsLayer.setVisibility(View.VISIBLE);
                 if (Build.VERSION.SDK_INT < 11) {
                     holder.image.setAlpha(64);
                     holder.map.setAlpha(64);
@@ -186,6 +188,7 @@ public class RandoListAdapter extends BaseAdapter {
         holder.image.setImageBitmap(null);
         holder.map.setImageBitmap(null);
         removeDeleteButton(holder);
+        holder.randoId = "";
     }
 
     private void removeDeleteButton(RandoViewHolder randoViewHolder) {
@@ -197,7 +200,7 @@ public class RandoListAdapter extends BaseAdapter {
             randoViewHolder.map.setAlpha(1f);
         }
 
-        randoViewHolder.deleteButton.setVisibility(View.GONE);
+        randoViewHolder.actionsLayer.setVisibility(View.GONE);
 
     }
 
@@ -363,10 +366,10 @@ public class RandoListAdapter extends BaseAdapter {
         public ImageLoader.ImageContainer randoContainer;
 
         public ImageLoader.ImageContainer mapContainer;
-        public Button deleteButton;
+        public RelativeLayout actionsLayer;
 
 
-        public String randoId;
+        public String randoId = "";
         public boolean needSetImageError = false;
         public boolean needSetMapError = false;
 

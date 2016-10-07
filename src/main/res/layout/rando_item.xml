@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -26,25 +25,31 @@
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
                 android:tag="image"
-                app:oval="true"
-                android:alpha="0.25"/>
+                app:oval="true" />
 
             <com.makeramen.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:tag="map"
-                app:oval="true"
-                android:alpha="0.25" />
+                app:oval="true" />
         </ViewSwitcher>
     </LinearLayout>
+    <RelativeLayout
+        android:tag="actions_layer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/rando_padding_portrait_column_left"
+        android:layout_marginRight="@dimen/rando_padding_portrait_column_right"
+        android:layout_marginTop="@dimen/rando_padding_portrait_column_top"
+        android:background="@color/rando_red"
+        android:visibility="gone">
     <Button
         android:tag="delete_button"
         android:layout_width="72dp"
         android:layout_height="72dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/trash72black"
         android:textColor="@android:color/white"
-        android:layout_centerHorizontal="true"
-        android:layout_centerInParent="true"
-        android:visibility="gone"
-        />
+        android:layout_centerHorizontal="true" />
+    </RelativeLayout>
 </RelativeLayout>
