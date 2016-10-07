@@ -120,7 +120,7 @@ public class APITest {
 
         verify(VolleySingleton.getInstance().httpClient).execute(captor.capture());
 
-        assertThat(captor.getValue().getURI().toString()).contains(Constants.REPORT_URL + "2222");
+        assertThat(captor.getValue().getURI().toString()).contains(Constants.DELETE_URL + "2222");
     }
 
     @Test

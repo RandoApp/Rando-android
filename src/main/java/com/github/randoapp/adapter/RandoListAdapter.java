@@ -18,6 +18,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.github.randoapp.R;
 import com.github.randoapp.animation.AnimationFactory;
 import com.github.randoapp.animation.AnimationListenerAdapter;
+import com.github.randoapp.api.API;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
@@ -143,8 +144,12 @@ public class RandoListAdapter extends BaseAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!ConnectionUtil.isOnline(holder.deleteButton.getContext())){
-
+                if (ConnectionUtil.isOnline(holder.deleteButton.getContext())){
+                    try {
+                        API.delete(holder.randdoId);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     return;
                 }
             }

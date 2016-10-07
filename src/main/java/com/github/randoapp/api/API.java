@@ -80,7 +80,7 @@ import static com.github.randoapp.Constants.LOGOUT_URL;
 import static com.github.randoapp.Constants.LOG_URL;
 import static com.github.randoapp.Constants.LONGITUDE_PARAM;
 import static com.github.randoapp.Constants.NOT_UPDATED;
-import static com.github.randoapp.Constants.REPORT_URL;
+import static com.github.randoapp.Constants.DELETE_URL;
 import static com.github.randoapp.Constants.SIGNUP_EMAIL_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_PASSWORD_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_URL;
@@ -292,7 +292,7 @@ public class API {
     public static void delete(String id) throws Exception {
         HttpResponse response = null;
         try {
-            HttpPost request = new HttpPost(getUrl(REPORT_URL + id));
+            HttpPost request = new HttpPost(getUrl(DELETE_URL + id));
 
             response = VolleySingleton.getInstance().getHttpClient().execute(request);
             if (response.getStatusLine().getStatusCode() != SC_OK) {
