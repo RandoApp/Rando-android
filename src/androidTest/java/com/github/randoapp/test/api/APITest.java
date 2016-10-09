@@ -116,7 +116,7 @@ public class APITest {
         when(VolleySingleton.getInstance().httpClient.execute(isA(HttpUriRequest.class))).thenReturn(responseMock);
         ArgumentCaptor<HttpPost> captor = ArgumentCaptor.forClass(HttpPost.class);
 
-        API.delete("2222");
+        API.delete("2222",null);
 
         verify(VolleySingleton.getInstance().httpClient).execute(captor.capture());
 
@@ -128,7 +128,7 @@ public class APITest {
         APITestHelper.mockAPIWithError();
 
         try {
-            API.delete("2222");
+            API.delete("2222", null);
             fail("Exception should be thrown before.");
         } catch (Exception e) {
             assertThat(e.getMessage()).isEqualTo("Internal Server Error");
