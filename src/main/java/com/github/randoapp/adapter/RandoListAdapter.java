@@ -371,7 +371,7 @@ public class RandoListAdapter extends BaseAdapter {
     }
 
     public static class ViewHolder {
-        String randdoId = "";
+        public String randdoId = "";
 
         public boolean animationInProgress = false;
 
