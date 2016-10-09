@@ -176,6 +176,17 @@ public class RandoDAO {
     }
 
     /**
+     * Deletes rando instance from DB by randoId.
+     *
+     * @param randoId randoId
+     */
+    public static synchronized void deleteRandoByRandoId(String randoId) {
+        getDB().delete(RandoDBHelper.RandoTable.NAME, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_ID
+                + " = '" + randoId +"'", null);
+        Log.i(RandoDAO.class, "Rando deleted with randoId: ", String.valueOf(randoId));
+    }
+
+    /**
      * clear rando pairs Table in DB.
      */
     public static synchronized void clearRandos() {

@@ -4,6 +4,8 @@ import android.location.Location;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
@@ -11,6 +13,7 @@ import com.github.randoapp.api.beans.User;
 import com.github.randoapp.api.callback.OnFetchUser;
 import com.github.randoapp.api.exception.ForbiddenException;
 import com.github.randoapp.api.exception.RequestTooLongException;
+import com.github.randoapp.api.listeners.DeleteRandoListener;
 import com.github.randoapp.api.listeners.ErrorResponseListener;
 import com.github.randoapp.api.listeners.UserFetchResultListener;
 import com.github.randoapp.api.request.BackgroundPreprocessRequest;
@@ -188,7 +191,7 @@ public class API {
             addAuthTokenHeader(request);
             addFirebaseInstanceIdHeader(request);
 
-             response = VolleySingleton.getInstance().getHttpClient().execute(request);
+            response = VolleySingleton.getInstance().getHttpClient().execute(request);
             if (response.getStatusLine().getStatusCode() != SC_OK) {
                 throw processServerError(readJSON(response));
             }
@@ -221,11 +224,8 @@ public class API {
                 }
             }
         }), syncListener, errorResponseListener);
+        addHeaders(request);
 
-        request.addHeader(AUTHORIZATION_HEADER, "Token "+Preferences.getAuthToken());
-        if (!Preferences.getFirebaseInstanceId().isEmpty()) {
-            request.addHeader(FIREBASE_INSTANCE_ID_HEADER, Preferences.getFirebaseInstanceId());
-        }
         VolleySingleton.getInstance().getRequestQueue().add(request);
     }
 
@@ -289,26 +289,28 @@ public class API {
         }
     }
 
-    public static void delete(String id) throws Exception {
-        HttpResponse response = null;
-        try {
-            HttpPost request = new HttpPost(getUrl(DELETE_URL + id));
+    public static void delete(String id, final DeleteRandoListener deleteRandoListener) throws Exception {
+        BackgroundPreprocessRequest request = new BackgroundPreprocessRequest(Request.Method.POST, DELETE_URL + id, null, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    if ("delete".equals(response.getString("command")) &&
+                            "done".equals(response.getString("result"))) {
+                        deleteRandoListener.onOk();
+                    }
+                } catch (JSONException e) {
+                    deleteRandoListener.onError();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                deleteRandoListener.onError();
+            }
+        });
+        addHeaders(request);
 
-            response = VolleySingleton.getInstance().getHttpClient().execute(request);
-            if (response.getStatusLine().getStatusCode() != SC_OK) {
-                throw processServerError(readJSON(response));
-            }
-        } catch (UnsupportedEncodingException e) {
-            throw processError(e);
-        } catch (ClientProtocolException e) {
-            throw processError(e);
-        } catch (IOException e) {
-            throw processError(e);
-        } finally {
-            if (response != null) {
-                EntityUtils.consume(response.getEntity());
-            }
-        }
+        VolleySingleton.getInstance().getRequestQueue().add(request);
     }
 
     public static void uploadLog(String logs) throws Exception {
@@ -357,18 +359,18 @@ public class API {
         }
     }
 
-    private static String getUrl(String url) {
-        StringBuilder urlBuilder = new StringBuilder(url);
-        urlBuilder.append("/");
-        urlBuilder.append(Preferences.getAuthToken());
-        return urlBuilder.toString();
+    private static void addHeaders(BackgroundPreprocessRequest request) {
+        request.addHeader(AUTHORIZATION_HEADER, "Token " + Preferences.getAuthToken());
+        if (!Preferences.getFirebaseInstanceId().isEmpty()) {
+            request.addHeader(FIREBASE_INSTANCE_ID_HEADER, Preferences.getFirebaseInstanceId());
+        }
     }
 
-    private static void addAuthTokenHeader(HttpPost request){
+    private static void addAuthTokenHeader(HttpPost request) {
         request.setHeader(AUTHORIZATION_HEADER, "Token " + Preferences.getAuthToken());
     }
 
-    private static void addFirebaseInstanceIdHeader(HttpPost request){
+    private static void addFirebaseInstanceIdHeader(HttpPost request) {
         if (!Preferences.getFirebaseInstanceId().isEmpty()) {
             request.setHeader(FIREBASE_INSTANCE_ID_HEADER, Preferences.getFirebaseInstanceId());
         }
@@ -393,8 +395,7 @@ public class API {
                     }
                     return new ForbiddenException(App.context.getResources().getString(R.string.error_411) + " " + resetTime);
                 }
-                default:
-                {
+                default: {
                     //TODO: implement all code handling in switch and replace server "message" with default value.
                     return new Exception(json.getString("message"));
                 }

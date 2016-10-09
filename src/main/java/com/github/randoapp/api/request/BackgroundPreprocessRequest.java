@@ -12,9 +12,9 @@ import java.util.Map;
 
 public class BackgroundPreprocessRequest extends JsonObjectRequest {
 
-    private  Map<String, String> mHeaders;
-    private  Response.Listener<JSONObject> mBackgroundListener;
-    private  Response.Listener<JSONObject> mListener;
+    private Map<String, String> mHeaders;
+    private Response.Listener<JSONObject> mBackgroundListener;
+    private Response.Listener<JSONObject> mListener;
 
     public BackgroundPreprocessRequest(int method, String url, JSONObject jsonRequest, Response.Listener<JSONObject> backgroundListener, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         super(method, url, jsonRequest, listener, errorListener);
@@ -25,13 +25,15 @@ public class BackgroundPreprocessRequest extends JsonObjectRequest {
     @Override
     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
         Response<JSONObject> jsonObject = super.parseNetworkResponse(response);
-        mBackgroundListener.onResponse(jsonObject.result);
+        if (mBackgroundListener != null) {
+            mBackgroundListener.onResponse(jsonObject.result);
+        }
         return jsonObject;
     }
 
     @Override
     protected void deliverResponse(JSONObject response) {
-        if(mListener != null) {
+        if (mListener != null) {
             super.deliverResponse(response);
         }
     }
@@ -45,9 +47,9 @@ public class BackgroundPreprocessRequest extends JsonObjectRequest {
         }
     }
 
-    public void addHeader(String headerName, String headerValue){
-        if (mHeaders == null){
-            mHeaders = new HashMap<String, String>();
+    public void addHeader(String headerName, String headerValue) {
+        if (mHeaders == null) {
+            mHeaders = new HashMap<>();
         }
         mHeaders.put(headerName, headerValue);
     }

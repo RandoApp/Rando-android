@@ -11,6 +11,7 @@ import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.android.volley.VolleyError;
@@ -19,6 +20,7 @@ import com.github.randoapp.R;
 import com.github.randoapp.animation.AnimationFactory;
 import com.github.randoapp.animation.AnimationListenerAdapter;
 import com.github.randoapp.api.API;
+import com.github.randoapp.api.listeners.DeleteRandoListener;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
@@ -144,13 +146,34 @@ public class RandoListAdapter extends BaseAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (ConnectionUtil.isOnline(holder.deleteButton.getContext())){
+                if (ConnectionUtil.isOnline(holder.deleteButton.getContext())) {
                     try {
-                        API.delete(holder.randdoId);
+                        API.delete(holder.randdoId, new DeleteRandoListener() {
+                            @Override
+                            public void onOk() {
+                                RandoDAO.deleteRandoByRandoId(holder.randdoId);
+                                notifyDataSetChanged();
+                                Toast.makeText(holder.deleteButton.getContext(), R.string.rando_deleted,
+                                        Toast.LENGTH_LONG).show();
+                                setAlpha(holder.image, 1f);
+                                setAlpha(holder.map, 1f);
+                                holder.deleteButton.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onError() {
+                                Toast.makeText(holder.deleteButton.getContext(), R.string.error_unknown_err,
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        });
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Toast.makeText(holder.deleteButton.getContext(), R.string.error_unknown_err,
+                                Toast.LENGTH_LONG).show();
                     }
                     return;
+                } else {
+                    Toast.makeText(holder.deleteButton.getContext(), R.string.error_no_network,
+                            Toast.LENGTH_LONG).show();
                 }
             }
         };
