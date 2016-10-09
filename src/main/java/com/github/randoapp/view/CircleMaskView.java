@@ -16,30 +16,21 @@ import com.github.randoapp.R;
 
 public class CircleMaskView extends View {
 
-    private Bitmap bitmap;
 
     public CircleMaskView(Context context) {
         super(context);
-        initPaints(context);
     }
 
     public CircleMaskView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initPaints(context);
     }
 
     public CircleMaskView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initPaints(context);
     }
 
-    private void initPaints (Context context) {
-        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
-        int width = display.getWidth();
-        int height = display.getHeight();
-
-        bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+    private Bitmap initPaints(int width, int height) {
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         bitmap.eraseColor(Color.TRANSPARENT);
 
         int radius = Math.min(width, height) / 2;
@@ -51,12 +42,16 @@ public class CircleMaskView extends View {
 
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.BLACK);
-        canvas.drawCircle(radius, heightCenter, radius-context.getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left), eraser);
+        canvas.drawCircle(radius, heightCenter, radius - getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left), eraser);
+        return bitmap;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        Bitmap bitmap = initPaints(canvas.getWidth(), canvas.getHeight());
         canvas.drawBitmap(bitmap, 0, 0, null);
+        bitmap.recycle();
+        bitmap = null;
     }
 }
