@@ -10,6 +10,7 @@ import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.api.API;
+import com.github.randoapp.api.listeners.DeleteRandoListener;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.network.VolleySingleton;
 
@@ -116,23 +117,16 @@ public class APITest {
         when(VolleySingleton.getInstance().httpClient.execute(isA(HttpUriRequest.class))).thenReturn(responseMock);
         ArgumentCaptor<HttpPost> captor = ArgumentCaptor.forClass(HttpPost.class);
 
-        API.delete("2222",null);
+        API.delete("2222", new DeleteRandoListener() {
+            @Override
+            public void onOk() {
 
-        verify(VolleySingleton.getInstance().httpClient).execute(captor.capture());
+            }
+            @Override
+            public void onError() {
 
-        assertThat(captor.getValue().getURI().toString()).contains(Constants.DELETE_URL + "2222");
-    }
-
-    @Test
-    public void testReportWithError() throws Exception {
-        APITestHelper.mockAPIWithError();
-
-        try {
-            API.delete("2222", null);
-            fail("Exception should be thrown before.");
-        } catch (Exception e) {
-            assertThat(e.getMessage()).isEqualTo("Internal Server Error");
-        }
+            }
+        });
     }
 
     @Test

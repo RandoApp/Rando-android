@@ -1,7 +1,9 @@
 package com.github.randoapp.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Build;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -147,29 +149,42 @@ public class RandoListAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 if (ConnectionUtil.isOnline(holder.deleteButton.getContext())) {
-                    try {
-                        API.delete(holder.randdoId, new DeleteRandoListener() {
-                            @Override
-                            public void onOk() {
-                                RandoDAO.deleteRandoByRandoId(holder.randdoId);
-                                notifyDataSetChanged();
-                                Toast.makeText(holder.deleteButton.getContext(), R.string.rando_deleted,
-                                        Toast.LENGTH_LONG).show();
-                                setAlpha(holder.image, 1f);
-                                setAlpha(holder.map, 1f);
-                                holder.deleteButton.setVisibility(View.GONE);
-                            }
+                    AlertDialog.Builder builder = new AlertDialog.Builder(holder.deleteButton.getContext());
+                    builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            try {
+                                API.delete(holder.randdoId, new DeleteRandoListener() {
+                                    @Override
+                                    public void onOk() {
+                                        RandoDAO.deleteRandoByRandoId(holder.randdoId);
+                                        notifyDataSetChanged();
+                                        Toast.makeText(holder.deleteButton.getContext(), R.string.rando_deleted,
+                                                Toast.LENGTH_LONG).show();
+                                        setAlpha(holder.image, 1f);
+                                        setAlpha(holder.map, 1f);
+                                        holder.deleteButton.setVisibility(View.GONE);
+                                    }
 
-                            @Override
-                            public void onError() {
+                                    @Override
+                                    public void onError() {
+                                        Toast.makeText(holder.deleteButton.getContext(), R.string.error_unknown_err,
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            } catch (Exception e) {
                                 Toast.makeText(holder.deleteButton.getContext(), R.string.error_unknown_err,
                                         Toast.LENGTH_LONG).show();
                             }
-                        });
-                    } catch (Exception e) {
-                        Toast.makeText(holder.deleteButton.getContext(), R.string.error_unknown_err,
-                                Toast.LENGTH_LONG).show();
-                    }
+                        }
+                    });
+                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            holder.deleteButton.setVisibility(View.GONE);
+                            setAlpha(holder.image, 1f);
+                            setAlpha(holder.map, 1f);
+                            return;
+                        }
+                    }).setTitle(R.string.delete_rando).setMessage(R.string.delete_rando_confirm).create().show();
                     return;
                 } else {
                     Toast.makeText(holder.deleteButton.getContext(), R.string.error_no_network,
