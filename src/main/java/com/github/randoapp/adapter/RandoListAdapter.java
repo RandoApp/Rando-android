@@ -221,6 +221,10 @@ public class RandoListAdapter extends BaseAdapter {
         holder.image.setImageBitmap(null);
         holder.map.setImageBitmap(null);
 
+        setAlpha(holder.image, 1f);
+        setAlpha(holder.map, 1f);
+        holder.deleteButton.setVisibility(View.GONE);
+
         holder.randdoId = "";
     }
 
