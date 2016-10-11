@@ -103,7 +103,7 @@ public class RandoListAdapter extends BaseAdapter {
 
         recycle(holder);
         loadImages(holder, rando);
-        holder.randdoId = rando.randoId;
+        holder.randoId = rando.randoId;
         setAnimations(holder);
         return convertView;
     }
@@ -153,10 +153,10 @@ public class RandoListAdapter extends BaseAdapter {
                     builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             try {
-                                API.delete(holder.randdoId, new DeleteRandoListener() {
+                                API.delete(holder.randoId, new DeleteRandoListener() {
                                     @Override
                                     public void onOk() {
-                                        RandoDAO.deleteRandoByRandoId(holder.randdoId);
+                                        RandoDAO.deleteRandoByRandoId(holder.randoId);
                                         notifyDataSetChanged();
                                         Toast.makeText(holder.deleteButton.getContext(), R.string.rando_deleted,
                                                 Toast.LENGTH_LONG).show();
@@ -225,7 +225,7 @@ public class RandoListAdapter extends BaseAdapter {
         setAlpha(holder.map, 1f);
         holder.deleteButton.setVisibility(View.GONE);
 
-        holder.randdoId = "";
+        holder.randoId = "";
     }
 
     private void cancelRequests(ViewHolder holder) {
@@ -247,10 +247,10 @@ public class RandoListAdapter extends BaseAdapter {
     }
 
     private void setAlpha(RoundedImageView view, float alpha) {
-        if (Build.VERSION.SDK_INT < 11) {
-            view.setAlpha((int) (255 * alpha));
-        } else {
+        if (Build.VERSION.SDK_INT >= 11) {
             view.setAlpha(alpha);
+        } else {
+            view.setAlpha((int) (255 * alpha));
         }
     }
 
@@ -390,7 +390,7 @@ public class RandoListAdapter extends BaseAdapter {
     }
 
     public static class ViewHolder {
-        public String randdoId = "";
+        public String randoId = "";
 
         public boolean animationInProgress = false;
 
