@@ -18,6 +18,8 @@ public class LogoutTask extends BaseTask {
             logoutFacebook();
             API.logout();
             Preferences.removeAuthToken();
+            Preferences.removeAccount();
+            Preferences.removeLocation();
             RandoDAO.clearRandos();
             RandoDAO.clearRandoToUpload();
 

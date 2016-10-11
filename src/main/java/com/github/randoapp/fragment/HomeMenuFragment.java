@@ -1,6 +1,9 @@
 package com.github.randoapp.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -14,6 +17,7 @@ import android.widget.TextView;
 
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
+import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.task.LogoutTask;
 import com.github.randoapp.task.callback.OnDone;
@@ -21,9 +25,22 @@ import com.github.randoapp.view.Progress;
 
 import java.util.Map;
 
+import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
+
 public class HomeMenuFragment extends Fragment {
 
     private TextView accountName;
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(BroadcastReceiver.class, "Recieved Update request");
+            if (SYNC_BROADCAST_EVENT.equals(intent.getAction())) {
+                initAccountName();
+            }
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,9 +76,7 @@ public class HomeMenuFragment extends Fragment {
 
         accountName = (TextView) rootView.findViewById(R.id.accountName);
         initVersion(rootView);
-        initAccountName();
         initHelp(rootView);
-
         return rootView;
     }
 
@@ -69,6 +84,13 @@ public class HomeMenuFragment extends Fragment {
     public void onResume() {
         super.onResume();
         initAccountName();
+        getActivity().registerReceiver(receiver, new IntentFilter(SYNC_BROADCAST_EVENT));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(receiver);
     }
 
     private void initVersion(View rootView) {

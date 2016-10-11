@@ -9,6 +9,7 @@ import com.github.randoapp.api.API;
 import com.github.randoapp.fragment.AuthFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
+import com.github.randoapp.preferences.Preferences;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
@@ -46,6 +47,7 @@ public class GoogleAuthTask extends BaseTask {
 
             if (token != null && familyName != null) {
                 API.google(email, token, familyName);
+                Preferences.setAccount(email);
                 return OK;
             }
         } catch (final GooglePlayServicesAvailabilityException playEx) {
