@@ -10,8 +10,6 @@ import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.api.API;
-import com.github.randoapp.api.beans.User;
-import com.github.randoapp.api.callback.OnFetchUser;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.network.VolleySingleton;
 
@@ -26,17 +24,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Date;
 
-import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.HttpStatus;
-import cz.msebera.android.httpclient.StatusLine;
-import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.client.methods.HttpPost;
-import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
 
 import static com.github.randoapp.Constants.PREFERENCES_FILE_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -105,35 +98,6 @@ public class APITest {
             fail("Exception should be thrown before.");
         } catch (Exception e) {
             assertThat(e.getMessage()).isEqualTo(App.context.getResources().getString(R.string.error_unknown_err));
-        }
-    }
-
-    @Test
-    public void testReport() throws Exception {
-        VolleySingleton.getInstance().httpClient = mock(HttpClient.class);
-        StatusLine statusLineMock = mock(StatusLine.class);
-        when(statusLineMock.getStatusCode()).thenReturn(HttpStatus.SC_OK);
-        HttpResponse responseMock = mock(HttpResponse.class);
-        when(responseMock.getStatusLine()).thenReturn(statusLineMock);
-        when(VolleySingleton.getInstance().httpClient.execute(isA(HttpUriRequest.class))).thenReturn(responseMock);
-        ArgumentCaptor<HttpPost> captor = ArgumentCaptor.forClass(HttpPost.class);
-
-        API.report("2222");
-
-        verify(VolleySingleton.getInstance().httpClient).execute(captor.capture());
-
-        assertThat(captor.getValue().getURI().toString()).contains(Constants.REPORT_URL + "2222");
-    }
-
-    @Test
-    public void testReportWithError() throws Exception {
-        APITestHelper.mockAPIWithError();
-
-        try {
-            API.report("2222");
-            fail("Exception should be thrown before.");
-        } catch (Exception e) {
-            assertThat(e.getMessage()).isEqualTo("Internal Server Error");
         }
     }
 

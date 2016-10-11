@@ -97,5 +97,11 @@
     <string name="contact_needed_message">Being able to sign in using social accounts requires access contacts on your device</string>
     <string name="storage_permission_allow">Allow Storage Access</string>
     <!-- Permission strings END -->
+    
+    <string name="rando_deleted">Rando has beed deleted.</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_rando">Delete Rando</string>
+    <string name="delete_rando_confirm">Do you really want to delete this Rando?</string>
 
 </resources>

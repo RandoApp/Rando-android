@@ -35,4 +35,14 @@
                 app:oval="true" />
         </ViewSwitcher>
     </LinearLayout>
+    <Button
+        android:tag="delete_button"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:background="@drawable/ic_trash_rando"
+        android:textColor="@android:color/white"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        />
 </RelativeLayout>
