@@ -235,8 +235,8 @@ public class RandoListAdapter extends BaseAdapter {
 
                 // Add data to the intent, the receiving app will decide
                 // what to do with it.
-                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Share Rando");
-                shareIntent.putExtra(Intent.EXTRA_TEXT, String.format(Constants.SHARE_URL, holder.randoId));
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, holder.actionsLayer.getContext().getResources().getString(R.string.share_subject));
+                shareIntent.putExtra(Intent.EXTRA_TEXT, holder.actionsLayer.getContext().getResources().getString(R.string.share_text) + " " + String.format(Constants.SHARE_URL, holder.randoId));
                 holder.actionsLayer.getContext().startActivity(Intent.createChooser(shareIntent, "Share Rando using"));
             }
         };
