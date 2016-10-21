@@ -104,4 +104,7 @@
     <string name="delete_rando">Delete Rando</string>
     <string name="delete_rando_confirm">Do you really want to delete this Rando?</string>
 
+    <string name="share_subject">Share Rando 4Me</string>
+    <string name="share_text">I\'ve received amazing photo via Rando4Me: </string>
+
 </resources>

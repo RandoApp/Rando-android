@@ -2,6 +2,7 @@ package com.github.randoapp.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -13,11 +14,13 @@ import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.animation.AnimationFactory;
 import com.github.randoapp.animation.AnimationListenerAdapter;
@@ -119,7 +122,17 @@ public class RandoListAdapter extends BaseAdapter {
         holder.image.setLayoutParams(randoImagesLayout);
         holder.map.setLayoutParams(randoImagesLayout);
 
+
+        holder.actionsLayer = (RelativeLayout) convertView.findViewWithTag("actions_layer");
+        RelativeLayout.LayoutParams actionsLayerLayoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
+        actionsLayerLayoutParams.setMargins(convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left),
+                convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
+                convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right),
+                convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));
+        holder.actionsLayer.setLayoutParams(actionsLayerLayoutParams);
+
         holder.deleteButton = (Button) convertView.findViewWithTag("delete_button");
+        holder.shareButton = (Button) convertView.findViewWithTag("share_button");
 
         convertView.setTag(holder);
         return holder;
@@ -132,7 +145,7 @@ public class RandoListAdapter extends BaseAdapter {
         View.OnLongClickListener onLongClickListener = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                holder.deleteButton.setVisibility(View.VISIBLE);
+                holder.actionsLayer.setVisibility(View.VISIBLE);
                 setAlpha(holder.image, 0.25f);
                 setAlpha(holder.map, 0.25f);
                 return true;
@@ -142,6 +155,7 @@ public class RandoListAdapter extends BaseAdapter {
         holder.map.setOnLongClickListener(onLongClickListener);
 
         holder.deleteButton.setOnClickListener(createDeleteOnClickListener(holder));
+        holder.shareButton.setOnClickListener(createShareRandoOnClickListener(holder));
     }
 
     private View.OnClickListener createDeleteOnClickListener(final ViewHolder holder) {
@@ -162,7 +176,7 @@ public class RandoListAdapter extends BaseAdapter {
                                                 Toast.LENGTH_LONG).show();
                                         setAlpha(holder.image, 1f);
                                         setAlpha(holder.map, 1f);
-                                        holder.deleteButton.setVisibility(View.GONE);
+                                        holder.actionsLayer.setVisibility(View.GONE);
                                     }
 
                                     @Override
@@ -179,7 +193,7 @@ public class RandoListAdapter extends BaseAdapter {
                     });
                     builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            holder.deleteButton.setVisibility(View.GONE);
+                            holder.actionsLayer.setVisibility(View.GONE);
                             setAlpha(holder.image, 1f);
                             setAlpha(holder.map, 1f);
                             return;
@@ -198,8 +212,8 @@ public class RandoListAdapter extends BaseAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (holder.deleteButton.getVisibility() == View.VISIBLE) {
-                    holder.deleteButton.setVisibility(View.GONE);
+                if (holder.actionsLayer.getVisibility() == View.VISIBLE) {
+                    holder.actionsLayer.setVisibility(View.GONE);
                     setAlpha(holder.image, 1f);
                     setAlpha(holder.map, 1f);
                     return;
@@ -207,6 +221,23 @@ public class RandoListAdapter extends BaseAdapter {
                 if (holder.animationInProgress) return;
 
                 holder.viewSwitcher.showNext();
+            }
+        };
+    }
+
+    private View.OnClickListener createShareRandoOnClickListener(final ViewHolder holder) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+
+                // Add data to the intent, the receiving app will decide
+                // what to do with it.
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, holder.actionsLayer.getContext().getResources().getString(R.string.share_subject));
+                shareIntent.putExtra(Intent.EXTRA_TEXT, holder.actionsLayer.getContext().getResources().getString(R.string.share_text) + " " + String.format(Constants.SHARE_URL, holder.randoId));
+                holder.actionsLayer.getContext().startActivity(Intent.createChooser(shareIntent, "Share Rando using"));
             }
         };
     }
@@ -223,7 +254,7 @@ public class RandoListAdapter extends BaseAdapter {
 
         setAlpha(holder.image, 1f);
         setAlpha(holder.map, 1f);
-        holder.deleteButton.setVisibility(View.GONE);
+        holder.actionsLayer.setVisibility(View.GONE);
 
         holder.randoId = "";
     }
@@ -399,7 +430,9 @@ public class RandoListAdapter extends BaseAdapter {
         public RoundedImageView image;
         public RoundedImageView map;
 
+        public RelativeLayout actionsLayer;
         public Button deleteButton;
+        public Button shareButton;
 
         public ImageLoader.ImageContainer randoContainer;
         public ImageLoader.ImageContainer mapContainer;
@@ -410,3 +443,4 @@ public class RandoListAdapter extends BaseAdapter {
         public boolean needSetPairing = false;
     }
 }
+
