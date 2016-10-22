@@ -229,15 +229,20 @@ public class RandoListAdapter extends BaseAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                shareIntent.setType("text/plain");
-                shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                if (Constants.TO_UPLOAD_RANDO_ID.equals(holder.randoId)) {
+                    Toast.makeText(holder.deleteButton.getContext(), R.string.cant_share_not_uploaded,
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+                    shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 
-                // Add data to the intent, the receiving app will decide
-                // what to do with it.
-                shareIntent.putExtra(Intent.EXTRA_SUBJECT, holder.actionsLayer.getContext().getResources().getString(R.string.share_subject));
-                shareIntent.putExtra(Intent.EXTRA_TEXT, holder.actionsLayer.getContext().getResources().getString(R.string.share_text) + " " + String.format(Constants.SHARE_URL, holder.randoId));
-                holder.actionsLayer.getContext().startActivity(Intent.createChooser(shareIntent, "Share Rando using"));
+                    // Add data to the intent, the receiving app will decide
+                    // what to do with it.
+                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, holder.actionsLayer.getContext().getResources().getString(R.string.share_subject));
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, holder.actionsLayer.getContext().getResources().getString(R.string.share_text) + " " + String.format(Constants.SHARE_URL, holder.randoId));
+                    holder.actionsLayer.getContext().startActivity(Intent.createChooser(shareIntent, "Share Rando using"));
+                }
             }
         };
     }

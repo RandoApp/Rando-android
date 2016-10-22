@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.github.randoapp.App;
+import com.github.randoapp.Constants;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.db.model.RandoUpload;
 import com.github.randoapp.log.Log;
@@ -326,7 +327,7 @@ public class RandoDAO {
         List<RandoUpload> randosToUpload = getAllRandosToUpload();
         for (RandoUpload randoUpload : randosToUpload) {
             Rando rando = new Rando();
-            rando.randoId = String.valueOf(randoUpload.id);
+            rando.randoId = String.valueOf(Constants.TO_UPLOAD_RANDO_ID);
             rando.date = randoUpload.date;
             rando.imageURL = randoUpload.file;
             rando.imageURLSize.small = randoUpload.file;

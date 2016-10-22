@@ -106,5 +106,6 @@
 
     <string name="share_subject">Share Rando 4Me</string>
     <string name="share_text">I\'ve received amazing photo via Rando4Me: </string>
+    <string name="cant_share_not_uploaded">Not uploaded yet. Not possible to share. Please try later.</string>
 
 </resources>
