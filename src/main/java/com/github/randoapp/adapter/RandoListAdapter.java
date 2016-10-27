@@ -117,6 +117,7 @@ public class RandoListAdapter extends BaseAdapter {
         holder.viewSwitcher = (ViewSwitcher) convertView.findViewWithTag("viewSwitcher");
 
         holder.image = (RoundedImageView) convertView.findViewWithTag("image");
+        holder.image.setTag(null);
         holder.map = (RoundedImageView) convertView.findViewWithTag("map");
         ViewSwitcher.LayoutParams randoImagesLayout = new ViewSwitcher.LayoutParams(imageSize, imageSize);
         holder.image.setLayoutParams(randoImagesLayout);
@@ -381,7 +382,7 @@ public class RandoListAdapter extends BaseAdapter {
                         viewHolder.needSetImageError = true;
                     }
                 }
-            }, ImageView.ScaleType.CENTER, 0, 0, priority);
+            }, ImageView.ScaleType.CENTER, imageSize, imageSize, priority);
         } else {
             Log.e(RandoListAdapter.class, "Ignore rando image because url: ", url, " incorrect");
             if (viewHolder.image != null) {
@@ -414,7 +415,7 @@ public class RandoListAdapter extends BaseAdapter {
                         viewHolder.needSetMapError = true;
                     }
                 }
-            }, ImageView.ScaleType.CENTER, 0, 0, priority);
+            }, ImageView.ScaleType.CENTER, imageSize, imageSize, priority);
         } else {
             Log.d(RandoListAdapter.class, "Ignore map image because url: ", url, " incorrect");
             if (viewHolder.map != null) {
