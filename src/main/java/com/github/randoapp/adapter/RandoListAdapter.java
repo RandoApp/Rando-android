@@ -31,7 +31,7 @@ import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.util.BitmapUtil;
-import com.github.randoapp.util.ConnectionUtil;
+import com.github.randoapp.util.NetworkUtil;
 import com.github.randoapp.util.RandoUtil;
 import com.makeramen.RoundedImageView;
 
@@ -163,7 +163,7 @@ public class RandoListAdapter extends BaseAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (ConnectionUtil.isOnline(holder.deleteButton.getContext())) {
+                if (NetworkUtil.isOnline(holder.deleteButton.getContext())) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(holder.deleteButton.getContext());
                     builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {

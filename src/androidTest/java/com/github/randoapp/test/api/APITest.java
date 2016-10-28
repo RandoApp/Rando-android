@@ -1,16 +1,13 @@
 package com.github.randoapp.test.api;
 
 import android.content.Context;
-import android.location.Location;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
-import com.github.randoapp.R;
 import com.github.randoapp.api.API;
-import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.network.VolleySingleton;
 
 import org.junit.Before;
@@ -22,7 +19,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Date;
 
 import cz.msebera.android.httpclient.HttpStatus;
 import cz.msebera.android.httpclient.client.methods.HttpPost;
@@ -30,9 +26,7 @@ import cz.msebera.android.httpclient.client.methods.HttpPost;
 import static com.github.randoapp.Constants.PREFERENCES_FILE_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 @RunWith(AndroidJUnit4.class)
 @SmallTest
 public class APITest {
@@ -44,62 +38,6 @@ public class APITest {
     }
 
     private File file = new File(".");
-
-    @Test
-    public void shouldUploadRando() throws Exception {
-        APITestHelper.mockAPIForUploadFood();
-
-        Location locationMock = mock(Location.class);
-        when(locationMock.getLatitude()).thenReturn(123.45);
-        when(locationMock.getLongitude()).thenReturn(567.89);
-
-        Rando rando = API.uploadImage(file, locationMock);
-        String actual = rando.imageURL;
-        assertThat(new Date(1471081017405l)).isEqualTo(rando.date);
-        assertThat(actual).isEqualToIgnoringCase("http://dev.img.l.rando4me.s3.amazonaws.com/24975aff328fc4d5cedbb7ca7d235d6f0bfde1781b.jpg");
-    }
-
-    @Test
-    public void shouldUploadRandoWhenNullLocationIsPassed() throws Exception {
-        APITestHelper.mockAPIForUploadFood();
-
-        Rando rando = API.uploadImage(file, null);
-
-        String actual = rando.imageURL;
-        assertThat(new Date(1471081017405l)).isEqualTo(rando.date);
-        assertThat(actual).isEqualToIgnoringCase("http://dev.img.l.rando4me.s3.amazonaws.com/24975aff328fc4d5cedbb7ca7d235d6f0bfde1781b.jpg");
-        //TODO: verify that lat and long is 0.0 in request
-    }
-
-    @Test
-    public void testUploadRandoWithError() throws Exception {
-        APITestHelper.mockAPIWithError();
-
-        Location locationMock = mock(Location.class);
-        when(locationMock.getLatitude()).thenReturn(123.45);
-        when(locationMock.getLongitude()).thenReturn(567.89);
-        try {
-            API.uploadImage(file, locationMock);
-            fail("Exception should be thrown before.");
-        } catch (Exception e) {
-            assertThat(e.getMessage()).isEqualToIgnoringCase("Internal Server Error");
-        }
-    }
-
-    @Test
-    public void testUploadRandoWithUnknownError() throws Exception {
-        APITestHelper.mockAPI(HttpStatus.SC_INTERNAL_SERVER_ERROR, "not a json, that throw JSONException");
-
-        Location locationMock = mock(Location.class);
-        when(locationMock.getLatitude()).thenReturn(123.45);
-        when(locationMock.getLongitude()).thenReturn(567.89);
-        try {
-            API.uploadImage(file, locationMock);
-            fail("Exception should be thrown before.");
-        } catch (Exception e) {
-            assertThat(e.getMessage()).isEqualTo(App.context.getResources().getString(R.string.error_unknown_err));
-        }
-    }
 
     @Test
     public void testSignup() throws Exception {

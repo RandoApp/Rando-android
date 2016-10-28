@@ -145,17 +145,24 @@ public class FileUtil {
         out.close();
     }
 
-    public static byte[] readFile(File file){
+    public static byte[] readFile(File file) {
         int size = (int) file.length();
         byte[] bytes = new byte[size];
+        BufferedInputStream buf = null;
         try {
-            BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
+            buf = new BufferedInputStream(new FileInputStream(file));
             buf.read(bytes, 0, bytes.length);
-            buf.close();
         } catch (FileNotFoundException e) {
-            Log.e(FileUtil.class,"Error Reading File", e);
+            Log.e(FileUtil.class, "Error Reading File", e);
         } catch (IOException e) {
-            Log.e(FileUtil.class,"Error Reading File", e);
+            Log.e(FileUtil.class, "Error Reading File", e);
+        } finally {
+            if (buf != null) {
+                try {
+                    buf.close();
+                } catch (IOException e) {
+                }
+            }
         }
         return bytes;
     }

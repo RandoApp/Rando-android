@@ -47,10 +47,7 @@ public class App extends Application {
     }
 
     private void startServices() {
-        //App onCreate called twice. Prevent double service run, if it is already created
-        if (!UploadService.isRunning()) {
-            startService(new Intent(getApplicationContext(), UploadService.class));
-        }
+        startService(new Intent(getApplicationContext(), UploadService.class));
     }
 
     @Override

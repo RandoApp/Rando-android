@@ -4,7 +4,7 @@
     android:versionCode="53"
     android:versionName="1.0.17">
 
-<uses-sdk
+    <uses-sdk
         android:minSdkVersion="10"
         android:targetSdkVersion="24" />
 
@@ -16,8 +16,8 @@
         android:theme="@style/RandoTheme">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
             android:configChanges="orientation"
+            android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,10 +26,10 @@
         </activity>
         <activity
             android:name=".CameraActivity"
-            android:label="@string/take_picture_screen_label"
             android:configChanges="orientation"
+            android:label="@string/take_picture_screen_label"
             android:screenOrientation="portrait"
-            android:theme="@style/RandoThemeFullScreen"/>
+            android:theme="@style/RandoThemeFullScreen" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -37,31 +37,39 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/app_id" />
+
         <activity android:name="com.facebook.LoginActivity" />
+
         <service
             android:name=".service.UploadService"
-            android:icon="@drawable/ic_launcher"
-            android:process=":upload_process"
             android:enabled="true"
-            android:label="@string/upload_service_name" />
-        <service
-            android:name=".service.RandoFirebaseInstanceIdService">
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/upload_service_name"
+            android:process=":upload_process" />
+        <service android:name=".service.RandoFirebaseInstanceIdService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service
-            android:name=".service.RandoMessagingService">
+        <service android:name=".service.RandoMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <receiver
+            android:name="com.github.randoapp.receiver.NetworkChangeReceiver"
+            android:label="NetworkChangeReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
     <uses-feature android:name="android.hardware.camera" />
 
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -69,7 +77,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
 
 </manifest>

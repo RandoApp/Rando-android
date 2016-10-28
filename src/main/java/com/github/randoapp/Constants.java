@@ -53,7 +53,7 @@ public class Constants {
 
     public static final long UPLOAD_SERVICE_INTERVAL = AlarmManager.INTERVAL_HOUR * 3;
 
-    public static final int UPLOAD_RETRY_TIMEOUT = 30 * 60 * 1000;
+    public static final int UPLOAD_RETRY_TIMEOUT = 5 * 60 * 1000;
 
     public static final int UPLOAD_SERVICE_ATTEMPTS_FAIL = 50;
     public static final int UPLOAD_SERVICE_MANY_ATTEMPTS_FAIL = 150;

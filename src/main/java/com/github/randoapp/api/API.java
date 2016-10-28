@@ -1,12 +1,8 @@
 package com.github.randoapp.api;
 
-import android.location.Location;
-
 import com.android.volley.NetworkResponse;
-import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
@@ -14,14 +10,15 @@ import com.github.randoapp.R;
 import com.github.randoapp.api.beans.User;
 import com.github.randoapp.api.callback.OnFetchUser;
 import com.github.randoapp.api.exception.ForbiddenException;
-import com.github.randoapp.api.exception.RequestTooLongException;
 import com.github.randoapp.api.listeners.DeleteRandoListener;
 import com.github.randoapp.api.listeners.ErrorResponseListener;
+import com.github.randoapp.api.listeners.UploadRandoListener;
 import com.github.randoapp.api.listeners.UserFetchResultListener;
 import com.github.randoapp.api.request.BackgroundPreprocessRequest;
 import com.github.randoapp.api.request.VolleyMultipartRequest;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
+import com.github.randoapp.db.model.RandoUpload;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.notification.Notification;
@@ -34,12 +31,10 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
-import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -52,16 +47,9 @@ import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.NameValuePair;
-import cz.msebera.android.httpclient.NoHttpResponseException;
 import cz.msebera.android.httpclient.auth.AuthenticationException;
-import cz.msebera.android.httpclient.client.RedirectException;
 import cz.msebera.android.httpclient.client.entity.UrlEncodedFormEntity;
 import cz.msebera.android.httpclient.client.methods.HttpPost;
-import cz.msebera.android.httpclient.conn.ConnectTimeoutException;
-import cz.msebera.android.httpclient.conn.ConnectionPoolTimeoutException;
-import cz.msebera.android.httpclient.entity.mime.HttpMultipartMode;
-import cz.msebera.android.httpclient.entity.mime.MultipartEntityBuilder;
-import cz.msebera.android.httpclient.entity.mime.content.FileBody;
 import cz.msebera.android.httpclient.message.BasicNameValuePair;
 import cz.msebera.android.httpclient.util.EntityUtils;
 
@@ -82,6 +70,7 @@ import static com.github.randoapp.Constants.GOOGLE_EMAIL_PARAM;
 import static com.github.randoapp.Constants.GOOGLE_FAMILY_NAME_PARAM;
 import static com.github.randoapp.Constants.GOOGLE_TOKEN_PARAM;
 import static com.github.randoapp.Constants.GOOGLE_URL;
+import static com.github.randoapp.Constants.IMAGE_MIME_TYPE;
 import static com.github.randoapp.Constants.IMAGE_PARAM;
 import static com.github.randoapp.Constants.LATITUDE_PARAM;
 import static com.github.randoapp.Constants.LOGOUT_URL;
@@ -94,7 +83,6 @@ import static com.github.randoapp.Constants.UNAUTHORIZED_CODE;
 import static com.github.randoapp.Constants.UPDATED;
 import static com.github.randoapp.Constants.UPLOAD_RANDO_URL;
 import static org.apache.http.HttpStatus.SC_OK;
-import static org.apache.http.HttpStatus.SC_REQUEST_TOO_LONG;
 
 public class API {
 
@@ -232,62 +220,27 @@ public class API {
         VolleySingleton.getInstance().getRequestQueue().add(request);
     }
 
-    public static void uploadImageVolley(final File randoFile, final Location location) {
+    public static void uploadImageVolley(final RandoUpload randoUpload, final UploadRandoListener uploadListener, final Response.ErrorListener errorListener) {
 
         VolleyMultipartRequest uploadMultipart = new VolleyMultipartRequest(UPLOAD_RANDO_URL, getHeaders(), new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
                 String resultResponse = new String(response.data);
-                try {
-                    JSONObject result = new JSONObject(resultResponse);
-                    RandoUtil.parseRando(result, Rando.Status.OUT);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                NetworkResponse networkResponse = error.networkResponse;
-                String errorMessage = "Unknown error";
-                if (networkResponse == null) {
-                    if (error.getClass().equals(TimeoutError.class)) {
-                        errorMessage = "Request timeout";
-                    } else if (error.getClass().equals(NoConnectionError.class)) {
-                        errorMessage = "Failed to connect server";
-                    }
-                } else {
-                    String result = new String(networkResponse.data);
+                if (uploadListener != null) {
                     try {
-                        JSONObject response = new JSONObject(result);
-                        String status = response.getString("status");
-                        String message = response.getString("message");
-
-                        Log.e(API.class, "Error Status", status);
-                        Log.e(API.class, "Error Message", message);
-
-                        if (networkResponse.statusCode == 404) {
-                            errorMessage = "Resource not found";
-                        } else if (networkResponse.statusCode == 401) {
-                            errorMessage = message + " Please login again";
-                        } else if (networkResponse.statusCode == 400) {
-                            errorMessage = message + " Check your inputs";
-                        } else if (networkResponse.statusCode == 500) {
-                            errorMessage = message + " Something is getting wrong";
-                        }
+                        JSONObject result = new JSONObject(resultResponse);
+                        uploadListener.onUpload(RandoUtil.parseRando(result, Rando.Status.OUT));
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        Log.e(API.class, "Parse uploaded failed", e);
                     }
                 }
-                Log.i(API.class, "Error", errorMessage);
-                error.printStackTrace();
             }
-        }) {
+        }, errorListener) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put(LATITUDE_PARAM, location != null ? String.valueOf(location.getLatitude()) : "0.0");
-                params.put(LONGITUDE_PARAM, location != null ? String.valueOf(location.getLongitude()) : "0.0");
+                params.put(LATITUDE_PARAM, randoUpload.latitude);
+                params.put(LONGITUDE_PARAM, randoUpload.longitude);
                 return params;
             }
 
@@ -296,72 +249,13 @@ public class API {
                 Map<String, DataPart> params = new HashMap<>();
                 // file name could found file base or direct access from real path
                 // for now just get bitmap data from ImageView
-                params.put(IMAGE_PARAM, new DataPart(randoFile.getName(), FileUtil.readFile(randoFile), "image/jpeg"));
+                File randoFile = new File(randoUpload.file);
+                params.put(IMAGE_PARAM, new DataPart(randoFile.getName(), FileUtil.readFile(randoFile), IMAGE_MIME_TYPE));
 
                 return params;
             }
         };
         VolleySingleton.getInstance().getRequestQueue().add(uploadMultipart);
-    }
-
-    public static Rando uploadImage(File randoFile, Location location) throws Exception {
-        Log.i(API.class, "uploadImage");
-        HttpResponse response = null;
-        try {
-            String latitude = "0.0";
-            String longitude = "0.0";
-            if (location != null) {
-                latitude = String.valueOf(location.getLatitude());
-                longitude = String.valueOf(location.getLongitude());
-            }
-
-            HttpPost request = new HttpPost(UPLOAD_RANDO_URL);
-            addAuthTokenHeader(request);
-            addFirebaseInstanceIdHeader(request);
-
-            MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
-            multipartEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-            multipartEntity.addPart(IMAGE_PARAM, new FileBody(randoFile));
-            multipartEntity.addTextBody(LATITUDE_PARAM, latitude);
-            multipartEntity.addTextBody(LONGITUDE_PARAM, longitude);
-            request.setEntity(multipartEntity.build());
-
-            response = VolleySingleton.getInstance().getHttpClient().execute(request);
-
-            if (response.getStatusLine().getStatusCode() == SC_OK) {
-                JSONObject json = readJSON(response);
-                return RandoUtil.parseRando(json, Rando.Status.OUT);
-            } else if (response.getStatusLine().getStatusCode() == SC_REQUEST_TOO_LONG) {
-                throw new RequestTooLongException(App.context.getResources().getString(R.string.error_image_too_big));
-            } else {
-                throw processServerError(readJSON(response));
-            }
-        } catch (SocketTimeoutException e) {
-            Log.w(API.class, "No response from server. Timeout exception.");
-            throw e;
-        } catch (ConnectionPoolTimeoutException e) {
-            Log.w(API.class, "Connection manager fails to obtain a free connection from the connection pool within the given period of time");
-            throw e;
-        } catch (ConnectTimeoutException e) {
-            Log.w(API.class, "Unable to establish a connection with the server");
-            throw e;
-        } catch (FileNotFoundException e) {
-            Log.w(API.class, "File to upload not found");
-            throw new FileNotFoundException("Image to upload not found");
-        } catch (NoHttpResponseException e) {
-            Log.w(API.class, "Unable to establish a connection with the server");
-            throw e;
-        } catch (RedirectException e) {
-            Log.w(API.class, "HTTP specification caused by an invalid redirect response");
-            throw e;
-        } catch (IOException e) {
-            Log.w(API.class, "Unknown exception ", e.getMessage());
-            throw e;
-        } finally {
-            if (response != null) {
-                EntityUtils.consume(response.getEntity());
-            }
-        }
     }
 
     public static void delete(String id, final DeleteRandoListener deleteRandoListener) throws Exception {
@@ -389,7 +283,7 @@ public class API {
     }
 
     private static void addParamsToRequest(HttpPost request, String... args) throws UnsupportedEncodingException {
-        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+        List<NameValuePair> nameValuePairs = new ArrayList<>(1);
         for (int i = 0; i < args.length; i += 2) {
             nameValuePairs.add(new BasicNameValuePair(args[i], args[i + 1]));
         }
@@ -462,7 +356,6 @@ public class API {
             return processError(exc);
         }
     }
-
 
     private static Exception processError(Exception exc) {
         //We don't want to log Connectivity exceptions
