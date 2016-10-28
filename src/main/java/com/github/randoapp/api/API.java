@@ -2,8 +2,11 @@ package com.github.randoapp.api;
 
 import android.location.Location;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
@@ -16,12 +19,14 @@ import com.github.randoapp.api.listeners.DeleteRandoListener;
 import com.github.randoapp.api.listeners.ErrorResponseListener;
 import com.github.randoapp.api.listeners.UserFetchResultListener;
 import com.github.randoapp.api.request.BackgroundPreprocessRequest;
+import com.github.randoapp.api.request.VolleyMultipartRequest;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.notification.Notification;
 import com.github.randoapp.preferences.Preferences;
+import com.github.randoapp.util.FileUtil;
 import com.github.randoapp.util.RandoUtil;
 
 import org.json.JSONException;
@@ -39,7 +44,9 @@ import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,7 +59,6 @@ import cz.msebera.android.httpclient.client.entity.UrlEncodedFormEntity;
 import cz.msebera.android.httpclient.client.methods.HttpPost;
 import cz.msebera.android.httpclient.conn.ConnectTimeoutException;
 import cz.msebera.android.httpclient.conn.ConnectionPoolTimeoutException;
-import cz.msebera.android.httpclient.entity.StringEntity;
 import cz.msebera.android.httpclient.entity.mime.HttpMultipartMode;
 import cz.msebera.android.httpclient.entity.mime.MultipartEntityBuilder;
 import cz.msebera.android.httpclient.entity.mime.content.FileBody;
@@ -79,7 +85,6 @@ import static com.github.randoapp.Constants.GOOGLE_URL;
 import static com.github.randoapp.Constants.IMAGE_PARAM;
 import static com.github.randoapp.Constants.LATITUDE_PARAM;
 import static com.github.randoapp.Constants.LOGOUT_URL;
-import static com.github.randoapp.Constants.LOG_URL;
 import static com.github.randoapp.Constants.LONGITUDE_PARAM;
 import static com.github.randoapp.Constants.NOT_UPDATED;
 import static com.github.randoapp.Constants.SIGNUP_EMAIL_PARAM;
@@ -222,9 +227,81 @@ public class API {
                 }
             }
         }), syncListener, errorResponseListener);
-        addHeaders(request);
+        request.setHeaders(getHeaders());
 
         VolleySingleton.getInstance().getRequestQueue().add(request);
+    }
+
+    public static void uploadImageVolley(final File randoFile, final Location location) {
+
+        VolleyMultipartRequest uploadMultipart = new VolleyMultipartRequest(UPLOAD_RANDO_URL, getHeaders(), new Response.Listener<NetworkResponse>() {
+            @Override
+            public void onResponse(NetworkResponse response) {
+                String resultResponse = new String(response.data);
+                try {
+                    JSONObject result = new JSONObject(resultResponse);
+                    RandoUtil.parseRando(result, Rando.Status.OUT);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse networkResponse = error.networkResponse;
+                String errorMessage = "Unknown error";
+                if (networkResponse == null) {
+                    if (error.getClass().equals(TimeoutError.class)) {
+                        errorMessage = "Request timeout";
+                    } else if (error.getClass().equals(NoConnectionError.class)) {
+                        errorMessage = "Failed to connect server";
+                    }
+                } else {
+                    String result = new String(networkResponse.data);
+                    try {
+                        JSONObject response = new JSONObject(result);
+                        String status = response.getString("status");
+                        String message = response.getString("message");
+
+                        Log.e(API.class, "Error Status", status);
+                        Log.e(API.class, "Error Message", message);
+
+                        if (networkResponse.statusCode == 404) {
+                            errorMessage = "Resource not found";
+                        } else if (networkResponse.statusCode == 401) {
+                            errorMessage = message + " Please login again";
+                        } else if (networkResponse.statusCode == 400) {
+                            errorMessage = message + " Check your inputs";
+                        } else if (networkResponse.statusCode == 500) {
+                            errorMessage = message + " Something is getting wrong";
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Log.i(API.class, "Error", errorMessage);
+                error.printStackTrace();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put(LATITUDE_PARAM, location != null ? String.valueOf(location.getLatitude()) : "0.0");
+                params.put(LONGITUDE_PARAM, location != null ? String.valueOf(location.getLongitude()) : "0.0");
+                return params;
+            }
+
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new HashMap<>();
+                // file name could found file base or direct access from real path
+                // for now just get bitmap data from ImageView
+                params.put(IMAGE_PARAM, new DataPart(randoFile.getName(), FileUtil.readFile(randoFile), "image/jpeg"));
+
+                return params;
+            }
+        };
+        VolleySingleton.getInstance().getRequestQueue().add(uploadMultipart);
     }
 
     public static Rando uploadImage(File randoFile, Location location) throws Exception {
@@ -306,28 +383,9 @@ public class API {
                 deleteRandoListener.onError();
             }
         });
-        addHeaders(request);
+        request.setHeaders(getHeaders());
 
         VolleySingleton.getInstance().getRequestQueue().add(request);
-    }
-
-    public static void uploadLog(String logs) throws Exception {
-        Log.i(API.class, "uploadLog");
-        HttpResponse response = null;
-        try {
-            HttpPost request = new HttpPost(LOG_URL);
-            addAuthTokenHeader(request);
-            addFirebaseInstanceIdHeader(request);
-            request.setHeader("Content-Type", "application/json");
-            request.setEntity(new StringEntity(logs, "UTF-8"));
-            response = VolleySingleton.getInstance().getHttpClient().execute(request);
-        } catch (IOException e) {
-            Log.e(API.class, "Can not upload logs, because: ", e.getMessage());
-        } finally {
-            if (response != null) {
-                EntityUtils.consume(response.getEntity());
-            }
-        }
     }
 
     private static void addParamsToRequest(HttpPost request, String... args) throws UnsupportedEncodingException {
@@ -357,11 +415,13 @@ public class API {
         }
     }
 
-    private static void addHeaders(BackgroundPreprocessRequest request) {
-        request.addHeader(AUTHORIZATION_HEADER, "Token " + Preferences.getAuthToken());
+    private static Map<String, String> getHeaders() {
+        Map<String, String> headers = new HashMap<>(2);
+        headers.put(AUTHORIZATION_HEADER, "Token " + Preferences.getAuthToken());
         if (!Preferences.getFirebaseInstanceId().isEmpty()) {
-            request.addHeader(FIREBASE_INSTANCE_ID_HEADER, Preferences.getFirebaseInstanceId());
+            headers.put(FIREBASE_INSTANCE_ID_HEADER, Preferences.getFirebaseInstanceId());
         }
+        return headers;
     }
 
     private static void addAuthTokenHeader(HttpPost request) {
