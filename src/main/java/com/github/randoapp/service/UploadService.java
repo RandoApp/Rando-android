@@ -62,6 +62,7 @@ public class UploadService extends Service {
         final List<RandoUpload> randosToUpload = RandoDAO.getAllRandosToUpload("ASC");
         Log.d(UploadService.class, "Need upload ", String.valueOf(randosToUpload.size()), " randos");
         if (randosToUpload.size() > 0) {
+            int skippedRandos = 0;
             for (final RandoUpload randoToUpload : randosToUpload) {
                 long pastFromLastTry = new Date().getTime() - randoToUpload.lastTry.getTime();
                 if (pastFromLastTry >= Constants.UPLOAD_RETRY_TIMEOUT) {
@@ -132,7 +133,13 @@ public class UploadService extends Service {
                     //Upload only 1 rando per service Run
                     Log.d(UploadService.class, "1 Rando sent to upload, breaking");
                     break;
+                } else {
+                    skippedRandos++;
                 }
+            }
+
+            if (skippedRandos == randosToUpload.size()) {
+                scheduleNextRun(Constants.UPLOAD_RETRY_TIMEOUT);
             }
         }
     }
