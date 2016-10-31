@@ -1,5 +1,6 @@
 package com.github.randoapp.api;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -56,6 +57,7 @@ import cz.msebera.android.httpclient.util.EntityUtils;
 import static com.github.randoapp.Constants.ANONYMOUS_ID_PARAM;
 import static com.github.randoapp.Constants.ANONYMOUS_URL;
 import static com.github.randoapp.Constants.AUTHORIZATION_HEADER;
+import static com.github.randoapp.Constants.CONNECTION_TIMEOUT;
 import static com.github.randoapp.Constants.DELETE_URL;
 import static com.github.randoapp.Constants.ERROR_CODE_PARAM;
 import static com.github.randoapp.Constants.FACEBOOK_EMAIL_PARAM;
@@ -225,6 +227,7 @@ public class API {
         VolleyMultipartRequest uploadMultipart = new VolleyMultipartRequest(UPLOAD_RANDO_URL, getHeaders(), new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
+                Log.e(API.class, "Rando Uploaded Successfully:", randoUpload.toString());
                 String resultResponse = new String(response.data);
                 if (uploadListener != null) {
                     try {
@@ -254,7 +257,14 @@ public class API {
 
                 return params;
             }
+
+            @Override
+            public Priority getPriority() {
+                return Priority.LOW;
+            }
         };
+        uploadMultipart.setRetryPolicy(new DefaultRetryPolicy(CONNECTION_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         VolleySingleton.getInstance().getRequestQueue().add(uploadMultipart);
     }
 

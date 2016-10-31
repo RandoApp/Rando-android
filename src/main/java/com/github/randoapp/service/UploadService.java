@@ -55,6 +55,7 @@ public class UploadService extends Service {
                 if (pastFromLastTry >= Constants.UPLOAD_RETRY_TIMEOUT) {
                     randoToUpload.lastTry = new Date();
                     RandoDAO.updateRandoToUpload(randoToUpload);
+                    Log.d(UploadService.class, "Starting Upload:", randoToUpload.toString());
                     API.uploadImageVolley(randoToUpload, new UploadRandoListener() {
                         @Override
                         public void onUpload(Rando rando) {
@@ -63,7 +64,7 @@ public class UploadService extends Service {
                             if (rando != null) {
                                 RandoDAO.createRando(rando);
                             }
-                            Log.d(UploadService.class, "Delete rando");
+                            Log.d(UploadService.class, "Delete rando",randoToUpload.toString());
                             RandoDAO.deleteRandoToUpload(randoToUpload);
                             Intent intent = new Intent(Constants.UPLOAD_SERVICE_BROADCAST_EVENT);
                             UploadService.this.sendBroadcast(intent);
@@ -86,8 +87,8 @@ public class UploadService extends Service {
                                     String status = response.getString("status");
                                     String message = response.getString("message");
 
-                                    Log.e(API.class, "Error Status", status);
-                                    Log.e(API.class, "Error Message", message);
+                                    Log.e(UploadService.class, "Error Status", status);
+                                    Log.e(UploadService.class, "Error Message", message);
 
                                     if (networkResponse.statusCode == 404) {
                                         errorMessage = "Resource not found";
@@ -105,10 +106,14 @@ public class UploadService extends Service {
                                     e.printStackTrace();
                                 }
                             }
-                            Log.i(API.class, "Error", errorMessage);
-                            error.printStackTrace();
+                            Log.e(UploadService.class, "Error" + errorMessage, error);
                         }
                     });
+                    try {
+                        Thread.sleep(30000);
+                    } catch (InterruptedException e) {
+                        Log.e(UploadService.class, "Sleep Error:");
+                    }
                 }
             }
         }

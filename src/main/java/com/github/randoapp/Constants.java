@@ -44,7 +44,6 @@ public class Constants {
     public static final int SIZE_SMALL = 480;
     public static final int SIZE_MEDIUM = 800;
     public static final int SIZE_LARGE = 1200;
-    public static final double PICTURE_DESIRED_ASPECT_RATIO = 0.75;
 
     public static final String SERVER_HOST = BuildConfig.RANDO_HOST;
     public static final String SERVER_URL = "https://" + SERVER_HOST;
@@ -53,7 +52,7 @@ public class Constants {
 
     public static final long UPLOAD_SERVICE_INTERVAL = AlarmManager.INTERVAL_HOUR * 3;
 
-    public static final int UPLOAD_RETRY_TIMEOUT = 5 * 60 * 1000;
+    public static final int UPLOAD_RETRY_TIMEOUT = 15 * 60 * 1000;
 
     public static final int UPLOAD_SERVICE_ATTEMPTS_FAIL = 50;
     public static final int UPLOAD_SERVICE_MANY_ATTEMPTS_FAIL = 150;
