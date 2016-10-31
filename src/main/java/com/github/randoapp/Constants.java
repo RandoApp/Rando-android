@@ -136,11 +136,6 @@ public class Constants {
     public static final int CONTACTS_PERMISSION_REQUEST_CODE = 704;
     public static final int STORAGE_PERMISSION_REQUEST_CODE = 705;
 
-    public static final String FORBIDDEN_ERROR = "ForbiddenException";
-    public static final String FILE_NOT_FOUND_ERROR = "FileNotFound";
-    public static final String REQUEST_TOO_LONG_ERROR = "RequestTooLongException";
-    public static final String INCORRECT_ARGS_ERROR = "IncorrectArgs";
-
     public static final String PUSH_NOTIFICATION_LANDED = "landed";
     public static final String PUSH_NOTIFICATION_RECEIVED = "received";
 
