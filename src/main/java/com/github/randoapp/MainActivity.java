@@ -119,7 +119,6 @@ public class MainActivity extends FragmentActivity {
         super.onPostResume();
         registerReceivers();
         showUpdatePlayServicesDialogIfNecessary();
-        startService(new Intent(getApplicationContext(), UploadService.class));
         Fragment fragment = getFragment();
         if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName()) == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();

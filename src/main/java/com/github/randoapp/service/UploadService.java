@@ -23,8 +23,15 @@ import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class UploadService extends Service {
+
+    private int uploadErrorCount = 0;
+    private Timer timer = null;
+    private Object lock = new Object();
+
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -39,9 +46,14 @@ public class UploadService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(UploadService.class, "Upload service onStartCommand");
-        if (RandoDAO.countAllRandosToUpload() > 0 && NetworkUtil.isOnline(getApplicationContext())) {
-            upload();
+        synchronized (lock) {
+            int randosCount = RandoDAO.countAllRandosToUpload();
+            Log.d(UploadService.class, "Upload service onStartCommand. Queue contains: " + randosCount);
+            if (randosCount > 0 && NetworkUtil.isOnline(getApplicationContext())) {
+                upload();
+            } else {
+                Log.d(UploadService.class, "Sleep and do not run.");
+            }
         }
         return Service.START_NOT_STICKY;
     }
@@ -64,10 +76,12 @@ public class UploadService extends Service {
                             if (rando != null) {
                                 RandoDAO.createRando(rando);
                             }
-                            Log.d(UploadService.class, "Delete rando",randoToUpload.toString());
+                            Log.d(UploadService.class, "Delete rando", randoToUpload.toString());
                             RandoDAO.deleteRandoToUpload(randoToUpload);
                             Intent intent = new Intent(Constants.UPLOAD_SERVICE_BROADCAST_EVENT);
                             UploadService.this.sendBroadcast(intent);
+                            uploadErrorCount = 0;
+                            scheduleNextRun(Constants.UPLOAD_SERVICE_SHORT_PAUSE);
                         }
                     }, new Response.ErrorListener() {
                         @Override
@@ -84,8 +98,8 @@ public class UploadService extends Service {
                                 String result = new String(networkResponse.data);
                                 try {
                                     JSONObject response = new JSONObject(result);
-                                    String status = response.getString("status");
-                                    String message = response.getString("message");
+                                    String status = response.getString(Constants.ERROR_STATUS_PARAM);
+                                    String message = response.getString(Constants.ERROR_MESSAGE_PARAM);
 
                                     Log.e(UploadService.class, "Error Status", status);
                                     Log.e(UploadService.class, "Error Message", message);
@@ -106,16 +120,34 @@ public class UploadService extends Service {
                                     e.printStackTrace();
                                 }
                             }
-                            Log.e(UploadService.class, "Error" + errorMessage, error);
+                            uploadErrorCount++;
+                            Log.e(UploadService.class, "Error" + errorMessage + " Errors in a raw count: " + uploadErrorCount, error);
+                            if (uploadErrorCount < Constants.UPLOAD_SERVICE_ATTEMPTS_FAIL) {
+                                scheduleNextRun(Constants.UPLOAD_SERVICE_SHORT_PAUSE);
+                            } else {
+                                scheduleNextRun(Constants.UPLOAD_SERVICE_LONG_PAUSE);
+                            }
                         }
                     });
-                    try {
-                        Thread.sleep(30000);
-                    } catch (InterruptedException e) {
-                        Log.e(UploadService.class, "Sleep Error:");
-                    }
+                    //Upload only 1 rando per service Run
+                    Log.d(UploadService.class, "1 Rando sent to upload, breaking");
+                    break;
                 }
             }
         }
+    }
+
+    private void scheduleNextRun(long time) {
+        Log.d(UploadService.class, "Schedule to run in: " + time);
+        if (timer != null) {
+            timer.cancel();
+        }
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                startService(new Intent(getApplicationContext(), UploadService.class));
+            }
+        }, time);
     }
 }

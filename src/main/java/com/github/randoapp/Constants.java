@@ -38,7 +38,6 @@ public class Constants {
     public static final int UNAUTHORIZED_CODE = 400;
     public static final int FORBIDDEN_CODE = 411;
 
-    public static final int RANDO_MARGIN_PORTRAIT = 30;
 
     public static final int DESIRED_PICTURE_SIZE = 1200;
     public static final int SIZE_SMALL = 480;
@@ -48,18 +47,13 @@ public class Constants {
     public static final String SERVER_HOST = BuildConfig.RANDO_HOST;
     public static final String SERVER_URL = "https://" + SERVER_HOST;
     public static final int ESTABLISH_CONNECTION_TIMEOUT = 5 * 60 * 1000;
-    public static final int CONNECTION_TIMEOUT = 60 * 60 * 1000;
+    public static final int CONNECTION_TIMEOUT = 5 * 60 * 1000;
 
-    public static final long UPLOAD_SERVICE_INTERVAL = AlarmManager.INTERVAL_HOUR * 3;
+    public static final int UPLOAD_RETRY_TIMEOUT = 5  * 60 * 1000;
 
-    public static final int UPLOAD_RETRY_TIMEOUT = 15 * 60 * 1000;
-
-    public static final int UPLOAD_SERVICE_ATTEMPTS_FAIL = 50;
-    public static final int UPLOAD_SERVICE_MANY_ATTEMPTS_FAIL = 150;
+    public static final int UPLOAD_SERVICE_ATTEMPTS_FAIL = 5;
     public static final long UPLOAD_SERVICE_SHORT_PAUSE = 5 * 1000;
-    public static final long UPLOAD_SERVICE_LONG_PAUSE = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
-    public static final long UPLOAD_SERVICE_VERY_LONG_PAUSE = AlarmManager.INTERVAL_HOUR;
-    public static final long UPLOAD_SERVICE_FORBIDDEN_PAUSE = AlarmManager.INTERVAL_HOUR * 6;
+    public static final long UPLOAD_SERVICE_LONG_PAUSE = AlarmManager.INTERVAL_HOUR * 2;
 
     //Shared Preferences
     public static final String PREFERENCES_FILE_NAME = "rando.prefs";
@@ -89,8 +83,6 @@ public class Constants {
     public static final String RANDO_ID_PARAM = "randoId";
     public static final String MAP_URL_PARAM = "mapURL";
     public static final String CREATION_PARAM = "creation";
-    public static final String USER_PARAM = "user";
-    public static final String STRANGER_PARAM = "stranger";
     public static final String RANDO_PARAM = "rando";
     public static final String IN_RANDOS_PARAM = "in";
     public static final String OUT_RANDOS_PARAM = "out";
@@ -106,6 +98,7 @@ public class Constants {
 
     public static final String ERROR_MESSAGE_PARAM = "message";
     public static final String ERROR_CODE_PARAM = "code";
+    public static final String ERROR_STATUS_PARAM = "status";
 
     public static final String IMAGE_PARAM = "image";
 

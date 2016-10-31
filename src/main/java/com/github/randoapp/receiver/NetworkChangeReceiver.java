@@ -16,7 +16,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
         int status = NetworkUtil.getConnectivityStatusString(context);
         if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
             if (status != NetworkUtil.NETWORK_STATUS_NOT_CONNECTED) {
-                if (RandoDAO.countAllRandosToUpload() != 0) {
+                if (RandoDAO.countAllRandosToUpload() > 0) {
                     context.startService(new Intent(context, UploadService.class));
                 }
             } else {

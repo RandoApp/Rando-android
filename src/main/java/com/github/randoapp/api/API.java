@@ -227,7 +227,7 @@ public class API {
         VolleyMultipartRequest uploadMultipart = new VolleyMultipartRequest(UPLOAD_RANDO_URL, getHeaders(), new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
-                Log.e(API.class, "Rando Uploaded Successfully:", randoUpload.toString());
+                Log.d(API.class, "Rando Uploaded Successfully:", randoUpload.toString());
                 String resultResponse = new String(response.data);
                 if (uploadListener != null) {
                     try {

@@ -22,9 +22,7 @@ import com.github.randoapp.R;
 import com.github.randoapp.adapter.RandoListAdapter;
 import com.github.randoapp.api.API;
 import com.github.randoapp.api.listeners.ErrorResponseListener;
-import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.log.Log;
-import com.github.randoapp.service.UploadService;
 import com.github.randoapp.util.GooglePlayServicesUtil;
 import com.github.randoapp.util.NetworkUtil;
 import com.google.android.gms.common.ConnectionResult;
@@ -105,9 +103,6 @@ public class HomeListFragment extends Fragment {
                             swipeRefreshLayout.setRefreshing(false);
                         }
                     });
-                    if (RandoDAO.countAllRandosToUpload() > 0) {
-                        getContext().startService(new Intent(getContext(), UploadService.class));
-                    }
                 } else {
                     swipeRefreshLayout.setRefreshing(false);
                     Toast.makeText(getActivity(), R.string.error_no_network, Toast.LENGTH_LONG).show();
