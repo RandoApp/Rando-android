@@ -10,6 +10,7 @@ import com.github.randoapp.Constants;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -142,5 +143,27 @@ public class FileUtil {
         }
         in.close();
         out.close();
+    }
+
+    public static byte[] readFile(File file) {
+        int size = (int) file.length();
+        byte[] bytes = new byte[size];
+        BufferedInputStream buf = null;
+        try {
+            buf = new BufferedInputStream(new FileInputStream(file));
+            buf.read(bytes, 0, bytes.length);
+        } catch (FileNotFoundException e) {
+            Log.e(FileUtil.class, "Error Reading File", e);
+        } catch (IOException e) {
+            Log.e(FileUtil.class, "Error Reading File", e);
+        } finally {
+            if (buf != null) {
+                try {
+                    buf.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+        return bytes;
     }
 }
