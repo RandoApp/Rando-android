@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -134,6 +135,9 @@ public class RandoListAdapter extends BaseAdapter {
 
         holder.deleteButton = (Button) convertView.findViewWithTag("delete_button");
         holder.shareButton = (Button) convertView.findViewWithTag("share_button");
+        holder.spinner = (ImageView) convertView.findViewWithTag("spinner");
+
+        holder.spinner.startAnimation(AnimationUtils.loadAnimation(holder.spinner.getContext(), R.anim.rotate_indefinitely));
 
         convertView.setTag(holder);
         return holder;
@@ -168,6 +172,10 @@ public class RandoListAdapter extends BaseAdapter {
                     builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             try {
+                                holder.shareButton.setVisibility(View.GONE);
+                                holder.deleteButton.setVisibility(View.GONE);
+                                holder.spinner.setVisibility(View.VISIBLE);
+                                holder.spinner.startAnimation(AnimationUtils.loadAnimation(holder.spinner.getContext(), R.anim.rotate_indefinitely));
                                 API.delete(holder.randoId, new DeleteRandoListener() {
                                     @Override
                                     public void onOk() {
@@ -177,6 +185,10 @@ public class RandoListAdapter extends BaseAdapter {
                                                 Toast.LENGTH_LONG).show();
                                         setAlpha(holder.image, 1f);
                                         setAlpha(holder.map, 1f);
+                                        holder.spinner.clearAnimation();
+                                        holder.spinner.setVisibility(View.GONE);
+                                        holder.shareButton.setVisibility(View.VISIBLE);
+                                        holder.deleteButton.setVisibility(View.VISIBLE);
                                         holder.actionsLayer.setVisibility(View.GONE);
                                     }
 
@@ -184,11 +196,19 @@ public class RandoListAdapter extends BaseAdapter {
                                     public void onError() {
                                         Toast.makeText(holder.deleteButton.getContext(), R.string.error_unknown_err,
                                                 Toast.LENGTH_LONG).show();
+                                        holder.shareButton.setVisibility(View.VISIBLE);
+                                        holder.deleteButton.setVisibility(View.VISIBLE);
+                                        holder.spinner.setVisibility(View.GONE);
+                                        holder.spinner.clearAnimation();
                                     }
                                 });
                             } catch (Exception e) {
                                 Toast.makeText(holder.deleteButton.getContext(), R.string.error_unknown_err,
                                         Toast.LENGTH_LONG).show();
+                                holder.shareButton.setVisibility(View.VISIBLE);
+                                holder.deleteButton.setVisibility(View.VISIBLE);
+                                holder.spinner.setVisibility(View.GONE);
+                                holder.spinner.clearAnimation();
                             }
                         }
                     });
@@ -261,6 +281,11 @@ public class RandoListAdapter extends BaseAdapter {
         setAlpha(holder.image, 1f);
         setAlpha(holder.map, 1f);
         holder.actionsLayer.setVisibility(View.GONE);
+        holder.spinner.clearAnimation();
+        holder.spinner.setVisibility(View.GONE);
+        holder.shareButton.setVisibility(View.VISIBLE);
+        holder.deleteButton.setVisibility(View.VISIBLE);
+        holder.spinner.clearAnimation();
 
         holder.randoId = "";
     }
@@ -439,6 +464,7 @@ public class RandoListAdapter extends BaseAdapter {
         public RelativeLayout actionsLayer;
         public Button deleteButton;
         public Button shareButton;
+        public ImageView spinner;
 
         public ImageLoader.ImageContainer randoContainer;
         public ImageLoader.ImageContainer mapContainer;
@@ -449,4 +475,3 @@ public class RandoListAdapter extends BaseAdapter {
         public boolean needSetPairing = false;
     }
 }
-

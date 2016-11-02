@@ -69,7 +69,7 @@ public class UploadService extends Service {
                     randoToUpload.lastTry = new Date();
                     RandoDAO.updateRandoToUpload(randoToUpload);
                     Log.d(UploadService.class, "Starting Upload:", randoToUpload.toString());
-                    API.uploadImageVolley(randoToUpload, new UploadRandoListener() {
+                    API.uploadImage(randoToUpload, new UploadRandoListener() {
                         @Override
                         public void onUpload(Rando rando) {
                             Log.d(UploadService.class, rando.toString());

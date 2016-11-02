@@ -2,6 +2,8 @@ package com.github.randoapp;
 
 import android.app.AlarmManager;
 
+import java.util.concurrent.TimeUnit;
+
 public class Constants {
 
     public static final String ALBUM_NAME = "Rando";
@@ -47,9 +49,10 @@ public class Constants {
     public static final String SERVER_HOST = BuildConfig.RANDO_HOST;
     public static final String SERVER_URL = "https://" + SERVER_HOST;
     public static final int ESTABLISH_CONNECTION_TIMEOUT = 5 * 60 * 1000;
-    public static final int CONNECTION_TIMEOUT = 5 * 60 * 1000;
+    public static final int UPLOAD_CONNECTION_TIMEOUT = (int) TimeUnit.MINUTES.toMillis(5);
+    public static final int API_CONNECTION_TIMEOUT = (int) TimeUnit.SECONDS.toMillis(20);
 
-    public static final int UPLOAD_RETRY_TIMEOUT = 5  * 60 * 1000;
+    public static final int UPLOAD_RETRY_TIMEOUT = 5 * 60 * 1000;
 
     public static final int UPLOAD_SERVICE_ATTEMPTS_FAIL = 5;
     public static final long UPLOAD_SERVICE_SHORT_PAUSE = 5 * 1000;

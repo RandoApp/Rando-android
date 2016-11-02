@@ -56,8 +56,9 @@ import cz.msebera.android.httpclient.util.EntityUtils;
 
 import static com.github.randoapp.Constants.ANONYMOUS_ID_PARAM;
 import static com.github.randoapp.Constants.ANONYMOUS_URL;
+import static com.github.randoapp.Constants.API_CONNECTION_TIMEOUT;
 import static com.github.randoapp.Constants.AUTHORIZATION_HEADER;
-import static com.github.randoapp.Constants.CONNECTION_TIMEOUT;
+import static com.github.randoapp.Constants.UPLOAD_CONNECTION_TIMEOUT;
 import static com.github.randoapp.Constants.DELETE_URL;
 import static com.github.randoapp.Constants.ERROR_CODE_PARAM;
 import static com.github.randoapp.Constants.FACEBOOK_EMAIL_PARAM;
@@ -222,7 +223,7 @@ public class API {
         VolleySingleton.getInstance().getRequestQueue().add(request);
     }
 
-    public static void uploadImageVolley(final RandoUpload randoUpload, final UploadRandoListener uploadListener, final Response.ErrorListener errorListener) {
+    public static void uploadImage(final RandoUpload randoUpload, final UploadRandoListener uploadListener, final Response.ErrorListener errorListener) {
 
         VolleyMultipartRequest uploadMultipart = new VolleyMultipartRequest(UPLOAD_RANDO_URL, getHeaders(), new Response.Listener<NetworkResponse>() {
             @Override
@@ -250,8 +251,6 @@ public class API {
             @Override
             protected Map<String, DataPart> getByteData() {
                 Map<String, DataPart> params = new HashMap<>();
-                // file name could found file base or direct access from real path
-                // for now just get bitmap data from ImageView
                 File randoFile = new File(randoUpload.file);
                 params.put(IMAGE_PARAM, new DataPart(randoFile.getName(), FileUtil.readFile(randoFile), IMAGE_MIME_TYPE));
 
@@ -263,31 +262,37 @@ public class API {
                 return Priority.LOW;
             }
         };
-        uploadMultipart.setRetryPolicy(new DefaultRetryPolicy(CONNECTION_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        uploadMultipart.setRetryPolicy(new DefaultRetryPolicy(UPLOAD_CONNECTION_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         VolleySingleton.getInstance().getRequestQueue().add(uploadMultipart);
     }
 
-    public static void delete(String id, final DeleteRandoListener deleteRandoListener) throws Exception {
-        BackgroundPreprocessRequest request = new BackgroundPreprocessRequest(Request.Method.POST, DELETE_URL + id, null, null, new Response.Listener<JSONObject>() {
+    public static void delete(final String randoId, final DeleteRandoListener deleteRandoListener) throws Exception {
+        Log.d(API.class, "Deleting Rando:", randoId);
+        BackgroundPreprocessRequest request = new BackgroundPreprocessRequest(Request.Method.POST, DELETE_URL + randoId, null, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     if ("delete".equals(response.getString("command")) &&
                             "done".equals(response.getString("result"))) {
+                        Log.d(API.class, "Deleted Rando:", randoId);
                         deleteRandoListener.onOk();
                     }
                 } catch (JSONException e) {
+                    Log.e(API.class, "Error Deleting Rando", e);
                     deleteRandoListener.onError();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.e(API.class, "Error Deleting Rando", error);
                 deleteRandoListener.onError();
             }
         });
+
         request.setHeaders(getHeaders());
+        request.setRetryPolicy(new DefaultRetryPolicy(API_CONNECTION_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         VolleySingleton.getInstance().getRequestQueue().add(request);
     }

@@ -45,6 +45,15 @@
         android:tag="actions_layer"
         android:visibility="gone">
 
+        <ImageView
+            android:tag="spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            android:src="@drawable/ic_autorenew_black_48dp" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,10 +64,10 @@
             <Button
                 android:layout_width="68dp"
                 android:layout_height="68dp"
+                android:layout_marginRight="23dp"
                 android:background="@drawable/ic_share_rando"
                 android:tag="share_button"
-                android:textColor="@android:color/white"
-                android:layout_marginRight="23dp"/>
+                android:textColor="@android:color/white" />
 
             <Button
                 android:layout_width="68dp"
