@@ -91,7 +91,7 @@ model {
         release {
             proguardFiles.add(file("proguard-rules.pro"))
             signingConfig = signConf // <-- Sign Config
-            minifyEnabled false
+            minifyEnabled true
             testCoverageEnabled false
             buildConfigFields.with {
                 create() {
