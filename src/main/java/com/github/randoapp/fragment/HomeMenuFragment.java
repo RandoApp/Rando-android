@@ -125,5 +125,15 @@ public class HomeMenuFragment extends Fragment {
         ((ImageView) view.findViewById(R.id.help_section_imageview_icon)).setImageDrawable(rootView.getContext().getResources().getDrawable(R.drawable.ic_globe));
         ((TextView) view.findViewById(R.id.help_section_textview_title)).setText(rootView.getContext().getResources().getString(R.string.help_location_title));
         ((TextView) view.findViewById(R.id.help_section_textview_description)).setText(rootView.getContext().getResources().getString(R.string.help_location_description));
+
+        view = rootView.findViewById(R.id.help_layout_delete);
+        ((ImageView) view.findViewById(R.id.help_section_imageview_icon)).setImageDrawable(rootView.getContext().getResources().getDrawable(R.drawable.ic_trash_rando));
+        ((TextView) view.findViewById(R.id.help_section_textview_title)).setText(rootView.getContext().getResources().getString(R.string.help_delete_title));
+        ((TextView) view.findViewById(R.id.help_section_textview_description)).setText(rootView.getContext().getResources().getString(R.string.help_delete_description));
+
+        view = rootView.findViewById(R.id.help_layout_share);
+        ((ImageView) view.findViewById(R.id.help_section_imageview_icon)).setImageDrawable(rootView.getContext().getResources().getDrawable(R.drawable.ic_share_rando));
+        ((TextView) view.findViewById(R.id.help_section_textview_title)).setText(rootView.getContext().getResources().getString(R.string.help_share_title));
+        ((TextView) view.findViewById(R.id.help_section_textview_description)).setText(rootView.getContext().getResources().getString(R.string.help_share_description));
     }
 }

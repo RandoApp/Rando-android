@@ -23,8 +23,8 @@ import com.github.randoapp.adapter.RandoListAdapter;
 import com.github.randoapp.api.API;
 import com.github.randoapp.api.listeners.ErrorResponseListener;
 import com.github.randoapp.log.Log;
-import com.github.randoapp.util.ConnectionUtil;
 import com.github.randoapp.util.GooglePlayServicesUtil;
+import com.github.randoapp.util.NetworkUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
@@ -54,7 +54,7 @@ public class HomeListFragment extends Fragment {
                 randoPairsAdapter.notifyDataSetChanged();
             } else if (UPLOAD_SERVICE_BROADCAST_EVENT.equals(intent.getAction())) {
                 randoPairsAdapter.notifyDataSetChanged();
-            } else if (PUSH_NOTIFICATION_BROADCAST_EVENT.equals(intent.getAction())){
+            } else if (PUSH_NOTIFICATION_BROADCAST_EVENT.equals(intent.getAction())) {
                 randoPairsAdapter.notifyDataSetChanged();
             }
         }
@@ -91,13 +91,13 @@ public class HomeListFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (ConnectionUtil.isOnline(getContext())) {
+                if (NetworkUtil.isOnline(getContext())) {
                     API.syncUserAsync(new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             swipeRefreshLayout.setRefreshing(false);
                         }
-                    }, new ErrorResponseListener(){
+                    }, new ErrorResponseListener() {
                         @Override
                         public void onErrorResponse(VolleyError e) {
                             swipeRefreshLayout.setRefreshing(false);
@@ -140,13 +140,13 @@ public class HomeListFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     swipeRefreshLayout.setRefreshing(true);
-                    if (ConnectionUtil.isOnline(getContext())) {
+                    if (NetworkUtil.isOnline(getContext())) {
                         API.syncUserAsync(new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
                                 swipeRefreshLayout.setRefreshing(false);
                             }
-                        }, new ErrorResponseListener(){
+                        }, new ErrorResponseListener() {
                             @Override
                             public void onErrorResponse(VolleyError e) {
                                 swipeRefreshLayout.setRefreshing(false);

@@ -34,11 +34,19 @@ public class RandoDAO {
         getDB().insert(RandoDBHelper.RandoUploadTable.NAME, null, values);
     }
 
-    public static synchronized List<RandoUpload> getAllRandosToUpload() {
+    public static synchronized int countAllRandosToUpload() {
+        Cursor cursor = getDB().query(RandoDBHelper.RandoUploadTable.NAME,
+                RandoDBHelper.RandoUploadTable.ALL_COLUMNS, null, null, null, null, null, null);
+        int result = cursor.getCount();
+        cursor.close();
+        return result;
+    }
+
+    public static synchronized List<RandoUpload> getAllRandosToUpload(String sortOrder) {
         List<RandoUpload> randos = new ArrayList<RandoUpload>();
 
         Cursor cursor = getDB().query(RandoDBHelper.RandoUploadTable.NAME,
-                RandoDBHelper.RandoUploadTable.ALL_COLUMNS, null, null, null, null, RandoDBHelper.RandoUploadTable.COLUMN_DATE + " DESC", null);
+                RandoDBHelper.RandoUploadTable.ALL_COLUMNS, null, null, null, null, RandoDBHelper.RandoUploadTable.COLUMN_DATE + " "+sortOrder, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -118,7 +126,7 @@ public class RandoDAO {
         }
         Rando dbRando = getRandoByRandoId(rando.randoId);
         long dbId;
-        if (dbRando != null){
+        if (dbRando != null) {
             rando.id = dbRando.id;
             dbId = dbRando.id;
             updateRando(rando);
@@ -156,7 +164,7 @@ public class RandoDAO {
 
     public static synchronized Rando getRandoByRandoId(String randoId) {
         Cursor cursor = getDB().query(RandoDBHelper.RandoTable.NAME,
-                RandoDBHelper.RandoTable.ALL_COLUMNS, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_ID + " = '" + randoId+"'", null,
+                RandoDBHelper.RandoTable.ALL_COLUMNS, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_ID + " = '" + randoId + "'", null,
                 null, null, null);
         cursor.moveToFirst();
         Rando rando = cursorToRando(cursor);
@@ -183,7 +191,7 @@ public class RandoDAO {
      */
     public static synchronized void deleteRandoByRandoId(String randoId) {
         getDB().delete(RandoDBHelper.RandoTable.NAME, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_ID
-                + " = '" + randoId +"'", null);
+                + " = '" + randoId + "'", null);
         Log.i(RandoDAO.class, "Rando deleted with randoId: ", String.valueOf(randoId));
     }
 
@@ -231,7 +239,7 @@ public class RandoDAO {
     public static synchronized List<Rando> getAllRandos(boolean includeRandosFromUpload) {
         List<Rando> randos = new ArrayList<Rando>();
 
-        List<RandoUpload> randosToUpload = getAllRandosToUpload();
+        List<RandoUpload> randosToUpload = getAllRandosToUpload("DESC");
         for (RandoUpload randoUpload : randosToUpload) {
             Rando rando = new Rando();
             if (includeRandosFromUpload) {
@@ -324,7 +332,7 @@ public class RandoDAO {
      */
     public static synchronized List<Rando> getAllOutRandosWithUploadQueue() {
         List<Rando> randos = new ArrayList<>();
-        List<RandoUpload> randosToUpload = getAllRandosToUpload();
+        List<RandoUpload> randosToUpload = getAllRandosToUpload("DESC");
         for (RandoUpload randoUpload : randosToUpload) {
             Rando rando = new Rando();
             rando.randoId = String.valueOf(Constants.TO_UPLOAD_RANDO_ID);

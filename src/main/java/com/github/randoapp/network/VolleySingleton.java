@@ -20,7 +20,7 @@ import cz.msebera.android.httpclient.params.HttpConnectionParams;
 import cz.msebera.android.httpclient.params.HttpParams;
 import cz.msebera.android.httpclient.params.HttpProtocolParams;
 
-import static com.github.randoapp.Constants.CONNECTION_TIMEOUT;
+import static com.github.randoapp.Constants.UPLOAD_CONNECTION_TIMEOUT;
 import static com.github.randoapp.Constants.DEFAULT_CACHE_DIR;
 import static com.github.randoapp.Constants.DEFAULT_CACHE_SIZE;
 import static com.github.randoapp.Constants.ESTABLISH_CONNECTION_TIMEOUT;
@@ -36,7 +36,7 @@ public class VolleySingleton {
     private VolleySingleton() {
         HttpParams httpParams = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout(httpParams, ESTABLISH_CONNECTION_TIMEOUT);
-        HttpConnectionParams.setSoTimeout(httpParams, CONNECTION_TIMEOUT);
+        HttpConnectionParams.setSoTimeout(httpParams, UPLOAD_CONNECTION_TIMEOUT);
         HttpProtocolParams.setUseExpectContinue(httpParams, false);
 
         httpClient = new DefaultHttpClient(httpParams);

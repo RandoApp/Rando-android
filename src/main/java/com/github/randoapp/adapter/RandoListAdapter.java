@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -31,7 +32,7 @@ import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.util.BitmapUtil;
-import com.github.randoapp.util.ConnectionUtil;
+import com.github.randoapp.util.NetworkUtil;
 import com.github.randoapp.util.RandoUtil;
 import com.makeramen.RoundedImageView;
 
@@ -117,6 +118,7 @@ public class RandoListAdapter extends BaseAdapter {
         holder.viewSwitcher = (ViewSwitcher) convertView.findViewWithTag("viewSwitcher");
 
         holder.image = (RoundedImageView) convertView.findViewWithTag("image");
+        holder.image.setTag(null);
         holder.map = (RoundedImageView) convertView.findViewWithTag("map");
         ViewSwitcher.LayoutParams randoImagesLayout = new ViewSwitcher.LayoutParams(imageSize, imageSize);
         holder.image.setLayoutParams(randoImagesLayout);
@@ -133,6 +135,9 @@ public class RandoListAdapter extends BaseAdapter {
 
         holder.deleteButton = (Button) convertView.findViewWithTag("delete_button");
         holder.shareButton = (Button) convertView.findViewWithTag("share_button");
+        holder.spinner = (ImageView) convertView.findViewWithTag("spinner");
+
+        holder.spinner.startAnimation(AnimationUtils.loadAnimation(holder.spinner.getContext(), R.anim.rotate_indefinitely));
 
         convertView.setTag(holder);
         return holder;
@@ -162,11 +167,15 @@ public class RandoListAdapter extends BaseAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (ConnectionUtil.isOnline(holder.deleteButton.getContext())) {
+                if (NetworkUtil.isOnline(holder.deleteButton.getContext())) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(holder.deleteButton.getContext());
                     builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             try {
+                                holder.shareButton.setVisibility(View.GONE);
+                                holder.deleteButton.setVisibility(View.GONE);
+                                holder.spinner.setVisibility(View.VISIBLE);
+                                holder.spinner.startAnimation(AnimationUtils.loadAnimation(holder.spinner.getContext(), R.anim.rotate_indefinitely));
                                 API.delete(holder.randoId, new DeleteRandoListener() {
                                     @Override
                                     public void onOk() {
@@ -176,6 +185,10 @@ public class RandoListAdapter extends BaseAdapter {
                                                 Toast.LENGTH_LONG).show();
                                         setAlpha(holder.image, 1f);
                                         setAlpha(holder.map, 1f);
+                                        holder.spinner.clearAnimation();
+                                        holder.spinner.setVisibility(View.GONE);
+                                        holder.shareButton.setVisibility(View.VISIBLE);
+                                        holder.deleteButton.setVisibility(View.VISIBLE);
                                         holder.actionsLayer.setVisibility(View.GONE);
                                     }
 
@@ -183,11 +196,19 @@ public class RandoListAdapter extends BaseAdapter {
                                     public void onError() {
                                         Toast.makeText(holder.deleteButton.getContext(), R.string.error_unknown_err,
                                                 Toast.LENGTH_LONG).show();
+                                        holder.shareButton.setVisibility(View.VISIBLE);
+                                        holder.deleteButton.setVisibility(View.VISIBLE);
+                                        holder.spinner.setVisibility(View.GONE);
+                                        holder.spinner.clearAnimation();
                                     }
                                 });
                             } catch (Exception e) {
                                 Toast.makeText(holder.deleteButton.getContext(), R.string.error_unknown_err,
                                         Toast.LENGTH_LONG).show();
+                                holder.shareButton.setVisibility(View.VISIBLE);
+                                holder.deleteButton.setVisibility(View.VISIBLE);
+                                holder.spinner.setVisibility(View.GONE);
+                                holder.spinner.clearAnimation();
                             }
                         }
                     });
@@ -260,6 +281,11 @@ public class RandoListAdapter extends BaseAdapter {
         setAlpha(holder.image, 1f);
         setAlpha(holder.map, 1f);
         holder.actionsLayer.setVisibility(View.GONE);
+        holder.spinner.clearAnimation();
+        holder.spinner.setVisibility(View.GONE);
+        holder.shareButton.setVisibility(View.VISIBLE);
+        holder.deleteButton.setVisibility(View.VISIBLE);
+        holder.spinner.clearAnimation();
 
         holder.randoId = "";
     }
@@ -381,7 +407,7 @@ public class RandoListAdapter extends BaseAdapter {
                         viewHolder.needSetImageError = true;
                     }
                 }
-            }, ImageView.ScaleType.CENTER, 0, 0, priority);
+            }, ImageView.ScaleType.CENTER, imageSize, imageSize, priority);
         } else {
             Log.e(RandoListAdapter.class, "Ignore rando image because url: ", url, " incorrect");
             if (viewHolder.image != null) {
@@ -414,7 +440,7 @@ public class RandoListAdapter extends BaseAdapter {
                         viewHolder.needSetMapError = true;
                     }
                 }
-            }, ImageView.ScaleType.CENTER, 0, 0, priority);
+            }, ImageView.ScaleType.CENTER, imageSize, imageSize, priority);
         } else {
             Log.d(RandoListAdapter.class, "Ignore map image because url: ", url, " incorrect");
             if (viewHolder.map != null) {
@@ -438,6 +464,7 @@ public class RandoListAdapter extends BaseAdapter {
         public RelativeLayout actionsLayer;
         public Button deleteButton;
         public Button shareButton;
+        public ImageView spinner;
 
         public ImageLoader.ImageContainer randoContainer;
         public ImageLoader.ImageContainer mapContainer;
@@ -448,4 +475,3 @@ public class RandoListAdapter extends BaseAdapter {
         public boolean needSetPairing = false;
     }
 }
-

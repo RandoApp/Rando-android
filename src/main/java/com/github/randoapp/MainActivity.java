@@ -119,7 +119,6 @@ public class MainActivity extends FragmentActivity {
         super.onPostResume();
         registerReceivers();
         showUpdatePlayServicesDialogIfNecessary();
-        startService(new Intent(getApplicationContext(), UploadService.class));
         Fragment fragment = getFragment();
         if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName()) == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
@@ -180,6 +179,7 @@ public class MainActivity extends FragmentActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE) {
+            startService(new Intent(getApplicationContext(), UploadService.class));
             Fragment fragment = getFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
         } else if (requestCode == UPDATE_PLAY_SERVICES_REQUEST_CODE) {

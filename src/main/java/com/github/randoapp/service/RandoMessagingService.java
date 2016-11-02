@@ -24,7 +24,7 @@ public class RandoMessagingService extends FirebaseMessagingService {
         Map<String, String> data = remoteMessage.getData();
         if (data != null) {
             String notificationType = data.get("notificationType");
-            String randoString = data.get("rando");
+            String randoString = data.get(Constants.RANDO_PARAM);
             if (notificationType != null && randoString != null) {
                 Rando rando = null;
                 int notificationTextResId = 0;
