@@ -95,6 +95,14 @@
                 android:id="@+id/help_layout_location"
                 layout="@layout/help_section" />
 
+            <include
+                android:id="@+id/help_layout_delete"
+                layout="@layout/help_section" />
+
+            <include
+                android:id="@+id/help_layout_share"
+                layout="@layout/help_section" />
+
         </LinearLayout>
     </ScrollView>
 
