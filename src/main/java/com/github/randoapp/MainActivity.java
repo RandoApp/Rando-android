@@ -25,7 +25,8 @@ import com.github.randoapp.fragment.MissingStoragePermissionFragment;
 import com.github.randoapp.fragment.TrainingHomeFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
-import com.github.randoapp.service.UploadService;
+import com.github.randoapp.upload.UploadJobScheduler;
+import com.github.randoapp.upload.UploadServiceLegacy;
 import com.github.randoapp.util.GooglePlayServicesUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -179,7 +180,7 @@ public class MainActivity extends FragmentActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE) {
-            startService(new Intent(getApplicationContext(), UploadService.class));
+            UploadJobScheduler.scheduleUpload();
             Fragment fragment = getFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
         } else if (requestCode == UPDATE_PLAY_SERVICES_REQUEST_CODE) {

@@ -1,4 +1,4 @@
-package com.github.randoapp.service;
+package com.github.randoapp.upload;
 
 import android.app.Service;
 import android.content.Intent;

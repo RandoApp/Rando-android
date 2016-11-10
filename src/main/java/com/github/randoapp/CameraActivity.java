@@ -58,7 +58,8 @@ public class CameraActivity extends FragmentActivity implements CameraHostProvid
                 }
             }
 
-            CameraActivity.this.setResult(CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE);
+            Intent resultIntent = new Intent();
+            CameraActivity.this.setResult(CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE, resultIntent);
             CameraActivity.this.finish();
         }
     };
