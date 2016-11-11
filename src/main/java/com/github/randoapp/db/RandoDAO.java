@@ -19,9 +19,9 @@ public class RandoDAO {
     private RandoDAO() {
     }
 
-    public static synchronized void addToUpload(RandoUpload randoUpload) {
+    public static synchronized RandoUpload addToUpload(RandoUpload randoUpload) {
         if (randoUpload.file == null || randoUpload.date == null) {
-            return;
+            return null;
         }
 
         ContentValues values = new ContentValues();
@@ -31,7 +31,14 @@ public class RandoDAO {
         values.put(RandoDBHelper.RandoUploadTable.COLUMN_DATE, randoUpload.date.getTime());
         values.put(RandoDBHelper.RandoUploadTable.COLUMN_LAST_TRY_DATE, randoUpload.lastTry.getTime());
 
-        getDB().insert(RandoDBHelper.RandoUploadTable.NAME, null, values);
+        long id = getDB().insert(RandoDBHelper.RandoUploadTable.NAME, null, values);
+
+        if (id > 0) {
+            randoUpload.id = (int) id;
+            return randoUpload;
+        } else {
+            return null;
+        }
     }
 
     public static synchronized int countAllRandosToUpload() {
@@ -43,10 +50,10 @@ public class RandoDAO {
     }
 
     public static synchronized List<RandoUpload> getAllRandosToUpload(String sortOrder) {
-        List<RandoUpload> randos = new ArrayList<RandoUpload>();
+        List<RandoUpload> randos = new ArrayList<>();
 
         Cursor cursor = getDB().query(RandoDBHelper.RandoUploadTable.NAME,
-                RandoDBHelper.RandoUploadTable.ALL_COLUMNS, null, null, null, null, RandoDBHelper.RandoUploadTable.COLUMN_DATE + " "+sortOrder, null);
+                RandoDBHelper.RandoUploadTable.ALL_COLUMNS, null, null, null, null, RandoDBHelper.RandoUploadTable.COLUMN_DATE + " " + sortOrder, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {

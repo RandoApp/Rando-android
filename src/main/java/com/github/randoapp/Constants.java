@@ -143,5 +143,7 @@ public class Constants {
     public static final String PUSH_NOTIFICATION_RECEIVED = "received";
 
     public static final String TO_UPLOAD_RANDO_ID = "randoIdToUpload";
+    public static final String UPLOAD_RANDO = "randoUpload";
 
 }
+

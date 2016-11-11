@@ -18,6 +18,7 @@ import com.github.randoapp.R;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.RandoUpload;
 import com.github.randoapp.preferences.Preferences;
+import com.github.randoapp.upload.UploadJobScheduler;
 import com.github.randoapp.util.BitmapUtil;
 import com.makeramen.RoundedImageView;
 
@@ -57,9 +58,13 @@ public class CameraUploadFragment extends Fragment {
             }
 
             Location location = Preferences.getLocation();
-            RandoDAO.addToUpload(new RandoUpload(picFileName, location.getLatitude(), location.getLongitude(), new Date()));
+            RandoUpload randoUpload = new RandoUpload(picFileName, location.getLatitude(), location.getLongitude(), new Date());
+            randoUpload = RandoDAO.addToUpload(randoUpload);
 
             Intent intent = new Intent(CAMERA_BROADCAST_EVENT);
+            if (randoUpload != null) {
+                UploadJobScheduler.scheduleUpload(randoUpload, getContext());
+            }
             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
         }
     }
