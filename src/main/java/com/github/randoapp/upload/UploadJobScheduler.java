@@ -17,7 +17,7 @@ public class UploadJobScheduler {
 
 
     public static void scheduleUpload(RandoUpload randoUpload, Context context){
-        Log.d(UploadJobScheduler.class, "Schedule Job!!!");
+        Log.d(UploadJobScheduler.class, "Schedule Job!!!", Thread.currentThread().toString());
         if( Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             context.startService(new Intent(context, UploadServiceLegacy.class));
         } else {
