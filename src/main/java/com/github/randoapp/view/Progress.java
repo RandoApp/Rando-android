@@ -32,6 +32,6 @@ public class Progress {
     }
 
     public static void showLoading() {
-        show(App.context.getResources().getString(R.string.loadig_progress));
+        show(App.context.getResources().getString(R.string.loading_progress));
     }
 }

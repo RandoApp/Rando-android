@@ -57,7 +57,6 @@ public class CameraActivity extends FragmentActivity implements CameraHostProvid
                             Toast.LENGTH_LONG).show();
                 }
             }
-
             CameraActivity.this.setResult(CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE);
             CameraActivity.this.finish();
         }

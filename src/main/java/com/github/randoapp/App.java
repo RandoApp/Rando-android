@@ -3,10 +3,13 @@ package com.github.randoapp;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
+import com.evernote.android.job.JobManager;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
-import com.github.randoapp.service.UploadService;
+import com.github.randoapp.upload.UploadJobCreator;
+import com.github.randoapp.upload.UploadServiceLegacy;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 
@@ -47,9 +50,10 @@ public class App extends Application {
     }
 
     private void startServices() {
-        //App onCreate called twice. Prevent double service run, if it is already created
-        if (!UploadService.isRunning()) {
-            startService(new Intent(getApplicationContext(), UploadService.class));
+        if( Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            startService(new Intent(getApplicationContext(), UploadServiceLegacy.class));
+        } else {
+            JobManager.create(this).addJobCreator(new UploadJobCreator());
         }
     }
 

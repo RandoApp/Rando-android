@@ -35,7 +35,7 @@
     <string name="report">Report</string>
     <string name="report_off">Report OFF</string>
     <string name="report_message">Report</string>
-    <string name="loadig_progress">Loading…</string>
+    <string name="loading_progress">Loading…</string>
     <string name="logout_progress">Logout…</string>
     <string name="cropping_progress">Prepairing to Upload…</string>
     <string name="uploading_progress">Uploading…</string>
@@ -68,6 +68,12 @@
 
     <string name="help_location_title">Location</string>
     <string name="help_location_description">Tap a Rando to see where it was taken or went to</string>
+
+    <string name="help_delete_title">Delete</string>
+    <string name="help_delete_description">Delete unwanted photos. Tap Rando and hold to see delete button</string>
+
+    <string name="help_share_title">Share</string>
+    <string name="help_share_description">Share Randos whit you friends. Tap Rando and hold to see share button</string>
 
     <string name="help_guide_title">How to use</string>
     <!-- Help Resources End -->

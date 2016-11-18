@@ -20,4 +20,15 @@ public class RandoUpload {
         this.date = date;
     }
 
+    @Override
+    public String toString() {
+        return "RandoUpload{" +
+                "id=" + id +
+                ", file='" + file + '\'' +
+                ", latitude='" + latitude + '\'' +
+                ", longitude='" + longitude + '\'' +
+                ", date=" + date +
+                ", lastTry=" + lastTry +
+                '}';
+    }
 }

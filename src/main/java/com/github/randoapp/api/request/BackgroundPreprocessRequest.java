@@ -47,10 +47,7 @@ public class BackgroundPreprocessRequest extends JsonObjectRequest {
         }
     }
 
-    public void addHeader(String headerName, String headerValue) {
-        if (mHeaders == null) {
-            mHeaders = new HashMap<>();
-        }
-        mHeaders.put(headerName, headerValue);
+    public void setHeaders(Map<String, String> mHeaders) {
+        this.mHeaders = mHeaders;
     }
 }

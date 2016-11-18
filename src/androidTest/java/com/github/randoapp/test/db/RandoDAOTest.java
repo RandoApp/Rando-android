@@ -158,14 +158,14 @@ public class RandoDAOTest extends AndroidTestCase {
     public void testUpdateToUploadSuccessful() {
         RandoDAO.addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
 
-        RandoUpload randoUpload = RandoDAO.getAllRandosToUpload().get(0);
+        RandoUpload randoUpload = RandoDAO.getAllRandosToUpload("DESC").get(0);
         assertThat("Last try is not a default value", randoUpload.lastTry.getTime(), is(0l));
 
         Date now = new Date();
         randoUpload.lastTry = now;
         RandoDAO.updateRandoToUpload(randoUpload);
 
-        RandoUpload randoUploadAfterUpdate = RandoDAO.getAllRandosToUpload().get(0);
+        RandoUpload randoUploadAfterUpdate = RandoDAO.getAllRandosToUpload("DESC").get(0);
 
         assertThat("Unsuccessful update lastTry field", randoUploadAfterUpdate.lastTry.getTime(), is(now.getTime()));
     }
@@ -180,7 +180,7 @@ public class RandoDAOTest extends AndroidTestCase {
         RandoDAO.addToUpload(new RandoUpload("/path/to/file2", 23.33, 24.44, new Date(50)));
         RandoDAO.addToUpload(new RandoUpload("/path/to/file3", 33.33, 34.44, new Date(300)));
 
-        List<RandoUpload> randos = RandoDAO.getAllRandosToUpload();
+        List<RandoUpload> randos = RandoDAO.getAllRandosToUpload("DESC");
         for (int i = 0; i < randos.size(); i++) {
             assertThat("Rando order is not correct", randos.get(i).file, is("/path/to/file" + (3 - i)));
         }
@@ -188,7 +188,7 @@ public class RandoDAOTest extends AndroidTestCase {
     }
 
     public void testGetAllRandosToUploadReturnEmptyCollectionIfTableIsEmpty() {
-        List<RandoUpload> randos = RandoDAO.getAllRandosToUpload();
+        List<RandoUpload> randos = RandoDAO.getAllRandosToUpload("DESC");
         assertThat("RandoUpload table is not empty", randos.size(), is(0));
     }
 
@@ -200,7 +200,7 @@ public class RandoDAOTest extends AndroidTestCase {
         RandoDAO.addToUpload(new RandoUpload("/path/to/file3", 33.33, 44.44, new Date(300)));
 
 
-        RandoUpload randoUpload = RandoDAO.getAllRandosToUpload().get(1);
+        RandoUpload randoUpload = RandoDAO.getAllRandosToUpload("DESC").get(1);
         assertThat("Unexpected second rando", randoUpload.file, is("/path/to/file2"));
 
         RandoDAO.deleteRandoToUpload(randoUpload);
