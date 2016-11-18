@@ -42,7 +42,7 @@ public final class JobResultFuture implements Future<Job.Result> {
     }
 
     // calling this more than once doesn't make sense, and won't work properly in this implementation. so: don't.
-    void put(Job.Result result) {
+    public void put(Job.Result result) {
         value = result;
         latch.countDown();
     }
