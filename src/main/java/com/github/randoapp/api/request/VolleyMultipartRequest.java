@@ -13,7 +13,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
@@ -142,12 +141,8 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
      * @throws IOException
      */
     private void textParse(DataOutputStream dataOutputStream, Map<String, String> params, String encoding) throws IOException {
-        try {
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                buildTextPart(dataOutputStream, entry.getKey(), entry.getValue());
-            }
-        } catch (UnsupportedEncodingException uee) {
-            throw new RuntimeException("Encoding not supported: " + encoding, uee);
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            buildTextPart(dataOutputStream, entry.getKey(), entry.getValue());
         }
     }
 
