@@ -26,6 +26,7 @@ import com.github.randoapp.camera.CameraUploadFragment;
 import com.github.randoapp.camera.RandoCameraHost;
 import com.github.randoapp.util.LocationHelper;
 import com.github.randoapp.util.PermissionUtils;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_CAMERA_PERMISSION_REQUIRED;
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
@@ -63,6 +64,7 @@ public class CameraActivity extends FragmentActivity implements CameraHostProvid
     };
 
 
+    private FirebaseAnalytics mFirebaseAnalytics;
     private boolean isReturningFromCameraPermissionRequest = false;
     private boolean isReturningFromLocationPermissionRequest = false;
 
@@ -70,6 +72,7 @@ public class CameraActivity extends FragmentActivity implements CameraHostProvid
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 
     @Override
