@@ -87,24 +87,27 @@ public class RandoDAO {
                 RandoDBHelper.RandoUploadTable.ALL_COLUMNS, RandoDBHelper.RandoUploadTable.COLUMN_ID + " = " + id, null, null, null, null, null);
 
         cursor.moveToFirst();
-        RandoUpload rando = new RandoUpload();
-        rando.id = cursor.getInt(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_ID));
-        rando.file = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_FILE));
-        rando.latitude = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_LATITUDE));
-        rando.longitude = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_LONGITUDE));
-        long userDate = cursor.getLong(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_DATE));
-        long lastTryDate = cursor.getLong(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_LAST_TRY_DATE));
-        if (userDate > 0) {
-            rando.date = new Date(userDate);
-        } else {
-            rando.date = new Date();
+        RandoUpload rando = null;
+        if (!cursor.isAfterLast()) {
+            rando = new RandoUpload();
+            rando.id = cursor.getInt(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_ID));
+            rando.file = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_FILE));
+            rando.latitude = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_LATITUDE));
+            rando.longitude = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_LONGITUDE));
+            long userDate = cursor.getLong(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_DATE));
+            long lastTryDate = cursor.getLong(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_LAST_TRY_DATE));
+            if (userDate > 0) {
+                rando.date = new Date(userDate);
+            } else {
+                rando.date = new Date();
+            }
+            if (lastTryDate > 0) {
+                rando.lastTry = new Date(lastTryDate);
+            } else {
+                rando.lastTry = new Date(0);
+            }
+            cursor.close();
         }
-        if (lastTryDate > 0) {
-            rando.lastTry = new Date(lastTryDate);
-        } else {
-            rando.lastTry = new Date(0);
-        }
-        cursor.close();
         return rando;
     }
 

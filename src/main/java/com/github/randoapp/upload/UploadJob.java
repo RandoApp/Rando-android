@@ -22,7 +22,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -33,33 +32,38 @@ public class UploadJob extends Job {
     @NonNull
     @Override
     protected Result onRunJob(Params params) {
+        Log.d(UploadJob.class, "Starting Job Execution");
         if (!NetworkUtil.isOnline(getContext())) {
+            Log.d(UploadJob.class, "No network, reschedule. BackOff Millis:" + params.getBackoffMs());
             return Result.RESCHEDULE;
         }
-        params.getExtras();
 
-        final RandoUpload randoToUpload = RandoDAO.getRandoToUploadById(1);
+        long randoToUploadId = params.getExtras().getLong(Constants.TO_UPLOAD_RANDO_ID, -1);
+        final RandoUpload randoToUpload = RandoDAO.getRandoToUploadById(randoToUploadId);
+        if (randoToUpload == null) {
+            Log.d(UploadJob.class, "Missing Rando to upload with id:" + randoToUploadId);
+            return Result.FAILURE;
+        }
 
         final JobResultFuture resultFuture = new JobResultFuture();
         long pastFromLastTry = new Date().getTime() - randoToUpload.lastTry.getTime();
         if (pastFromLastTry >= Constants.UPLOAD_RETRY_TIMEOUT) {
             randoToUpload.lastTry = new Date();
             RandoDAO.updateRandoToUpload(randoToUpload);
-            Log.d(UploadService.class, "Starting Upload:", randoToUpload.toString());
+            Log.d(UploadJob.class, "Starting Upload:", randoToUpload.toString());
             API.uploadImage(randoToUpload, new UploadRandoListener() {
                 @Override
                 public void onUpload(Rando rando) {
-                    Log.d(UploadService.class, rando.toString());
+                    Log.d(UploadJob.class, rando.toString());
 
                     if (rando != null) {
                         RandoDAO.createRando(rando);
                     }
-                    Log.d(UploadService.class, "Delete rando", randoToUpload.toString());
+                    Log.d(UploadJob.class, "Delete rando", randoToUpload.toString());
                     RandoDAO.deleteRandoToUpload(randoToUpload);
                     Intent intent = new Intent(Constants.UPLOAD_SERVICE_BROADCAST_EVENT);
                     UploadJob.this.getContext().sendBroadcast(intent);
                     resultFuture.put(Result.SUCCESS);
-                    //scheduleNextRun(Constants.UPLOAD_SERVICE_SHORT_PAUSE);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -79,8 +83,8 @@ public class UploadJob extends Job {
                             String status = response.getString(Constants.ERROR_STATUS_PARAM);
                             String message = response.getString(Constants.ERROR_MESSAGE_PARAM);
 
-                            Log.e(UploadService.class, "Error Status", status);
-                            Log.e(UploadService.class, "Error Message", message);
+                            Log.e(UploadJob.class, "Error Status", status);
+                            Log.e(UploadJob.class, "Error Message", message);
 
                             if (networkResponse.statusCode == 404) {
                                 errorMessage = "Resource not found";
@@ -98,21 +102,22 @@ public class UploadJob extends Job {
                             e.printStackTrace();
                         }
                     }
-                    Log.e(UploadService.class, "Error" + errorMessage + " Errors in a raw count: ", error);
-                    resultFuture.put(Result.FAILURE);
+                    Log.e(UploadJob.class, "Error" + errorMessage + " Errors in a raw count: ", error);
+                    resultFuture.put(Result.RESCHEDULE);
                 }
             });
         } else {
-            return Result.FAILURE;
+            return Result.RESCHEDULE;
         }
-        Log.d(UploadJob.class, "Run Job!!!", Thread.currentThread().toString());
         Result result;
         try {
             result = resultFuture.get(10, TimeUnit.MINUTES);
         } catch (InterruptedException e) {
-            result = Result.FAILURE;
+            Log.e(UploadJob.class, "Reschedule: InterruptedException", e);
+            result = Result.RESCHEDULE;
         } catch (TimeoutException e) {
-            result = Result.FAILURE;
+            Log.e(UploadJob.class, "Reschedule: TimeoutException", e);
+            result = Result.RESCHEDULE;
         }
         return result;
     }
