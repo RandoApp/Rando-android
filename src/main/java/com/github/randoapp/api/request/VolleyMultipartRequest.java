@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
@@ -137,10 +138,9 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
      *
      * @param dataOutputStream data output stream handle string parsing
      * @param params           string inputs collection
-     * @param encoding         encode the inputs, default UTF-8
      * @throws IOException
      */
-    private void textParse(DataOutputStream dataOutputStream, Map<String, String> params, String encoding) throws IOException {
+    private void textParse(DataOutputStream dataOutputStream, Map<String, String> params) throws IOException {
         for (Map.Entry<String, String> entry : params.entrySet()) {
             buildTextPart(dataOutputStream, entry.getKey(), entry.getValue());
         }
