@@ -23,6 +23,8 @@ import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class UploadJob extends Job {
 
@@ -38,7 +40,7 @@ public class UploadJob extends Job {
 
         final RandoUpload randoToUpload = RandoDAO.getRandoToUploadById(1);
 
-        final Result result;
+        final JobResultFuture resultFuture = new JobResultFuture();
         long pastFromLastTry = new Date().getTime() - randoToUpload.lastTry.getTime();
         if (pastFromLastTry >= Constants.UPLOAD_RETRY_TIMEOUT) {
             randoToUpload.lastTry = new Date();
@@ -56,8 +58,8 @@ public class UploadJob extends Job {
                     RandoDAO.deleteRandoToUpload(randoToUpload);
                     Intent intent = new Intent(Constants.UPLOAD_SERVICE_BROADCAST_EVENT);
                     UploadJob.this.getContext().sendBroadcast(intent);
-                    result = Result.SUCCESS;
-                    scheduleNextRun(Constants.UPLOAD_SERVICE_SHORT_PAUSE);
+                    resultFuture.put(Result.SUCCESS);
+                    //scheduleNextRun(Constants.UPLOAD_SERVICE_SHORT_PAUSE);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -97,17 +99,21 @@ public class UploadJob extends Job {
                         }
                     }
                     Log.e(UploadService.class, "Error" + errorMessage + " Errors in a raw count: ", error);
-                    if (uploadErrorCount < Constants.UPLOAD_SERVICE_ATTEMPTS_FAIL) {
-                        scheduleNextRun(Constants.UPLOAD_SERVICE_SHORT_PAUSE);
-                    } else {
-                        scheduleNextRun(Constants.UPLOAD_SERVICE_LONG_PAUSE);
-                    }
+                    resultFuture.put(Result.FAILURE);
                 }
             });
-            //Upload only 1 rando per service Run
-            Log.d(UploadService.class, "1 Rando sent to upload, breaking");
+        } else {
+            return Result.FAILURE;
         }
         Log.d(UploadJob.class, "Run Job!!!", Thread.currentThread().toString());
-        return Result.SUCCESS;
+        Result result;
+        try {
+            result = resultFuture.get(10, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            result = Result.FAILURE;
+        } catch (TimeoutException e) {
+            result = Result.FAILURE;
+        }
+        return result;
     }
 }
