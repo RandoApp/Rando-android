@@ -13,7 +13,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
@@ -83,7 +82,7 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
             // populate text payload
             Map<String, String> params = getParams();
             if (params != null && params.size() > 0) {
-                textParse(dos, params, getParamsEncoding());
+                textParse(dos, params);
             }
 
             // populate data byte payload
