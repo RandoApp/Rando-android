@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 
 import com.android.volley.NetworkResponse;
@@ -64,7 +65,11 @@ public class UploadServiceLegacy extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        upload();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            upload();
+        } else {
+            stopSelf();
+        }
         return Service.START_NOT_STICKY;
     }
 
@@ -154,9 +159,9 @@ public class UploadServiceLegacy extends Service {
                 uploadAttemptsFail++;
                 Log.e(UploadServiceLegacy.class, "Error" + errorMessage + " Errors in a raw count: " + uploadAttemptsFail, error);
                 if (uploadAttemptsFail < Constants.UPLOAD_SERVICE_ATTEMPTS_FAIL) {
-                    setTimeout(Constants.UPLOAD_SERVICE_SHORT_PAUSE);
+                    setTimeout(UPLOAD_SERVICE_SHORT_PAUSE);
                 } else {
-                    setTimeout(Constants.UPLOAD_SERVICE_LONG_PAUSE);
+                    setTimeout(UPLOAD_SERVICE_LONG_PAUSE);
                 }
             }
         });

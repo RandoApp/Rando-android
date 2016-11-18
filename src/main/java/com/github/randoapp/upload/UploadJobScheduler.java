@@ -24,7 +24,7 @@ public class UploadJobScheduler {
             PersistableBundleCompat extras = new PersistableBundleCompat();
             extras.putLong(Constants.TO_UPLOAD_RANDO_ID, randoUpload.id);
 
-            int jobId = new JobRequest.Builder(UploadJob.TAG)
+            new JobRequest.Builder(UploadJob.TAG)
                     .setExecutionWindow(1_000L, TimeUnit.DAYS.toMillis(10))
                     .setBackoffCriteria(TimeUnit.MINUTES.toMillis(2), JobRequest.BackoffPolicy.EXPONENTIAL)
                     .setRequiresDeviceIdle(false)
