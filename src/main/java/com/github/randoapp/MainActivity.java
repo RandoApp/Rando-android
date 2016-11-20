@@ -28,6 +28,7 @@ import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.GooglePlayServicesUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.acra.ACRA;
 
@@ -47,8 +48,8 @@ import static com.github.randoapp.Constants.UPDATE_PLAY_SERVICES_REQUEST_CODE;
 public class MainActivity extends FragmentActivity {
 
     public static Activity activity;
-
     private int playServicesStatus;
+    public FirebaseAnalytics mFirebaseAnalytics;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -83,6 +84,11 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         activity = this;
         setContentView(R.layout.activity_main);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+    }
+
+    public FirebaseAnalytics getmFirebaseAnalytics() {
+        return mFirebaseAnalytics;
     }
 
     private Fragment getFragment() {
@@ -99,7 +105,7 @@ public class MainActivity extends FragmentActivity {
         if (RandoDAO.countAllRandosNumber() == 0) {
             return new EmptyHomeWallFragment();
         } else {
-            return new HomeWallFragment();
+            return new HomeWallFragment();;
         }
     }
 
