@@ -105,7 +105,7 @@ public class MainActivity extends FragmentActivity {
         if (RandoDAO.countAllRandosNumber() == 0) {
             return new EmptyHomeWallFragment();
         } else {
-            return new HomeWallFragment();;
+            return new HomeWallFragment();
         }
     }
 
