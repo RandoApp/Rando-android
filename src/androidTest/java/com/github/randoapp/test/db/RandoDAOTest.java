@@ -1,17 +1,23 @@
 package com.github.randoapp.test.db;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.MediumTest;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.db.model.RandoUpload;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.github.randoapp.db.RandoDAO.addToUpload;
 import static com.github.randoapp.test.db.RandoTestHelper.checkListsEqual;
 import static com.github.randoapp.test.db.RandoTestHelper.getRandomRando;
 import static org.hamcrest.CoreMatchers.is;
@@ -20,23 +26,23 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 
-public class RandoDAOTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+@SmallTest
+public class RandoDAOTest {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         RandoDAO.clearRandos();
         RandoDAO.clearRandoToUpload();
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @After
+    public void tearDown() throws Exception {
         RandoDAO.clearRandos();
         RandoDAO.clearRandoToUpload();
     }
 
-    @MediumTest
+    @Test
     public void testCreateRando() throws SQLException {
         Rando rando = getRandomRando(Rando.Status.IN);
 
@@ -46,7 +52,7 @@ public class RandoDAOTest extends AndroidTestCase {
         assertThat(rando, is(newRando));
     }
 
-    @MediumTest
+    @Test
     public void testCreateFreshRando() throws SQLException {
         Rando rando = getRandomRando(Rando.Status.IN);
 
@@ -57,7 +63,7 @@ public class RandoDAOTest extends AndroidTestCase {
         assertThat(rando, is(newRando));
     }
 
-    @MediumTest
+    @Test
     public void testDeleteRando() throws SQLException {
         Rando rando = getRandomRando(Rando.Status.IN);
 
@@ -71,7 +77,7 @@ public class RandoDAOTest extends AndroidTestCase {
         assertThat(RandoDAO.getRandoById(id), nullValue());
     }
 
-    @MediumTest
+    @Test
     public void testUpdateRando() throws SQLException {
         Rando rando = getRandomRando(Rando.Status.IN);
 
@@ -90,7 +96,7 @@ public class RandoDAOTest extends AndroidTestCase {
         assertThat(newMapValue, is(updatedRando.mapURL));
     }
 
-    @MediumTest
+    @Test
     public void testSelectRando() throws SQLException {
         Rando rando = getRandomRando(Rando.Status.IN);
 
@@ -100,7 +106,7 @@ public class RandoDAOTest extends AndroidTestCase {
         assertThat(rando, is(newRando));
     }
 
-    @MediumTest
+    @Test
     public void testReturnOrder() throws SQLException {
         insertNRandomRandoPairs(55);
         List<Rando> randos = RandoDAO.getAllRandos();
@@ -108,20 +114,20 @@ public class RandoDAOTest extends AndroidTestCase {
 
     }
 
-    @MediumTest
+    @Test
     public void testGetNotExistingRandoPair() throws SQLException {
         insertNRandomRandoPairs(55);
         Rando rando = RandoDAO.getRandoById(9999L);
         assertThat(rando, nullValue());
     }
 
-    @MediumTest
+    @Test
     public void testInsertNullRandoPair() throws SQLException {
         Rando rando = RandoDAO.createRando(null);
         assertThat(rando, nullValue());
     }
 
-    @MediumTest
+    @Test
     public void testClearEmptyTable() throws SQLException {
         RandoDAO.clearRandos();
         assertThat(RandoDAO.getRandosNumber(), is(0));
@@ -131,7 +137,7 @@ public class RandoDAOTest extends AndroidTestCase {
         assertThat(RandoDAO.getAllRandos().size(), is(0));
     }
 
-    @MediumTest
+    @Test
     public void testClearNotEmptyDB() throws SQLException {
         insertNRandomRandoPairs(10);
         assertThat(RandoDAO.getRandosNumber(), greaterThan(0));
@@ -141,8 +147,9 @@ public class RandoDAOTest extends AndroidTestCase {
         assertThat(RandoDAO.getAllRandos().size(), is(0));
     }
 
+    @Test
     public void testAddToUploadSuccessfulAdd() {
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
+        addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
 
         RandoUpload randoUpload = new RandoUpload();
         randoUpload.file = "/path/to/file2";
@@ -150,13 +157,14 @@ public class RandoDAOTest extends AndroidTestCase {
         randoUpload.latitude = "22.55";
         randoUpload.date = new Date();
 
-        RandoDAO.addToUpload(randoUpload);
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file3", 13.33, 14.44, new Date()));
+        addToUpload(randoUpload);
+        addToUpload(new RandoUpload("/path/to/file3", 13.33, 14.44, new Date()));
         assertThat("Miss one of rando to upload", RandoDAO.getRandosToUploadNumber(), is(3));
     }
 
+    @Test
     public void testUpdateToUploadSuccessful() {
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
+        addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
 
         RandoUpload randoUpload = RandoDAO.getAllRandosToUpload("DESC").get(0);
         assertThat("Last try is not a default value", randoUpload.lastTry.getTime(), is(0l));
@@ -170,15 +178,17 @@ public class RandoDAOTest extends AndroidTestCase {
         assertThat("Unsuccessful update lastTry field", randoUploadAfterUpdate.lastTry.getTime(), is(now.getTime()));
     }
 
+    @Test
     public void testAddToUploadEmptyRandoUpload() {
-        RandoDAO.addToUpload(new RandoUpload());
+        addToUpload(new RandoUpload());
         assertThat("Empty rando to upload created something in DB", RandoDAO.getRandosToUploadNumber(), is(0));
     }
 
+    @Test
     public void testGetAllRandosToUploadReturnCorrectOrder() {
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date(10)));
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file2", 23.33, 24.44, new Date(50)));
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file3", 33.33, 34.44, new Date(300)));
+        addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date(10)));
+        addToUpload(new RandoUpload("/path/to/file2", 23.33, 24.44, new Date(50)));
+        addToUpload(new RandoUpload("/path/to/file3", 33.33, 34.44, new Date(300)));
 
         List<RandoUpload> randos = RandoDAO.getAllRandosToUpload("DESC");
         for (int i = 0; i < randos.size(); i++) {
@@ -187,17 +197,19 @@ public class RandoDAOTest extends AndroidTestCase {
         assertThat("Rando number is not correct", randos.size(), is(3));
     }
 
+    @Test
     public void testGetAllRandosToUploadReturnEmptyCollectionIfTableIsEmpty() {
         List<RandoUpload> randos = RandoDAO.getAllRandosToUpload("DESC");
         assertThat("RandoUpload table is not empty", randos.size(), is(0));
     }
 
+    @Test
     public void testDeleteRandoToUploadSuccessfulDelete() {
         assertThat("Initial RandoUpload table is not empty", RandoDAO.getRandosToUploadNumber(), is(0));
 
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date(100)));
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file2", 23.33, 24.44, new Date(200)));
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file3", 33.33, 44.44, new Date(300)));
+        addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date(100)));
+        addToUpload(new RandoUpload("/path/to/file2", 23.33, 24.44, new Date(200)));
+        addToUpload(new RandoUpload("/path/to/file3", 33.33, 44.44, new Date(300)));
 
 
         RandoUpload randoUpload = RandoDAO.getAllRandosToUpload("DESC").get(1);
@@ -207,6 +219,7 @@ public class RandoDAOTest extends AndroidTestCase {
         assertThat("After delete rando to upload number is not correct", RandoDAO.getRandosToUploadNumber(), is(2));
     }
 
+    @Test
     public void testDeleteRandoToUploadEmptyTableDetele() {
         assertThat("Initial RandoUpload table is not empty", RandoDAO.getRandosToUploadNumber(), is(0));
         RandoUpload randoUpload = new RandoUpload("/path/to/file2", 13.33, 14.44, new Date());
@@ -214,9 +227,10 @@ public class RandoDAOTest extends AndroidTestCase {
         assertThat("After delete rando to upload number is not correct", RandoDAO.getRandosToUploadNumber(), is(0));
     }
 
+    @Test
     public void testDeleteRandoToUploadDeleteNotExistsRando() {
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file3", 33.33, 44.44, new Date()));
+        addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
+        addToUpload(new RandoUpload("/path/to/file3", 33.33, 44.44, new Date()));
         assertThat("Initial delete rando to upload number is not correct", RandoDAO.getRandosToUploadNumber(), is(2));
 
         RandoUpload randoUpload = new RandoUpload("/path/to/file2", 23.33, 24.44, new Date());
@@ -224,70 +238,82 @@ public class RandoDAOTest extends AndroidTestCase {
         assertThat("After delete rando to upload number is not correct", RandoDAO.getRandosToUploadNumber(), is(2));
     }
 
+    @Test
     public void testGetAllRandos() {
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
+        addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
         insertNRandomRandoPairs(3);
         List<Rando> randos = RandoDAO.getAllRandos(false);
         assertThat("Collection number is not correct", randos.size(), is(4));
     }
 
+    @Test
     public void testGetAllRandosEmpty() {
         List<Rando> randos = RandoDAO.getAllRandos(false);
         assertThat("Collection number is not correct", randos.size(), is(0));
     }
 
+    @Test
     public void testGetAllRandosOnlyToUpload() {
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file2", 23.33, 24.44, new Date()));
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file3", 33.33, 34.44, new Date()));
+        addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
+        addToUpload(new RandoUpload("/path/to/file2", 23.33, 24.44, new Date()));
+        addToUpload(new RandoUpload("/path/to/file3", 33.33, 34.44, new Date()));
         List<Rando> randos = RandoDAO.getAllRandos(false);
         assertThat("Collection number is not correct", randos.size(), is(3));
     }
 
+    @Test
     public void testGetAllRandosOnlyPairs() {
         insertNRandomRandoPairs(4);
         List<Rando> randos = RandoDAO.getAllRandos(false);
         assertThat("Collection number is not correct", randos.size(), is(4));
     }
 
+    @Test
     public void testGetAllRandosNumberOnlyToUpload() {
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file2", 23.33, 24.44, new Date()));
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file3", 33.33, 34.44, new Date()));
+        addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
+        addToUpload(new RandoUpload("/path/to/file2", 23.33, 24.44, new Date()));
+        addToUpload(new RandoUpload("/path/to/file3", 33.33, 34.44, new Date()));
         assertThat("Items number in table is not correct", RandoDAO.countAllRandosNumber(), is(3));
     }
 
+    @Test
     public void testGetAllRandosNumberOnlyPairs() {
         insertNRandomRandoPairs(4);
         assertThat("Items number in table is not correct", RandoDAO.countAllRandosNumber(), is(4));
     }
 
+    @Test
     public void testGetAllRandosNumberPairsAndUploads() {
         assertThat("Items number in table is not correct", RandoDAO.countAllRandosNumber(), is(0));
     }
 
+    @Test
     public void testGetAllRandosNumberEmptyTable() {
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file2", 23.33, 34.44, new Date()));
+        addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
+        addToUpload(new RandoUpload("/path/to/file2", 23.33, 34.44, new Date()));
         insertNRandomRandoPairs(3);
         assertThat("Collection number is not correct", RandoDAO.countAllRandosNumber(), is(5));
     }
 
+    @Test
     public void testGetRandosToUploadNumberEmptyTable() {
         assertThat("Items number in table is not correct", RandoDAO.countAllRandosNumber(), is(0));
     }
 
+    @Test
     public void testGetRandosToUploadNumber() {
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
-        RandoDAO.addToUpload(new RandoUpload("/path/to/file2", 23.33, 34.44, new Date()));
+        addToUpload(new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
+        addToUpload(new RandoUpload("/path/to/file2", 23.33, 34.44, new Date()));
         assertThat("Items number in table is not correct", RandoDAO.countAllRandosNumber(), is(2));
     }
 
+    @Test
     public void testGetRandoByStatusEmptyDB(){
         assertThat("Not empty list returned", RandoDAO.getAllRandosByStatus(Rando.Status.IN).size(), is(0));
         assertThat("Not empty list returned", RandoDAO.getAllRandosByStatus(Rando.Status.OUT).size(), is(0));
     }
 
+    @Test
     public void testGetRandoByStatusNoInRandos(){
         List<Rando> randos = new ArrayList<Rando>(2);
         Rando rando = getRandomRando(Rando.Status.OUT);
@@ -303,7 +329,7 @@ public class RandoDAOTest extends AndroidTestCase {
         checkListsEqual(randos, RandoDAO.getAllRandosByStatus(Rando.Status.OUT));
 
     }
-
+    @Test
     public void testGetRandoByStatusNoOutRandos(){
         List<Rando> randos = new ArrayList<Rando>(2);
         Rando rando = getRandomRando(Rando.Status.IN);
@@ -319,7 +345,7 @@ public class RandoDAOTest extends AndroidTestCase {
         checkListsEqual(randos, RandoDAO.getAllRandosByStatus(Rando.Status.IN));
 
     }
-
+    @Test
     public void testGetRandoByStatusMixedRandos(){
         List<Rando> randosIn = new ArrayList<Rando>(2);
         Rando rando = getRandomRando(Rando.Status.IN);
@@ -343,6 +369,7 @@ public class RandoDAOTest extends AndroidTestCase {
 
     }
 
+    @Test
     public void testGetInRandosNoInRandos(){
         List<Rando> randos = new ArrayList<Rando>(2);
         Rando rando = getRandomRando(Rando.Status.OUT);
@@ -356,6 +383,7 @@ public class RandoDAOTest extends AndroidTestCase {
         assertThat("Not 2 items returned", RandoDAO.getAllOutRandos().size(), is(2));
     }
 
+    @Test
     public void testDeleteInRandos(){
         List<Rando> randos = new ArrayList<Rando>(2);
         Rando rando = getRandomRando(Rando.Status.OUT);
@@ -379,6 +407,7 @@ public class RandoDAOTest extends AndroidTestCase {
         checkListsEqual(randos, RandoDAO.getAllOutRandos());
     }
 
+    @Test
     public void testDeleteOutRandos(){
         List<Rando> randos = new ArrayList<Rando>(2);
         Rando rando = getRandomRando(Rando.Status.IN);

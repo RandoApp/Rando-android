@@ -33,18 +33,26 @@ public class UploadJob extends Job {
     @Override
     protected Result onRunJob(Params params) {
         Log.d(UploadJob.class, "Starting Job Execution");
+
         if (!NetworkUtil.isOnline(getContext())) {
             Log.d(UploadJob.class, "No network, reschedule. BackOff Millis:" + params.getBackoffMs());
             return Result.RESCHEDULE;
         }
 
-        long randoToUploadId = params.getExtras().getLong(Constants.TO_UPLOAD_RANDO_ID, -1);
-        final RandoUpload randoToUpload = RandoDAO.getRandoToUploadById(randoToUploadId);
-        if (randoToUpload == null) {
-            Log.d(UploadJob.class, "Missing Rando to upload with id:" + randoToUploadId);
-            return Result.FAILURE;
+        RandoUpload randoUpload;
+        while ((randoUpload = RandoDAO.getNextRandoToUpload()) != null){
+            upload(randoUpload);
         }
 
+        if (RandoDAO.countAllRandosToUpload() > 0){
+            return Result.RESCHEDULE;
+        } else {
+            return Result.SUCCESS;
+        }
+    }
+
+    private Result upload(final RandoUpload randoToUpload) {
+        Result result;
         final JobResultFuture resultFuture = new JobResultFuture();
         long pastFromLastTry = new Date().getTime() - randoToUpload.lastTry.getTime();
         if (pastFromLastTry >= Constants.UPLOAD_RETRY_TIMEOUT) {
@@ -55,7 +63,6 @@ public class UploadJob extends Job {
                 @Override
                 public void onUpload(Rando rando) {
                     Log.d(UploadJob.class, rando.toString());
-
                     if (rando != null) {
                         RandoDAO.createRando(rando);
                     }
@@ -109,7 +116,6 @@ public class UploadJob extends Job {
         } else {
             return Result.RESCHEDULE;
         }
-        Result result;
         try {
             result = resultFuture.get(10, TimeUnit.MINUTES);
         } catch (InterruptedException e) {

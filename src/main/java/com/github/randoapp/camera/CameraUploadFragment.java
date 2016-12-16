@@ -59,12 +59,10 @@ public class CameraUploadFragment extends Fragment {
 
             Location location = Preferences.getLocation();
             RandoUpload randoUpload = new RandoUpload(picFileName, location.getLatitude(), location.getLongitude(), new Date());
-            randoUpload = RandoDAO.addToUpload(randoUpload);
+            RandoDAO.addToUpload(randoUpload);
 
             Intent intent = new Intent(CAMERA_BROADCAST_EVENT);
-            if (randoUpload != null) {
-                UploadJobScheduler.scheduleUpload(randoUpload, getContext());
-            }
+            UploadJobScheduler.scheduleUpload(getContext());
             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
         }
     }
