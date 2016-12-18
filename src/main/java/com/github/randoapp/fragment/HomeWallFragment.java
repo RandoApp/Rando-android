@@ -13,6 +13,7 @@ import com.github.randoapp.CameraActivity;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.adapter.HomePagerAdapter;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class HomeWallFragment extends Fragment {
 
