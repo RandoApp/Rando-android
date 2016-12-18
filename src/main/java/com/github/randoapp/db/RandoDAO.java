@@ -82,9 +82,11 @@ public class RandoDAO {
         return randos;
     }
 
-    public static synchronized RandoUpload getRandoToUploadById(long id) {
+    public static synchronized RandoUpload getNextRandoToUpload() {
+        String dateS = String.valueOf(System.currentTimeMillis()+Constants.UPLOAD_RETRY_TIMEOUT);
         Cursor cursor = getDB().query(RandoDBHelper.RandoUploadTable.NAME,
-                RandoDBHelper.RandoUploadTable.ALL_COLUMNS, RandoDBHelper.RandoUploadTable.COLUMN_ID + " = " + id, null, null, null, null, null);
+                RandoDBHelper.RandoUploadTable.ALL_COLUMNS, RandoDBHelper.RandoUploadTable.COLUMN_LAST_TRY_DATE
+                        + "<" + dateS, null, null, null, RandoDBHelper.RandoUploadTable.COLUMN_DATE + " ASC", "1");
 
         cursor.moveToFirst();
         RandoUpload rando = null;
