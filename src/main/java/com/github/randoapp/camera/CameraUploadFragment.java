@@ -19,7 +19,9 @@ import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.RandoUpload;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.upload.UploadJobScheduler;
+import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.BitmapUtil;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.makeramen.RoundedImageView;
 
 import java.util.Date;
@@ -29,10 +31,12 @@ import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 public class CameraUploadFragment extends Fragment {
 
     private String picFileName;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.camera_upload, container, false);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
 
         RoundedImageView preview = (RoundedImageView) rootView.findViewById(R.id.preview);
 
@@ -57,6 +61,7 @@ public class CameraUploadFragment extends Fragment {
                 return;
             }
 
+            Analytics.logUploadRando(mFirebaseAnalytics);
             Location location = Preferences.getLocation();
             RandoUpload randoUpload = new RandoUpload(picFileName, location.getLatitude(), location.getLongitude(), new Date());
             randoUpload = RandoDAO.addToUpload(randoUpload);

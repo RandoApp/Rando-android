@@ -23,10 +23,12 @@ import com.github.randoapp.adapter.RandoListAdapter;
 import com.github.randoapp.api.API;
 import com.github.randoapp.api.listeners.ErrorResponseListener;
 import com.github.randoapp.log.Log;
+import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.GooglePlayServicesUtil;
 import com.github.randoapp.util.NetworkUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.json.JSONObject;
 
@@ -38,10 +40,9 @@ import static com.github.randoapp.Constants.UPLOAD_SERVICE_BROADCAST_EVENT;
 public class HomeListFragment extends Fragment {
 
     private RandoListAdapter randoPairsAdapter;
-
     private boolean isStranger;
-
     private SwipeRefreshLayout swipeRefreshLayout;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -84,13 +85,15 @@ public class HomeListFragment extends Fragment {
         }
 
         final ListView listView = (ListView) rootView.findViewById(R.id.listView);
-        randoPairsAdapter = new RandoListAdapter(isStranger);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        randoPairsAdapter = new RandoListAdapter(isStranger, mFirebaseAnalytics);
         listView.setAdapter(randoPairsAdapter);
 
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                Analytics.logForceSync(mFirebaseAnalytics);
                 if (NetworkUtil.isOnline(getContext())) {
                     API.syncUserAsync(new Response.Listener<JSONObject>() {
                         @Override
