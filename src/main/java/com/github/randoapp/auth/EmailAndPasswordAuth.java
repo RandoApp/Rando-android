@@ -11,7 +11,9 @@ import com.github.randoapp.fragment.AuthFragment;
 import com.github.randoapp.task.SignupTask;
 import com.github.randoapp.task.callback.OnError;
 import com.github.randoapp.task.callback.OnOk;
+import com.github.randoapp.util.Analytics;
 import com.github.randoapp.view.Progress;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.Map;
 
@@ -28,6 +30,7 @@ public class EmailAndPasswordAuth extends BaseAuth {
 
     @Override
     public void onClick(View v) {
+        Analytics.logLoginEmail(FirebaseAnalytics.getInstance(authFragment.getActivity()));
         String email = emailText.getText().toString();
         String password = passwordText.getText().toString();
 

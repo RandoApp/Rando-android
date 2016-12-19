@@ -23,6 +23,7 @@ import com.github.randoapp.util.GooglePlayServicesUtil;
 import com.github.randoapp.util.PermissionUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import static android.view.View.VISIBLE;
 import static com.github.randoapp.Constants.CONTACTS_PERMISSION_REQUEST_CODE;
@@ -31,17 +32,17 @@ import static com.google.android.gms.common.ConnectionResult.SUCCESS;
 public class AuthFragment extends Fragment {
 
     private EditText emailText;
-
     private Button googleButton;
-
     public boolean isGoogleLoginPressed = false;
-
     private boolean requestAccountsOnFirstLoad = true;
+    private FirebaseAnalytics mFirebaseAnalytics;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.auth, container, false);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
 
         TextView textViewSkipLink = (TextView) rootView.findViewById(R.id.textViewSkipLink);
         textViewSkipLink.setOnClickListener(new SkipAuth(this));

@@ -15,7 +15,6 @@ public class Analytics {
     private static String LOGIN_SKIP = "login_skip";
     private static String LOGIN_GOOGLE = "login_google";
     private static String LOGIN_EMAIL = "login_email";
-
     private static String OPEN_TAB_OWN_RANDOS = "open_tab_own_randos";
     private static String OPEN_TAB_STRANGER_RANDOS = "open_tab_stranger_randos";
     private static String OPEN_TAB_SETTINGS = "open_tab_settings";
@@ -48,4 +47,31 @@ public class Analytics {
         analytics.logEvent(FORCE_SYNC, null);
     }
 
+    public static void logLogout(FirebaseAnalytics analytics) {
+        analytics.logEvent(LOGOUT, null);
+    }
+
+    public static void logLoginSkip(FirebaseAnalytics analytics) {
+        analytics.logEvent(LOGIN_SKIP, null);
+    }
+
+    public static void logLoginEmail(FirebaseAnalytics analytics) {
+        analytics.logEvent(LOGIN_EMAIL, null);
+    }
+
+    public static void logLoginGoogle(FirebaseAnalytics analytics) {
+        analytics.logEvent(LOGIN_GOOGLE, null);
+    }
+
+    public static void logOpenTabOwnRandos(FirebaseAnalytics analytics) {
+        analytics.logEvent(OPEN_TAB_OWN_RANDOS, null);
+    }
+
+    public static void logOpenTabStrangerRandos(FirebaseAnalytics analytics) {
+        analytics.logEvent(OPEN_TAB_STRANGER_RANDOS, null);
+    }
+
+    public static void logOpenTabSettings(FirebaseAnalytics analytics) {
+        analytics.logEvent(OPEN_TAB_SETTINGS, null);
+    }
 }
