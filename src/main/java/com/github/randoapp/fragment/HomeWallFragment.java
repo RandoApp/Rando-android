@@ -47,7 +47,6 @@ public class HomeWallFragment extends Fragment {
                     default:
                         Analytics.logOpenTabStrangerRandos(mFirebaseAnalytics);
                         break;
-
                 }
             }
 
