@@ -31,6 +31,7 @@ public class HomeWallFragment extends Fragment {
 
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                //not needed
             }
 
             @Override
@@ -52,6 +53,7 @@ public class HomeWallFragment extends Fragment {
 
             @Override
             public void onPageScrollStateChanged(int state) {
+                //not needed
             }
         });
         viewPager.setCurrentItem(1);
