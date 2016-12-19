@@ -28,7 +28,6 @@ import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.GooglePlayServicesUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.acra.ACRA;
 
@@ -49,7 +48,6 @@ public class MainActivity extends FragmentActivity {
 
     public static Activity activity;
     private int playServicesStatus;
-    private FirebaseAnalytics mFirebaseAnalytics;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -84,7 +82,6 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         activity = this;
         setContentView(R.layout.activity_main);
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 
     private Fragment getFragment() {
