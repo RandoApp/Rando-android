@@ -20,8 +20,9 @@
         android:layout_marginBottom="@dimen/camera_button_margin_bottom"
         android:background="@drawable/rando_background"
         android:scaleType="center"
-        android:src="@drawable/rando_ring"
+        android:src="@drawable/ic_shutter"
         android:layout_alignParentStart="false"
         android:layout_alignParentLeft="false" />
+
 
 </RelativeLayout>
