@@ -117,7 +117,7 @@ public class HomeMenuFragment extends Fragment {
     private void initHelp(View rootView) {
         //init Take section
         View view = rootView.findViewById(R.id.help_layout_take);
-        ((ImageView) view.findViewById(R.id.help_section_imageview_icon)).setImageDrawable(rootView.getContext().getResources().getDrawable(R.drawable.ic_launcher));
+        ((ImageView) view.findViewById(R.id.help_section_imageview_icon)).setImageDrawable(rootView.getContext().getResources().getDrawable(R.drawable.ic_rando));
         ((TextView) view.findViewById(R.id.help_section_textview_title)).setText(rootView.getContext().getResources().getString(R.string.help_take_title));
         ((TextView) view.findViewById(R.id.help_section_textview_description)).setText(rootView.getContext().getResources().getString(R.string.help_take_description));
 
