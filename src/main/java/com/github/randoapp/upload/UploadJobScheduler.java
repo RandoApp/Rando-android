@@ -19,7 +19,7 @@ public class UploadJobScheduler {
             context.startService(new Intent(context, UploadServiceLegacy.class));
         } else {
             new JobRequest.Builder(UploadJob.TAG)
-                    .setExecutionWindow(TimeUnit.SECONDS.toMillis(1), TimeUnit.MINUTES.toMillis(1))
+                    .setExecutionWindow(TimeUnit.SECONDS.toMillis(1), TimeUnit.SECONDS.toMillis(10))
                     .setBackoffCriteria(TimeUnit.MINUTES.toMillis(2), JobRequest.BackoffPolicy.LINEAR)
                     .setRequiresDeviceIdle(false)
                     .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
