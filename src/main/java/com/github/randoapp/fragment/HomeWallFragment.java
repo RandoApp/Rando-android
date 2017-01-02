@@ -13,14 +13,48 @@ import com.github.randoapp.CameraActivity;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.adapter.HomePagerAdapter;
+import com.github.randoapp.util.Analytics;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class HomeWallFragment extends Fragment {
+
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.home, container, false);
         ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.colums_pager);
         viewPager.setAdapter(new HomePagerAdapter(getChildFragmentManager()));
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                //not needed
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                        Analytics.logOpenTabSettings(mFirebaseAnalytics);
+                        break;
+                    case 2:
+                        Analytics.logOpenTabOwnRandos(mFirebaseAnalytics);
+                        break;
+                    case 1:
+                    default:
+                        Analytics.logOpenTabStrangerRandos(mFirebaseAnalytics);
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                //not needed
+            }
+        });
         viewPager.setCurrentItem(1);
         ImageView takePictureButton = (ImageView) rootView.findViewById(R.id.camera_button);
         takePictureButton.setEnabled(true);

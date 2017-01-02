@@ -31,11 +31,8 @@ import static com.google.android.gms.common.ConnectionResult.SUCCESS;
 public class AuthFragment extends Fragment {
 
     private EditText emailText;
-
     private Button googleButton;
-
     public boolean isGoogleLoginPressed = false;
-
     private boolean requestAccountsOnFirstLoad = true;
 
     @Override

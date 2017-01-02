@@ -47,7 +47,6 @@ import static com.github.randoapp.Constants.UPDATE_PLAY_SERVICES_REQUEST_CODE;
 public class MainActivity extends FragmentActivity {
 
     public static Activity activity;
-
     private int playServicesStatus;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -89,8 +88,8 @@ public class MainActivity extends FragmentActivity {
         if (isNotAuthorized()) {
             return new AuthFragment();
         }
-        if (ContextCompat.checkSelfPermission(activity, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             return new MissingStoragePermissionFragment();
         }
         if (!Preferences.isTrainingFragmentShown()) {
@@ -155,7 +154,7 @@ public class MainActivity extends FragmentActivity {
             switch (requestCode) {
                 case STORAGE_PERMISSION_REQUEST_CODE:
                     if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permissions[0])) {
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[0])) {
                             new AlertDialog.Builder(this).setTitle(R.string.storage_needed_title).setMessage(R.string.storage_needed_message).setPositiveButton(R.string.permission_positive_button, null).create().show();
                         }
                     } else {
@@ -164,7 +163,7 @@ public class MainActivity extends FragmentActivity {
                     break;
                 case CONTACTS_PERMISSION_REQUEST_CODE:
                     if (grantResults[0] == PackageManager.PERMISSION_DENIED
-                            && ActivityCompat.shouldShowRequestPermissionRationale(activity, permissions[0])) {
+                            && ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[0])) {
                         new AlertDialog.Builder(this).setTitle(R.string.contact_needed_title).setMessage(R.string.contact_needed_message).setPositiveButton(R.string.permission_positive_button, null).create().show();
                     }
                     break;

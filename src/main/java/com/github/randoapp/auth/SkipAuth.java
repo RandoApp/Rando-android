@@ -10,7 +10,9 @@ import com.github.randoapp.fragment.AuthFragment;
 import com.github.randoapp.task.AnonymousSignupTask;
 import com.github.randoapp.task.callback.OnError;
 import com.github.randoapp.task.callback.OnOk;
+import com.github.randoapp.util.Analytics;
 import com.github.randoapp.view.Progress;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.Map;
 
@@ -22,6 +24,7 @@ public class SkipAuth extends BaseAuth {
 
     @Override
     public void onClick(View v) {
+        Analytics.logLoginSkip(FirebaseAnalytics.getInstance(authFragment.getActivity()));
         Progress.showLoading();
         String uuid = createTemproryId();
         new AnonymousSignupTask(uuid)

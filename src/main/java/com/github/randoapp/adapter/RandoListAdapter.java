@@ -31,9 +31,11 @@ import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
+import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.BitmapUtil;
 import com.github.randoapp.util.NetworkUtil;
 import com.github.randoapp.util.RandoUtil;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.makeramen.RoundedImageView;
 
 import java.util.List;
@@ -43,7 +45,7 @@ import static com.android.volley.Request.Priority;
 public class RandoListAdapter extends BaseAdapter {
 
     private boolean isStranger;
-
+    private FirebaseAnalytics mFirebaseAnalytics;
     private List<Rando> randos;
     private int imageSize;
 
@@ -64,7 +66,8 @@ public class RandoListAdapter extends BaseAdapter {
         return 0;
     }
 
-    public RandoListAdapter(boolean isStranger) {
+    public RandoListAdapter(boolean isStranger, FirebaseAnalytics firebaseAnalytics) {
+        mFirebaseAnalytics = firebaseAnalytics;
         this.isStranger = isStranger;
         initData();
     }
@@ -167,6 +170,7 @@ public class RandoListAdapter extends BaseAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Analytics.logDeleteRando(mFirebaseAnalytics);
                 if (NetworkUtil.isOnline(holder.deleteButton.getContext())) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(holder.deleteButton.getContext());
                     builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
@@ -240,7 +244,11 @@ public class RandoListAdapter extends BaseAdapter {
                     return;
                 }
                 if (holder.animationInProgress) return;
-
+                if (isStranger) {
+                    Analytics.logTapStrangerRando(mFirebaseAnalytics);
+                } else {
+                    Analytics.logTapOwnRando(mFirebaseAnalytics);
+                }
                 holder.viewSwitcher.showNext();
             }
         };
@@ -254,6 +262,7 @@ public class RandoListAdapter extends BaseAdapter {
                     Toast.makeText(holder.deleteButton.getContext(), R.string.cant_share_not_uploaded,
                             Toast.LENGTH_LONG).show();
                 } else {
+                    Analytics.logShareRando(mFirebaseAnalytics);
                     Intent shareIntent = new Intent(Intent.ACTION_SEND);
                     shareIntent.setType("text/plain");
                     shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);

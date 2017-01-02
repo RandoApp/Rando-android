@@ -21,7 +21,9 @@ import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.task.LogoutTask;
 import com.github.randoapp.task.callback.OnDone;
+import com.github.randoapp.util.Analytics;
 import com.github.randoapp.view.Progress;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.Map;
 
@@ -30,6 +32,7 @@ import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
 public class HomeMenuFragment extends Fragment {
 
     private TextView accountName;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -47,17 +50,19 @@ public class HomeMenuFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View rootView;
         rootView = inflater.inflate(R.layout.home_left_menu, container, false);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
 
         rootView.findViewById(R.id.logoutButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Analytics.logLogout(mFirebaseAnalytics);
                 Progress.show(getActivity().getResources().getString(R.string.logout_progress));
                 new LogoutTask()
                         .onDone(new OnDone() {
                             @Override
                             public void onDone(Map<String, Object> data) {
                                 Intent intent = new Intent(Constants.LOGOUT_BROADCAST_EVENT);
-                                getActivity().sendBroadcast(intent);
+                                getContext().sendBroadcast(intent);
                                 Progress.hide();
                             }
                         })

@@ -16,8 +16,10 @@ import com.github.randoapp.task.callback.OnDone;
 import com.github.randoapp.task.callback.OnError;
 import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.AccountUtil;
+import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.PermissionUtils;
 import com.github.randoapp.view.Progress;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.Map;
 
@@ -46,6 +48,7 @@ public class GoogleAuth extends BaseAuth implements View.OnTouchListener {
 
     @Override
     public void onClick(View v) {
+        Analytics.logLoginGoogle(FirebaseAnalytics.getInstance(authFragment.getActivity()));
         if (!PermissionUtils.checkAndRequestMissingPermissions(authFragment.getActivity(), Constants.CONTACTS_PERMISSION_REQUEST_CODE, android.Manifest.permission.GET_ACCOUNTS)) {
             String[] names = AccountUtil.getAccountNames();
             if (names.length == 1) {
@@ -64,29 +67,29 @@ public class GoogleAuth extends BaseAuth implements View.OnTouchListener {
     private void fetchUserToken(String email) {
         Progress.showLoading();
         new GoogleAuthTask(email, authFragment)
-            .onOk(new OnOk() {
-                @Override
-                public void onOk(Map<String, Object> data) {
-                    done(authFragment.getActivity());
-                }
-            })
-            .onError(new OnError() {
-                @Override
-                public void onError(Map<String, Object> data) {
-                    Progress.hide();
-                    String error = (String) data.get("error");
-                    if (error != null) {
-                            Toast.makeText(authFragment.getActivity(), error, Toast.LENGTH_LONG).show();
+                .onOk(new OnOk() {
+                    @Override
+                    public void onOk(Map<String, Object> data) {
+                        done(authFragment.getActivity());
                     }
-                }
-            })
-            .onDone(new OnDone() {
-                @Override
-                public void onDone(Map<String, Object> data) {
-                    setButtonNormal();
-                }
-            })
-            .execute();
+                })
+                .onError(new OnError() {
+                    @Override
+                    public void onError(Map<String, Object> data) {
+                        Progress.hide();
+                        String error = (String) data.get("error");
+                        if (error != null) {
+                            Toast.makeText(authFragment.getActivity(), error, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                })
+                .onDone(new OnDone() {
+                    @Override
+                    public void onDone(Map<String, Object> data) {
+                        setButtonNormal();
+                    }
+                })
+                .execute();
     }
 
     private void selectAccount(final CharSequence[] names) {
