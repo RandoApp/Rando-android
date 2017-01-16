@@ -71,6 +71,7 @@ before_script:
 # Create and start emulator
   # For a full list of android targets, run "android list targets"
   - android list targets
+  - android list sdk -a -e
   - echo no | android create avd --force -n test -t android-$ANDROID_API --abi $ANDROID_ABI
   - emulator -memory 1536 -avd test -no-skin -no-audio -no-window &
   - android-wait-for-emulator
