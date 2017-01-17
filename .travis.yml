@@ -67,15 +67,15 @@ before_install:
 
   # Install NDK
   - cd $DOWNLOADS_HOME
-  - if [ ! -f $DOWNLOADS_HOME/android-ndk.zip ]; then  wget https://dl.google.com/android/repository/android-ndk-r11c-linux-x86_64.zip -O $DOWNLOADS_HOME/android-ndk.zip > /dev/null; fi
-  - if [ ! -d $APPS_HOME/android-ndk-r11c ]; then unzip -qq android-ndk.zip -d $APPS_HOME; fi
-  - export ANDROID_NDK_HOME=$APPS_HOME/android-ndk-r11c
+  - if [ ! -f $DOWNLOADS_HOME/android-ndk.zip ]; then  wget https://dl.google.com/android/repository/android-ndk-r13b-linux-x86_64.zip -O $DOWNLOADS_HOME/android-ndk.zip > /dev/null; fi
+  - if [ ! -d $APPS_HOME/android-ndk-r13b ]; then unzip -qq android-ndk.zip -d $APPS_HOME; fi
+  - export ANDROID_NDK_HOME=$APPS_HOME/android-ndk-r13b
   - export PATH=$ANDROID_NDK_HOME/bin:$PATH
 
   # Install required components.
   # For a full list, run `android list sdk -a --extended`
   #- if [ "$ANDROID_API" -ne "25" ]; then echo yes | android update sdk --filter android-$ANDROID_API --all --no-ui --force ; fi
-  #- echo yes | android update sdk --filter $ANDROID_ABI --all --no-ui --force
+  - echo yes | android update sdk --filter sys-img-armeabi-v7a-android-$ANDROID_API --all --no-ui --force
 
 before_script:
 # Create and start emulator
