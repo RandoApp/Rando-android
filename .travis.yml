@@ -28,7 +28,7 @@ android:
     - extra-android-m2repository
     - extra-google-m2repository
     - android-$ANDROID_API
-    #- sys-img-armeabi-v7a-android-$ANDROID_API
+    - addon-google_apis-google--$ANDROID_API
     - sys-img-armeabi-v7a-google_apis-$ANDROID_API
   licenses:
     - 'android-sdk-preview-license-.+'
