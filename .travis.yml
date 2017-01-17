@@ -3,7 +3,6 @@ jdk: oraclejdk8
 
 env:
   matrix:
-    - ANDROID_API=25 ANDROID_ABI=armeabi-v7a
     - ANDROID_API=24 ANDROID_ABI=armeabi-v7a
     - ANDROID_API=23 ANDROID_ABI=armeabi-v7a
     - ANDROID_API=22 ANDROID_ABI=armeabi-v7a NEED_UPLOAD_APK=true
