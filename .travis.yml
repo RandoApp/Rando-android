@@ -3,8 +3,11 @@ jdk: oraclejdk8
 
 env:
   matrix:
-    - ANDROID_API=24  ANDROID_ABI=armeabi-v7a NEED_UPLOAD_APK=true
-    - ANDROID_API=22 ANDROID_ABI=armeabi-v7a
+    - ANDROID_API=25 ANDROID_ABI=armeabi-v7a
+    - ANDROID_API=24 ANDROID_ABI=armeabi-v7a
+    - ANDROID_API=23 ANDROID_ABI=armeabi-v7a
+    - ANDROID_API=22 ANDROID_ABI=armeabi-v7a NEED_UPLOAD_APK=true
+    - ANDROID_API=14 ANDROID_ABI=armeabi-v7a
     - ANDROID_API=19 ANDROID_ABI=armeabi-v7a
     - ANDROID_API=10 ANDROID_ABI=armeabi
   global:
@@ -24,7 +27,6 @@ android:
     - tools
     - build-tools-25.0.2
     - android-25
-    - android-24
     - extra-android-m2repository
     - extra-google-m2repository
     - android-$ANDROID_API
@@ -47,11 +49,12 @@ cache:
     - $DOWNLOADS_HOME
 
 before_install:
+  - top -b
   # Install lftp for apk upload:
   - sudo apt-get update -qq
   - sudo apt-get install -qq lftp
   # Install tree for directory structure debug
-  - sudo apt-get install -qq tree
+  #- sudo apt-get install -qq tree
 
   # Install base Android SDK
   - cd ${HOME}
