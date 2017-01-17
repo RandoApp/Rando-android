@@ -26,7 +26,9 @@ android:
     - android-25
     - extra-android-m2repository
     - extra-google-m2repository
-    - sys-img-armeabi-v7a-android-$ANDROID_API
+    - android-$ANDROID_API
+    #- sys-img-armeabi-v7a-android-$ANDROID_API
+    - sys-img-armeabi-v7a-google_apis-$ANDROID_API
   licenses:
     - 'android-sdk-preview-license-.+'
     - 'android-sdk-license-.+'
