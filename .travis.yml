@@ -80,7 +80,7 @@ before_script:
   - android list sdk -a -e
   - echo no | android create avd --force -n test -t android-$ANDROID_API --abi $ANDROID_ABI
   - emulator -memory 1536 -avd test -no-skin -no-audio -no-window &
-  - android-wait-for-emulator
+  - travis_wait 30 android-wait-for-emulator
   - adb shell input keyevent 82 &
 
   # Create gradle.properties with secret stroke password:
