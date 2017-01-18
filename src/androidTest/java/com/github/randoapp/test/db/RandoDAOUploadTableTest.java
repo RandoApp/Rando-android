@@ -51,7 +51,7 @@ public class RandoDAOUploadTableTest {
         RandoUpload randoUpload = new RandoUpload();
         randoUpload.date = new Date();
         randoUpload.file = "/dd/d/d/";
-        randoUpload.lastTry = new Date(System.currentTimeMillis()- Constants.UPLOAD_RETRY_TIMEOUT - 1000);
+        randoUpload.lastTry = new Date(System.currentTimeMillis()- Constants.UPLOAD_RETRY_TIMEOUT - 10000);
         addToUpload(randoUpload);
 
         assertThat(RandoDAO.getAllRandosToUpload("ASC")).isNotNull().hasSize(1);

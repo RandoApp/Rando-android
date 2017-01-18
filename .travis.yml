@@ -51,6 +51,7 @@ before_install:
   - sudo apt-get install -qq lftp
   # Install tree for directory structure debug
   #- sudo apt-get install -qq tree
+   - sudo apt-get install pandoc
 
   # Install base Android SDK
   - cd ${HOME}
