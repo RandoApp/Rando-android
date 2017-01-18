@@ -2,15 +2,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.commonsware.cwac.camera.CameraView
+<!--    <com.commonsware.cwac.camera.CameraView
         android:id="@+id/camera"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" />-->
 
-    <com.github.randoapp.view.CircleMaskView
+    <com.google.android.cameraview.CameraView
+        android:id="@+id/camera1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:keepScreenOn="true"
+        android:adjustViewBounds="true" />
+
+<!--    <com.github.randoapp.view.CircleMaskView
         android:id="@+id/circle_mask"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></com.github.randoapp.view.CircleMaskView>
+        android:layout_height="match_parent"></com.github.randoapp.view.CircleMaskView>-->
 
     <ImageView
         android:id="@+id/capture_button"
