@@ -64,15 +64,15 @@ public class RandoDAOUploadTableTest {
         randoUpload.date = new Date();
         randoUpload.file = "/dd/d/d/";
         randoUpload.lastTry = new Date(System.currentTimeMillis()- Constants.UPLOAD_RETRY_TIMEOUT - 1000);
-        randoUpload = RandoDAO.addToUpload(randoUpload);
+        randoUpload = addToUpload(randoUpload);
 
         RandoUpload randoUpload1 = new RandoUpload();
         randoUpload1.date = new Date(randoUpload.date.getTime() - 1000);
         randoUpload1.file = "/dd/d/dd/";
         randoUpload1.lastTry = new Date(System.currentTimeMillis()- Constants.UPLOAD_RETRY_TIMEOUT - 1000);
-        randoUpload1 = RandoDAO.addToUpload(randoUpload1);
+        randoUpload1 = addToUpload(randoUpload1);
 
-        assertThat(RandoDAO.getAllRandosToUpload("ASC")).isNotNull().hasSize(2);
+        assertThat(RandoDAO.getAllRandosToUpload("ASC")).isNotNull().hasSize(3);
         assertThat(RandoDAO.getNextRandoToUpload()).isNotNull().isEqualToComparingFieldByField(randoUpload1);
     }
 }
