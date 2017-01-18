@@ -4,3 +4,6 @@
 [submodule "modules/cwac-camera"]
 	path = modules/cwac-camera
 	url = https://github.com/RandoApp/cwac-camera.git
+[submodule "modules/cameraview"]
+	path = modules/cameraview
+	url = https://github.com/google/cameraview.git

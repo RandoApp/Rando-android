@@ -4,6 +4,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle-experimental:0.8.3'
+        classpath 'com.android.tools.build:gradle:2.2.3'
         classpath 'com.google.gms:google-services:3.0.0'
         classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3'
     }
@@ -19,6 +20,14 @@ def googleAppIdLocal = googleAppId
 repositories {
     jcenter()
 }
+
+allprojects {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+}
+
 model {
     android {
         compileSdkVersion rootProject.ext.compileSdkVersion
@@ -130,13 +139,14 @@ tasks.coveralls {
 
 configurations.all {
     resolutionStrategy {
-        force 'com.android.support:support-annotations:24.2.1'
+        force 'com.android.support:support-annotations:25.0.1'
     }
 }
 
 dependencies {
     compile project(':volley')
     compile project(':camera-v9')
+    compile project(':cameraview')
     compile 'com.android.support:appcompat-v7:25+'
     compile 'org.apache.httpcomponents:httpcore:4.3'
     compile 'org.apache.httpcomponents:httpmime:4.3.1'
@@ -150,7 +160,7 @@ dependencies {
 
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
-    androidTestCompile 'com.android.support:support-annotations:24.0.0'
+    androidTestCompile 'com.android.support:support-annotations:25.0.1'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
     androidTestCompile 'com.squareup:javawriter:2.1.1'
     androidTestCompile 'javax.annotation:javax.annotation-api:1.2'
@@ -169,6 +179,9 @@ dependencies {
 ext {
     compileSdkVersion = 25
     buildToolsVersion = "25.0.2"
+    minSdkVersion = 9
+    targetSdkVersion = 25
+    supportLibraryVersion = '25.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

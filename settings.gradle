@@ -1,6 +1,7 @@
-include ':volley' ,':JniBitmapOperationsLibrary', ':camera', ':camera-v9'
+include ':volley' ,':JniBitmapOperationsLibrary', ':camera', ':camera-v9', ':cameraview'
 
 project(':volley').projectDir = new File(settingsDir, 'modules/volley')
+project(':cameraview').projectDir = new File(settingsDir, 'modules/cameraview/library')
 project(':camera-v9').projectDir = new File(settingsDir, 'modules/cwac-camera/camera-v9')
 project(':camera').projectDir = new File(settingsDir, 'modules/cwac-camera/camera')
 project(':JniBitmapOperationsLibrary').projectDir = new File(settingsDir, 'modules/cwac-camera/modules/AndroidJniBitmapOperations/JniBitmapOperationsLibrary')
