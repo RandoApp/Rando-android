@@ -95,4 +95,7 @@ script:
   - if [ $NEED_UPLOAD_APK ]; then gradle assembleRelease; fi
 
 after_success:
-    - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "put build/outputs/apk/Rando-android-release.apk; bye"; fi
+  - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "put build/outputs/apk/Rando-android-release.apk; bye"; fi
+
+after_failure:
+  - pandoc /home/travis/build/RandoApp/Rando-android/build/reports/androidTests/connected/index.html -t plain | sed -n '/^Failed tests/,/default-package/p'
