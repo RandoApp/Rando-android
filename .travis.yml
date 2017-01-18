@@ -1,13 +1,35 @@
 language: android
 jdk: oraclejdk8
+
+env:
+  matrix:
+    - ANDROID_API=24 ANDROID_ABI=armeabi-v7a
+    - ANDROID_API=22 ANDROID_ABI=armeabi-v7a NEED_UPLOAD_APK=true
+    - ANDROID_API=19 ANDROID_ABI=armeabi-v7a
+    - ANDROID_API=14 ANDROID_ABI=armeabi-v7a
+    - ANDROID_API=10 ANDROID_ABI=armeabi
+  global:
+    - secure: Kq5NpWlyXvAvzZ5UUwAxtooG7Cwtdnzh1fhCNqE2Lx2441w9aEGntd5+ffCCTCF4orRHlFIbqfE4/D1YlH6cJtP9hW37SPI8swe3r6Zyfjftakbe3ld72bVfq0f2zx5T4zln63jppMs+XxKNYjg8UswC+9C8Vi2LeJdPUC/Zdzs=
+    - secure: X6INcg26b1Bm48QDfDDhLnbRJm5tOffr+AWVcXkgaSbYybqPvYQmSLX7ai1ArCzDgTYqz12tUTVLgrgMlsXkQGFj41hoD+IEtO9zJOmHdtwUDkkh4yVvNwoJ7TTT/N7wL7ZAU556khWy76sS7/biv4iPohCy//R91LWki2d1240=
+    - secure: WusDaL9feBHMAz/DydbMngPkSvVMxnKnkrJgXi+LuG3FuWEA5fgDIdEgB3mADUCQZRuNYUJ61H7nUYFttPZ1yZOe107ETDCk0/UpIJ7PzPr62v7uVNyqPijVBufHI9iJ+bxyVW3Nt4reocJ3yqRxwP0z9FV+aEsn8Ke1S8YaKzU=
+    - secure: "OOkn4n5DHotc4o2sm0Fgq6oJltCSmhIBnjYVgz0rM3FJ5UiQxQRSpmhff+FnDIdcjHkNgUDu94RqivmvFwFZdYM70iuJoHk89ycR8yqTG4k7yNLOrsBWizKrpQSn5IVrCB6R8S5nMqH8Y8tZyfKlHelHn+EeUNWwhC2Yh9fsozg="
+    - REPO="RandoApp/Rando-android"
+    - DOWNLOADS_HOME=$HOME/downloads
+    - APPS_HOME=$HOME/apps
+    - CI_HOME=$HOME/build/$REPO
+
 android:
   components:
     - tools
     - platform-tools
-    - build-tools-24.0.3
-    - android-24
+    - tools
+    - build-tools-25.0.2
+    - android-25
+    #- android-24
     - extra-android-m2repository
     - extra-google-m2repository
+    - android-$ANDROID_API
+    - sys-img-armeabi-v7a-android-$ANDROID_API
   licenses:
     - 'android-sdk-preview-license-.+'
     - 'android-sdk-license-.+'
@@ -22,28 +44,13 @@ cache:
     - $HOME/.m2
     - $HOME/.gradle
     - $DOWNLOADS_HOME
-env:
-  matrix:
-    - ANDROID_API=24 ANDROID_ABI=armeabi-v7a NEED_UPLOAD_APK=true
-    - ANDROID_API=22 ANDROID_ABI=armeabi-v7a
-    - ANDROID_API=19 ANDROID_ABI=armeabi-v7a
-    - ANDROID_API=10 ANDROID_ABI=armeabi
-  global:
-    - secure: Kq5NpWlyXvAvzZ5UUwAxtooG7Cwtdnzh1fhCNqE2Lx2441w9aEGntd5+ffCCTCF4orRHlFIbqfE4/D1YlH6cJtP9hW37SPI8swe3r6Zyfjftakbe3ld72bVfq0f2zx5T4zln63jppMs+XxKNYjg8UswC+9C8Vi2LeJdPUC/Zdzs=
-    - secure: X6INcg26b1Bm48QDfDDhLnbRJm5tOffr+AWVcXkgaSbYybqPvYQmSLX7ai1ArCzDgTYqz12tUTVLgrgMlsXkQGFj41hoD+IEtO9zJOmHdtwUDkkh4yVvNwoJ7TTT/N7wL7ZAU556khWy76sS7/biv4iPohCy//R91LWki2d1240=
-    - secure: WusDaL9feBHMAz/DydbMngPkSvVMxnKnkrJgXi+LuG3FuWEA5fgDIdEgB3mADUCQZRuNYUJ61H7nUYFttPZ1yZOe107ETDCk0/UpIJ7PzPr62v7uVNyqPijVBufHI9iJ+bxyVW3Nt4reocJ3yqRxwP0z9FV+aEsn8Ke1S8YaKzU=
-    - secure: "OOkn4n5DHotc4o2sm0Fgq6oJltCSmhIBnjYVgz0rM3FJ5UiQxQRSpmhff+FnDIdcjHkNgUDu94RqivmvFwFZdYM70iuJoHk89ycR8yqTG4k7yNLOrsBWizKrpQSn5IVrCB6R8S5nMqH8Y8tZyfKlHelHn+EeUNWwhC2Yh9fsozg="
-    - REPO="RandoApp/Rando-android"
-    - DOWNLOADS_HOME=$HOME/downloads
-    - APPS_HOME=$HOME/apps
-    - CI_HOME=$HOME/build/$REPO
 
 before_install:
   # Install lftp for apk upload:
   - sudo apt-get update -qq
   - sudo apt-get install -qq lftp
   # Install tree for directory structure debug
-  - sudo apt-get install -qq tree
+  #- sudo apt-get install -qq tree
 
   # Install base Android SDK
   - cd ${HOME}
@@ -62,17 +69,14 @@ before_install:
   - export ANDROID_NDK_HOME=$APPS_HOME/android-ndk-r11c
   - export PATH=$ANDROID_NDK_HOME/bin:$PATH
 
-  # Install required components.
-  # For a full list, run `android list sdk -a --extended`
-  - if [ "$ANDROID_API" -ne "24" ]; then echo yes | android update sdk --filter android-$ANDROID_API --all --no-ui --force ; fi
-  - echo yes | android update sdk --filter sys-img-armeabi-v7a-android-$ANDROID_API --all --no-ui --force
-
 before_script:
 # Create and start emulator
   # For a full list of android targets, run "android list targets"
+  - android list targets
+  - android list sdk -a -e
   - echo no | android create avd --force -n test -t android-$ANDROID_API --abi $ANDROID_ABI
-  - emulator -memory 1536 -avd test -no-skin -no-audio -no-window &
-  - android-wait-for-emulator
+  - emulator -memory 1536 -avd test -no-window &
+  - travis_wait 30 android-wait-for-emulator
   - adb shell input keyevent 82 &
 
   # Create gradle.properties with secret stroke password:
@@ -90,4 +94,8 @@ script:
   - if [ $NEED_UPLOAD_APK ]; then gradle assembleRelease; fi
 
 after_success:
-    - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "put build/outputs/apk/Rando-android-release.apk; bye"; fi
+  - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "put build/outputs/apk/Rando-android-release.apk; bye"; fi
+
+after_failure:
+  - sudo apt-get install -qq pandoc
+  - pandoc /home/travis/build/RandoApp/Rando-android/build/reports/androidTests/connected/index.html -t plain | sed -n '/^Failed tests/,/default-package/p'

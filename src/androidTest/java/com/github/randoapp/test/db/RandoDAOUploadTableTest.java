@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Date;
 
+import static com.github.randoapp.db.RandoDAO.addToUpload;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(AndroidJUnit4.class)
@@ -40,7 +41,7 @@ public class RandoDAOUploadTableTest {
         RandoUpload randoUpload = new RandoUpload();
         randoUpload.date = new Date();
         randoUpload.lastTry = new Date(System.currentTimeMillis());
-        RandoDAO.addToUpload(randoUpload);
+        addToUpload(randoUpload);
 
         assertThat(RandoDAO.getNextRandoToUpload()).isNull();
     }
@@ -50,8 +51,8 @@ public class RandoDAOUploadTableTest {
         RandoUpload randoUpload = new RandoUpload();
         randoUpload.date = new Date();
         randoUpload.file = "/dd/d/d/";
-        randoUpload.lastTry = new Date(System.currentTimeMillis()- Constants.UPLOAD_RETRY_TIMEOUT - 1000);
-        RandoDAO.addToUpload(randoUpload);
+        randoUpload.lastTry = new Date(System.currentTimeMillis()- Constants.UPLOAD_RETRY_TIMEOUT - 10000);
+        addToUpload(randoUpload);
 
         assertThat(RandoDAO.getAllRandosToUpload("ASC")).isNotNull().hasSize(1);
         assertThat(RandoDAO.getNextRandoToUpload()).isNotNull().isEqualToComparingFieldByField(randoUpload);
@@ -63,13 +64,13 @@ public class RandoDAOUploadTableTest {
         randoUpload.date = new Date();
         randoUpload.file = "/dd/d/d/";
         randoUpload.lastTry = new Date(System.currentTimeMillis()- Constants.UPLOAD_RETRY_TIMEOUT - 1000);
-        RandoDAO.addToUpload(randoUpload);
+        randoUpload = addToUpload(randoUpload);
 
         RandoUpload randoUpload1 = new RandoUpload();
-        randoUpload1.date = new Date(System.currentTimeMillis() - 100);
+        randoUpload1.date = new Date(randoUpload.date.getTime() - 1000);
         randoUpload1.file = "/dd/d/dd/";
         randoUpload1.lastTry = new Date(System.currentTimeMillis()- Constants.UPLOAD_RETRY_TIMEOUT - 1000);
-        RandoDAO.addToUpload(randoUpload1);
+        randoUpload1 = addToUpload(randoUpload1);
 
         assertThat(RandoDAO.getAllRandosToUpload("ASC")).isNotNull().hasSize(2);
         assertThat(RandoDAO.getNextRandoToUpload()).isNotNull().isEqualToComparingFieldByField(randoUpload1);
