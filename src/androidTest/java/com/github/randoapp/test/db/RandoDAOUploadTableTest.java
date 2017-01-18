@@ -72,7 +72,7 @@ public class RandoDAOUploadTableTest {
         randoUpload1.lastTry = new Date(System.currentTimeMillis()- Constants.UPLOAD_RETRY_TIMEOUT - 1000);
         randoUpload1 = addToUpload(randoUpload1);
 
-        assertThat(RandoDAO.getAllRandosToUpload("ASC")).isNotNull().hasSize(3);
+        assertThat(RandoDAO.getAllRandosToUpload("ASC")).isNotNull().hasSize(2);
         assertThat(RandoDAO.getNextRandoToUpload()).isNotNull().isEqualToComparingFieldByField(randoUpload1);
     }
 }

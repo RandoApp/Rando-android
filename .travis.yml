@@ -51,7 +51,6 @@ before_install:
   - sudo apt-get install -qq lftp
   # Install tree for directory structure debug
   #- sudo apt-get install -qq tree
-  - sudo apt-get install pandoc
 
   # Install base Android SDK
   - cd ${HOME}
@@ -98,4 +97,5 @@ after_success:
   - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "put build/outputs/apk/Rando-android-release.apk; bye"; fi
 
 after_failure:
+  - sudo apt-get install -qq pandoc
   - pandoc /home/travis/build/RandoApp/Rando-android/build/reports/androidTests/connected/index.html -t plain | sed -n '/^Failed tests/,/default-package/p'
