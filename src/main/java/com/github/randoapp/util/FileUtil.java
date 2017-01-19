@@ -1,13 +1,8 @@
 package com.github.randoapp.util;
 
-import android.content.Context;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
 import android.os.Environment;
 
-import com.github.randoapp.App;
 import com.github.randoapp.Constants;
-import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 
 import java.io.BufferedInputStream;
@@ -20,6 +15,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static com.github.randoapp.App.context;
 
 public class FileUtil {
 
@@ -52,48 +49,6 @@ public class FileUtil {
         return mediaFile;
     }
 
-    public static String getImagePath(Rando rando) {
-        return FileUtil.getOutputMediaDir() + File.separator + rando.getRandoFileName();
-    }
-
-    public static String getMapPath(Rando rando) {
-        return FileUtil.getOutputMediaDir() + File.separator + rando.getMapFileName();
-    }
-
-    public static boolean isImageExists(Rando rando) {
-        File file = new File(getImagePath(rando));
-        return file.exists();
-    }
-
-    public static boolean isMapExists(Rando rando) {
-        File file = new File(getMapPath(rando));
-        return file.exists();
-    }
-
-    public static boolean areFilesExist(Rando rando) {
-        return isImageExists(rando)
-                && isMapExists(rando);
-    }
-
-    public static boolean isFileExists(String filePath) {
-        File file = new File(filePath);
-        return file.exists();
-    }
-
-    public static void scanImage(Context context, String imagePath) {
-        MediaScannerConnection.scanFile(context,
-                new String[]{imagePath}, null,
-                new MediaScannerConnection.OnScanCompletedListener() {
-                    public void onScanCompleted(String path, Uri uri) {
-                    }
-                });
-    }
-
-    public static String getFilePathByUrl(String url) {
-        String fileName = url == null ? null : url.substring(url.lastIndexOf('/') + 1);
-        return FileUtil.getOutputMediaDir() + File.separator + fileName;
-    }
-
     public static void writeImageFile(byte[] data, String filename) {
         try {
             FileOutputStream fos = new FileOutputStream(filename);
@@ -109,7 +64,7 @@ public class FileUtil {
     public static String writeImageToTempFile(byte[] data) {
         File pictureFile = null;
         try {
-            File outputDir = App.context.getCacheDir(); // context being the Activity pointer
+            File outputDir = context.getCacheDir(); // context being the Activity pointer
             pictureFile = File.createTempFile("camera_image", ".jpg", outputDir);
         } catch (IOException e) {
             Log.d(FileUtil.class, "Error creating media file, check storage permissions: ",

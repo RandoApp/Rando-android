@@ -19,11 +19,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
-import com.commonsware.cwac.camera.CameraHost;
-import com.commonsware.cwac.camera.CameraHostProvider;
 import com.github.randoapp.camera.CameraCaptureFragment;
 import com.github.randoapp.camera.CameraUploadFragment;
-import com.github.randoapp.camera.RandoCameraHost;
 import com.github.randoapp.util.LocationHelper;
 import com.github.randoapp.util.PermissionUtils;
 
@@ -33,7 +30,7 @@ import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.CAMERA_PERMISSION_REQUEST_CODE;
 import static com.github.randoapp.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 
-public class CameraActivity extends FragmentActivity implements CameraHostProvider {
+public class CameraActivity extends FragmentActivity {
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -70,11 +67,6 @@ public class CameraActivity extends FragmentActivity implements CameraHostProvid
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
-    }
-
-    @Override
-    public CameraHost getCameraHost() {
-        return (new RandoCameraHost(this));
     }
 
     @Override

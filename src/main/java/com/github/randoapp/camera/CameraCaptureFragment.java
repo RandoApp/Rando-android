@@ -1,15 +1,20 @@
 package com.github.randoapp.camera;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.github.randoapp.R;
 import com.github.randoapp.log.Log;
+import com.github.randoapp.task.CropToSquareImageTask;
 import com.github.randoapp.util.Analytics;
 import com.google.android.cameraview.CameraView;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -19,6 +24,7 @@ public class CameraCaptureFragment extends Fragment {
 
     CameraView cameraView;
     private ImageView captureButton;
+    private Handler mBackgroundHandler;
     private FirebaseAnalytics mFirebaseAnalytics;
 
     public static CameraCaptureFragment newInstance(boolean useFFC) {
@@ -60,11 +66,33 @@ public class CameraCaptureFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mBackgroundHandler != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                mBackgroundHandler.getLooper().quitSafely();
+            } else {
+                mBackgroundHandler.getLooper().quit();
+            }
+            mBackgroundHandler = null;
+        }
+    }
+
+    private Handler getBackgroundHandler() {
+        if (mBackgroundHandler == null) {
+            HandlerThread thread = new HandlerThread("background");
+            thread.start();
+            mBackgroundHandler = new Handler(thread.getLooper());
+        }
+        return mBackgroundHandler;
+    }
+
     private class CaptureButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
 
-           /* if (cameraView!= null) {
+            /*if (cameraView!= null) {
                 int facing = cameraView.getFacing();
                 cameraView.setFacing(facing == CameraView.FACING_FRONT ?
                         CameraView.FACING_BACK : CameraView.FACING_FRONT);
@@ -89,38 +117,21 @@ public class CameraCaptureFragment extends Fragment {
         @Override
         public void onCameraClosed(CameraView cameraView) {
             Log.d(CameraView.Callback.class, "onCameraClosed");
-            //captureButton.setEnabled(false);
         }
 
         @Override
         public void onPictureTaken(CameraView cameraView, final byte[] data) {
             Log.d(CameraView.Callback.class, "onPictureTaken " + data.length);
-           /* Toast.makeText(cameraView.getContext(), R.string.picture_taken, Toast.LENGTH_SHORT)
-                    .show();
-            getBackgroundHandler().post(new Runnable() {
-                @Override
-                public void run() {
-                    File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                            "picture.jpg");
-                    OutputStream os = null;
-                    try {
-                        os = new FileOutputStream(file);
-                        os.write(data);
-                        os.close();
-                    } catch (IOException e) {
-                        Log.w(TAG, "Cannot write to " + file, e);
-                    } finally {
-                        if (os != null) {
-                            try {
-                                os.close();
-                            } catch (IOException e) {
-                                // Ignore
-                            }
-                        }
-                    }
-                }
-            });*/
-        }
+            PackageManager m = getActivity().getPackageManager();
+            String s = getActivity().getPackageName();
+            try {
+                PackageInfo p = m.getPackageInfo(s, 0);
+                s = p.applicationInfo.dataDir;
+            } catch (PackageManager.NameNotFoundException e) {
+                Log.e(CameraView.Callback.class, "Error Package name not found ", e);
+            }
+            getBackgroundHandler().post(new CropToSquareImageTask(data, s));
 
+        }
     };
 }
