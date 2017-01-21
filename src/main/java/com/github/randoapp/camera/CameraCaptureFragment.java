@@ -22,10 +22,12 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 public class CameraCaptureFragment extends Fragment {
     private static final String KEY_USE_FFC = "com.commonsware.cwac.camera.demo.USE_FFC";
 
-    CameraView cameraView;
+    private CameraView cameraView;
     private ImageView captureButton;
     private Handler mBackgroundHandler;
     private FirebaseAnalytics mFirebaseAnalytics;
+
+    private boolean cameraActive = false;
 
     public static CameraCaptureFragment newInstance(boolean useFFC) {
         CameraCaptureFragment fragment = new CameraCaptureFragment();
@@ -40,8 +42,9 @@ public class CameraCaptureFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.camera_capture, container, false);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
 
-        cameraView = (com.google.android.cameraview.CameraView) rootView.findViewById(R.id.camera1);
+        cameraView = (com.google.android.cameraview.CameraView) rootView.findViewById(R.id.camera);
         cameraView.addCallback(mCallback);
+
 
         captureButton = (ImageView) rootView.findViewById(R.id.capture_button);
         captureButton.setOnClickListener(new CaptureButtonListener());
@@ -52,9 +55,10 @@ public class CameraCaptureFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (cameraView!=null) {
-            cameraView.setFocusableInTouchMode(true);
+        Log.d(CameraCaptureFragment.class, "Camera opened: " + cameraView.isCameraOpened());
+        if (cameraView!=null && !cameraActive) {
             cameraView.start();
+            cameraActive = true;
         }
     }
 
@@ -63,6 +67,7 @@ public class CameraCaptureFragment extends Fragment {
         super.onPause();
         if (cameraView!=null) {
             cameraView.stop();
+            cameraActive = false;
         }
     }
 
@@ -130,7 +135,7 @@ public class CameraCaptureFragment extends Fragment {
             } catch (PackageManager.NameNotFoundException e) {
                 Log.e(CameraView.Callback.class, "Error Package name not found ", e);
             }
-            getBackgroundHandler().post(new CropToSquareImageTask(data, s));
+            getBackgroundHandler().post(new CropToSquareImageTask(data, getContext()));
 
         }
     };

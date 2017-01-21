@@ -1,9 +1,12 @@
 package com.github.randoapp.task;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.media.ExifInterface;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.github.randoapp.util.FileUtil;
@@ -15,13 +18,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
+import static com.github.randoapp.Constants.RANDO_PHOTO_PATH;
+
 public class CropToSquareImageTask implements Runnable {
     private byte[] data;
-    private String dataDir;
+    private Context context;
 
-    public CropToSquareImageTask(byte[] data, String dataDir) {
+    public CropToSquareImageTask(byte[] data, Context context) {
         this.data = data;
-        this.dataDir = dataDir;
+        this.context = context;
     }
 
     private File saveSquareImage() {
@@ -111,8 +117,12 @@ public class CropToSquareImageTask implements Runnable {
     @Override
     public void run() {
         File image = saveSquareImage();
-        if (image != null){
-
+        Intent intent = new Intent(CAMERA_BROADCAST_EVENT);
+        if (image != null) {
+            intent.putExtra(RANDO_PHOTO_PATH, image.getAbsolutePath());
+        } else {
+            intent.putExtra(RANDO_PHOTO_PATH, "");
         }
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 }
