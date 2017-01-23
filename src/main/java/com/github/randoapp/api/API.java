@@ -26,6 +26,7 @@ import com.github.randoapp.notification.Notification;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.FileUtil;
 import com.github.randoapp.util.RandoUtil;
+import com.google.firebase.crash.FirebaseCrash;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -103,6 +104,7 @@ public class API {
                 throw processServerError(readJSON(response));
             }
         } catch (IOException e) {
+            Log.e(API.class, e.getStackTrace().toString());
             throw processError(e);
         } finally {
             if (response != null) {
@@ -378,6 +380,7 @@ public class API {
                 || exc instanceof ConnectException) {
             return new Exception(App.context.getResources().getString(R.string.error_no_network));
         }
+        FirebaseCrash.report(new Exception(exc));
         Log.e(API.class, "processError method", exc);
         return new Exception(App.context.getResources().getString(R.string.error_unknown_err));
     }

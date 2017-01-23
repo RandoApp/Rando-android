@@ -36,7 +36,7 @@ import com.github.randoapp.util.BitmapUtil;
 import com.github.randoapp.util.NetworkUtil;
 import com.github.randoapp.util.RandoUtil;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.makeramen.RoundedImageView;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
 

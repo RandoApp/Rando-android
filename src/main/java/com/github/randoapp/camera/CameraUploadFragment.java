@@ -22,7 +22,7 @@ import com.github.randoapp.upload.UploadJobScheduler;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.BitmapUtil;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.makeramen.RoundedImageView;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.Date;
 

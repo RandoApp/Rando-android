@@ -9,10 +9,10 @@
         android:keepScreenOn="true"
         android:adjustViewBounds="true"/>
 
-    <!-- com.github.randoapp.view.CircleMaskView
+    <com.github.randoapp.view.CircleMaskView
         android:id="@+id/circle_mask"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/ -->
+        android:layout_height="match_parent"/>
 
     <ImageView
         android:id="@+id/capture_button"

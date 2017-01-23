@@ -53,12 +53,11 @@ public class CameraCaptureFragment extends Fragment {
 
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
 
-        int leftRightMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, getResources().getDimension(R.dimen.rando_padding_portrait_column_left), displayMetrics);
+        int leftRightMargin = (int) getResources().getDimension(R.dimen.rando_padding_portrait_column_left);
 
+        //make preview height to be aligned with width according to AspectRatio
         int heightRatio = Math.max(aspectRatio.getX(),aspectRatio.getY());
         int widthRatio = Math.min(aspectRatio.getX(),aspectRatio.getY());
-
-        //make preview height to be alligned with width according to AspectRatio
         int topBottomMargin = (displayMetrics.heightPixels - (displayMetrics.widthPixels-2*leftRightMargin)*heightRatio/widthRatio)/2;
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) cameraView.getLayoutParams();

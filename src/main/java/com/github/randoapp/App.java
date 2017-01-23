@@ -15,23 +15,6 @@ import com.github.randoapp.upload.UploadServiceLegacy;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import org.acra.ACRA;
-import org.acra.ReportingInteractionMode;
-import org.acra.annotation.ReportsCrashes;
-
-import static org.acra.sender.HttpSender.Method;
-import static org.acra.sender.HttpSender.Type;
-
-
-@ReportsCrashes(
-        formUri = "https://reports.rando4.me/" + BuildConfig.RANDO_REPORTS_ACRA_DB + "/_design/acra-storage/_update/report",
-        reportType = Type.JSON,
-        httpMethod = Method.PUT,
-        formUriBasicAuthLogin = BuildConfig.RANDO_REPORTS_USER,
-        formUriBasicAuthPassword = BuildConfig.RANDO_REPORTS_PASSWORD,
-        mode = ReportingInteractionMode.TOAST,
-        resToastText = R.string.crash_toast_text
-)
 public class App extends Application {
 
     public static Context context;
@@ -65,6 +48,5 @@ public class App extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        ACRA.init(this);
     }
 }
