@@ -7,16 +7,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:keepScreenOn="true"
-        android:adjustViewBounds="true"
-        android:layout_marginRight="@dimen/rando_padding_portrait_column_left"
-        android:layout_marginLeft="@dimen/rando_padding_portrait_column_left"
-        android:layout_marginBottom="50dp"
-        android:layout_marginTop="50dp"/>
+        android:adjustViewBounds="true"/>
 
-    <com.github.randoapp.view.CircleMaskView
+    <!-- com.github.randoapp.view.CircleMaskView
         android:id="@+id/circle_mask"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"/ -->
 
     <ImageView
         android:id="@+id/capture_button"

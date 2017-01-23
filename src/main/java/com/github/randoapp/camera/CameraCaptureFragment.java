@@ -7,15 +7,19 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.github.randoapp.R;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.task.CropToSquareImageTask;
 import com.github.randoapp.util.Analytics;
+import com.google.android.cameraview.AspectRatio;
 import com.google.android.cameraview.CameraView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -45,6 +49,24 @@ public class CameraCaptureFragment extends Fragment {
         cameraView = (com.google.android.cameraview.CameraView) rootView.findViewById(R.id.camera);
         cameraView.addCallback(mCallback);
 
+        AspectRatio aspectRatio = cameraView.getAspectRatio();
+
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+
+        int leftRightMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, getResources().getDimension(R.dimen.rando_padding_portrait_column_left), displayMetrics);
+
+        int heightRatio = Math.max(aspectRatio.getX(),aspectRatio.getY());
+        int widthRatio = Math.min(aspectRatio.getX(),aspectRatio.getY());
+
+        //make preview height to be alligned with width according to AspectRatio
+        int topBottomMargin = (displayMetrics.heightPixels - (displayMetrics.widthPixels-2*leftRightMargin)*heightRatio/widthRatio)/2;
+
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) cameraView.getLayoutParams();
+        layoutParams.setMargins(leftRightMargin, topBottomMargin,leftRightMargin, topBottomMargin);
+
+        cameraView.setLayoutParams(layoutParams);
+
+        Log.d(CameraCaptureFragment.class, leftRightMargin + " " + topBottomMargin + " " + cameraView.getAspectRatio() + " ");
 
         captureButton = (ImageView) rootView.findViewById(R.id.capture_button);
         captureButton.setOnClickListener(new CaptureButtonListener());
