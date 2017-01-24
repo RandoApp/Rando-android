@@ -28,8 +28,7 @@ import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.GooglePlayServicesUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-
-import org.acra.ACRA;
+import com.google.firebase.crash.FirebaseCrash;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -134,9 +133,7 @@ public class MainActivity extends FragmentActivity {
         GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
         int status = googleApiAvailability.isGooglePlayServicesAvailable(this);
         if (status != ConnectionResult.SUCCESS) {
-            ACRA.getErrorReporter().putCustomData("PlayServicesProblem", googleApiAvailability.getErrorString(status));
-            ACRA.getErrorReporter().handleSilentException(null);
-            ACRA.getErrorReporter().removeCustomData("PlayServicesProblem");
+            FirebaseCrash.log("PlayServicesProblem. Status: " + googleApiAvailability.getErrorString(status));
             if ((status == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED && GooglePlayServicesUtil.isGPSVersionLowerThanRequired(getPackageManager()))
                     || (status != ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED && googleApiAvailability.isUserResolvableError(status)
                     && (TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - Preferences.getUpdatePlayServicesDateShown().getTime()) > 15))) {
