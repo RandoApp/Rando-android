@@ -13,6 +13,7 @@
     <string name="missing_storage_permission_message">Device Storage access permission is required to take, download and view Randos. Application won\'t run without this permission.</string>
 
     <string name="take_picture_screen_label">Take Picture</string>
+    <string name="review_and_upload_picture_screen_label">Review and Upload Picture</string>
     <string name="photo_upload_ok">Upload Finished Successfully.</string>
     <string name="photo_upload_failed">"Upload Failed. Please check you connection and try again."</string>
     <string name="failed_to_set_bon_appetit_for_rando">"Bon Appetit Failed. Please check you internet connection and try again."</string>

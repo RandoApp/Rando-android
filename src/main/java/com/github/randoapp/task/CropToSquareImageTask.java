@@ -7,9 +7,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.media.ExifInterface;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
+import com.github.randoapp.log.Log;
 import com.github.randoapp.util.FileUtil;
+import com.google.android.cameraview.CameraView;
 import com.jni.bitmap_operations.JniBitmapHolder;
 
 import java.io.ByteArrayInputStream;
@@ -76,7 +77,7 @@ public class CropToSquareImageTask implements Runnable {
         try {
             exifInterface = new ExifInterface(new ByteArrayInputStream(data));
         } catch (IOException e) {
-            Log.e("CWAC-Camera", "Exception parsing JPEG", e);
+            Log.e(CropToSquareImageTask.class, "Exception parsing JPEG", e);
             // TODO: ripple to client
         }
         if (exifInterface != null) {
@@ -104,6 +105,7 @@ public class CropToSquareImageTask implements Runnable {
             FileOutputStream fos = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
             fos.close();
+            Log.d(CropToSquareImageTask.class, "Camera Pic Processed.");
             return file;
         } catch (FileNotFoundException e) {
             e.printStackTrace();

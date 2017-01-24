@@ -24,21 +24,14 @@ import com.google.android.cameraview.CameraView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class CameraCaptureFragment extends Fragment {
-    private static final String KEY_USE_FFC = "com.commonsware.cwac.camera.demo.USE_FFC";
 
     private CameraView cameraView;
     private ImageView captureButton;
     private Handler mBackgroundHandler;
     private FirebaseAnalytics mFirebaseAnalytics;
 
-    private boolean cameraActive = false;
-
-    public static CameraCaptureFragment newInstance(boolean useFFC) {
-        CameraCaptureFragment fragment = new CameraCaptureFragment();
-        Bundle args = new Bundle();
-        args.putBoolean(KEY_USE_FFC, useFFC);
-        fragment.setArguments(args);
-        return fragment;
+    public static CameraCaptureFragment newInstance() {
+        return  new CameraCaptureFragment();
     }
 
     @Override
@@ -77,9 +70,8 @@ public class CameraCaptureFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(CameraCaptureFragment.class, "Camera opened: " + cameraView.isCameraOpened());
-        if (cameraView!=null && !cameraActive) {
+        if (cameraView!=null) {
             cameraView.start();
-            cameraActive = true;
         }
     }
 
@@ -88,7 +80,6 @@ public class CameraCaptureFragment extends Fragment {
         super.onPause();
         if (cameraView!=null) {
             cameraView.stop();
-            cameraActive = false;
         }
     }
 
@@ -117,15 +108,11 @@ public class CameraCaptureFragment extends Fragment {
     private class CaptureButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+            Log.d(CameraCaptureFragment.class, "Take Pic Click ");
 
-            /*if (cameraView!= null) {
-                int facing = cameraView.getFacing();
-                cameraView.setFacing(facing == CameraView.FACING_FRONT ?
-                        CameraView.FACING_BACK : CameraView.FACING_FRONT);
-            }*/
-
-            //captureButton.setEnabled(false);
+            captureButton.setEnabled(false);
             cameraView.takePicture();
+            cameraView.setAlpha(0.7f);
             Analytics.logTakeRando(mFirebaseAnalytics);
         }
     }
@@ -148,14 +135,6 @@ public class CameraCaptureFragment extends Fragment {
         @Override
         public void onPictureTaken(CameraView cameraView, final byte[] data) {
             Log.d(CameraView.Callback.class, "onPictureTaken " + data.length);
-            PackageManager m = getActivity().getPackageManager();
-            String s = getActivity().getPackageName();
-            try {
-                PackageInfo p = m.getPackageInfo(s, 0);
-                s = p.applicationInfo.dataDir;
-            } catch (PackageManager.NameNotFoundException e) {
-                Log.e(CameraView.Callback.class, "Error Package name not found ", e);
-            }
             getBackgroundHandler().post(new CropToSquareImageTask(data, getContext()));
 
         }
