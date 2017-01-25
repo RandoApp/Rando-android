@@ -64,6 +64,7 @@ public class CameraActivity extends Activity {
                     uploadFragment.setArguments(args);
 
                     Intent activityIntent = new Intent(context, CameraActivity.class);
+                    activityIntent.putExtra(Constants.FILEPATH, photoPath);
                     startActivity(activityIntent);
 
                    // FragmentManager fragmentManager = getSupportFragmentManager();
