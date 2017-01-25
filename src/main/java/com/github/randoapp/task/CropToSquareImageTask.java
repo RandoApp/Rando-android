@@ -10,7 +10,6 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.github.randoapp.log.Log;
 import com.github.randoapp.util.FileUtil;
-import com.google.android.cameraview.CameraView;
 import com.jni.bitmap_operations.JniBitmapHolder;
 
 import java.io.ByteArrayInputStream;

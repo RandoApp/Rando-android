@@ -63,20 +63,18 @@ public class CameraActivity extends Activity {
                     args.putString(Constants.FILEPATH, photoPath);
                     uploadFragment.setArguments(args);
 
-                    Intent activityIntent = new Intent(context, CameraActivity.class);
+                    Intent activityIntent = new Intent(CameraActivity.this, ImageReviewUploadActivity.class);
                     activityIntent.putExtra(Constants.FILEPATH, photoPath);
+                    activityIntent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                     startActivity(activityIntent);
 
-                   // FragmentManager fragmentManager = getSupportFragmentManager();
-                    //fragmentManager.beginTransaction().addToBackStack("CameraCaptureFragment").replace(R.id.camera_screen, uploadFragment).commit();
+                    finish();
                     return;
                 } else {
                     Toast.makeText(CameraActivity.this, getResources().getText(R.string.image_crop_failed),
                             Toast.LENGTH_LONG).show();
                 }
             }
-            CameraActivity.this.setResult(CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE);
-            CameraActivity.this.finish();
         }
     };
 
@@ -136,9 +134,6 @@ public class CameraActivity extends Activity {
         super.onPostResume();
         if (isReturningFromCameraPermissionRequest) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                //getSupportFragmentManager().beginTransaction()
-                 //       .replace(R.id.camera_screen, CameraCaptureFragment.newInstance())
-                  //      .commit();
                 cameraView.start();
             } else {
                 setResult(CAMERA_ACTIVITY_CAMERA_PERMISSION_REQUIRED);
@@ -148,10 +143,6 @@ public class CameraActivity extends Activity {
         } else {
             if (!PermissionUtils.checkAndRequestMissingPermissions(this, CAMERA_PERMISSION_REQUEST_CODE, android.Manifest.permission.CAMERA)) {
                 cameraView.start();
-                //getSupportFragmentManager().beginTransaction()
-                 //       .replace(R.id.camera_screen, CameraCaptureFragment.newInstance())
-                  //      .commit();
-
             }
         }
 
