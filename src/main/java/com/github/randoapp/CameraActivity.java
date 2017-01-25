@@ -130,6 +130,17 @@ public class CameraActivity extends Activity {
                 finish();
             }
         });
+
+        findViewById(R.id.camera_switch_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (cameraView != null) {
+                    int facing = cameraView.getFacing();
+                    cameraView.setFacing(facing == CameraView.FACING_FRONT ?
+                            CameraView.FACING_BACK : CameraView.FACING_FRONT);
+                }
+            }
+        });
     }
 
     @Override

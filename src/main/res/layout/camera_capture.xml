@@ -37,6 +37,15 @@
         android:layout_margin="18dp"
         android:background="@drawable/ic_close_white_36dp"/>
 
+    <ImageButton
+        android:id="@+id/camera_switch_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="25dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/ic_loop_white_48dp"/>
+
     <ImageView
         android:id="@+id/capture_button"
         android:layout_width="@dimen/rando_button_size"
