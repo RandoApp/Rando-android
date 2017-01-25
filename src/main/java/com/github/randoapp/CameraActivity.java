@@ -23,6 +23,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -97,6 +98,7 @@ public class CameraActivity extends Activity {
 
         cameraView = (CameraView) findViewById(R.id.camera);
         cameraView.addCallback(mCallback);
+        cameraView.setFlash(CameraView.FLASH_OFF);
 
         AspectRatio aspectRatio = cameraView.getAspectRatio();
 
@@ -121,6 +123,13 @@ public class CameraActivity extends Activity {
         captureButton.setEnabled(false);
 
         progressBar = (LinearLayout) findViewById(R.id.progressBar);
+
+        findViewById(R.id.back_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override

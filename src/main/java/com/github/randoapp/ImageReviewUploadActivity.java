@@ -50,6 +50,13 @@ public class ImageReviewUploadActivity extends FragmentActivity {
 
         uploadButton = (ImageView) findViewById(R.id.upload_button);
         uploadButton.setOnClickListener(new ImageReviewUploadActivity.UploadButtonListner());
+
+        findViewById(R.id.back_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     @Override
