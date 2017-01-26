@@ -44,7 +44,8 @@
         android:layout_margin="25dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:background="@drawable/ic_loop_white_48dp"/>
+        android:background="@drawable/ic_loop_white_48dp"
+        android:visibility="gone"/>
 
     <ImageView
         android:id="@+id/capture_button"

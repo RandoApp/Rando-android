@@ -17,8 +17,6 @@ import android.os.HandlerThread;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
@@ -27,7 +25,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -43,7 +40,6 @@ import com.google.android.cameraview.CameraView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_CAMERA_PERMISSION_REQUIRED;
-import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.CAMERA_PERMISSION_REQUEST_CODE;
 import static com.github.randoapp.Constants.LOCATION_PERMISSION_REQUEST_CODE;
@@ -108,12 +104,12 @@ public class CameraActivity extends Activity {
         int leftRightMargin = (int) getResources().getDimension(R.dimen.rando_padding_portrait_column_left);
 
         //make preview height to be aligned with width according to AspectRatio
-        int heightRatio = Math.max(aspectRatio.getX(),aspectRatio.getY());
-        int widthRatio = Math.min(aspectRatio.getX(),aspectRatio.getY());
-        int topBottomMargin = (displayMetrics.heightPixels - (displayMetrics.widthPixels-2*leftRightMargin)*heightRatio/widthRatio)/2;
+        int heightRatio = Math.max(aspectRatio.getX(), aspectRatio.getY());
+        int widthRatio = Math.min(aspectRatio.getX(), aspectRatio.getY());
+        int topBottomMargin = (displayMetrics.heightPixels - (displayMetrics.widthPixels - 2 * leftRightMargin) * heightRatio / widthRatio) / 2;
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) cameraView.getLayoutParams();
-        layoutParams.setMargins(leftRightMargin, topBottomMargin,leftRightMargin, topBottomMargin);
+        layoutParams.setMargins(leftRightMargin, topBottomMargin, leftRightMargin, topBottomMargin);
 
         cameraView.setLayoutParams(layoutParams);
 
@@ -132,16 +128,19 @@ public class CameraActivity extends Activity {
             }
         });
 
-        findViewById(R.id.camera_switch_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (cameraView != null) {
-                    int facing = cameraView.getFacing();
-                    cameraView.setFacing(facing == CameraView.FACING_FRONT ?
-                            CameraView.FACING_BACK : CameraView.FACING_FRONT);
+        if (Camera.getNumberOfCameras() > 1) {
+            ImageButton cameraSwitchButton = (ImageButton) findViewById(R.id.camera_switch_button);
+            cameraSwitchButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (cameraView != null) {
+                        int facing = cameraView.getFacing();
+                        cameraView.setFacing(facing == CameraView.FACING_FRONT ?
+                                CameraView.FACING_BACK : CameraView.FACING_FRONT);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -276,7 +275,9 @@ public class CameraActivity extends Activity {
 
             captureButton.setEnabled(false);
             cameraView.takePicture();
-            cameraView.setAlpha(0.7f);
+            if (Build.VERSION.SDK_INT >= 11) {
+                cameraView.setAlpha(0.7f);
+            }
             Analytics.logTakeRando(mFirebaseAnalytics);
         }
     }
