@@ -20,6 +20,7 @@ public class Rando implements Serializable {
     public String mapURL;
     public UrlSize mapURLSize = new UrlSize();
     public Status status;
+    public String detected;
 
     public Rando() {
     }
@@ -33,6 +34,7 @@ public class Rando implements Serializable {
         rando.mapURL = mapURL;
         rando.mapURLSize = mapURLSize;
         rando.status = status;
+        rando.detected = detected;
     }
 
     @Override
@@ -51,6 +53,7 @@ public class Rando implements Serializable {
             return false;
         if (randoId != null ? !randoId.equals(rando.randoId) : rando.randoId != null) return false;
         if (status != rando.status) return false;
+        if (detected != null ? !detected.equals(rando.detected) : rando.detected != null) return false;
 
         return true;
     }
@@ -63,6 +66,7 @@ public class Rando implements Serializable {
         result = 31 * result + (mapURL != null ? mapURL.hashCode() : 0);
         result = 31 * result + (mapURLSize != null ? mapURLSize.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (detected != null ? detected.hashCode() : 0);
         return result;
     }
 
@@ -77,6 +81,7 @@ public class Rando implements Serializable {
                 ", mapURL='" + mapURL + '\'' +
                 ", mapURLSize=" + mapURLSize +
                 ", status=" + status +
+                ", detected=" + detected +
                 '}';
     }
 

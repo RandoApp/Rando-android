@@ -7,7 +7,7 @@ import android.util.Log;
 
 public class RandoDBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
     private static final String DATABASE_NAME = "rando.db";
 
     private static RandoDBHelper helperInstance;
@@ -53,14 +53,18 @@ public class RandoDBHelper extends SQLiteOpenHelper {
                 "Upgrading database from version " + oldVersion + " to "
                         + newVersion + ", which will destroy all old data"
         );
-        db.execSQL("DROP TABLE IF EXISTS " + RandoTable.NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + RandoUploadTable.NAME);
-        onCreate(db);
+        if (oldVersion < 10){
+            upgradeTo10(db);
+        }
     }
 
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
+    }
+
+    private void upgradeTo10(SQLiteDatabase db){
+        db.execSQL("ALTER TABLE foo ADD COLUMN "+ RandoTable.COLUMN_DETECTED + " TEXT");
     }
 
 
@@ -78,12 +82,13 @@ public class RandoDBHelper extends SQLiteOpenHelper {
         public static final String COLUMN_USER_MAP_URL_SMALL = "USER_MAP_URL_SMALL";
         public static final String COLUMN_USER_MAP_URL_MEDIUM = "USER_MAP_URL_MEDIUM";
         public static final String COLUMN_USER_MAP_URL_LARGE = "USER_MAP_URL_LARGE";
+        public static final String COLUMN_DETECTED = "DETECTED";
 
         public static final String COLUMN_RANDO_STATUS = "RANDO_STATUS";
 
         public static final String[] ALL_COLUMNS = {
                 COLUMN_ID, COLUMN_USER_RANDO_ID, COLUMN_USER_RANDO_URL, COLUMN_USER_RANDO_URL_SMALL, COLUMN_USER_RANDO_URL_MEDIUM,
-                COLUMN_USER_RANDO_URL_LARGE, COLUMN_USER_RANDO_DATE, COLUMN_USER_MAP_URL, COLUMN_USER_MAP_URL_SMALL, COLUMN_USER_MAP_URL_MEDIUM, COLUMN_USER_MAP_URL_LARGE, COLUMN_RANDO_STATUS};
+                COLUMN_USER_RANDO_URL_LARGE, COLUMN_USER_RANDO_DATE, COLUMN_USER_MAP_URL, COLUMN_USER_MAP_URL_SMALL, COLUMN_USER_MAP_URL_MEDIUM, COLUMN_USER_MAP_URL_LARGE, COLUMN_RANDO_STATUS,COLUMN_DETECTED};
 
         public static final String CREATE_TABLE_SQL = "CREATE TABLE " + RandoTable.NAME +
                 " (" + COLUMN_ID + " integer primary key autoincrement, " +
@@ -97,7 +102,8 @@ public class RandoDBHelper extends SQLiteOpenHelper {
                 COLUMN_USER_MAP_URL_SMALL + " text," +
                 COLUMN_USER_MAP_URL_MEDIUM + " text," +
                 COLUMN_USER_MAP_URL_LARGE + " text," +
-                COLUMN_RANDO_STATUS + " text" +
+                COLUMN_RANDO_STATUS + " text," +
+                COLUMN_DETECTED + " text" +
                 ");";
     }
 

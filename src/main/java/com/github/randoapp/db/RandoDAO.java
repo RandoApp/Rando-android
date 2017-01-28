@@ -83,7 +83,7 @@ public class RandoDAO {
     }
 
     public static synchronized RandoUpload getNextRandoToUpload() {
-        String dateS = String.valueOf(System.currentTimeMillis()+Constants.UPLOAD_RETRY_TIMEOUT);
+        String dateS = String.valueOf(System.currentTimeMillis() + Constants.UPLOAD_RETRY_TIMEOUT);
         Cursor cursor = getDB().query(RandoDBHelper.RandoUploadTable.NAME,
                 RandoDBHelper.RandoUploadTable.ALL_COLUMNS, RandoDBHelper.RandoUploadTable.COLUMN_LAST_TRY_DATE
                         + "<" + dateS, null, null, null, RandoDBHelper.RandoUploadTable.COLUMN_DATE + " ASC", "1");
@@ -474,6 +474,7 @@ public class RandoDAO {
             rando.mapURLSize.medium = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_MEDIUM));
             rando.mapURLSize.large = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_LARGE));
             rando.status = Rando.Status.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS)));
+            rando.detected = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_DETECTED));
 
             return rando;
         }
@@ -499,6 +500,9 @@ public class RandoDAO {
         values.put(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_MEDIUM, rando.mapURLSize.medium);
         values.put(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_LARGE, rando.mapURLSize.large);
         values.put(RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS, rando.status.name());
+        if (rando.detected != null) {
+            values.put(RandoDBHelper.RandoTable.COLUMN_DETECTED, rando.detected);
+        }
 
         return values;
     }
