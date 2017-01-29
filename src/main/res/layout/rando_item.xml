@@ -77,6 +77,23 @@
                 android:tag="delete_button"
                 android:textColor="@android:color/white" />
         </LinearLayout>
-
     </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/rando_padding_portrait_column_left"
+        android:layout_marginRight="@dimen/rando_padding_portrait_column_right"
+        android:layout_marginTop="@dimen/rando_padding_portrait_column_top"
+        android:tag="unwanted_layer"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_boring" />
+    </RelativeLayout>
+
 </RelativeLayout>

@@ -37,6 +37,10 @@ public class Rando implements Serializable {
         rando.detected = detected;
     }
 
+    public boolean isUnwanted(){
+        return  detected != null && detected.contains("unwanted");
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

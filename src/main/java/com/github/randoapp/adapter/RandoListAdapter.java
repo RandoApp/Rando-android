@@ -112,8 +112,9 @@ public class RandoListAdapter extends BaseAdapter {
         loadImages(holder, rando);
         holder.randoId = rando.randoId;
 
-        if (rando.detected != null && rando.detected.contains("unwanted")) {
-            setAlpha(holder.image, 0.35f);
+        if (rando.isUnwanted()) {
+            setAlpha(holder.image, 0.25f);
+            holder.unwanted.setVisibility(View.VISIBLE);
         }
         setAnimations(holder);
         return convertView;
@@ -139,6 +140,9 @@ public class RandoListAdapter extends BaseAdapter {
                 convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right),
                 convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));
         holder.actionsLayer.setLayoutParams(actionsLayerLayoutParams);
+
+        holder.unwanted = (RelativeLayout) convertView.findViewWithTag("unwanted_layer");
+        holder.unwanted.setLayoutParams(actionsLayerLayoutParams);
 
         holder.deleteButton = (Button) convertView.findViewWithTag("delete_button");
         holder.shareButton = (Button) convertView.findViewWithTag("share_button");
@@ -299,6 +303,8 @@ public class RandoListAdapter extends BaseAdapter {
         holder.shareButton.setVisibility(View.VISIBLE);
         holder.deleteButton.setVisibility(View.VISIBLE);
         holder.spinner.clearAnimation();
+
+        holder.unwanted.setVisibility(View.GONE);
 
         holder.randoId = "";
     }
@@ -478,6 +484,8 @@ public class RandoListAdapter extends BaseAdapter {
         public Button deleteButton;
         public Button shareButton;
         public ImageView spinner;
+
+        public RelativeLayout unwanted;
 
         public ImageLoader.ImageContainer randoContainer;
         public ImageLoader.ImageContainer mapContainer;
