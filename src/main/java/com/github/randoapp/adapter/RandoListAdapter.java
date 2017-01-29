@@ -111,6 +111,10 @@ public class RandoListAdapter extends BaseAdapter {
         recycle(holder);
         loadImages(holder, rando);
         holder.randoId = rando.randoId;
+
+        if (rando.detected != null && rando.detected.contains("unwanted")) {
+            setAlpha(holder.image, 0.35f);
+        }
         setAnimations(holder);
         return convertView;
     }

@@ -97,7 +97,7 @@ model {
                 create() {
                     type = "String"
                     name = "RANDO_HOST"
-                    value = '"rando4.me"'
+                    value = '"api.rando4.me"'
                 }
                 create() {
                     type = "String"

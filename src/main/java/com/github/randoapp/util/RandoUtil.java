@@ -6,6 +6,7 @@ import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.preferences.Preferences;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -100,7 +101,8 @@ public class RandoUtil {
         rando.date = new Date(jsonRando.getLong(CREATION_PARAM));
 
         if (jsonRando.has(DETECTED_PARAM)){
-            rando.detected = jsonRando.getString(DETECTED_PARAM);
+            JSONArray detected = jsonRando.getJSONArray(DETECTED_PARAM);
+            rando.detected = detected.join(",");
         }
         return rando;
     }
