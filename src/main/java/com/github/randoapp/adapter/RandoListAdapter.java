@@ -116,6 +116,7 @@ public class RandoListAdapter extends BaseAdapter {
         if (rando.isUnwanted()) {
             holder.unwanted.setVisibility(View.VISIBLE);
             holder.unwanted.startAnimation(AnimationUtils.loadAnimation(App.context, R.anim.show_hide_infinity));
+            holder.unwanted.getAnimation().setRepeatCount(Animation.INFINITE);
         } else {
             setAnimations(holder);
         }
