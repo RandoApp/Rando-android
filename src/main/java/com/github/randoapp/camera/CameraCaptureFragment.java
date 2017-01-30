@@ -1,14 +1,11 @@
 package com.github.randoapp.camera;
 
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -135,7 +132,7 @@ public class CameraCaptureFragment extends Fragment {
         @Override
         public void onPictureTaken(CameraView cameraView, final byte[] data) {
             Log.d(CameraView.Callback.class, "onPictureTaken " + data.length);
-            getBackgroundHandler().post(new CropToSquareImageTask(data, getContext()));
+            getBackgroundHandler().post(new CropToSquareImageTask(data, cameraView.getFacing() == CameraView.FACING_FRONT, getContext()));
 
         }
     };

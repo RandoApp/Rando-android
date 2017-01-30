@@ -130,6 +130,7 @@ public class CameraActivity extends Activity {
 
         if (Camera.getNumberOfCameras() > 1) {
             ImageButton cameraSwitchButton = (ImageButton) findViewById(R.id.camera_switch_button);
+            cameraSwitchButton.setVisibility(View.VISIBLE);
             cameraSwitchButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -299,7 +300,7 @@ public class CameraActivity extends Activity {
         @Override
         public void onPictureTaken(CameraView cameraView, final byte[] data) {
             Log.d(CameraView.Callback.class, "onPictureTaken " + data.length);
-            getBackgroundHandler().post(new CropToSquareImageTask(data, getBaseContext()));
+            getBackgroundHandler().post(new CropToSquareImageTask(data, cameraView.getFacing() ==CameraView.FACING_FRONT, getBaseContext()));
             progressBar.setVisibility(View.VISIBLE);
         }
     };

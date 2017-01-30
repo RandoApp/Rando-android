@@ -24,10 +24,12 @@ import static com.github.randoapp.Constants.RANDO_PHOTO_PATH;
 public class CropToSquareImageTask implements Runnable {
     private byte[] data;
     private Context context;
+    private boolean isFrontCamera;
 
-    public CropToSquareImageTask(byte[] data, Context context) {
+    public CropToSquareImageTask(byte[] data, boolean isFrontCamera, Context context) {
         this.data = data;
         this.context = context;
+        this.isFrontCamera = isFrontCamera;
     }
 
     private File saveSquareImage() {
@@ -64,6 +66,9 @@ public class CropToSquareImageTask implements Runnable {
                 bitmapHolder.rotateBitmapCcw90();
                 break;
         }
+        if (isFrontCamera){
+
+        }
         File file = saveBitmap(bitmapHolder.getBitmapAndFree());
         bitmap.recycle();
         bitmap = null;
@@ -76,13 +81,14 @@ public class CropToSquareImageTask implements Runnable {
         try {
             exifInterface = new ExifInterface(new ByteArrayInputStream(data));
         } catch (IOException e) {
-            Log.e(CropToSquareImageTask.class, "Exception parsing JPEG", e);
+            Log.e(CropToSquareImageTask.class, "Exception parsing JPEG Exif", e);
             // TODO: ripple to client
         }
         if (exifInterface != null) {
             int orientation = exifInterface.getAttributeInt(
-                    ExifInterface.TAG_ORIENTATION,
-                    ExifInterface.ORIENTATION_NORMAL);
+                    ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            Log.d(CropToSquareImageTask.class, exifInterface.getAttribute(
+                    ExifInterface.TAG_ORIENTATION));
             switch (orientation) {
                 case ExifInterface.ORIENTATION_ROTATE_90:
                     rotation = 90;
@@ -93,6 +99,20 @@ public class CropToSquareImageTask implements Runnable {
                 case ExifInterface.ORIENTATION_ROTATE_270:
                     rotation = 270;
                     break;
+                case ExifInterface.ORIENTATION_NORMAL:
+                case ExifInterface.ORIENTATION_UNDEFINED:
+                    rotation = 0;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if (isFrontCamera) {
+            if (rotation != 0) {
+                rotation = (360 - rotation) % 360;
+            } else {
+                rotation = 180;
             }
         }
         return rotation;
