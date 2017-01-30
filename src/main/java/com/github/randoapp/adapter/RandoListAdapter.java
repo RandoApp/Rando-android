@@ -253,7 +253,7 @@ public class RandoListAdapter extends BaseAdapter {
                 }
                 if (holder.rando.isUnwanted()) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                    builder.setNegativeButton(R.string.delete, new DialogInterface.OnClickListener() {
+                    builder.setNegativeButton(R.string.delete_rando, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             try {
                                 holder.spinner.setVisibility(View.VISIBLE);
