@@ -347,6 +347,7 @@ public class RandoListAdapter extends BaseAdapter {
         holder.spinner.clearAnimation();
 
         holder.unwanted.setVisibility(View.GONE);
+        holder.unwanted.setAnimation(null);
 
         holder.rando = null;
     }
