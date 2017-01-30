@@ -93,7 +93,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerInParent="true"
-            android:src="@drawable/ic_boring" />
+                android:src="@drawable/ic_boring" />
     </RelativeLayout>
 
 </RelativeLayout>
