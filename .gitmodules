@@ -6,7 +6,7 @@
 	url = https://github.com/RandoApp/cwac-camera.git
 [submodule "modules/cameraview"]
 	path = modules/cameraview
-	url = https://github.com/google/cameraview.git
+	url = git@github.com:RandoApp/cameraview.git
 [submodule "modules/AndroidJniBitmapOperations"]
 	path = modules/AndroidJniBitmapOperations
 	url = https://github.com/RandoApp/AndroidJniBitmapOperations.git

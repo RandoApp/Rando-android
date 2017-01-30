@@ -64,6 +64,8 @@ public class Constants {
     public static final String FIREBASE_INSTANCE_ID = "firebase.instance.id";
     public static final String UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE = "play.services.update.dialog.shown.date";
     public static final String RANDOS_BALANCE = "randos.balance";
+    public static final String CAMERA_FACING = "camera.facing";
+    public static final String CAMERA_FLASH_MODE = "camera.flash.mode";
     public static final String ACCOUNT = "account";
     public static final String TRAINING_FRAGMENT_SHOWN = "training.fragment.shown";
 

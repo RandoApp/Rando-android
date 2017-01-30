@@ -67,7 +67,7 @@ public class CropToSquareImageTask implements Runnable {
                 break;
         }
         if (isFrontCamera){
-
+            bitmapHolder.flipBitmapHorizontal();
         }
         File file = saveBitmap(bitmapHolder.getBitmapAndFree());
         bitmap.recycle();
@@ -87,8 +87,7 @@ public class CropToSquareImageTask implements Runnable {
         if (exifInterface != null) {
             int orientation = exifInterface.getAttributeInt(
                     ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-            Log.d(CropToSquareImageTask.class, exifInterface.getAttribute(
-                    ExifInterface.TAG_ORIENTATION));
+            Log.d(CropToSquareImageTask.class, "Orientation: "+orientation);
             switch (orientation) {
                 case ExifInterface.ORIENTATION_ROTATE_90:
                     rotation = 90;
@@ -108,7 +107,7 @@ public class CropToSquareImageTask implements Runnable {
             }
         }
 
-        if (isFrontCamera) {
+       if (isFrontCamera) {
             if (rotation != 0) {
                 rotation = (360 - rotation) % 360;
             } else {

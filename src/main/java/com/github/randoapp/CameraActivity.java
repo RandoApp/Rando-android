@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.github.randoapp.camera.CameraCaptureFragment;
 import com.github.randoapp.camera.CameraUploadFragment;
 import com.github.randoapp.log.Log;
+import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.task.CropToSquareImageTask;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.LocationHelper;
@@ -112,6 +113,8 @@ public class CameraActivity extends Activity {
         layoutParams.setMargins(leftRightMargin, topBottomMargin, leftRightMargin, topBottomMargin);
 
         cameraView.setLayoutParams(layoutParams);
+        cameraView.setFacing(Preferences.getCameraFacing());
+        cameraView.setFlash(Preferences.getCameraFlashMode());
 
         Log.d(CameraCaptureFragment.class, leftRightMargin + " " + topBottomMargin + " " + cameraView.getAspectRatio() + " ");
 
@@ -135,9 +138,10 @@ public class CameraActivity extends Activity {
                 @Override
                 public void onClick(View v) {
                     if (cameraView != null) {
-                        int facing = cameraView.getFacing();
-                        cameraView.setFacing(facing == CameraView.FACING_FRONT ?
-                                CameraView.FACING_BACK : CameraView.FACING_FRONT);
+                        int facing = cameraView.getFacing() == CameraView.FACING_FRONT ?
+                                CameraView.FACING_BACK : CameraView.FACING_FRONT;
+                        cameraView.setFacing(facing);
+                        Preferences.setCameraFacing(facing);
                     }
                 }
             });
@@ -300,7 +304,7 @@ public class CameraActivity extends Activity {
         @Override
         public void onPictureTaken(CameraView cameraView, final byte[] data) {
             Log.d(CameraView.Callback.class, "onPictureTaken " + data.length);
-            getBackgroundHandler().post(new CropToSquareImageTask(data, cameraView.getFacing() ==CameraView.FACING_FRONT, getBaseContext()));
+            getBackgroundHandler().post(new CropToSquareImageTask(data, cameraView.getFacing() == CameraView.FACING_FRONT, getBaseContext()));
             progressBar.setVisibility(View.VISIBLE);
         }
     };

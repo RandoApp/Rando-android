@@ -22,7 +22,6 @@ public class RandoUtilTest extends AndroidTestCase {
         super.setUp();
         RandoDAO.clearRandos();
         RandoDAO.clearRandoToUpload();
-        Preferences.zeroRandosBalance();
     }
 
     @Override
@@ -56,77 +55,4 @@ public class RandoUtilTest extends AndroidTestCase {
 
         assertThat("Lists are not equal", RandoUtil.areRandoListsEqual(randos1, randos2), is(false));
     }
-
-    public void testOnFetchUserImplNoUpdateZeroBalance() throws Exception {
-        User user = new User();
-        user.randosIn = RandoTestHelper.getNRandomRandos(10, Rando.Status.IN);
-        user.randosOut = RandoTestHelper.getNRandomRandos(10, Rando.Status.OUT);
-
-        RandoDAO.insertRandos(user.randosOut);
-        RandoDAO.insertRandos(user.randosIn);
-
-        assertThat("Not 10 Out Randos", RandoDAO.getAllInRandos().size(), is(10));
-        assertThat("Not 10 IN Randos", RandoDAO.getAllOutRandos().size(), is(10));
-
-        assertThat("", RandoUtil.userToDB(user), is(RandoUtil.UserToDBResult.NO_UPDATES));
-
-        assertThat("Not 10 Out Randos", RandoDAO.getAllInRandos().size(), is(10));
-        assertThat("Not 10 IN Randos", RandoDAO.getAllOutRandos().size(), is(10));
-
-        RandoTestHelper.checkListsEqual(RandoDAO.getAllOutRandos(), user.randosOut);
-        RandoTestHelper.checkListsEqual(RandoDAO.getAllInRandos(), user.randosIn);
-        assertThat("Rando Balance not 0", Preferences.getRandosBalance(), is(0));
-    }
-
-    public void testOnFetchUserImplInUpdateBalance2To1() throws Exception {
-        Preferences.incrementRandosBalance();
-        Preferences.incrementRandosBalance();
-        User user = new User();
-        user.randosIn = RandoTestHelper.getNRandomRandos(9, Rando.Status.IN);
-        user.randosOut = RandoTestHelper.getNRandomRandos(10, Rando.Status.OUT);
-
-        RandoDAO.insertRandos(user.randosOut);
-        RandoDAO.insertRandos(user.randosIn);
-        user.randosIn.add(RandoTestHelper.getRandomRando(Rando.Status.IN));
-
-        assertThat("Not 9 Out Randos", RandoDAO.getAllInRandos().size(), is(9));
-        assertThat("Not 10 IN Randos", RandoDAO.getAllOutRandos().size(), is(10));
-
-        assertThat("", RandoUtil.userToDB(user), is(RandoUtil.UserToDBResult.IN_UPDATED));
-
-        assertThat("Not 10 Out Randos", RandoDAO.getAllInRandos().size(), is(10));
-        assertThat("Not 10 IN Randos", RandoDAO.getAllOutRandos().size(), is(10));
-
-        RandoTestHelper.checkListsEqual(RandoDAO.getAllInRandos(), user.randosIn);
-        RandoTestHelper.checkListsEqual(RandoDAO.getAllOutRandos(), user.randosOut);
-
-        assertThat("Rando Balance not 1", Preferences.getRandosBalance(), is(1));
-    }
-
-
-    public void testOnFetchUserImplOutUpdateBalanceSame() throws Exception {
-        Preferences.incrementRandosBalance();
-        Preferences.incrementRandosBalance();
-        User user = new User();
-        user.randosIn = RandoTestHelper.getNRandomRandos(10, Rando.Status.IN);
-        user.randosOut = RandoTestHelper.getNRandomRandos(9, Rando.Status.OUT);
-
-        RandoDAO.insertRandos(user.randosOut);
-        RandoDAO.insertRandos(user.randosIn);
-        user.randosOut.add(RandoTestHelper.getRandomRando(Rando.Status.OUT));
-
-        assertThat("Not 10 Out Randos", RandoDAO.getAllInRandos().size(), is(10));
-        assertThat("Not 9 IN Randos", RandoDAO.getAllOutRandos().size(), is(9));
-
-        assertThat("", RandoUtil.userToDB(user), is(RandoUtil.UserToDBResult.OUT_UPDATED));
-
-        assertThat("Not 10 Out Randos", RandoDAO.getAllInRandos().size(), is(10));
-        assertThat("Not 10 IN Randos", RandoDAO.getAllOutRandos().size(), is(10));
-
-        RandoTestHelper.checkListsEqual(RandoDAO.getAllInRandos(), user.randosIn);
-        RandoTestHelper.checkListsEqual(RandoDAO.getAllOutRandos(), user.randosOut);
-
-        assertThat("Rando Balance not 2", Preferences.getRandosBalance(), is(2));
-    }
-
 }
