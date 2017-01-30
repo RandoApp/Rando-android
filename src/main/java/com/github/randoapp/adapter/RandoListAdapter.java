@@ -110,7 +110,7 @@ public class RandoListAdapter extends BaseAdapter {
 
         recycle(holder);
         loadImages(holder, rando);
-        holder.randoId = rando.randoId;
+        holder.rando = rando;
 
         if (rando.isUnwanted()) {
             setAlpha(holder.image, 0.25f);
@@ -147,8 +147,6 @@ public class RandoListAdapter extends BaseAdapter {
         holder.deleteButton = (Button) convertView.findViewWithTag("delete_button");
         holder.shareButton = (Button) convertView.findViewWithTag("share_button");
         holder.spinner = (ImageView) convertView.findViewWithTag("spinner");
-
-        holder.spinner.startAnimation(AnimationUtils.loadAnimation(holder.spinner.getContext(), R.anim.rotate_indefinitely));
 
         convertView.setTag(holder);
         return holder;
@@ -188,10 +186,10 @@ public class RandoListAdapter extends BaseAdapter {
                                 holder.deleteButton.setVisibility(View.GONE);
                                 holder.spinner.setVisibility(View.VISIBLE);
                                 holder.spinner.startAnimation(AnimationUtils.loadAnimation(holder.spinner.getContext(), R.anim.rotate_indefinitely));
-                                API.delete(holder.randoId, new DeleteRandoListener() {
+                                API.delete(holder.rando.randoId, new DeleteRandoListener() {
                                     @Override
                                     public void onOk() {
-                                        RandoDAO.deleteRandoByRandoId(holder.randoId);
+                                        RandoDAO.deleteRandoByRandoId(holder.rando.randoId);
                                         notifyDataSetChanged();
                                         Toast.makeText(holder.deleteButton.getContext(), R.string.rando_deleted,
                                                 Toast.LENGTH_LONG).show();
@@ -244,20 +242,69 @@ public class RandoListAdapter extends BaseAdapter {
     private View.OnClickListener createRandoOnClickListener(final ViewHolder holder) {
         return new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 if (holder.actionsLayer.getVisibility() == View.VISIBLE) {
                     holder.actionsLayer.setVisibility(View.GONE);
-                    setAlpha(holder.image, 1f);
-                    setAlpha(holder.map, 1f);
+                    if (holder.rando.isUnwanted()) {
+                        setAlpha(holder.image, 0.25f);
+                        setAlpha(holder.map, 0.25f);
+                    } else {
+                        setAlpha(holder.image, 1f);
+                        setAlpha(holder.map, 1f);
+                    }
                     return;
                 }
-                if (holder.animationInProgress) return;
-                if (isStranger) {
-                    Analytics.logTapStrangerRando(mFirebaseAnalytics);
+                if (holder.rando.isUnwanted()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                    builder.setNegativeButton(R.string.delete, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            try {
+                                holder.spinner.setVisibility(View.VISIBLE);
+                                holder.spinner.startAnimation(AnimationUtils.loadAnimation(holder.spinner.getContext(), R.anim.rotate_indefinitely));
+                                API.delete(holder.rando.randoId, new DeleteRandoListener() {
+                                    @Override
+                                    public void onOk() {
+                                        RandoDAO.deleteRandoByRandoId(holder.rando.randoId);
+                                        notifyDataSetChanged();
+                                        Toast.makeText(v.getContext(), R.string.rando_deleted,
+                                                Toast.LENGTH_LONG).show();
+                                        holder.spinner.setVisibility(View.GONE);
+                                        holder.spinner.clearAnimation();
+                                    }
+
+                                    @Override
+                                    public void onError() {
+                                        Toast.makeText(v.getContext(), R.string.error_unknown_err,
+                                                Toast.LENGTH_LONG).show();
+                                        holder.spinner.setVisibility(View.GONE);
+                                        holder.spinner.clearAnimation();
+                                    }
+                                });
+                            } catch (Exception e) {
+                                Toast.makeText(holder.deleteButton.getContext(), R.string.error_unknown_err,
+                                        Toast.LENGTH_LONG).show();
+                                holder.shareButton.setVisibility(View.VISIBLE);
+                                holder.deleteButton.setVisibility(View.VISIBLE);
+                                holder.spinner.setVisibility(View.GONE);
+                                holder.spinner.clearAnimation();
+                            }
+                        }
+                    });
+                    builder.setPositiveButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            return;
+                        }
+                    }).setTitle(R.string.rando_excluded).setMessage(R.string.rando_excluded_text).create().show();
+
                 } else {
-                    Analytics.logTapOwnRando(mFirebaseAnalytics);
+                    if (holder.animationInProgress) return;
+                    if (isStranger) {
+                        Analytics.logTapStrangerRando(mFirebaseAnalytics);
+                    } else {
+                        Analytics.logTapOwnRando(mFirebaseAnalytics);
+                    }
+                    holder.viewSwitcher.showNext();
                 }
-                holder.viewSwitcher.showNext();
             }
         };
     }
@@ -266,7 +313,7 @@ public class RandoListAdapter extends BaseAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Constants.TO_UPLOAD_RANDO_ID.equals(holder.randoId)) {
+                if (Constants.TO_UPLOAD_RANDO_ID.equals(holder.rando.randoId)) {
                     Toast.makeText(holder.deleteButton.getContext(), R.string.cant_share_not_uploaded,
                             Toast.LENGTH_LONG).show();
                 } else {
@@ -278,7 +325,7 @@ public class RandoListAdapter extends BaseAdapter {
                     // Add data to the intent, the receiving app will decide
                     // what to do with it.
                     shareIntent.putExtra(Intent.EXTRA_SUBJECT, holder.actionsLayer.getContext().getResources().getString(R.string.share_subject));
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, holder.actionsLayer.getContext().getResources().getString(R.string.share_text) + " " + String.format(Constants.SHARE_URL, holder.randoId));
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, holder.actionsLayer.getContext().getResources().getString(R.string.share_text) + " " + String.format(Constants.SHARE_URL, holder.rando.randoId));
                     holder.actionsLayer.getContext().startActivity(Intent.createChooser(shareIntent, "Share Rando using"));
                 }
             }
@@ -306,7 +353,7 @@ public class RandoListAdapter extends BaseAdapter {
 
         holder.unwanted.setVisibility(View.GONE);
 
-        holder.randoId = "";
+        holder.rando = null;
     }
 
     private void cancelRequests(ViewHolder holder) {
@@ -471,7 +518,7 @@ public class RandoListAdapter extends BaseAdapter {
     }
 
     public static class ViewHolder {
-        public String randoId = "";
+        public Rando rando;
 
         public boolean animationInProgress = false;
 
