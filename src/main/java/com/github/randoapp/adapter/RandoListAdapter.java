@@ -113,7 +113,6 @@ public class RandoListAdapter extends BaseAdapter {
         holder.rando = rando;
 
         if (rando.isUnwanted()) {
-            setAlpha(holder.image, 0.25f);
             holder.unwanted.setVisibility(View.VISIBLE);
         }
         setAnimations(holder);
@@ -245,13 +244,8 @@ public class RandoListAdapter extends BaseAdapter {
             public void onClick(final View v) {
                 if (holder.actionsLayer.getVisibility() == View.VISIBLE) {
                     holder.actionsLayer.setVisibility(View.GONE);
-                    if (holder.rando.isUnwanted()) {
-                        setAlpha(holder.image, 0.25f);
-                        setAlpha(holder.map, 0.25f);
-                    } else {
-                        setAlpha(holder.image, 1f);
-                        setAlpha(holder.map, 1f);
-                    }
+                    setAlpha(holder.image, 1f);
+                    setAlpha(holder.map, 1f);
                     return;
                 }
                 if (holder.rando.isUnwanted()) {
