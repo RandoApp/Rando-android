@@ -115,8 +115,10 @@ public class RandoListAdapter extends BaseAdapter {
 
         if (rando.isUnwanted()) {
             holder.unwanted.setVisibility(View.VISIBLE);
+            holder.unwanted.startAnimation(AnimationUtils.loadAnimation(App.context, R.anim.show_hide_infinity));
+        } else {
+            setAnimations(holder);
         }
-        setAnimations(holder);
         return convertView;
     }
 
@@ -347,7 +349,7 @@ public class RandoListAdapter extends BaseAdapter {
         holder.spinner.clearAnimation();
 
         holder.unwanted.setVisibility(View.GONE);
-        holder.unwanted.setAnimation(null);
+        holder.unwanted.clearAnimation();
 
         holder.rando = null;
     }
@@ -386,12 +388,9 @@ public class RandoListAdapter extends BaseAdapter {
     private void setAnimations(final ViewHolder holder) {
         final Animation[] leftToRightAnimation = AnimationFactory.flipAnimation(imageSize, AnimationFactory.FlipDirection.LEFT_RIGHT, 350, null);
         final Animation[] rightToLeftAnimation = AnimationFactory.flipAnimation(imageSize, AnimationFactory.FlipDirection.RIGHT_LEFT, 350, null);
-        final Animation showAndHideAnimation = AnimationUtils.loadAnimation(App.context, R.anim.show_hide_infinity);
 
         holder.viewSwitcher.setOutAnimation(leftToRightAnimation[0]);
         holder.viewSwitcher.setInAnimation(leftToRightAnimation[1]);
-
-        holder.unwanted.startAnimation(showAndHideAnimation);
 
         Animation.AnimationListener outAnimationListener = new AnimationListenerAdapter() {
             @Override
