@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.github.randoapp.db.model.RandoUpload;
+
 public class RandoDBHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 10;
@@ -64,7 +66,7 @@ public class RandoDBHelper extends SQLiteOpenHelper {
     }
 
     private void upgradeTo10(SQLiteDatabase db){
-        db.execSQL("ALTER TABLE foo ADD COLUMN "+ RandoTable.COLUMN_DETECTED + " TEXT");
+        db.execSQL("ALTER TABLE " + RandoTable.NAME + " ADD COLUMN " + RandoTable.COLUMN_DETECTED + " TEXT");
     }
 
 
