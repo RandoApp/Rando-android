@@ -6,6 +6,7 @@ import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.preferences.Preferences;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.github.randoapp.Constants.CREATION_PARAM;
+import static com.github.randoapp.Constants.DETECTED_PARAM;
 import static com.github.randoapp.Constants.IMAGE_URL_PARAM;
 import static com.github.randoapp.Constants.IMAGE_URL_SIZES_PARAM;
 import static com.github.randoapp.Constants.LARGE_PARAM;
@@ -63,6 +65,11 @@ public class RandoUtil {
         rando.mapURLSize.large = userMapUrlSizes.getString(LARGE_PARAM);
 
         rando.date = new Date(jsonRando.getLong(CREATION_PARAM));
+
+        if (jsonRando.has(DETECTED_PARAM)){
+            JSONArray detected = jsonRando.getJSONArray(DETECTED_PARAM);
+            rando.detected = detected.join(",");
+        }
         return rando;
     }
 

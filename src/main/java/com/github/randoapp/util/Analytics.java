@@ -19,6 +19,11 @@ public class Analytics {
     private static String OPEN_TAB_STRANGER_RANDOS = "open_tab_stranger_randos";
     private static String OPEN_TAB_SETTINGS = "open_tab_settings";
 
+    //unwanted rando events
+    private static String CLICK_UNWANTED_RANDO = "click_unwanted_rando";
+    private static String DELETE_UNWANTED_RANDO_DIALOG = "delete_unwanted_rando_dialog";
+    private static String CANCEL_UNWANTED_RANDO_DIALOG = "cancel_unwanted_rando_dialog";
+
     public static void logTakeRando(FirebaseAnalytics analytics) {
         analytics.logEvent(TAKE_RANDO, null);
     }
@@ -74,4 +79,17 @@ public class Analytics {
     public static void logOpenTabSettings(FirebaseAnalytics analytics) {
         analytics.logEvent(OPEN_TAB_SETTINGS, null);
     }
+
+    public static void logClickUnwantedRando(FirebaseAnalytics analytics) {
+        analytics.logEvent(CLICK_UNWANTED_RANDO, null);
+    }
+
+    public static void logDeleteUnwantedRandoDialog(FirebaseAnalytics analytics) {
+        analytics.logEvent(DELETE_UNWANTED_RANDO_DIALOG, null);
+    }
+
+    public static void logCancelUnwantedRandoDialog(FirebaseAnalytics analytics) {
+        analytics.logEvent(CANCEL_UNWANTED_RANDO_DIALOG, null);
+    }
+
 }

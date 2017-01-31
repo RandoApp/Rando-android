@@ -42,17 +42,27 @@
         android:layout_marginLeft="@dimen/rando_padding_portrait_column_left"
         android:layout_marginRight="@dimen/rando_padding_portrait_column_right"
         android:layout_marginTop="@dimen/rando_padding_portrait_column_top"
-        android:tag="actions_layer"
+        android:tag="unwanted_layer"
         android:visibility="gone">
 
-        <ImageView
-            android:tag="spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerInParent="true"
-            android:visibility="gone"
-            android:src="@drawable/ic_autorenew_black_48dp" />
+        <com.makeramen.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:tag="unwanted_image"
+            app:oval="true"
+            android:src="@drawable/ic_boring" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/rando_padding_portrait_column_left"
+        android:layout_marginRight="@dimen/rando_padding_portrait_column_right"
+        android:layout_marginTop="@dimen/rando_padding_portrait_column_top"
+        android:tag="actions_layer"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -77,6 +87,15 @@
                 android:tag="delete_button"
                 android:textColor="@android:color/white" />
         </LinearLayout>
-
     </RelativeLayout>
+
+    <ImageView
+        android:tag="spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:src="@drawable/ic_autorenew_black_48dp" />
+
 </RelativeLayout>

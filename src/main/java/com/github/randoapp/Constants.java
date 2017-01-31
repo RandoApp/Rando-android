@@ -49,8 +49,8 @@ public class Constants {
     public static final String SERVER_HOST = BuildConfig.RANDO_HOST;
     public static final String SERVER_URL = "https://" + SERVER_HOST;
     public static final int ESTABLISH_CONNECTION_TIMEOUT = 5 * 60 * 1000;
-    public static final int UPLOAD_CONNECTION_TIMEOUT = (int) TimeUnit.MINUTES.toMillis(5);
-    public static final int API_CONNECTION_TIMEOUT = (int) TimeUnit.SECONDS.toMillis(20);
+    public static final int UPLOAD_CONNECTION_TIMEOUT = (int) TimeUnit.MINUTES.toMillis(10);
+    public static final int API_CONNECTION_TIMEOUT = (int) TimeUnit.MINUTES.toMillis(2);
 
     public static final int UPLOAD_RETRY_TIMEOUT = 5 * 60 * 1000;
 
@@ -88,6 +88,7 @@ public class Constants {
     public static final String RANDO_ID_PARAM = "randoId";
     public static final String MAP_URL_PARAM = "mapURL";
     public static final String CREATION_PARAM = "creation";
+    public static final String DETECTED_PARAM = "detected";
     public static final String RANDO_PARAM = "rando";
     public static final String IN_RANDOS_PARAM = "in";
     public static final String OUT_RANDOS_PARAM = "out";

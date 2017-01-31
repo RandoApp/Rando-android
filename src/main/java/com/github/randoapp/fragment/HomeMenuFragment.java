@@ -79,6 +79,19 @@ public class HomeMenuFragment extends Fragment {
             }
         });
 
+        rootView.findViewById(R.id.contactUsButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_SENDTO);
+                String uriText = "mailto:" + Uri.encode("randoapp.me@gmail.com") +
+                        "?subject=" + Uri.encode("Contact support. Account: " + Preferences.getAccount());
+                Uri uri = Uri.parse(uriText);
+
+                intent.setData(uri);
+                startActivity(Intent.createChooser(intent, "Send Support Email"));
+            }
+        });
+
         accountName = (TextView) rootView.findViewById(R.id.accountName);
         initVersion(rootView);
         initHelp(rootView);
