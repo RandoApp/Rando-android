@@ -252,9 +252,11 @@ public class RandoListAdapter extends BaseAdapter {
                     return;
                 }
                 if (holder.rando.isUnwanted()) {
+                    Analytics.logClickUnwantedRando(mFirebaseAnalytics);
                     AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                     builder.setNegativeButton(R.string.delete_rando, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
+                            Analytics.logDeleteUnwantedRandoDialog(mFirebaseAnalytics);
                             try {
                                 holder.spinner.setVisibility(View.VISIBLE);
                                 holder.spinner.startAnimation(AnimationUtils.loadAnimation(holder.spinner.getContext(), R.anim.rotate_indefinitely));
@@ -289,6 +291,7 @@ public class RandoListAdapter extends BaseAdapter {
                     });
                     builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
+                            Analytics.logCancelUnwantedRandoDialog(mFirebaseAnalytics);
                             return;
                         }
                     }).setTitle(R.string.rando_excluded).setMessage(R.string.rando_excluded_text).create().show();
