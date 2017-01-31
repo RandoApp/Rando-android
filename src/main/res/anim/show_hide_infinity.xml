@@ -7,10 +7,11 @@
         android:interpolator="@android:anim/accelerate_interpolator"
         android:repeatMode="reverse"
         android:repeatCount="infinite"
+        android:startOffset="400"
         android:toAlpha="1.0" />
 
     <rotate xmlns:android="http://schemas.android.com/apk/res/android"
-        android:duration="100"
+        android:duration="400"
         android:fromDegrees="-7"
         android:toDegrees="7"
         android:interpolator="@android:anim/linear_interpolator"
