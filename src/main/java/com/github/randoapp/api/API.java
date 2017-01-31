@@ -244,7 +244,7 @@ public class API {
         }, errorListener) {
             @Override
             protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
+                Map<String, String> params = new HashMap<>(2);
                 params.put(LATITUDE_PARAM, randoUpload.latitude);
                 params.put(LONGITUDE_PARAM, randoUpload.longitude);
                 return params;
@@ -252,7 +252,7 @@ public class API {
 
             @Override
             protected Map<String, DataPart> getByteData() {
-                Map<String, DataPart> params = new HashMap<>();
+                Map<String, DataPart> params = new HashMap<>(1);
                 File randoFile = new File(randoUpload.file);
                 params.put(IMAGE_PARAM, new DataPart(randoFile.getName(), FileUtil.readFile(randoFile), IMAGE_MIME_TYPE));
 
