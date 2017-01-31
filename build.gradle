@@ -133,16 +133,6 @@ model {
             signConf = it
         }
     }
-
-    android.sources {
-        androidTest {
-            java {
-                source {
-                    exclude "com/google/android/cameraview/**"
-                }
-            }
-        }
-    }
 }
 
 coveralls {

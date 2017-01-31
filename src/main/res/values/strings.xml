@@ -113,7 +113,7 @@
     <string name="delete_rando_confirm">Do you really want to delete this Rando?</string>
 
     <string name="rando_excluded">Excluded from exchange</string>
-    <string name="rando_excluded_text">This Rando was excluded from exchange. This happens for one of the following reasons:\n - duplicated;\n - offencive;\n - boring (e.g. too dark);\n - other reason.</string>
+    <string name="rando_excluded_text">This Rando was excluded from exchange. This happens for one of the following reasons:\n - duplicated;\n - offensive;\n - boring (e.g. too dark);\n - other reason.</string>
     <string name="ok">Ok</string>
 
     <string name="share_subject">Share Rando 4Me</string>

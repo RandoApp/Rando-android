@@ -45,12 +45,12 @@
         android:tag="unwanted_layer"
         android:visibility="gone">
 
-        <com.makeramen.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:tag="unwanted_image"
-            app:oval="true"
+            app:riv_oval="true"
             android:src="@drawable/ic_boring" />
 
     </RelativeLayout>
