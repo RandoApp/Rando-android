@@ -287,7 +287,7 @@ public class RandoListAdapter extends BaseAdapter {
                             }
                         }
                     });
-                    builder.setPositiveButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             return;
                         }
