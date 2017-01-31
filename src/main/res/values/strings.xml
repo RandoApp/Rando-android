@@ -110,6 +110,10 @@
     <string name="delete_rando">Delete Rando</string>
     <string name="delete_rando_confirm">Do you really want to delete this Rando?</string>
 
+    <string name="rando_excluded">Rando excluded from exchange</string>
+    <string name="rando_excluded_text">This Rando was excluded from exchange. This happens for one of the following reasons:\n - duplicated;\n - offencive;\n - boring (e.g. too dark);\n - other reason.</string>
+    <string name="ok">Ok</string>
+
     <string name="share_subject">Share Rando 4Me</string>
     <string name="share_text">I\'ve received amazing photo via Rando4Me: </string>
     <string name="cant_share_not_uploaded">Not uploaded yet. Not possible to share. Please try later.</string>
