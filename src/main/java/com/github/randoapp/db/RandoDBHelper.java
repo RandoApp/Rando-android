@@ -5,8 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.github.randoapp.db.model.RandoUpload;
-
 public class RandoDBHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 10;
