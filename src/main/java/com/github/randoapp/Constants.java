@@ -50,7 +50,7 @@ public class Constants {
     public static final String SERVER_URL = "https://" + SERVER_HOST;
     public static final int ESTABLISH_CONNECTION_TIMEOUT = 5 * 60 * 1000;
     public static final int UPLOAD_CONNECTION_TIMEOUT = (int) TimeUnit.MINUTES.toMillis(10);
-    public static final int API_CONNECTION_TIMEOUT = (int) TimeUnit.SECONDS.toMillis(40);
+    public static final int API_CONNECTION_TIMEOUT = (int) TimeUnit.MINUTES.toMillis(2);
 
     public static final int UPLOAD_RETRY_TIMEOUT = 5 * 60 * 1000;
 
