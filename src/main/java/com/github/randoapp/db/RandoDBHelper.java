@@ -53,6 +53,12 @@ public class RandoDBHelper extends SQLiteOpenHelper {
                 "Upgrading database from version " + oldVersion + " to "
                         + newVersion + ", which will destroy all old data"
         );
+        if (oldVersion < 9){
+            db.execSQL("DROP TABLE IF EXISTS " + RandoTable.NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + RandoUploadTable.NAME);
+            onCreate(db);
+            return;
+        }
         if (oldVersion < 10){
             upgradeTo10(db);
         }
