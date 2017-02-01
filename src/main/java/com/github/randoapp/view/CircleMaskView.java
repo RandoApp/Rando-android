@@ -27,8 +27,7 @@ public class CircleMaskView extends View {
         super(context, attrs);
     }
 
-    private Bitmap initPaints(int width, int height, int center) {
-        int size = Math.min(width,height);
+    private Bitmap initPaints(int size, int center) {
         Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ALPHA_8);
 
         int radius = center - getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left);
@@ -47,12 +46,13 @@ public class CircleMaskView extends View {
         super.onDraw(canvas);
         int width = canvas.getWidth();
         int height = canvas.getHeight();
-        int center = Math.min(width, height) / 2;
+        int size = Math.min(width,height);
+        int center = size / 2;
 
         Paint black = new Paint();
         black.setColor(Color.BLACK);
 
-        Bitmap bitmap = initPaints(width, height, center);
+        Bitmap bitmap = initPaints(size, center);
         canvas.drawBitmap(bitmap, 0, height / 2 - center, null);
         canvas.drawRect(0, height / 2 + center, width, height, black);
         canvas.drawRect(0, 0, width, height / 2 - center, black);
