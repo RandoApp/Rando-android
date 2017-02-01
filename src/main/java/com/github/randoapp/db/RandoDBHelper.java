@@ -66,7 +66,9 @@ public class RandoDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        onUpgrade(db, oldVersion, newVersion);
+        db.execSQL("DROP TABLE IF EXISTS " + RandoTable.NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + RandoUploadTable.NAME);
+        onCreate(db);
     }
 
     private void upgradeTo10(SQLiteDatabase db){
