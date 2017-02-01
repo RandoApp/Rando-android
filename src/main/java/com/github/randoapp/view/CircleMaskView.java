@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -28,7 +29,13 @@ public class CircleMaskView extends View {
     }
 
     private Bitmap initPaints(int size, int center) {
-        Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ALPHA_8);
+        Bitmap bitmap;
+
+        if (Build.VERSION.SDK_INT >= 14) {
+            bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ALPHA_8);
+        } else {
+            bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+        }
 
         int radius = center - getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left);
 
@@ -53,13 +60,19 @@ public class CircleMaskView extends View {
         Paint black = new Paint();
         black.setColor(Color.BLACK);
 
+        Paint bitmapPaint = null;
+        if (Build.VERSION.SDK_INT >= 14) {
+            bitmapPaint = new Paint();
+            bitmapPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+        }
+
         Bitmap bitmap = initPaints(size, center);
         if (height > width) {
-            canvas.drawBitmap(bitmap, 0, biggerSize / 2 - center, null);
+            canvas.drawBitmap(bitmap, 0, biggerSize / 2 - center, bitmapPaint);
             canvas.drawRect(0, biggerSize / 2 + center, size, biggerSize, black);
             canvas.drawRect(0, 0, size, biggerSize / 2 - center, black);
         } else {
-            canvas.drawBitmap(bitmap, biggerSize / 2 - center, 0, null);
+            canvas.drawBitmap(bitmap, biggerSize / 2 - center, 0, bitmapPaint);
             canvas.drawRect(biggerSize / 2 + center, 0, biggerSize, size, black);
             canvas.drawRect(0, 0, biggerSize / 2 - center, size, black);
         }
