@@ -48,14 +48,15 @@ public class CircleMaskView extends View {
         int height = canvas.getHeight();
         int size = Math.min(width,height);
         int center = size / 2;
+        int biggerSize = Math.max(width,height);
 
         Paint black = new Paint();
         black.setColor(Color.BLACK);
 
         Bitmap bitmap = initPaints(size, center);
-        canvas.drawBitmap(bitmap, 0, height / 2 - center, null);
-        canvas.drawRect(0, height / 2 + center, width, height, black);
-        canvas.drawRect(0, 0, width, height / 2 - center, black);
+        canvas.drawBitmap(bitmap, 0, biggerSize / 2 - center, null);
+        canvas.drawRect(0, biggerSize / 2 + center, size, biggerSize, black);
+        canvas.drawRect(0, 0, size, biggerSize / 2 - center, black);
         bitmap.recycle();
         bitmap = null;
     }
