@@ -8,9 +8,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
-import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
 
 import com.github.randoapp.R;
 
@@ -30,14 +28,13 @@ public class CircleMaskView extends View {
     }
 
     private Bitmap initPaints(int width, int height) {
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        bitmap.eraseColor(Color.TRANSPARENT);
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ALPHA_8);
 
         int radius = Math.min(width, height) / 2;
         int heightCenter = height / 2;
 
         Paint eraser = new Paint();
-        eraser.setColor(0xFFFFFFFF);
+        eraser.setColor(0xFF000000);
         eraser.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
 
         Canvas canvas = new Canvas(bitmap);

@@ -83,8 +83,19 @@ public class HomeMenuFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_SENDTO);
+
+                String versionName = "";
+                try {
+                    PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+                    versionName = pInfo.versionName;
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+
                 String uriText = "mailto:" + Uri.encode("randoapp.me@gmail.com") +
-                        "?subject=" + Uri.encode("Contact support. Account: " + Preferences.getAccount());
+                        "?subject=" + Uri.encode("Question about Rando 4Me ("+versionName + ")") +
+                        "&body=" + Uri.encode("Hi Rando 4Me Team, \n\nI'm using Rando 4Me and my account is: " + Preferences.getAccount() +
+                        "\nI have following question:\n\nThanks\n");
                 Uri uri = Uri.parse(uriText);
 
                 intent.setData(uri);
