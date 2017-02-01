@@ -89,7 +89,7 @@ public class HomeMenuFragment extends Fragment {
                     PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
                     versionName = pInfo.versionName;
                 } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
+                    Log.e(HomeMenuFragment.class, "Failed to get version name", e);
                 }
 
                 String uriText = "mailto:" + Uri.encode("randoapp.me@gmail.com") +

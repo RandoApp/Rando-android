@@ -27,27 +27,34 @@ public class CircleMaskView extends View {
         super(context, attrs);
     }
 
-    private Bitmap initPaints(int width, int height) {
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ALPHA_8);
+    private Bitmap initPaints(int width, int height, int center) {
+        Bitmap bitmap = Bitmap.createBitmap(width, width, Bitmap.Config.ALPHA_8);
 
-        int radius = Math.min(width, height) / 2;
-        int heightCenter = height / 2;
+        int radius = center - getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left);
 
         Paint eraser = new Paint();
-        eraser.setColor(0xFF000000);
         eraser.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
 
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.BLACK);
-        canvas.drawCircle(radius, heightCenter, radius - getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left), eraser);
+        canvas.drawCircle(center, center, radius, eraser);
         return bitmap;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Bitmap bitmap = initPaints(canvas.getWidth(), canvas.getHeight());
-        canvas.drawBitmap(bitmap, 0, 0, null);
+        int width = canvas.getWidth();
+        int height = canvas.getHeight();
+        int center = Math.min(width, height) / 2;
+
+        Paint black = new Paint();
+        black.setColor(Color.BLACK);
+
+        Bitmap bitmap = initPaints(width, height, center);
+        canvas.drawBitmap(bitmap, 0, height / 2 - center, null);
+        canvas.drawRect(0, height / 2 + center, width, height, black);
+        canvas.drawRect(0, 0, width, height / 2 - center, black);
         bitmap.recycle();
         bitmap = null;
     }
