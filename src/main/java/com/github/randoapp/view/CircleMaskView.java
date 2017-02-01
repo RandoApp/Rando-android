@@ -8,9 +8,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
-import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
 
 import com.github.randoapp.R;
 
@@ -29,28 +27,42 @@ public class CircleMaskView extends View {
         super(context, attrs);
     }
 
-    private Bitmap initPaints(int width, int height) {
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        bitmap.eraseColor(Color.TRANSPARENT);
+    private Bitmap initPaints(int size, int center) {
+        Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ALPHA_8);
 
-        int radius = Math.min(width, height) / 2;
-        int heightCenter = height / 2;
+        int radius = center - getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left);
 
         Paint eraser = new Paint();
-        eraser.setColor(0xFFFFFFFF);
         eraser.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
 
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.BLACK);
-        canvas.drawCircle(radius, heightCenter, radius - getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left), eraser);
+        canvas.drawCircle(center, center, radius, eraser);
         return bitmap;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Bitmap bitmap = initPaints(canvas.getWidth(), canvas.getHeight());
-        canvas.drawBitmap(bitmap, 0, 0, null);
+        int width = canvas.getWidth();
+        int height = canvas.getHeight();
+        int size = Math.min(width,height);
+        int center = size / 2;
+        int biggerSize = Math.max(width,height);
+
+        Paint black = new Paint();
+        black.setColor(Color.BLACK);
+
+        Bitmap bitmap = initPaints(size, center);
+        if (height > width) {
+            canvas.drawBitmap(bitmap, 0, biggerSize / 2 - center, null);
+            canvas.drawRect(0, biggerSize / 2 + center, size, biggerSize, black);
+            canvas.drawRect(0, 0, size, biggerSize / 2 - center, black);
+        } else {
+            canvas.drawBitmap(bitmap, biggerSize / 2 - center, 0, null);
+            canvas.drawRect(biggerSize / 2 + center, 0, biggerSize, size, black);
+            canvas.drawRect(0, 0, biggerSize / 2 - center, size, black);
+        }
         bitmap.recycle();
         bitmap = null;
     }

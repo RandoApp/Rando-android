@@ -83,8 +83,22 @@ public class HomeMenuFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_SENDTO);
-                String uriText = "mailto:" + Uri.encode("randoapp.me@gmail.com") +
-                        "?subject=" + Uri.encode("Contact support. Account: " + Preferences.getAccount());
+
+                String versionName = "";
+                try {
+                    PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+                    versionName = pInfo.versionName;
+                } catch (PackageManager.NameNotFoundException e) {
+                    Log.e(HomeMenuFragment.class, "Failed to get version name", e);
+                }
+
+                String email = getResources().getString(R.string.contact_us_email);
+                String subject = String.format(getResources().getString(R.string.contact_us_subject), versionName);
+                String body = String.format(getResources().getString(R.string.contact_us_body), Preferences.getAccount());
+
+                String uriText = "mailto:" + Uri.encode(email) +
+                        "?subject=" + Uri.encode(subject) +
+                        "&body=" + Uri.encode(body);
                 Uri uri = Uri.parse(uriText);
 
                 intent.setData(uri);
