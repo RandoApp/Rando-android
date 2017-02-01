@@ -92,10 +92,13 @@ public class HomeMenuFragment extends Fragment {
                     Log.e(HomeMenuFragment.class, "Failed to get version name", e);
                 }
 
-                String uriText = "mailto:" + Uri.encode("randoapp.me@gmail.com") +
-                        "?subject=" + Uri.encode("Question about Rando 4Me ("+versionName + ")") +
-                        "&body=" + Uri.encode("Hi Rando 4Me Team, \n\nI'm using Rando 4Me and my account is: " + Preferences.getAccount() +
-                        "\nI have following question:\n\nThanks\n");
+                String email = getResources().getString(R.string.contact_us_email);
+                String subject = String.format(getResources().getString(R.string.contact_us_subject), versionName);
+                String body = String.format(getResources().getString(R.string.contact_us_body), Preferences.getAccount());
+
+                String uriText = "mailto:" + Uri.encode(email) +
+                        "?subject=" + Uri.encode(subject) +
+                        "&body=" + Uri.encode(body);
                 Uri uri = Uri.parse(uriText);
 
                 intent.setData(uri);

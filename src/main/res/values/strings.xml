@@ -119,4 +119,8 @@
     <string name="share_text">I\'ve received amazing photo via Rando4Me: </string>
     <string name="cant_share_not_uploaded">Not uploaded yet. Not possible to share. Please try later.</string>
 
+    <string name="contact_us_email">randoapp.me@gmail.com</string>
+    <string name="contact_us_subject">Question about Rando 4Me (%1$s)</string>
+    <string name="contact_us_body">"Hi Rando 4Me Team, \n\nI'm using Rando 4Me and my account is: %1$s\nI have following question:\n\nThanks\n"</string>
+
 </resources>
