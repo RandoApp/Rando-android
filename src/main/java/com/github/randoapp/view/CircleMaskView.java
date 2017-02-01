@@ -28,7 +28,8 @@ public class CircleMaskView extends View {
     }
 
     private Bitmap initPaints(int width, int height, int center) {
-        Bitmap bitmap = Bitmap.createBitmap(width, width, Bitmap.Config.ALPHA_8);
+        int size = Math.min(width,height);
+        Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ALPHA_8);
 
         int radius = center - getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left);
 
