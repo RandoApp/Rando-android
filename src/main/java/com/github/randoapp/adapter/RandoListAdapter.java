@@ -21,7 +21,6 @@ import android.widget.ViewSwitcher;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.animation.AnimationFactory;
@@ -36,6 +35,7 @@ import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.BitmapUtil;
 import com.github.randoapp.util.NetworkUtil;
 import com.github.randoapp.util.RandoUtil;
+import com.github.randoapp.view.UnwantedRandoView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.makeramen.RoundedImageView;
 
@@ -114,8 +114,15 @@ public class RandoListAdapter extends BaseAdapter {
         holder.rando = rando;
 
         if (rando.isUnwanted()) {
-            holder.unwanted.setVisibility(View.VISIBLE);
-            holder.unwanted.startAnimation(AnimationUtils.loadAnimation(App.context, R.anim.show_hide_infinity));
+            UnwantedRandoView unwantedRandoView = new UnwantedRandoView(holder.randoItemLayout.getContext());
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
+            layoutParams.setMargins(convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left),
+                    convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
+                    convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right),
+                    convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));
+            //insert Unwanted view at index 1, right after "rando_placeholder"
+            holder.randoItemLayout.addView(unwantedRandoView, 1 , layoutParams);
+            holder.unwantedRandoView = unwantedRandoView;
         } else {
             setAnimations(holder);
         }
@@ -124,6 +131,8 @@ public class RandoListAdapter extends BaseAdapter {
 
     private ViewHolder createHolder(View convertView) {
         ViewHolder holder = new ViewHolder();
+
+        holder.randoItemLayout = (RelativeLayout) convertView.findViewWithTag("rando_item_layout");
 
         holder.viewSwitcher = (ViewSwitcher) convertView.findViewWithTag("viewSwitcher");
 
@@ -142,9 +151,6 @@ public class RandoListAdapter extends BaseAdapter {
                 convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right),
                 convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));
         holder.actionsLayer.setLayoutParams(actionsLayerLayoutParams);
-
-        holder.unwanted = (RelativeLayout) convertView.findViewWithTag("unwanted_layer");
-        holder.unwanted.setLayoutParams(actionsLayerLayoutParams);
 
         holder.deleteButton = (Button) convertView.findViewWithTag("delete_button");
         holder.shareButton = (Button) convertView.findViewWithTag("share_button");
@@ -349,10 +355,14 @@ public class RandoListAdapter extends BaseAdapter {
         holder.spinner.setVisibility(View.GONE);
         holder.shareButton.setVisibility(View.VISIBLE);
         holder.deleteButton.setVisibility(View.VISIBLE);
-        holder.spinner.clearAnimation();
 
-        holder.unwanted.setVisibility(View.GONE);
-        holder.unwanted.clearAnimation();
+        if (holder.unwantedRandoView != null) {
+            holder.unwantedRandoView.clearAnimation();
+            Log.d(RandoListAdapter.class, "Child: " +holder.randoItemLayout.getChildCount());
+            holder.randoItemLayout.removeView(holder.unwantedRandoView);
+            Log.d(RandoListAdapter.class, "Child: " +holder.randoItemLayout.getChildCount());
+            holder.unwantedRandoView = null;
+        }
 
         holder.rando = null;
     }
@@ -521,10 +531,13 @@ public class RandoListAdapter extends BaseAdapter {
     public static class ViewHolder {
         public Rando rando;
 
+        public RelativeLayout randoItemLayout;
+
+        public UnwantedRandoView unwantedRandoView;
+
         public boolean animationInProgress = false;
 
         public ViewSwitcher viewSwitcher;
-
         public RoundedImageView image;
         public RoundedImageView map;
 
@@ -532,8 +545,6 @@ public class RandoListAdapter extends BaseAdapter {
         public Button deleteButton;
         public Button shareButton;
         public ImageView spinner;
-
-        public RelativeLayout unwanted;
 
         public ImageLoader.ImageContainer randoContainer;
         public ImageLoader.ImageContainer mapContainer;
