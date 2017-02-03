@@ -54,9 +54,9 @@ public class RandoDBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(LOG_TAG,
                 "Upgrading database from version " + oldVersion + " to "
-                        + newVersion + ", which will destroy all old data"
-        );
+                        + newVersion + ", which will destroy all old data");
         if (oldVersion < 9) {
+            Log.d(LOG_TAG, "Upgrading database from prior 9 version");
             dropAllAndCreate(db);
             return;
         }
@@ -71,6 +71,9 @@ public class RandoDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.d(LOG_TAG,
+                "Downgrading database from version " + oldVersion + " to "
+                        + newVersion + ", which will destroy all old data");
         dropAllAndCreate(db);
     }
 
@@ -80,7 +83,7 @@ public class RandoDBHelper extends SQLiteOpenHelper {
     }
 
     private void upgradeTo11(SQLiteDatabase db) {
-        Log.d(LOG_TAG, "Upgrading database from prior 10 version");
+        Log.d(LOG_TAG, "Upgrading database from prior 11 version");
         if (!isRandoTableColumnExist(db, RandoTable.COLUMN_RANDO_STATUS)) {
             dropAllAndCreate(db);
         }
