@@ -1,13 +1,14 @@
 package com.github.randoapp.db;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class RandoDBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
     private static final String DATABASE_NAME = "rando.db";
 
     private static RandoDBHelper helperInstance;
@@ -34,9 +35,9 @@ public class RandoDBHelper extends SQLiteOpenHelper {
 
     @Override
     protected void finalize() throws Throwable {
-        if(null != helperInstance)
+        if (null != helperInstance)
             helperInstance.close();
-        if(null != db)
+        if (null != db)
             db.close();
         super.finalize();
     }
@@ -53,26 +54,54 @@ public class RandoDBHelper extends SQLiteOpenHelper {
                 "Upgrading database from version " + oldVersion + " to "
                         + newVersion + ", which will destroy all old data"
         );
-        if (oldVersion < 9){
-            db.execSQL("DROP TABLE IF EXISTS " + RandoTable.NAME);
-            db.execSQL("DROP TABLE IF EXISTS " + RandoUploadTable.NAME);
-            onCreate(db);
+        if (oldVersion < 9) {
+            dropAllAndCreate(db);
             return;
         }
-        if (oldVersion < 10){
+        if (oldVersion < 10) {
             upgradeTo10(db);
+        }
+
+        if (oldVersion < 11) {
+            upgradeTo11(db);
         }
     }
 
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        dropAllAndCreate(db);
+    }
+
+    private void upgradeTo10(SQLiteDatabase db) {
+        db.execSQL("ALTER TABLE " + RandoTable.NAME + " ADD COLUMN " + RandoTable.COLUMN_DETECTED + " TEXT");
+    }
+
+    private void upgradeTo11(SQLiteDatabase db) {
+        if (!isRandoTableColumnExist(db, RandoTable.COLUMN_RANDO_STATUS)) {
+            dropAllAndCreate(db);
+        }
+    }
+
+    private void dropAllAndCreate(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS " + RandoTable.NAME);
         db.execSQL("DROP TABLE IF EXISTS " + RandoUploadTable.NAME);
         onCreate(db);
     }
 
-    private void upgradeTo10(SQLiteDatabase db){
-        db.execSQL("ALTER TABLE " + RandoTable.NAME + " ADD COLUMN " + RandoTable.COLUMN_DETECTED + " TEXT");
+    private boolean isRandoTableColumnExist(SQLiteDatabase db, String columnName) {
+        Cursor c = null;
+        try {
+            c = db.rawQuery("select * from " + RandoTable.NAME + " limit 1", null);
+            if (c != null && c.getColumnIndex(columnName) > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            Log.e(RandoDBHelper.class.toString(), e.getMessage(), e);
+        } finally {
+            if (c != null)
+                c.close();
+        }
+        return false;
     }
 
 
@@ -96,7 +125,7 @@ public class RandoDBHelper extends SQLiteOpenHelper {
 
         public static final String[] ALL_COLUMNS = {
                 COLUMN_ID, COLUMN_USER_RANDO_ID, COLUMN_USER_RANDO_URL, COLUMN_USER_RANDO_URL_SMALL, COLUMN_USER_RANDO_URL_MEDIUM,
-                COLUMN_USER_RANDO_URL_LARGE, COLUMN_USER_RANDO_DATE, COLUMN_USER_MAP_URL, COLUMN_USER_MAP_URL_SMALL, COLUMN_USER_MAP_URL_MEDIUM, COLUMN_USER_MAP_URL_LARGE, COLUMN_RANDO_STATUS,COLUMN_DETECTED};
+                COLUMN_USER_RANDO_URL_LARGE, COLUMN_USER_RANDO_DATE, COLUMN_USER_MAP_URL, COLUMN_USER_MAP_URL_SMALL, COLUMN_USER_MAP_URL_MEDIUM, COLUMN_USER_MAP_URL_LARGE, COLUMN_RANDO_STATUS, COLUMN_DETECTED};
 
         public static final String CREATE_TABLE_SQL = "CREATE TABLE " + RandoTable.NAME +
                 " (" + COLUMN_ID + " integer primary key autoincrement, " +
