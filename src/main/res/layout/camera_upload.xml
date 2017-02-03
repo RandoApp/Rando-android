@@ -32,6 +32,6 @@
         android:layout_marginBottom="@dimen/camera_button_margin_bottom"
         android:background="@drawable/upload_image_background"
         android:scaleType="center"
-        android:src="@drawable/upload" />
+        android:src="@drawable/ic_done_white_48dp" />
 
 </RelativeLayout>

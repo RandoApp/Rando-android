@@ -7,7 +7,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class BackgroundPreprocessRequest extends JsonObjectRequest {
