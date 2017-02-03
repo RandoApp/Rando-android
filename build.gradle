@@ -90,7 +90,7 @@ model {
         debug {
             debuggable true
             minifyEnabled false
-            testCoverageEnabled true
+            testCoverageEnabled false
             buildConfigFields.with {
                 create() {
                     type = "String"

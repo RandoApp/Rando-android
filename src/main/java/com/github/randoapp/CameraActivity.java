@@ -19,6 +19,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -87,6 +88,13 @@ public class CameraActivity extends Activity {
     private Handler mBackgroundHandler;
     private FirebaseAnalytics mFirebaseAnalytics;
 
+    private static final SparseArrayCompat<Integer> CAMERA_FACING_ICONS = new SparseArrayCompat<>();
+
+    static {
+        CAMERA_FACING_ICONS.put(CameraView.FACING_BACK, R.drawable.ic_camera_front_white_48dp);
+        CAMERA_FACING_ICONS.put(CameraView.FACING_FRONT, R.drawable.ic_camera_rear_white_48dp);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,7 +121,6 @@ public class CameraActivity extends Activity {
         layoutParams.setMargins(leftRightMargin, topBottomMargin, leftRightMargin, topBottomMargin);
 
         cameraView.setLayoutParams(layoutParams);
-        cameraView.setFacing(Preferences.getCameraFacing());
         cameraView.setFlash(Preferences.getCameraFlashMode());
 
         Log.d(CameraCaptureFragment.class, leftRightMargin + " " + topBottomMargin + " " + cameraView.getAspectRatio() + " ");
@@ -132,7 +139,9 @@ public class CameraActivity extends Activity {
         });
 
         if (Camera.getNumberOfCameras() > 1) {
-            ImageButton cameraSwitchButton = (ImageButton) findViewById(R.id.camera_switch_button);
+            final ImageButton cameraSwitchButton = (ImageButton) findViewById(R.id.camera_switch_button);
+            cameraView.setFacing(Preferences.getCameraFacing());
+            cameraSwitchButton.setBackgroundResource(CAMERA_FACING_ICONS.get(cameraView.getFacing()));
             cameraSwitchButton.setVisibility(View.VISIBLE);
             cameraSwitchButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -141,6 +150,7 @@ public class CameraActivity extends Activity {
                         int facing = cameraView.getFacing() == CameraView.FACING_FRONT ?
                                 CameraView.FACING_BACK : CameraView.FACING_FRONT;
                         cameraView.setFacing(facing);
+                        cameraSwitchButton.setBackgroundResource(CAMERA_FACING_ICONS.get(facing));
                         Preferences.setCameraFacing(facing);
                     }
                 }
