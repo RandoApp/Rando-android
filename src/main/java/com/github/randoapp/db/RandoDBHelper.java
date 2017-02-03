@@ -14,6 +14,8 @@ public class RandoDBHelper extends SQLiteOpenHelper {
     private static RandoDBHelper helperInstance;
     private SQLiteDatabase db;
 
+    private String LOG_TAG = "RandoDBHelper";
+
     private RandoDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -50,7 +52,7 @@ public class RandoDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.w(RandoDBHelper.class.getName(),
+        Log.d(LOG_TAG,
                 "Upgrading database from version " + oldVersion + " to "
                         + newVersion + ", which will destroy all old data"
         );
@@ -73,16 +75,19 @@ public class RandoDBHelper extends SQLiteOpenHelper {
     }
 
     private void upgradeTo10(SQLiteDatabase db) {
+        Log.d(LOG_TAG, "Upgrading database from prior 10 version");
         db.execSQL("ALTER TABLE " + RandoTable.NAME + " ADD COLUMN " + RandoTable.COLUMN_DETECTED + " TEXT");
     }
 
     private void upgradeTo11(SQLiteDatabase db) {
+        Log.d(LOG_TAG, "Upgrading database from prior 10 version");
         if (!isRandoTableColumnExist(db, RandoTable.COLUMN_RANDO_STATUS)) {
             dropAllAndCreate(db);
         }
     }
 
     private void dropAllAndCreate(SQLiteDatabase db) {
+        Log.d(LOG_TAG, "Drop all tables and recreate which will destroy all old data");
         db.execSQL("DROP TABLE IF EXISTS " + RandoTable.NAME);
         db.execSQL("DROP TABLE IF EXISTS " + RandoUploadTable.NAME);
         onCreate(db);
