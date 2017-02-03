@@ -98,7 +98,7 @@ public class RandoListAdapter extends BaseAdapter {
             imageSize = getRandoImageSize(container);
         }
 
-        Log.i(RandoListAdapter.class, "isStranger", String.valueOf(isStranger), "Size:", String.valueOf(size), "Position", String.valueOf(position));
+        Log.d(RandoListAdapter.class, "isStranger", String.valueOf(isStranger), "Size:", String.valueOf(size), "Position", String.valueOf(position));
 
         if (convertView != null) {
             holder = (ViewHolder) convertView.getTag();
@@ -114,7 +114,7 @@ public class RandoListAdapter extends BaseAdapter {
         loadImages(holder, holder.rando);
 
         if (holder.rando.isUnwanted()) {
-            UnwantedRandoView unwantedRandoView = new UnwantedRandoView(holder.randoItemLayout.getContext());
+            UnwantedRandoView unwantedRandoView = new UnwantedRandoView(convertView.getContext());
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
             layoutParams.setMargins(convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left),
                     convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
