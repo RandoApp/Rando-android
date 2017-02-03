@@ -6,7 +6,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 
 import com.github.randoapp.R;
-import com.makeramen.RoundedImageView;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 
 public class UnwantedRandoView extends RelativeLayout {
