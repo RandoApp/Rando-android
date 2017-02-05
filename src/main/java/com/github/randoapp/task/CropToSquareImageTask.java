@@ -37,13 +37,13 @@ public class CropToSquareImageTask implements Runnable {
         options.inPurgeable = true;
         options.inInputShareable = true;
 
-        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length, options);
         int rotateDegree = calculateImageRotation(data);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length, options);
 
         data = null;
-        JniBitmapHolder bitmapHolder = new JniBitmapHolder();
-        bitmapHolder.storeBitmap(bitmap);
+        JniBitmapHolder bitmapHolder = new JniBitmapHolder(bitmap);
         bitmap.recycle();
+        bitmap = null;
 
         int size = Math.min(options.outWidth, options.outHeight);
 
@@ -70,8 +70,6 @@ public class CropToSquareImageTask implements Runnable {
             bitmapHolder.flipBitmapHorizontal();
         }
         File file = saveBitmap(bitmapHolder.getBitmapAndFree());
-        bitmap.recycle();
-        bitmap = null;
         return file;
     }
 

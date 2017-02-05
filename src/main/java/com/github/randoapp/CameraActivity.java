@@ -314,6 +314,7 @@ public class CameraActivity extends Activity {
         @Override
         public void onPictureTaken(CameraView cameraView, final byte[] data) {
             Log.d(CameraView.Callback.class, "onPictureTaken " + data.length);
+            cameraView.stop();
             getBackgroundHandler().post(new CropToSquareImageTask(data, cameraView.getFacing() == CameraView.FACING_FRONT, getBaseContext()));
             progressBar.setVisibility(View.VISIBLE);
         }
