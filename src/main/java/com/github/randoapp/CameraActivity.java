@@ -161,6 +161,7 @@ public class CameraActivity extends Activity {
                         int facing = cameraView.getFacing() == CameraView.FACING_FRONT ?
                                 CameraView.FACING_BACK : CameraView.FACING_FRONT;
                         imageViewAnimatedChange(cameraSwitchButton, CAMERA_FACING_ICONS.get(facing));
+                        enableButtons(false);
                         cameraView.setFacing(facing);
                         Preferences.setCameraFacing(facing);
                     }
@@ -358,6 +359,7 @@ public class CameraActivity extends Activity {
         @Override
         public void onCameraClosed(CameraView cameraView) {
             Log.d(CameraView.Callback.class, "onCameraClosed");
+            enableButtons(false);
         }
 
         @Override
