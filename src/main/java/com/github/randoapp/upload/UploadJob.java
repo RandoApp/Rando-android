@@ -16,6 +16,7 @@ import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.db.model.RandoUpload;
 import com.github.randoapp.log.Log;
+import com.github.randoapp.util.FileUtil;
 import com.github.randoapp.util.NetworkUtil;
 
 import org.json.JSONException;
@@ -67,6 +68,7 @@ public class UploadJob extends Job {
                         RandoDAO.createRando(rando);
                     }
                     Log.d(UploadJob.class, "Delete rando", randoToUpload.toString());
+                    FileUtil.removeFileIfExist(randoToUpload.file);
                     RandoDAO.deleteRandoToUpload(randoToUpload);
                     Intent intent = new Intent(Constants.UPLOAD_SERVICE_BROADCAST_EVENT);
                     UploadJob.this.getContext().sendBroadcast(intent);
@@ -101,6 +103,7 @@ public class UploadJob extends Job {
                                 UploadJob.this.getContext().sendBroadcast(intent);
                             } else if (networkResponse.statusCode == 400) {
                                 errorMessage = message + " Wrong Request when uploading Rando: " + randoToUpload.toString();
+                                FileUtil.removeFileIfExist(randoToUpload.file);
                                 RandoDAO.deleteRandoToUpload(randoToUpload);
                             } else if (networkResponse.statusCode == 500) {
                                 errorMessage = message + " Something is getting wrong";

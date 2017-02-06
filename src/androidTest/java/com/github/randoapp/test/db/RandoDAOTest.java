@@ -371,7 +371,7 @@ public class RandoDAOTest {
 
     @Test
     public void testGetInRandosNoInRandos(){
-        List<Rando> randos = new ArrayList<Rando>(2);
+        List<Rando> randos = new ArrayList<>(2);
         Rando rando = getRandomRando(Rando.Status.OUT);
         randos.add(rando);
         RandoDAO.createRando(rando);

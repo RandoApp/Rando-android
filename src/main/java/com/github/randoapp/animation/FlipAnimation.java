@@ -85,7 +85,7 @@ public class FlipAnimation extends Animation {
      *
      * @author Ephraim A. Tekle
      */
-    public static enum ScaleUpDownEnum {
+    public enum ScaleUpDownEnum {
         /**
          * The view will be scaled up from the scale value until it's at 100% zoom level (i.e. no zoom).
          */

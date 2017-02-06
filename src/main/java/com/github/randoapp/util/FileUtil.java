@@ -49,41 +49,11 @@ public class FileUtil {
         return mediaFile;
     }
 
-    public static void writeImageFile(byte[] data, String filename) {
-        try {
-            FileOutputStream fos = new FileOutputStream(filename);
-            fos.write(data);
-            fos.close();
-        } catch (FileNotFoundException e) {
-            Log.d(FileUtil.class, "File not found: ", e.getMessage());
-        } catch (IOException e) {
-            Log.d(FileUtil.class, "Error accessing file: " + e.getMessage());
+    public static void removeFileIfExist(String filename) {
+        File file = new File(filename);
+        if (file.isFile()) {
+            file.delete();
         }
-    }
-
-    public static String writeImageToTempFile(byte[] data) {
-        File pictureFile = null;
-        try {
-            File outputDir = context.getCacheDir(); // context being the Activity pointer
-            pictureFile = File.createTempFile("camera_image", ".jpg", outputDir);
-        } catch (IOException e) {
-            Log.d(FileUtil.class, "Error creating media file, check storage permissions: ",
-                    e.getMessage());
-            return null;
-        }
-
-        try {
-            FileOutputStream fos = new FileOutputStream(pictureFile);
-            fos.write(data);
-            fos.close();
-        } catch (FileNotFoundException e) {
-            Log.d(FileUtil.class, "File not found: ", e.getMessage());
-            return null;
-        } catch (IOException e) {
-            Log.d(FileUtil.class, "Error accessing file: " + e.getMessage());
-            return null;
-        }
-        return pictureFile.getAbsolutePath();
     }
 
     public static void copy(File src, File dst) throws IOException {

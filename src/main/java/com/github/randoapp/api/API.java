@@ -283,10 +283,10 @@ public class API {
 
     private static JSONObject readJSON(HttpResponse response) throws Exception {
         try {
-            String line = "";
             StringBuilder json = new StringBuilder();
             BufferedReader buffer = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
+            String line;
             while ((line = buffer.readLine()) != null) {
                 json.append(line);
             }
