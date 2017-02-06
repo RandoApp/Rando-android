@@ -9,12 +9,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -25,7 +25,6 @@ import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -299,10 +298,13 @@ public class CameraActivity extends Activity {
     private class CaptureButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            Log.d(CameraCaptureFragment.class, "Take Pic Click ");
+            Log.d(CameraActivity.class, "Take Pic Click ");
 
             enableButtons(false);
             cameraView.takePicture();
+            if (ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
+                ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(50);
+            }
             if (Build.VERSION.SDK_INT >= 11) {
                 cameraView.setAlpha(0.7f);
             }
