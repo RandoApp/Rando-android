@@ -72,9 +72,6 @@ public class Constants {
     public static final String AUTH_TOKEN_PARAM = "token";
     public static final String SIGNUP_EMAIL_PARAM = "email";
     public static final String SIGNUP_PASSWORD_PARAM = "password";
-    public static final String FACEBOOK_EMAIL_PARAM = "email";
-    public static final String FACEBOOK_ID_PARAM = "id";
-    public static final String FACEBOOK_TOKEN_PARAM = "token";
     public static final String GOOGLE_EMAIL_PARAM = "email";
     public static final String GOOGLE_TOKEN_PARAM = "token";
     public static final String GOOGLE_FAMILY_NAME_PARAM = "family_name";
@@ -110,7 +107,6 @@ public class Constants {
 
     public static final String IMAGE_MIME_TYPE = "image/jpeg";
     public static final String SIGNUP_URL = SERVER_URL + "/user";
-    public static final String FACEBOOK_URL = SERVER_URL + "/facebook";
     public static final String GOOGLE_URL = SERVER_URL + "/google";
     public static final String ANONYMOUS_URL = SERVER_URL + "/anonymous";
     public static final String LOGOUT_URL = SERVER_URL + "/logout";

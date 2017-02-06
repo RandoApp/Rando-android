@@ -61,10 +61,6 @@ import static com.github.randoapp.Constants.API_CONNECTION_TIMEOUT;
 import static com.github.randoapp.Constants.AUTHORIZATION_HEADER;
 import static com.github.randoapp.Constants.DELETE_URL;
 import static com.github.randoapp.Constants.ERROR_CODE_PARAM;
-import static com.github.randoapp.Constants.FACEBOOK_EMAIL_PARAM;
-import static com.github.randoapp.Constants.FACEBOOK_ID_PARAM;
-import static com.github.randoapp.Constants.FACEBOOK_TOKEN_PARAM;
-import static com.github.randoapp.Constants.FACEBOOK_URL;
 import static com.github.randoapp.Constants.FETCH_USER_URL;
 import static com.github.randoapp.Constants.FIREBASE_INSTANCE_ID_HEADER;
 import static com.github.randoapp.Constants.FIREBASE_INSTANCE_ID_PARAM;
@@ -105,28 +101,6 @@ public class API {
             }
         } catch (IOException e) {
             Log.e(API.class, e.getStackTrace().toString());
-            throw processError(e);
-        } finally {
-            if (response != null) {
-                EntityUtils.consume(response.getEntity());
-            }
-        }
-    }
-
-    public static void facebook(String id, String email, String token) throws Exception {
-        HttpResponse response = null;
-        try {
-            HttpPost request = new HttpPost(FACEBOOK_URL);
-            addParamsToRequest(request, FACEBOOK_ID_PARAM, id, FACEBOOK_EMAIL_PARAM, email, FACEBOOK_TOKEN_PARAM, token, FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
-
-            response = VolleySingleton.getInstance().getHttpClient().execute(request);
-            if (response.getStatusLine().getStatusCode() == HTTP_OK) {
-                String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
-                Preferences.setAuthToken(authToken);
-            } else {
-                throw processServerError(readJSON(response));
-            }
-        } catch (IOException e) {
             throw processError(e);
         } finally {
             if (response != null) {

@@ -41,14 +41,6 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
     }
 
     @LargeTest
-    public void ignoretestOnStartNotLoggedIn() {
-        onView(withId(R.id.signupButton)).check(matches(isDisplayed()));
-        onView(withId(R.id.facebookButton)).check(matches(isDisplayed()));
-        onView(withId(R.id.emailEditText)).check(matches(isDisplayed()));
-        onView(withId(R.id.passwordEditText)).check(matches(isDisplayed()));
-    }
-
-    @LargeTest
     public void ignoretestSkip() {
         onView(withId(R.id.auth_root_scroll)).check(matches(isDisplayed()));
         onView(withId(R.id.textViewSkipLink)).perform(scrollTo());
