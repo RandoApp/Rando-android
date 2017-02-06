@@ -312,10 +312,12 @@ public class CameraActivity extends Activity {
         anim_out.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
+                //Do nothing
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {
+                //Do nothing
             }
 
             @Override
