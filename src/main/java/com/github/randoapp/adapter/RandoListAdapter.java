@@ -10,11 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
@@ -143,8 +143,6 @@ public class RandoListAdapter extends BaseAdapter {
         holder.image.setLayoutParams(randoImagesLayout);
         holder.map.setLayoutParams(randoImagesLayout);
 
-        holder.spinner = (ImageView) convertView.findViewWithTag("spinner");
-
         convertView.setTag(holder);
         return holder;
     }
@@ -194,8 +192,7 @@ public class RandoListAdapter extends BaseAdapter {
                             try {
                                 holder.shareButton.setVisibility(View.GONE);
                                 holder.deleteButton.setVisibility(View.GONE);
-                                holder.spinner.setVisibility(View.VISIBLE);
-                                holder.spinner.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.rotate_indefinitely));
+                                showSpinner(holder, true);
                                 API.delete(holder.rando.randoId, new DeleteRandoListener() {
                                     @Override
                                     public void onOk() {
@@ -205,8 +202,7 @@ public class RandoListAdapter extends BaseAdapter {
                                                 Toast.LENGTH_LONG).show();
                                         setAlpha(holder.image, 1f);
                                         setAlpha(holder.map, 1f);
-                                        holder.spinner.clearAnimation();
-                                        holder.spinner.setVisibility(View.GONE);
+                                        showSpinner(holder, false);
                                     }
 
                                     @Override
@@ -215,17 +211,19 @@ public class RandoListAdapter extends BaseAdapter {
                                                 Toast.LENGTH_LONG).show();
                                         holder.shareButton.setVisibility(View.VISIBLE);
                                         holder.deleteButton.setVisibility(View.VISIBLE);
-                                        holder.spinner.setVisibility(View.GONE);
-                                        holder.spinner.clearAnimation();
+                                        showSpinner(holder, false);
                                     }
                                 });
                             } catch (Exception e) {
                                 Toast.makeText(v.getContext(), R.string.error_unknown_err,
                                         Toast.LENGTH_LONG).show();
-                                holder.shareButton.setVisibility(View.VISIBLE);
-                                holder.deleteButton.setVisibility(View.VISIBLE);
-                                holder.spinner.setVisibility(View.GONE);
-                                holder.spinner.clearAnimation();
+                                if (holder.shareButton != null) {
+                                    holder.shareButton.setVisibility(View.VISIBLE);
+                                }
+                                if (holder.deleteButton != null) {
+                                    holder.deleteButton.setVisibility(View.VISIBLE);
+                                }
+                                showSpinner(holder, false);
                             }
                         }
                     });
@@ -246,6 +244,19 @@ public class RandoListAdapter extends BaseAdapter {
         };
     }
 
+    private void showSpinner(ViewHolder holder, boolean show) {
+        if (show) {
+            holder.spinner = new ProgressBar(holder.randoItemLayout.getContext(), null, android.R.attr.progressBarStyleLarge);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+            holder.spinner.setIndeterminate(true);
+            holder.randoItemLayout.addView(holder.spinner, holder.randoItemLayout.getChildCount(), layoutParams);
+        } else if (holder.spinner != null) {
+            holder.randoItemLayout.removeView(holder.spinner);
+            holder.spinner = null;
+        }
+    }
+
     private View.OnClickListener createRandoOnClickListener(final ViewHolder holder) {
         return new View.OnClickListener() {
             @Override
@@ -263,8 +274,7 @@ public class RandoListAdapter extends BaseAdapter {
                         public void onClick(DialogInterface dialog, int id) {
                             Analytics.logDeleteUnwantedRandoDialog(mFirebaseAnalytics);
                             try {
-                                holder.spinner.setVisibility(View.VISIBLE);
-                                holder.spinner.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.rotate_indefinitely));
+                                showSpinner(holder, true);
                                 API.delete(holder.rando.randoId, new DeleteRandoListener() {
                                     @Override
                                     public void onOk() {
@@ -272,23 +282,20 @@ public class RandoListAdapter extends BaseAdapter {
                                         notifyDataSetChanged();
                                         Toast.makeText(v.getContext(), R.string.rando_deleted,
                                                 Toast.LENGTH_LONG).show();
-                                        holder.spinner.setVisibility(View.GONE);
-                                        holder.spinner.clearAnimation();
+                                        showSpinner(holder, false);
                                     }
 
                                     @Override
                                     public void onError() {
                                         Toast.makeText(v.getContext(), R.string.error_unknown_err,
                                                 Toast.LENGTH_LONG).show();
-                                        holder.spinner.setVisibility(View.GONE);
-                                        holder.spinner.clearAnimation();
+                                        showSpinner(holder, false);
                                     }
                                 });
                             } catch (Exception e) {
                                 Toast.makeText(v.getContext(), R.string.error_unknown_err,
                                         Toast.LENGTH_LONG).show();
-                                holder.spinner.setVisibility(View.GONE);
-                                holder.spinner.clearAnimation();
+                                showSpinner(holder, false);
                             }
                         }
                     });
@@ -347,8 +354,7 @@ public class RandoListAdapter extends BaseAdapter {
 
         setAlpha(holder.image, 1f);
         setAlpha(holder.map, 1f);
-        holder.spinner.clearAnimation();
-        holder.spinner.setVisibility(View.GONE);
+        showSpinner(holder, false);
 
         recycleActionsLayer(holder);
 
@@ -545,7 +551,7 @@ public class RandoListAdapter extends BaseAdapter {
         public Button deleteButton;
         public Button shareButton;
 
-        public ImageView spinner;
+        public ProgressBar spinner;
 
         public ImageLoader.ImageContainer randoContainer;
         public ImageLoader.ImageContainer mapContainer;
