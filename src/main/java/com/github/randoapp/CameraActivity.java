@@ -32,8 +32,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.github.randoapp.animation.AnimationFactory;
-import com.github.randoapp.camera.CameraCaptureFragment;
-import com.github.randoapp.camera.CameraUploadFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.task.CropToSquareImageTask;
@@ -60,11 +58,6 @@ public class CameraActivity extends Activity {
             if (extra != null) {
                 String photoPath = (String) extra.get(Constants.RANDO_PHOTO_PATH);
                 if (photoPath != null && !photoPath.isEmpty()) {
-
-                    CameraUploadFragment uploadFragment = new CameraUploadFragment();
-                    Bundle args = new Bundle();
-                    args.putString(Constants.FILEPATH, photoPath);
-                    uploadFragment.setArguments(args);
 
                     Intent activityIntent = new Intent(CameraActivity.this, ImageReviewUploadActivity.class);
                     activityIntent.putExtra(Constants.FILEPATH, photoPath);
@@ -128,7 +121,7 @@ public class CameraActivity extends Activity {
         cameraView.setLayoutParams(layoutParams);
         cameraView.setFlash(Preferences.getCameraFlashMode());
 
-        Log.d(CameraCaptureFragment.class, leftRightMargin + " " + topBottomMargin + " " + cameraView.getAspectRatio() + " ");
+        Log.d(CameraActivity.class, leftRightMargin + " " + topBottomMargin + " " + cameraView.getAspectRatio() + " ");
 
         captureButton = (ImageView) findViewById(R.id.capture_button);
         captureButton.setOnClickListener(new CaptureButtonListener());
