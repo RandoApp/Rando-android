@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,12 +24,15 @@ import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.github.randoapp.animation.AnimationFactory;
 import com.github.randoapp.camera.CameraCaptureFragment;
 import com.github.randoapp.camera.CameraUploadFragment;
 import com.github.randoapp.log.Log;
@@ -88,6 +92,7 @@ public class CameraActivity extends Activity {
     private LinearLayout progressBar;
     private Handler mBackgroundHandler;
     private FirebaseAnalytics mFirebaseAnalytics;
+    private Animation[] leftToRightAnimation;
 
     private static final SparseArrayCompat<Integer> CAMERA_FACING_ICONS = new SparseArrayCompat<>();
 
@@ -140,9 +145,10 @@ public class CameraActivity extends Activity {
         });
 
         if (Camera.getNumberOfCameras() > 1) {
+            leftToRightAnimation = AnimationFactory.flipAnimation(getResources().getDimensionPixelSize(R.dimen.switch_camera_button_size), AnimationFactory.FlipDirection.LEFT_RIGHT, 150, null);
             cameraSwitchButton = (ImageButton) findViewById(R.id.camera_switch_button);
             RelativeLayout.LayoutParams cameraSwitchButtonLayoutParams = (RelativeLayout.LayoutParams) cameraSwitchButton.getLayoutParams();
-            int marginLeft = (displayMetrics.widthPixels - getResources().getDimensionPixelSize(R.dimen.rando_button_size))/4 - getResources().getDimensionPixelSize(R.dimen.switch_camera_button_size)/2;
+            int marginLeft = (displayMetrics.widthPixels - getResources().getDimensionPixelSize(R.dimen.rando_button_size)) / 4 - getResources().getDimensionPixelSize(R.dimen.switch_camera_button_size) / 2;
             cameraSwitchButtonLayoutParams.setMargins(marginLeft, 0, 0, getResources().getDimensionPixelSize(R.dimen.switch_camera_margin_bottom));
             cameraSwitchButton.setLayoutParams(cameraSwitchButtonLayoutParams);
             cameraView.setFacing(Preferences.getCameraFacing());
@@ -155,8 +161,8 @@ public class CameraActivity extends Activity {
                     if (cameraView != null) {
                         int facing = cameraView.getFacing() == CameraView.FACING_FRONT ?
                                 CameraView.FACING_BACK : CameraView.FACING_FRONT;
+                        imageViewAnimatedChange(cameraSwitchButton, CAMERA_FACING_ICONS.get(facing));
                         cameraView.setFacing(facing);
-                        cameraSwitchButton.setImageResource(CAMERA_FACING_ICONS.get(facing));
                         Preferences.setCameraFacing(facing);
                     }
                 }
@@ -253,7 +259,6 @@ public class CameraActivity extends Activity {
         }
     }
 
-
     public void updateLocation() {
         if (LocationHelper.isGpsEnabled(this)) {
 
@@ -303,6 +308,40 @@ public class CameraActivity extends Activity {
             }
             Analytics.logTakeRando(mFirebaseAnalytics);
         }
+    }
+
+    private void imageViewAnimatedChange(final ImageView v, final int imageResource) {
+        final Animation anim_out = leftToRightAnimation[0];
+        final Animation anim_in = leftToRightAnimation[1];
+        anim_out.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                v.setImageResource(imageResource);
+                anim_in.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                    }
+                });
+                v.startAnimation(anim_in);
+            }
+        });
+        v.startAnimation(anim_out);
     }
 
     private CameraView.Callback mCallback
