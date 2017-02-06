@@ -1,6 +1,5 @@
 package com.github.randoapp.task;
 
-import com.facebook.Session;
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.api.API;
@@ -15,7 +14,6 @@ public class LogoutTask extends BaseTask {
     public Integer run() {
         try {
             logoutGoogle();
-            logoutFacebook();
             API.logout();
             Preferences.removeAuthToken();
             Preferences.removeAccount();
@@ -27,17 +25,6 @@ public class LogoutTask extends BaseTask {
         } catch (Exception exc) {
             data.put(Constants.ERROR, exc.getMessage());
             return ERROR;
-        }
-    }
-
-    private void logoutFacebook() {
-        if (Session.getActiveSession() != null) {
-            Session.getActiveSession().closeAndClearTokenInformation();
-        } else {
-            Session session = Session.openActiveSessionFromCache(App.context);
-            if (session != null) {
-                session.closeAndClearTokenInformation();
-            }
         }
     }
 
