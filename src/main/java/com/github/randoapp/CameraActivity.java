@@ -324,14 +324,17 @@ public class CameraActivity extends Activity {
                 anim_in.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {
+                        //do nothing
                     }
 
                     @Override
                     public void onAnimationRepeat(Animation animation) {
+                        //do nothing
                     }
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
+                        //do nothing
                     }
                 });
                 v.startAnimation(anim_in);

@@ -65,6 +65,8 @@ public class CropToSquareImageTask implements Runnable {
             case 270:
                 bitmapHolder.rotateBitmapCcw90();
                 break;
+            default:
+                break;
         }
         if (isFrontCamera){
             bitmapHolder.flipBitmapHorizontal();
