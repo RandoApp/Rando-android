@@ -59,7 +59,6 @@ import static com.github.randoapp.Constants.ANONYMOUS_ID_PARAM;
 import static com.github.randoapp.Constants.ANONYMOUS_URL;
 import static com.github.randoapp.Constants.API_CONNECTION_TIMEOUT;
 import static com.github.randoapp.Constants.AUTHORIZATION_HEADER;
-import static com.github.randoapp.Constants.UPLOAD_CONNECTION_TIMEOUT;
 import static com.github.randoapp.Constants.DELETE_URL;
 import static com.github.randoapp.Constants.ERROR_CODE_PARAM;
 import static com.github.randoapp.Constants.FACEBOOK_EMAIL_PARAM;
@@ -85,8 +84,9 @@ import static com.github.randoapp.Constants.SIGNUP_PASSWORD_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_URL;
 import static com.github.randoapp.Constants.UNAUTHORIZED_CODE;
 import static com.github.randoapp.Constants.UPDATED;
+import static com.github.randoapp.Constants.UPLOAD_CONNECTION_TIMEOUT;
 import static com.github.randoapp.Constants.UPLOAD_RANDO_URL;
-import static org.apache.http.HttpStatus.SC_OK;
+import static java.net.HttpURLConnection.HTTP_OK;
 
 public class API {
 
@@ -97,7 +97,7 @@ public class API {
             addParamsToRequest(request, SIGNUP_EMAIL_PARAM, email, SIGNUP_PASSWORD_PARAM, password, FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
             response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
-            if (response.getStatusLine().getStatusCode() == SC_OK) {
+            if (response.getStatusLine().getStatusCode() == HTTP_OK) {
                 String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
                 Preferences.setAuthToken(authToken);
             } else {
@@ -120,7 +120,7 @@ public class API {
             addParamsToRequest(request, FACEBOOK_ID_PARAM, id, FACEBOOK_EMAIL_PARAM, email, FACEBOOK_TOKEN_PARAM, token, FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
 
             response = VolleySingleton.getInstance().getHttpClient().execute(request);
-            if (response.getStatusLine().getStatusCode() == SC_OK) {
+            if (response.getStatusLine().getStatusCode() == HTTP_OK) {
                 String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
                 Preferences.setAuthToken(authToken);
             } else {
@@ -142,7 +142,7 @@ public class API {
             addParamsToRequest(request, GOOGLE_EMAIL_PARAM, email, GOOGLE_TOKEN_PARAM, token, GOOGLE_FAMILY_NAME_PARAM, familyName, FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
 
             response = VolleySingleton.getInstance().getHttpClient().execute(request);
-            if (response.getStatusLine().getStatusCode() == SC_OK) {
+            if (response.getStatusLine().getStatusCode() == HTTP_OK) {
                 String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
                 Preferences.setAuthToken(authToken);
             } else {
@@ -165,7 +165,7 @@ public class API {
 
             response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
-            if (response.getStatusLine().getStatusCode() == SC_OK) {
+            if (response.getStatusLine().getStatusCode() == HTTP_OK) {
                 String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
                 Preferences.setAuthToken(authToken);
             } else {
@@ -188,7 +188,7 @@ public class API {
             addFirebaseInstanceIdHeader(request);
 
             response = VolleySingleton.getInstance().getHttpClient().execute(request);
-            if (response.getStatusLine().getStatusCode() != SC_OK) {
+            if (response.getStatusLine().getStatusCode() != HTTP_OK) {
                 throw processServerError(readJSON(response));
             }
         } catch (IOException e) {

@@ -156,8 +156,6 @@ dependencies {
     compile project(':cameraview')
 
     compile 'com.android.support:appcompat-v7:25+'
-    compile 'org.apache.httpcomponents:httpcore:4.3'
-    compile 'org.apache.httpcomponents:httpmime:4.3.1'
     compile 'com.makeramen:roundedimageview:2.3.0'
     compile 'com.facebook.android:facebook-android-sdk:3.23.+'
     compile 'ch.acra:acra:4.9.2'
