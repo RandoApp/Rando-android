@@ -24,19 +24,6 @@ public class NetworkUtil {
         return TYPE_NOT_CONNECTED;
     }
 
-    public static int getConnectivityStatusString(Context context) {
-        int conn = NetworkUtil.getConnectivityStatus(context);
-        int status = 0;
-        if (conn == NetworkUtil.TYPE_WIFI) {
-            status = NETWORK_STAUS_WIFI;
-        } else if (conn == NetworkUtil.TYPE_MOBILE) {
-            status =NETWORK_STATUS_MOBILE;
-        } else if (conn == NetworkUtil.TYPE_NOT_CONNECTED) {
-            status = NETWORK_STATUS_NOT_CONNECTED;
-        }
-        return status;
-    }
-
     public static boolean isOnline(Context context) {
         return getConnectivityStatus(context) != NETWORK_STATUS_NOT_CONNECTED;
     }
