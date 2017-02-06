@@ -29,6 +29,10 @@
     <dimen name="takepicture_default_button_size">96dp</dimen>
     <dimen name="takepicture_close_button_size">48dp</dimen>
 
+    <dimen name="switch_camera_button_size">48dp</dimen>
+    <dimen name="switch_camera_margin_bottom">30dp</dimen>
+    <dimen name="camera_button_margin_left">35dp</dimen>
+
     <dimen name="relative_layout_margin_top">5dp</dimen>
     <dimen name="rando_pair_padding_bottom">6dp</dimen>
     <dimen name="rando_margin_portrait">30dp</dimen>

@@ -3,9 +3,12 @@ package com.github.randoapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Display;
 import android.view.View;
@@ -73,6 +76,10 @@ public class ImageReviewUploadActivity extends FragmentActivity {
         public void onClick(View v) {
             if (originalPicFileName == null) {
                 return;
+            }
+
+            if (ContextCompat.checkSelfPermission(v.getContext(), android.Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
+                ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(50);
             }
 
             uploadButton.setEnabled(false);

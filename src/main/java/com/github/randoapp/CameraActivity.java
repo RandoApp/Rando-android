@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -23,12 +24,14 @@ import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.github.randoapp.animation.AnimationFactory;
 import com.github.randoapp.camera.CameraCaptureFragment;
 import com.github.randoapp.camera.CameraUploadFragment;
 import com.github.randoapp.log.Log;
@@ -84,15 +87,17 @@ public class CameraActivity extends Activity {
 
     private CameraView cameraView;
     private ImageView captureButton;
+    private ImageButton cameraSwitchButton;
     private LinearLayout progressBar;
     private Handler mBackgroundHandler;
     private FirebaseAnalytics mFirebaseAnalytics;
+    private Animation[] leftToRightAnimation;
 
     private static final SparseArrayCompat<Integer> CAMERA_FACING_ICONS = new SparseArrayCompat<>();
 
     static {
-        CAMERA_FACING_ICONS.put(CameraView.FACING_BACK, R.drawable.ic_camera_front_white_48dp);
-        CAMERA_FACING_ICONS.put(CameraView.FACING_FRONT, R.drawable.ic_camera_rear_white_48dp);
+        CAMERA_FACING_ICONS.put(CameraView.FACING_BACK, R.drawable.ic_camera_front_white_24dp);
+        CAMERA_FACING_ICONS.put(CameraView.FACING_FRONT, R.drawable.ic_camera_rear_white_24dp);
     }
 
     @Override
@@ -127,7 +132,7 @@ public class CameraActivity extends Activity {
 
         captureButton = (ImageView) findViewById(R.id.capture_button);
         captureButton.setOnClickListener(new CaptureButtonListener());
-        captureButton.setEnabled(false);
+        enableButtons(false);
 
         progressBar = (LinearLayout) findViewById(R.id.progressBar);
 
@@ -139,18 +144,25 @@ public class CameraActivity extends Activity {
         });
 
         if (Camera.getNumberOfCameras() > 1) {
-            final ImageButton cameraSwitchButton = (ImageButton) findViewById(R.id.camera_switch_button);
+            leftToRightAnimation = AnimationFactory.flipAnimation(getResources().getDimensionPixelSize(R.dimen.switch_camera_button_size), AnimationFactory.FlipDirection.LEFT_RIGHT, 150, null);
+            cameraSwitchButton = (ImageButton) findViewById(R.id.camera_switch_button);
+            RelativeLayout.LayoutParams cameraSwitchButtonLayoutParams = (RelativeLayout.LayoutParams) cameraSwitchButton.getLayoutParams();
+            int marginLeft = (displayMetrics.widthPixels - getResources().getDimensionPixelSize(R.dimen.rando_button_size)) / 4 - getResources().getDimensionPixelSize(R.dimen.switch_camera_button_size) / 2;
+            cameraSwitchButtonLayoutParams.setMargins(marginLeft, 0, 0, getResources().getDimensionPixelSize(R.dimen.switch_camera_margin_bottom));
+            cameraSwitchButton.setLayoutParams(cameraSwitchButtonLayoutParams);
             cameraView.setFacing(Preferences.getCameraFacing());
-            cameraSwitchButton.setBackgroundResource(CAMERA_FACING_ICONS.get(cameraView.getFacing()));
+            cameraSwitchButton.setImageResource(CAMERA_FACING_ICONS.get(cameraView.getFacing()));
             cameraSwitchButton.setVisibility(View.VISIBLE);
             cameraSwitchButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    enableButtons(false);
                     if (cameraView != null) {
                         int facing = cameraView.getFacing() == CameraView.FACING_FRONT ?
                                 CameraView.FACING_BACK : CameraView.FACING_FRONT;
+                        imageViewAnimatedChange(cameraSwitchButton, CAMERA_FACING_ICONS.get(facing));
+                        enableButtons(false);
                         cameraView.setFacing(facing);
-                        cameraSwitchButton.setBackgroundResource(CAMERA_FACING_ICONS.get(facing));
                         Preferences.setCameraFacing(facing);
                     }
                 }
@@ -194,18 +206,20 @@ public class CameraActivity extends Activity {
         isReturningFromLocationPermissionRequest = false;
     }
 
+    private void enableButtons(boolean enable) {
+        captureButton.setEnabled(enable);
+        if (cameraSwitchButton != null) {
+            cameraSwitchButton.setEnabled(enable);
+        }
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         cameraView.stop();
-    }
-
-    //TODO: onDestroy vs onPause: Do we really need unregisterReceiver on Destroy event?
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        if (progressBar.getVisibility() != View.GONE) {
+            progressBar.setVisibility(View.GONE);
+        }
         if (mBackgroundHandler != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 mBackgroundHandler.getLooper().quitSafely();
@@ -214,7 +228,7 @@ public class CameraActivity extends Activity {
             }
             mBackgroundHandler = null;
         }
-
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
     }
 
     @Override
@@ -244,7 +258,6 @@ public class CameraActivity extends Activity {
             }
         }
     }
-
 
     public void updateLocation() {
         if (LocationHelper.isGpsEnabled(this)) {
@@ -286,15 +299,52 @@ public class CameraActivity extends Activity {
     private class CaptureButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            Log.d(CameraCaptureFragment.class, "Take Pic Click ");
+            Log.d(CameraActivity.class, "Take Pic Click ");
 
-            captureButton.setEnabled(false);
+            enableButtons(false);
             cameraView.takePicture();
+            if (ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
+                ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(50);
+            }
             if (Build.VERSION.SDK_INT >= 11) {
                 cameraView.setAlpha(0.7f);
             }
             Analytics.logTakeRando(mFirebaseAnalytics);
         }
+    }
+
+    private void imageViewAnimatedChange(final ImageView v, final int imageResource) {
+        final Animation anim_out = leftToRightAnimation[0];
+        final Animation anim_in = leftToRightAnimation[1];
+        anim_out.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                v.setImageResource(imageResource);
+                anim_in.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                    }
+                });
+                v.startAnimation(anim_in);
+            }
+        });
+        v.startAnimation(anim_out);
     }
 
     private CameraView.Callback mCallback
@@ -303,12 +353,13 @@ public class CameraActivity extends Activity {
         @Override
         public void onCameraOpened(CameraView cameraView) {
             Log.d(CameraView.Callback.class, "onCameraOpened");
-            captureButton.setEnabled(true);
+            enableButtons(true);
         }
 
         @Override
         public void onCameraClosed(CameraView cameraView) {
             Log.d(CameraView.Callback.class, "onCameraClosed");
+            enableButtons(false);
         }
 
         @Override
