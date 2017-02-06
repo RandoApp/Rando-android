@@ -18,10 +18,10 @@
 
     <ImageButton
         android:id="@+id/back_button"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="18dp"
-        android:background="@drawable/ic_close_white_36dp"/>
+        android:background="@drawable/ic_close_grey_36dp"/>
 
     <ImageView
         android:id="@+id/upload_button"
