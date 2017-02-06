@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -144,8 +143,6 @@ public class RandoListAdapter extends BaseAdapter {
         holder.image.setLayoutParams(randoImagesLayout);
         holder.map.setLayoutParams(randoImagesLayout);
 
-        showSpinner(holder, true);
-
         convertView.setTag(holder);
         return holder;
     }
@@ -250,17 +247,10 @@ public class RandoListAdapter extends BaseAdapter {
     private void showSpinner(ViewHolder holder, boolean show) {
         if (show) {
             holder.spinner = new ProgressBar(holder.randoItemLayout.getContext(), null, android.R.attr.progressBarStyleLarge);
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(100, 100);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-            layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-            layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
             holder.spinner.setIndeterminate(true);
-            holder.spinner.setVisibility(View.VISIBLE);
-            Log.d(RandoListAdapter.class, "Spinner: child " + holder.randoItemLayout.getChildCount());
             holder.randoItemLayout.addView(holder.spinner, holder.randoItemLayout.getChildCount(), layoutParams);
-            holder.spinner.setLayoutParams(layoutParams);
-            Log.d(RandoListAdapter.class, "Spinner: child " + holder.randoItemLayout.getChildCount());
-            Log.d(RandoListAdapter.class, "Spinner:" + holder.spinner.getWidth() + "  " + holder.spinner.getHeight());
         } else if (holder.spinner != null) {
             holder.randoItemLayout.removeView(holder.spinner);
             holder.spinner = null;
