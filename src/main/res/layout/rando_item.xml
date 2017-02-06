@@ -35,15 +35,4 @@
                 app:oval="true" />
         </ViewSwitcher>
     </LinearLayout>
-
-<!--    <ProgressBar
-        style="?android:attr/progressBarStyleInverse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:gravity="center"
-        android:tag="spinner"
-        android:visibility="visible" />-->
-
 </RelativeLayout>
