@@ -214,14 +214,6 @@ public class CameraActivity extends Activity {
         if (progressBar.getVisibility() != View.GONE) {
             progressBar.setVisibility(View.GONE);
         }
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
-    }
-
-    //TODO: onDestroy vs onPause: Do we really need unregisterReceiver on Destroy event?
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         if (mBackgroundHandler != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 mBackgroundHandler.getLooper().quitSafely();
@@ -230,7 +222,7 @@ public class CameraActivity extends Activity {
             }
             mBackgroundHandler = null;
         }
-
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
     }
 
     @Override
