@@ -91,8 +91,8 @@ public class CameraActivity extends Activity {
     private static final SparseArrayCompat<Integer> CAMERA_FACING_ICONS = new SparseArrayCompat<>();
 
     static {
-        CAMERA_FACING_ICONS.put(CameraView.FACING_BACK, R.drawable.ic_camera_front_white_48dp);
-        CAMERA_FACING_ICONS.put(CameraView.FACING_FRONT, R.drawable.ic_camera_rear_white_48dp);
+        CAMERA_FACING_ICONS.put(CameraView.FACING_BACK, R.drawable.ic_camera_front_white_24dp);
+        CAMERA_FACING_ICONS.put(CameraView.FACING_FRONT, R.drawable.ic_camera_rear_white_24dp);
     }
 
     @Override
@@ -141,18 +141,18 @@ public class CameraActivity extends Activity {
         if (Camera.getNumberOfCameras() > 1) {
             final ImageButton cameraSwitchButton = (ImageButton) findViewById(R.id.camera_switch_button);
             cameraView.setFacing(Preferences.getCameraFacing());
-            cameraSwitchButton.setBackgroundResource(CAMERA_FACING_ICONS.get(cameraView.getFacing()));
+            cameraSwitchButton.setImageResource(CAMERA_FACING_ICONS.get(cameraView.getFacing()));
             cameraSwitchButton.setVisibility(View.VISIBLE);
             cameraSwitchButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (cameraView != null) {
-                        int facing = cameraView.getFacing() == CameraView.FACING_FRONT ?
-                                CameraView.FACING_BACK : CameraView.FACING_FRONT;
-                        cameraView.setFacing(facing);
-                        cameraSwitchButton.setBackgroundResource(CAMERA_FACING_ICONS.get(facing));
-                        Preferences.setCameraFacing(facing);
-                    }
+                if (cameraView != null) {
+                    int facing = cameraView.getFacing() == CameraView.FACING_FRONT ?
+                            CameraView.FACING_BACK : CameraView.FACING_FRONT;
+                    cameraView.setFacing(facing);
+                    cameraSwitchButton.setImageResource(CAMERA_FACING_ICONS.get(facing));
+                    Preferences.setCameraFacing(facing);
+                }
                 }
             });
         }

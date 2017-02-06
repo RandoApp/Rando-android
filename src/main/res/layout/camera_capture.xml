@@ -39,13 +39,14 @@
 
     <ImageButton
         android:id="@+id/camera_switch_button"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_margin="30dp"
+        android:layout_width="@dimen/switch_camera_button_size"
+        android:layout_height="@dimen/switch_camera_button_size"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:background="@drawable/ic_camera_front_white_48dp"
-        android:visibility="gone"/>
+        android:layout_margin="@dimen/switch_camera_margin"
+        android:layout_marginBottom="@dimen/camera_button_margin_bottom"
+        android:background="@drawable/switch_camera_background"
+        android:scaleType="center"
+        android:src="@drawable/ic_camera_front_white_24dp" />
 
     <ImageView
         android:id="@+id/capture_button"
