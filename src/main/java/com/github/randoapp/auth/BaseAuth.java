@@ -28,7 +28,9 @@ public abstract class BaseAuth implements View.OnClickListener {
 
         API.syncUserAsync(null, null);
         Intent intent = new Intent(Constants.AUTH_SUCCCESS_BROADCAST_EVENT);
-        fragmentActivity.sendBroadcast(intent);
+        if (fragmentActivity != null) {
+            fragmentActivity.sendBroadcast(intent);
+        }
     }
 
     private static void hideSoftKeyboard(FragmentActivity fragmentActivity) {
