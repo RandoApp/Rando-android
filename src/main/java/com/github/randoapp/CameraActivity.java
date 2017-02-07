@@ -89,8 +89,8 @@ public class CameraActivity extends Activity {
     private static final SparseArrayCompat<Integer> CAMERA_FACING_ICONS = new SparseArrayCompat<>();
 
     static {
-        CAMERA_FACING_ICONS.put(CameraView.FACING_BACK, R.drawable.ic_camera_front_white_24dp);
-        CAMERA_FACING_ICONS.put(CameraView.FACING_FRONT, R.drawable.ic_camera_rear_white_24dp);
+        CAMERA_FACING_ICONS.put(CameraView.FACING_FRONT, R.drawable.ic_camera_front_white_24dp);
+        CAMERA_FACING_ICONS.put(CameraView.FACING_BACK, R.drawable.ic_camera_rear_white_24dp);
     }
 
     @Override

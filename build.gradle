@@ -99,6 +99,11 @@ model {
                 }
                 create() {
                     type = "String"
+                    name = "RANDO_API_HOST"
+                    value = '"dev.rando4.me"'
+                }
+                create() {
+                    type = "String"
                     name = "RANDO_REPORTS_ACRA_DB"
                     value = '"acra-rando4me-dev"'
                 }
@@ -113,6 +118,11 @@ model {
                 create() {
                     type = "String"
                     name = "RANDO_HOST"
+                    value = '"rando4.me"'
+                }
+                create() {
+                    type = "String"
+                    name = "RANDO_API_HOST"
                     value = '"api.rando4.me"'
                 }
                 create() {
