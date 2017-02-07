@@ -16,8 +16,6 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.github.randoapp.App.context;
-
 public class FileUtil {
 
     public static File getOutputMediaDir() {
