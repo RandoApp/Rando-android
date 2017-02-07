@@ -3,8 +3,6 @@ package com.github.randoapp.test.util;
 import android.hardware.Camera;
 import android.test.AndroidTestCase;
 
-import com.commonsware.cwac.camera.CameraHost;
-import com.commonsware.cwac.camera.DeviceProfile;
 import com.github.randoapp.Constants;
 import com.github.randoapp.camera.CameraSizes;
 import com.github.randoapp.util.CameraUtil;
@@ -270,29 +268,6 @@ public class CameraUtilTest extends AndroidTestCase {
         when(parametersMock.getSupportedPictureSizes()).thenReturn(pictureSizes);
         when(parametersMock.getSupportedPreviewSizes()).thenReturn(previewSizes);
         return parametersMock;
-    }
-
-    private DeviceProfile mockDefaultDeviceProfile() throws IOException {
-        return mockDeviceProfile(0, Integer.MAX_VALUE);
-    }
-
-    private DeviceProfile mockDeviceProfile(int minHeight, int maxHeight) throws IOException {
-        DeviceProfile deviceProfileMock = mock(DeviceProfile.class);
-        when(deviceProfileMock.getMaxPictureHeight()).thenReturn(maxHeight);
-        when(deviceProfileMock.getMinPictureHeight()).thenReturn(minHeight);
-
-        return deviceProfileMock;
-    }
-
-    private CameraHost mockCameraHost(DeviceProfile deviceProfile) throws IOException {
-        CameraHost cameraHost = mock(CameraHost.class);
-        when(cameraHost.getDeviceProfile()).thenReturn(deviceProfile);
-
-        return cameraHost;
-    }
-
-    private String size2String(Camera.Size size) {
-        return size.width + "x" + size.height;
     }
 
 }

@@ -1,7 +1,5 @@
 package com.github.randoapp;
 
-import android.app.AlarmManager;
-
 import java.util.concurrent.TimeUnit;
 
 public class Constants {
@@ -30,7 +28,6 @@ public class Constants {
 
     public static final String RANDO_PHOTO_PATH = "RANDO_PHOTO_PATH";
 
-    public static final String IMAGE_FILTER = "image/*";
     public static final String IMAGE_PREFIX = "IMG_";
     public static final String IMAGE_POSTFIX = ".jpg";
 
@@ -46,7 +43,9 @@ public class Constants {
     public static final int SIZE_MEDIUM = 800;
     public static final int SIZE_LARGE = 1200;
 
+    public static final String SERVER_API_HOST = BuildConfig.RANDO_API_HOST;
     public static final String SERVER_HOST = BuildConfig.RANDO_HOST;
+    public static final String SERVER_API_URL = "https://" + SERVER_API_HOST;
     public static final String SERVER_URL = "https://" + SERVER_HOST;
     public static final int ESTABLISH_CONNECTION_TIMEOUT = 5 * 60 * 1000;
     public static final int UPLOAD_CONNECTION_TIMEOUT = (int) TimeUnit.MINUTES.toMillis(10);
@@ -56,7 +55,6 @@ public class Constants {
 
     public static final int UPLOAD_SERVICE_ATTEMPTS_FAIL = 5;
     public static final long UPLOAD_SERVICE_SHORT_PAUSE = 5 * 1000;
-    public static final long UPLOAD_SERVICE_LONG_PAUSE = AlarmManager.INTERVAL_HOUR * 2;
 
     //Shared Preferences
     public static final String PREFERENCES_FILE_NAME = "rando.prefs";
@@ -64,15 +62,14 @@ public class Constants {
     public static final String FIREBASE_INSTANCE_ID = "firebase.instance.id";
     public static final String UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE = "play.services.update.dialog.shown.date";
     public static final String RANDOS_BALANCE = "randos.balance";
+    public static final String CAMERA_FACING = "camera.facing";
+    public static final String CAMERA_FLASH_MODE = "camera.flash.mode";
     public static final String ACCOUNT = "account";
     public static final String TRAINING_FRAGMENT_SHOWN = "training.fragment.shown";
 
     public static final String AUTH_TOKEN_PARAM = "token";
     public static final String SIGNUP_EMAIL_PARAM = "email";
     public static final String SIGNUP_PASSWORD_PARAM = "password";
-    public static final String FACEBOOK_EMAIL_PARAM = "email";
-    public static final String FACEBOOK_ID_PARAM = "id";
-    public static final String FACEBOOK_TOKEN_PARAM = "token";
     public static final String GOOGLE_EMAIL_PARAM = "email";
     public static final String GOOGLE_TOKEN_PARAM = "token";
     public static final String GOOGLE_FAMILY_NAME_PARAM = "family_name";
@@ -107,15 +104,13 @@ public class Constants {
     public static final String IMAGE_PARAM = "image";
 
     public static final String IMAGE_MIME_TYPE = "image/jpeg";
-    public static final String SIGNUP_URL = SERVER_URL + "/user";
-    public static final String FACEBOOK_URL = SERVER_URL + "/facebook";
-    public static final String GOOGLE_URL = SERVER_URL + "/google";
-    public static final String ANONYMOUS_URL = SERVER_URL + "/anonymous";
-    public static final String LOGOUT_URL = SERVER_URL + "/logout";
-    public static final String FETCH_USER_URL = SERVER_URL + "/user";
-    public static final String UPLOAD_RANDO_URL = SERVER_URL + "/image";
-    public static final String DELETE_URL = SERVER_URL + "/delete/";
-    public static final String LOG_URL = SERVER_URL + "/log";
+    public static final String SIGNUP_URL = SERVER_API_URL + "/user";
+    public static final String GOOGLE_URL = SERVER_API_URL + "/google";
+    public static final String ANONYMOUS_URL = SERVER_API_URL + "/anonymous";
+    public static final String LOGOUT_URL = SERVER_API_URL + "/logout";
+    public static final String FETCH_USER_URL = SERVER_API_URL + "/user";
+    public static final String UPLOAD_RANDO_URL = SERVER_API_URL + "/image";
+    public static final String DELETE_URL = SERVER_API_URL + "/delete/";
     public static final String SHARE_URL = SERVER_URL + "/s/%s";
 
     public static final String REPORT_BROADCAST = "Report";
@@ -144,7 +139,6 @@ public class Constants {
     public static final String PUSH_NOTIFICATION_RECEIVED = "received";
 
     public static final String TO_UPLOAD_RANDO_ID = "randoIdToUpload";
-    public static final String UPLOAD_RANDO = "randoUpload";
 
 }
 

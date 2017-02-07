@@ -5,11 +5,14 @@ import android.content.SharedPreferences;
 import android.location.Location;
 
 import com.github.randoapp.App;
+import com.google.android.cameraview.CameraView;
 
 import java.util.Date;
 
 import static com.github.randoapp.Constants.ACCOUNT;
 import static com.github.randoapp.Constants.AUTH_TOKEN;
+import static com.github.randoapp.Constants.CAMERA_FACING;
+import static com.github.randoapp.Constants.CAMERA_FLASH_MODE;
 import static com.github.randoapp.Constants.FIREBASE_INSTANCE_ID;
 import static com.github.randoapp.Constants.LATITUDE_PARAM;
 import static com.github.randoapp.Constants.LOCATION;
@@ -124,30 +127,42 @@ public class Preferences {
         getSharedPreferences().edit().remove(FIREBASE_INSTANCE_ID).commit();
     }
 
-    //Randos balance
-    public static int getRandosBalance() {
+    //Selected Camera Facing
+    public static int getCameraFacing() {
         synchronized (monitor) {
-            return getSharedPreferences().getInt(RANDOS_BALANCE, RANDOS_BALANCE_DEFAULT_VALUE);
+            int facing = getSharedPreferences().getInt(CAMERA_FACING, CameraView.FACING_BACK);
+            return facing == CameraView.FACING_BACK ? CameraView.FACING_BACK : CameraView.FACING_FRONT;
         }
     }
 
-    public static void incrementRandosBalance() {
+    public static void setCameraFacing(int cameraFacing) {
         synchronized (monitor) {
-            int randosBalance = getRandosBalance();
-            getSharedPreferences().edit().putInt(RANDOS_BALANCE, ++randosBalance).commit();
+            getSharedPreferences().edit().putInt(CAMERA_FACING, cameraFacing).commit();
         }
     }
 
-    public static void decrementRandosBalance() {
+    public static void removeCameraFacing() {
         synchronized (monitor) {
-            int randosBalance = getRandosBalance();
-            getSharedPreferences().edit().putInt(RANDOS_BALANCE, --randosBalance).commit();
+            getSharedPreferences().edit().remove(CAMERA_FACING).commit();
         }
     }
 
-    public static void zeroRandosBalance() {
+    //Camera Flash Mode
+    public static int getCameraFlashMode() {
         synchronized (monitor) {
-            getSharedPreferences().edit().putInt(RANDOS_BALANCE, 0).commit();
+            return getSharedPreferences().getInt(CAMERA_FLASH_MODE, CameraView.FLASH_OFF);
+        }
+    }
+
+    public static void setCameraFlashMode(int cameraFacing) {
+        synchronized (monitor) {
+            getSharedPreferences().edit().putInt(CAMERA_FLASH_MODE, cameraFacing).commit();
+        }
+    }
+
+    public static void removeCameraFlashMode() {
+        synchronized (monitor) {
+            getSharedPreferences().edit().remove(CAMERA_FLASH_MODE).commit();
         }
     }
 

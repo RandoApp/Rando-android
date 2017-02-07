@@ -38,7 +38,7 @@ import com.github.randoapp.util.RandoUtil;
 import com.github.randoapp.view.RandoActionsView;
 import com.github.randoapp.view.UnwantedRandoView;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.makeramen.RoundedImageView;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
 

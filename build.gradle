@@ -4,6 +4,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle-experimental:0.8.3'
+        classpath 'com.android.tools.build:gradle:2.2.3'
         classpath 'com.google.gms:google-services:3.0.0'
         classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3'
     }
@@ -15,10 +16,19 @@ def signConf
 def reportsUserLocal = reportsUser
 def reportsPasswordLocal = reportsPassword
 def googleAppIdLocal = googleAppId
+def googleApiKeyLocal = googleApiKey
 
 repositories {
     jcenter()
 }
+
+allprojects {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+}
+
 model {
     android {
         compileSdkVersion rootProject.ext.compileSdkVersion
@@ -35,6 +45,12 @@ model {
                     type = "string"
                     name = "google_app_id"
                     value = googleAppIdLocal
+                }
+
+                create() {
+                    type = "string"
+                    name = "google_api_key"
+                    value = googleApiKeyLocal
                 }
             }
 
@@ -83,6 +99,11 @@ model {
                 }
                 create() {
                     type = "String"
+                    name = "RANDO_API_HOST"
+                    value = '"dev.rando4.me"'
+                }
+                create() {
+                    type = "String"
                     name = "RANDO_REPORTS_ACRA_DB"
                     value = '"acra-rando4me-dev"'
                 }
@@ -97,6 +118,11 @@ model {
                 create() {
                     type = "String"
                     name = "RANDO_HOST"
+                    value = '"rando4.me"'
+                }
+                create() {
+                    type = "String"
+                    name = "RANDO_API_HOST"
                     value = '"api.rando4.me"'
                 }
                 create() {
@@ -130,27 +156,30 @@ tasks.coveralls {
 
 configurations.all {
     resolutionStrategy {
-        force 'com.android.support:support-annotations:24.2.1'
+        force 'com.android.support:support-annotations:25.0.1'
     }
 }
 
 dependencies {
     compile project(':volley')
-    compile project(':camera-v9')
+    compile project(':JniBitmapOperationsLibrary')
+    compile project(':cameraview')
+
     compile 'com.android.support:appcompat-v7:25+'
-    compile 'org.apache.httpcomponents:httpcore:4.3'
-    compile 'org.apache.httpcomponents:httpmime:4.3.1'
-    compile 'ch.acra:acra:4.9.0'
-    compile 'com.makeramen:roundedimageview:1.3.0'
-    compile 'com.facebook.android:facebook-android-sdk:3.23.+'
-    compile 'com.google.android.gms:play-services-auth:9.4.0'
-    compile 'com.google.firebase:firebase-core:9.4.0'
-    compile 'com.google.firebase:firebase-messaging:9.4.0'
+    compile 'com.makeramen:roundedimageview:2.3.0'
+    compile 'ch.acra:acra:4.9.2'
+
+    compile 'com.google.android.gms:play-services-auth:10.0.1'
+    compile 'com.google.firebase:firebase-core:10.0.1'
+    compile 'com.google.firebase:firebase-messaging:10.0.1'
+    compile 'com.google.firebase:firebase-crash:10.0.1'
+
     compile 'com.evernote:android-job:1.1.3'
+    compile "com.android.support:exifinterface:25.1.0"
 
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
-    androidTestCompile 'com.android.support:support-annotations:24.0.0'
+    androidTestCompile 'com.android.support:support-annotations:25.0.1'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
     androidTestCompile 'com.squareup:javawriter:2.1.1'
     androidTestCompile 'javax.annotation:javax.annotation-api:1.2'
@@ -169,6 +198,9 @@ dependencies {
 ext {
     compileSdkVersion = 25
     buildToolsVersion = "25.0.2"
+    minSdkVersion = 9
+    targetSdkVersion = 25
+    supportLibraryVersion = '25.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

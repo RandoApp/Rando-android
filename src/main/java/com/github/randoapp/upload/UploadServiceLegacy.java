@@ -22,6 +22,7 @@ import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.db.model.RandoUpload;
 import com.github.randoapp.log.Log;
+import com.github.randoapp.util.FileUtil;
 import com.github.randoapp.util.NetworkUtil;
 
 import org.json.JSONException;
@@ -148,7 +149,7 @@ public class UploadServiceLegacy extends Service {
                             UploadServiceLegacy.this.sendBroadcast(intent);
                         } else if (networkResponse.statusCode == 400) {
                             errorMessage = message + " Wrong Request when uploading Rando: " + rando.toString();
-                            RandoDAO.deleteRandoToUpload(rando);
+                            deleteRando(rando);
                         } else if (networkResponse.statusCode == 500) {
                             errorMessage = message + " Something is getting wrong";
                         }
@@ -168,7 +169,8 @@ public class UploadServiceLegacy extends Service {
     }
 
     private void deleteRando(RandoUpload rando) {
-        Log.d(UploadServiceLegacy.class, "Delete rando");
+        Log.d(UploadServiceLegacy.class, "Delete rando:",rando.toString());
+        FileUtil.removeFileIfExist(rando.file);
         RandoDAO.deleteRandoToUpload(rando);
     }
 

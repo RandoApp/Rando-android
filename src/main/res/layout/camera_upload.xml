@@ -8,13 +8,20 @@
     android:paddingRight="@dimen/rando_padding_portrait_column_left"
     android:paddingLeft="@dimen/rando_padding_portrait_column_left">
 
-    <com.makeramen.RoundedImageView
+    <com.makeramen.roundedimageview.RoundedImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/preview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        app:oval="true" />
+        app:riv_oval="true" />
+
+    <ImageButton
+        android:id="@+id/back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="18dp"
+        android:background="@drawable/ic_close_grey_36dp"/>
 
     <ImageView
         android:id="@+id/upload_button"

@@ -26,6 +26,7 @@ import com.github.randoapp.notification.Notification;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.FileUtil;
 import com.github.randoapp.util.RandoUtil;
+import com.google.firebase.crash.FirebaseCrash;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,13 +59,8 @@ import static com.github.randoapp.Constants.ANONYMOUS_ID_PARAM;
 import static com.github.randoapp.Constants.ANONYMOUS_URL;
 import static com.github.randoapp.Constants.API_CONNECTION_TIMEOUT;
 import static com.github.randoapp.Constants.AUTHORIZATION_HEADER;
-import static com.github.randoapp.Constants.UPLOAD_CONNECTION_TIMEOUT;
 import static com.github.randoapp.Constants.DELETE_URL;
 import static com.github.randoapp.Constants.ERROR_CODE_PARAM;
-import static com.github.randoapp.Constants.FACEBOOK_EMAIL_PARAM;
-import static com.github.randoapp.Constants.FACEBOOK_ID_PARAM;
-import static com.github.randoapp.Constants.FACEBOOK_TOKEN_PARAM;
-import static com.github.randoapp.Constants.FACEBOOK_URL;
 import static com.github.randoapp.Constants.FETCH_USER_URL;
 import static com.github.randoapp.Constants.FIREBASE_INSTANCE_ID_HEADER;
 import static com.github.randoapp.Constants.FIREBASE_INSTANCE_ID_PARAM;
@@ -84,8 +80,9 @@ import static com.github.randoapp.Constants.SIGNUP_PASSWORD_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_URL;
 import static com.github.randoapp.Constants.UNAUTHORIZED_CODE;
 import static com.github.randoapp.Constants.UPDATED;
+import static com.github.randoapp.Constants.UPLOAD_CONNECTION_TIMEOUT;
 import static com.github.randoapp.Constants.UPLOAD_RANDO_URL;
-import static org.apache.http.HttpStatus.SC_OK;
+import static java.net.HttpURLConnection.HTTP_OK;
 
 public class API {
 
@@ -96,35 +93,14 @@ public class API {
             addParamsToRequest(request, SIGNUP_EMAIL_PARAM, email, SIGNUP_PASSWORD_PARAM, password, FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
             response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
-            if (response.getStatusLine().getStatusCode() == SC_OK) {
+            if (response.getStatusLine().getStatusCode() == HTTP_OK) {
                 String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
                 Preferences.setAuthToken(authToken);
             } else {
                 throw processServerError(readJSON(response));
             }
         } catch (IOException e) {
-            throw processError(e);
-        } finally {
-            if (response != null) {
-                EntityUtils.consume(response.getEntity());
-            }
-        }
-    }
-
-    public static void facebook(String id, String email, String token) throws Exception {
-        HttpResponse response = null;
-        try {
-            HttpPost request = new HttpPost(FACEBOOK_URL);
-            addParamsToRequest(request, FACEBOOK_ID_PARAM, id, FACEBOOK_EMAIL_PARAM, email, FACEBOOK_TOKEN_PARAM, token, FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
-
-            response = VolleySingleton.getInstance().getHttpClient().execute(request);
-            if (response.getStatusLine().getStatusCode() == SC_OK) {
-                String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
-                Preferences.setAuthToken(authToken);
-            } else {
-                throw processServerError(readJSON(response));
-            }
-        } catch (IOException e) {
+            Log.e(API.class, e.getStackTrace().toString());
             throw processError(e);
         } finally {
             if (response != null) {
@@ -140,7 +116,7 @@ public class API {
             addParamsToRequest(request, GOOGLE_EMAIL_PARAM, email, GOOGLE_TOKEN_PARAM, token, GOOGLE_FAMILY_NAME_PARAM, familyName, FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
 
             response = VolleySingleton.getInstance().getHttpClient().execute(request);
-            if (response.getStatusLine().getStatusCode() == SC_OK) {
+            if (response.getStatusLine().getStatusCode() == HTTP_OK) {
                 String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
                 Preferences.setAuthToken(authToken);
             } else {
@@ -163,7 +139,7 @@ public class API {
 
             response = VolleySingleton.getInstance().getHttpClient().execute(request);
 
-            if (response.getStatusLine().getStatusCode() == SC_OK) {
+            if (response.getStatusLine().getStatusCode() == HTTP_OK) {
                 String authToken = readJSON(response).getString(Constants.AUTH_TOKEN_PARAM);
                 Preferences.setAuthToken(authToken);
             } else {
@@ -186,7 +162,7 @@ public class API {
             addFirebaseInstanceIdHeader(request);
 
             response = VolleySingleton.getInstance().getHttpClient().execute(request);
-            if (response.getStatusLine().getStatusCode() != SC_OK) {
+            if (response.getStatusLine().getStatusCode() != HTTP_OK) {
                 throw processServerError(readJSON(response));
             }
         } catch (IOException e) {
@@ -242,7 +218,7 @@ public class API {
         }, errorListener) {
             @Override
             protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
+                Map<String, String> params = new HashMap<>(2);
                 params.put(LATITUDE_PARAM, randoUpload.latitude);
                 params.put(LONGITUDE_PARAM, randoUpload.longitude);
                 return params;
@@ -250,7 +226,7 @@ public class API {
 
             @Override
             protected Map<String, DataPart> getByteData() {
-                Map<String, DataPart> params = new HashMap<>();
+                Map<String, DataPart> params = new HashMap<>(1);
                 File randoFile = new File(randoUpload.file);
                 params.put(IMAGE_PARAM, new DataPart(randoFile.getName(), FileUtil.readFile(randoFile), IMAGE_MIME_TYPE));
 
@@ -307,10 +283,10 @@ public class API {
 
     private static JSONObject readJSON(HttpResponse response) throws Exception {
         try {
-            String line = "";
             StringBuilder json = new StringBuilder();
             BufferedReader buffer = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
+            String line;
             while ((line = buffer.readLine()) != null) {
                 json.append(line);
             }
@@ -378,6 +354,7 @@ public class API {
                 || exc instanceof ConnectException) {
             return new Exception(App.context.getResources().getString(R.string.error_no_network));
         }
+        FirebaseCrash.report(new Exception(exc));
         Log.e(API.class, "processError method", exc);
         return new Exception(App.context.getResources().getString(R.string.error_unknown_err));
     }

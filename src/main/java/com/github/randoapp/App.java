@@ -18,15 +18,13 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
-
-import static org.acra.sender.HttpSender.Method;
-import static org.acra.sender.HttpSender.Type;
+import org.acra.sender.HttpSender;
 
 
 @ReportsCrashes(
         formUri = "https://reports.rando4.me/" + BuildConfig.RANDO_REPORTS_ACRA_DB + "/_design/acra-storage/_update/report",
-        reportType = Type.JSON,
-        httpMethod = Method.PUT,
+        reportType = HttpSender.Type.JSON,
+        httpMethod = HttpSender.Method.PUT,
         formUriBasicAuthLogin = BuildConfig.RANDO_REPORTS_USER,
         formUriBasicAuthPassword = BuildConfig.RANDO_REPORTS_PASSWORD,
         mode = ReportingInteractionMode.TOAST,

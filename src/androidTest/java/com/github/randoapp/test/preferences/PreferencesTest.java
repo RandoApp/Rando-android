@@ -189,38 +189,6 @@ public class PreferencesTest{
         assertThat(Preferences.getAccount(), is(ACCOUNT_DEFAULT_VALUE));
     }
 
-    //Randos balance
-    @Test
-    public void testIncrement() {
-        int val = Preferences.getRandosBalance();
-        Preferences.incrementRandosBalance();
-        assertThat("Increment doesn't work",Preferences.getRandosBalance(), is(val+1));
-    }
-
-    @Test
-    public void testDecrement() {
-        int val = Preferences.getRandosBalance();
-        Preferences.decrementRandosBalance();
-        assertThat("Increment doesn't work",Preferences.getRandosBalance(), is(val-1));
-    }
-
-    @Test
-    public void testSetZero() {
-        Preferences.zeroRandosBalance();
-        assertThat(Preferences.getRandosBalance(), is(0));
-
-        Preferences.incrementRandosBalance();
-        Preferences.incrementRandosBalance();
-        Preferences.zeroRandosBalance();
-        assertThat(Preferences.getRandosBalance(), is(0));
-
-        Preferences.incrementRandosBalance();
-        Preferences.incrementRandosBalance();
-        Preferences.zeroRandosBalance();
-        assertThat(Preferences.getRandosBalance(), is(0));
-    }
-
-
     //FirebaseInstanceId Tests
     @Test
     public void shouldSetAndGetFirebaseInstanceId() {
