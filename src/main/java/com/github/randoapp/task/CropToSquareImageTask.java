@@ -68,13 +68,16 @@ public class CropToSquareImageTask implements Runnable {
         data = null;
 
         File file;
-        if (rotateDegree != 0) {
+        if (rotateDegree != 0 || isFrontCamera) {
             Matrix matrix = new Matrix();
             matrix.postRotate(rotateDegree);
-            Bitmap rotated = Bitmap.createBitmap(bitmap.get(), 0, 0, bitmap.get().getWidth(), bitmap.get().getHeight(), matrix, true);
-            file = saveBitmap(rotated);
-            rotated.recycle();
-            rotated = null;
+            if (isFrontCamera){
+                matrix.postScale(-1,1);
+            }
+            Bitmap resultedBitmap = Bitmap.createBitmap(bitmap.get(), 0, 0, bitmap.get().getWidth(), bitmap.get().getHeight(), matrix, true);
+            file = saveBitmap(resultedBitmap);
+            resultedBitmap.recycle();
+            resultedBitmap = null;
         } else {
             file = saveBitmap(bitmap.get());
         }
