@@ -5,73 +5,82 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapRegionDecoder;
+import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.support.media.ExifInterface;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.github.randoapp.log.Log;
 import com.github.randoapp.util.FileUtil;
-import com.jni.bitmap_operations.JniBitmapHolder;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.RANDO_PHOTO_PATH;
 
 public class CropToSquareImageTask implements Runnable {
-    private byte[] data;
+    private WeakReference<byte[]> data;
     private Context context;
     private boolean isFrontCamera;
 
     public CropToSquareImageTask(byte[] data, boolean isFrontCamera, Context context) {
-        this.data = data;
+        this.data = new WeakReference<>(data);
         this.context = context;
         this.isFrontCamera = isFrontCamera;
     }
 
     private File saveSquareImage() {
+
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPurgeable = true;
-        options.inInputShareable = true;
-
-        int rotateDegree = calculateImageRotation(data);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length, options);
-
-        data = null;
-        JniBitmapHolder bitmapHolder = new JniBitmapHolder(bitmap);
-        bitmap.recycle();
-        bitmap = null;
-
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeByteArray(data.get(), 0, data.get().length, options);
         int size = Math.min(options.outWidth, options.outHeight);
 
         //We need to crop square image from the center of the image
         int indent = (Math.max(options.outWidth, options.outHeight) - size) / 2;
+        Rect rect;
         if (options.outHeight >= options.outWidth) {
-            bitmapHolder.cropBitmap(0, indent, size, size + indent);
+            rect = new Rect(0, indent, size, size + indent);
         } else {
-            bitmapHolder.cropBitmap(indent, 0, size + indent, size);
+            rect = new Rect(indent, 0, size + indent, size);
         }
 
-        switch (rotateDegree) {
-            case 90:
-                bitmapHolder.rotateBitmapCw90();
-                break;
-            case 180:
-                bitmapHolder.rotateBitmap180();
-                break;
-            case 270:
-                bitmapHolder.rotateBitmapCcw90();
-                break;
-            default:
-                break;
+        options.inJustDecodeBounds = false;
+        options.inPurgeable = true;
+        options.inInputShareable = true;
+
+        int rotateDegree = calculateImageRotation(data.get());
+        WeakReference<Bitmap> bitmap = null;
+        try {
+            BitmapRegionDecoder regionDecoder = BitmapRegionDecoder.newInstance(data.get(), 0, data.get().length, true);
+            bitmap = new WeakReference<>(regionDecoder.decodeRegion(rect, options));
+            regionDecoder.recycle();
+        } catch (IOException ex) {
+            Log.e(CropToSquareImageTask.class, "exception creating BitmapRegionDecoder", ex);
+            throw new RuntimeException("Error creating BitmapRegionDecoder");
         }
-        if (isFrontCamera){
-            bitmapHolder.flipBitmapHorizontal();
+        data = null;
+
+        File file;
+        if (rotateDegree != 0) {
+            Matrix matrix = new Matrix();
+            matrix.postRotate(rotateDegree);
+            Bitmap rotated = Bitmap.createBitmap(bitmap.get(), 0, 0, bitmap.get().getWidth(), bitmap.get().getHeight(), matrix, true);
+            file = saveBitmap(rotated);
+            rotated.recycle();
+            rotated = null;
+        } else {
+            file = saveBitmap(bitmap.get());
         }
-        File file = saveBitmap(bitmapHolder.getBitmapAndFree());
+        bitmap.get().recycle();
+        bitmap = null;
+
         return file;
     }
 
@@ -87,7 +96,7 @@ public class CropToSquareImageTask implements Runnable {
         if (exifInterface != null) {
             int orientation = exifInterface.getAttributeInt(
                     ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-            Log.d(CropToSquareImageTask.class, "Orientation: "+orientation);
+            Log.d(CropToSquareImageTask.class, "Orientation: " + orientation);
             switch (orientation) {
                 case ExifInterface.ORIENTATION_ROTATE_90:
                     rotation = 90;
@@ -107,7 +116,7 @@ public class CropToSquareImageTask implements Runnable {
             }
         }
 
-       if (isFrontCamera) {
+        if (isFrontCamera) {
             if (rotation != 0) {
                 rotation = (360 - rotation) % 360;
             } else {

@@ -162,7 +162,6 @@ configurations.all {
 
 dependencies {
     compile project(':volley')
-    compile project(':JniBitmapOperationsLibrary')
     compile project(':cameraview')
 
     compile 'com.android.support:appcompat-v7:25+'

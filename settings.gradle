@@ -1,5 +1,4 @@
-include ':volley' ,':JniBitmapOperationsLibrary', ':cameraview'
+include ':volley' , ':cameraview'
 
 project(':volley').projectDir = new File(settingsDir, 'modules/volley')
 project(':cameraview').projectDir = new File(settingsDir, 'modules/cameraview/library')
-project(':JniBitmapOperationsLibrary').projectDir = new File(settingsDir, 'modules/AndroidJniBitmapOperations/JniBitmapOperationsLibrary')
