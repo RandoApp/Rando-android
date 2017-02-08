@@ -350,7 +350,7 @@ public class CameraActivity extends Activity {
 
         @Override
         public void onCameraOpened(CameraView cameraView) {
-            Log.d(CameraView.Callback.class, "onCameraOpened");
+            Log.d(CameraView.Callback.class, "onCameraOpened" + Thread.currentThread());
             enableButtons(true);
         }
 
@@ -362,7 +362,7 @@ public class CameraActivity extends Activity {
 
         @Override
         public void onPictureTaken(CameraView cameraView, final byte[] data) {
-            Log.d(CameraView.Callback.class, "onPictureTaken " + data.length);
+            Log.d(CameraView.Callback.class, "onPictureTaken " + data.length + "Thread " + Thread.currentThread());
             cameraView.stop();
             getBackgroundHandler().post(new CropToSquareImageTask(data, cameraView.getFacing() == CameraView.FACING_FRONT, getBaseContext()));
             progressBar.setVisibility(View.VISIBLE);

@@ -1,12 +1,6 @@
 [submodule "modules/volley"]
 	path = modules/volley
 	url = https://github.com/dimhold/volley.git
-[submodule "modules/cwac-camera"]
-	path = modules/cwac-camera
-	url = https://github.com/RandoApp/cwac-camera.git
 [submodule "modules/cameraview"]
 	path = modules/cameraview
 	url = https://github.com/RandoApp/cameraview.git
-[submodule "modules/AndroidJniBitmapOperations"]
-	path = modules/AndroidJniBitmapOperations
-	url = https://github.com/RandoApp/AndroidJniBitmapOperations.git
