@@ -13,6 +13,7 @@ import static com.github.randoapp.Constants.ACCOUNT;
 import static com.github.randoapp.Constants.AUTH_TOKEN;
 import static com.github.randoapp.Constants.CAMERA_FACING;
 import static com.github.randoapp.Constants.CAMERA_FLASH_MODE;
+import static com.github.randoapp.Constants.CAMERA_GRID;
 import static com.github.randoapp.Constants.FIREBASE_INSTANCE_ID;
 import static com.github.randoapp.Constants.LATITUDE_PARAM;
 import static com.github.randoapp.Constants.LOCATION;
@@ -141,9 +142,15 @@ public class Preferences {
         }
     }
 
-    public static void removeCameraFacing() {
+    public static boolean getCameraGrid() {
         synchronized (monitor) {
-            getSharedPreferences().edit().remove(CAMERA_FACING).commit();
+            return getSharedPreferences().getBoolean(CAMERA_GRID, true);
+        }
+    }
+
+    public static void setCameraGrid( boolean cameraGrid) {
+        synchronized (monitor) {
+            getSharedPreferences().edit().putBoolean(CAMERA_GRID, cameraGrid).commit();
         }
     }
 

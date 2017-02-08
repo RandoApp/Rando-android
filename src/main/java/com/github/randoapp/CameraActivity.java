@@ -38,6 +38,7 @@ import com.github.randoapp.task.CropToSquareImageTask;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.LocationHelper;
 import com.github.randoapp.util.PermissionUtils;
+import com.github.randoapp.view.CircleMaskView;
 import com.google.android.cameraview.AspectRatio;
 import com.google.android.cameraview.CameraView;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -81,10 +82,12 @@ public class CameraActivity extends Activity {
     private CameraView cameraView;
     private ImageView captureButton;
     private ImageButton cameraSwitchButton;
+    private ImageButton gridButton;
     private LinearLayout progressBar;
     private Handler mBackgroundHandler;
     private FirebaseAnalytics mFirebaseAnalytics;
     private Animation[] leftToRightAnimation;
+    private CircleMaskView circleMaskView;
 
     private static final SparseArrayCompat<Integer> CAMERA_FACING_ICONS = new SparseArrayCompat<>();
 
@@ -161,6 +164,19 @@ public class CameraActivity extends Activity {
                 }
             });
         }
+        circleMaskView = (CircleMaskView) findViewById(R.id.circle_mask);
+        circleMaskView.setDrawGrid(Preferences.getCameraGrid());
+        gridButton = (ImageButton) findViewById(R.id.grid_button);
+        gridButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                circleMaskView.setDrawGrid(!circleMaskView.isDrawGrid());
+                circleMaskView.invalidate();
+                Preferences.setCameraGrid(circleMaskView.isDrawGrid());
+                updateGridIcon();
+            }
+        });
+        updateGridIcon();
     }
 
     @Override
@@ -277,6 +293,14 @@ public class CameraActivity extends Activity {
                                 }
                             }
                     ).create().show();
+        }
+    }
+
+    private void updateGridIcon(){
+        if (circleMaskView.isDrawGrid()) {
+            gridButton.setBackgroundResource(R.drawable.ic_grid_on_gray_36dp);
+        } else {
+            gridButton.setBackgroundResource(R.drawable.ic_grid_off_gray_36dp);
         }
     }
 

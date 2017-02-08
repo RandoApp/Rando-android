@@ -35,7 +35,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="18dp"
-        android:background="@drawable/ic_close_grey_36dp"/>
+        android:background="@drawable/ic_close_gray_36dp"/>
+
+    <ImageButton
+        android:id="@+id/grid_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="18dp"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/ic_grid_on_gray_36dp"/>
 
     <ImageButton
         android:id="@+id/camera_switch_button"
