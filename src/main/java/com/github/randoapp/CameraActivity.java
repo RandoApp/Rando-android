@@ -392,9 +392,5 @@ public class CameraActivity extends Activity {
             progressBar.setVisibility(View.VISIBLE);
         }
 
-        @Override
-        public void onAutoFocus(CameraView cameraView) {
-            enableButtons(true);
-        }
     };
 }
