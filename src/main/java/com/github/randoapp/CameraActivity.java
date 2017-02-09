@@ -46,6 +46,7 @@ import static com.github.randoapp.Constants.CAMERA_ACTIVITY_CAMERA_PERMISSION_RE
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.CAMERA_PERMISSION_REQUEST_CODE;
 import static com.github.randoapp.Constants.LOCATION_PERMISSION_REQUEST_CODE;
+import static com.google.android.cameraview.CameraView.FACING_FRONT;
 
 public class CameraActivity extends Activity {
 
@@ -89,7 +90,7 @@ public class CameraActivity extends Activity {
     private static final SparseArrayCompat<Integer> CAMERA_FACING_ICONS = new SparseArrayCompat<>();
 
     static {
-        CAMERA_FACING_ICONS.put(CameraView.FACING_FRONT, R.drawable.ic_camera_front_white_24dp);
+        CAMERA_FACING_ICONS.put(FACING_FRONT, R.drawable.ic_camera_front_white_24dp);
         CAMERA_FACING_ICONS.put(CameraView.FACING_BACK, R.drawable.ic_camera_rear_white_24dp);
     }
 
@@ -151,8 +152,14 @@ public class CameraActivity extends Activity {
                 public void onClick(View v) {
                     enableButtons(false);
                     if (cameraView != null) {
-                        int facing = cameraView.getFacing() == CameraView.FACING_FRONT ?
-                                CameraView.FACING_BACK : CameraView.FACING_FRONT;
+                        int facing;
+                        if (cameraView.getFacing() == FACING_FRONT) {
+                            facing = CameraView.FACING_BACK;
+                            Analytics.logSwitchCameraToBack(mFirebaseAnalytics);
+                        } else {
+                            facing = FACING_FRONT;
+                            Analytics.logSwitchCameraToFront(mFirebaseAnalytics);
+                        }
                         imageViewAnimatedChange(cameraSwitchButton, CAMERA_FACING_ICONS.get(facing));
                         enableButtons(false);
                         cameraView.setFacing(facing);
@@ -364,7 +371,7 @@ public class CameraActivity extends Activity {
         public void onPictureTaken(CameraView cameraView, final byte[] data) {
             Log.d(CameraView.Callback.class, "onPictureTaken " + data.length + "Thread " + Thread.currentThread());
             cameraView.stop();
-            getBackgroundHandler().post(new CropToSquareImageTask(data, cameraView.getFacing() == CameraView.FACING_FRONT, getBaseContext()));
+            getBackgroundHandler().post(new CropToSquareImageTask(data, cameraView.getFacing() == FACING_FRONT, getBaseContext()));
             progressBar.setVisibility(View.VISIBLE);
         }
     };
