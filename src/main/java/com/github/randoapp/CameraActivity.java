@@ -343,7 +343,7 @@ public class CameraActivity extends Activity {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        //Do nothing
+                        enableButtons(true);
                     }
                 });
                 v.startAnimation(anim_in);
@@ -358,7 +358,6 @@ public class CameraActivity extends Activity {
         @Override
         public void onCameraOpened(CameraView cameraView) {
             Log.d(CameraView.Callback.class, "onCameraOpened" + Thread.currentThread());
-            enableButtons(true);
         }
 
         @Override
