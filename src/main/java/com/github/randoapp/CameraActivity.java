@@ -391,5 +391,10 @@ public class CameraActivity extends Activity {
             getBackgroundHandler().post(new CropToSquareImageTask(data, cameraView.getFacing() == CameraView.FACING_FRONT, getBaseContext()));
             progressBar.setVisibility(View.VISIBLE);
         }
+
+        @Override
+        public void onAutoFocus(CameraView cameraView) {
+            enableButtons(true);
+        }
     };
 }
