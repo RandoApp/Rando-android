@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -343,7 +344,7 @@ public class CameraActivity extends Activity {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        enableButtons(true);
+                        //Do nothing
                     }
                 });
                 v.startAnimation(anim_in);
@@ -358,6 +359,23 @@ public class CameraActivity extends Activity {
         @Override
         public void onCameraOpened(CameraView cameraView) {
             Log.d(CameraView.Callback.class, "onCameraOpened" + Thread.currentThread());
+            final Runnable enableButtonsRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    enableButtons(true);
+                }
+            };
+            if(Looper.myLooper() == Looper.getMainLooper()) {
+                final Handler handler = new Handler();
+                handler.postDelayed(enableButtonsRunnable, 500);
+            } else  {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ex){
+                    //do nothing
+                }
+                runOnUiThread(enableButtonsRunnable);
+            }
         }
 
         @Override
