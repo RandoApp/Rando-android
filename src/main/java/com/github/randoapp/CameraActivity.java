@@ -76,6 +76,7 @@ public class CameraActivity extends Activity {
         }
     };
 
+    private UnexpectedTerminationHelper mUnexpectedTerminationHelper = new UnexpectedTerminationHelper();
 
     private boolean isReturningFromCameraPermissionRequest = false;
     private boolean isReturningFromLocationPermissionRequest = false;
@@ -182,6 +183,7 @@ public class CameraActivity extends Activity {
         super.onPostResume();
         if (isReturningFromCameraPermissionRequest) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                mUnexpectedTerminationHelper.init();
                 cameraView.start();
             } else {
                 setResult(CAMERA_ACTIVITY_CAMERA_PERMISSION_REQUIRED);
@@ -190,6 +192,7 @@ public class CameraActivity extends Activity {
             isReturningFromCameraPermissionRequest = false;
         } else {
             if (!PermissionUtils.checkAndRequestMissingPermissions(this, CAMERA_PERMISSION_REQUEST_CODE, android.Manifest.permission.CAMERA)) {
+                mUnexpectedTerminationHelper.init();
                 cameraView.start();
             }
         }
@@ -218,6 +221,7 @@ public class CameraActivity extends Activity {
     protected void onPause() {
         super.onPause();
         cameraView.stop();
+        mUnexpectedTerminationHelper.fini();
         if (progressBar.getVisibility() != View.GONE) {
             progressBar.setVisibility(View.GONE);
         }
@@ -307,9 +311,6 @@ public class CameraActivity extends Activity {
             if (ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
                 ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(50);
             }
-            if (Build.VERSION.SDK_INT >= 11) {
-                cameraView.setAlpha(0.7f);
-            }
             Analytics.logTakeRando(mFirebaseAnalytics);
         }
     }
@@ -365,13 +366,13 @@ public class CameraActivity extends Activity {
                     enableButtons(true);
                 }
             };
-            if(Looper.myLooper() == Looper.getMainLooper()) {
+            if (Looper.myLooper() == Looper.getMainLooper()) {
                 final Handler handler = new Handler();
                 handler.postDelayed(enableButtonsRunnable, 500);
-            } else  {
+            } else {
                 try {
                     Thread.sleep(500);
-                } catch (InterruptedException ex){
+                } catch (InterruptedException ex) {
                     //do nothing
                 }
                 runOnUiThread(enableButtonsRunnable);
@@ -385,11 +386,46 @@ public class CameraActivity extends Activity {
         }
 
         @Override
-        public void onPictureTaken(CameraView cameraView, final byte[] data) {
+        public void onPictureTaken(final CameraView cameraView, final byte[] data) {
             Log.d(CameraView.Callback.class, "onPictureTaken " + data.length + "Thread " + Thread.currentThread());
-            cameraView.stop();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    cameraView.stop();
+                    mUnexpectedTerminationHelper.fini();
+                }
+            });
             getBackgroundHandler().post(new CropToSquareImageTask(data, cameraView.getFacing() == FACING_FRONT, getBaseContext()));
             progressBar.setVisibility(View.VISIBLE);
         }
     };
+
+    private class UnexpectedTerminationHelper {
+        private Thread mThread;
+        private Thread.UncaughtExceptionHandler mOldUncaughtExceptionHandler = null;
+        private Thread.UncaughtExceptionHandler mUncaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, Throwable ex) { // gets called on the same (main) thread
+                cameraView.stop();
+                if (mOldUncaughtExceptionHandler != null) {
+                    // it displays the "force close" dialog
+                    mOldUncaughtExceptionHandler.uncaughtException(thread, ex);
+                }
+            }
+        };
+
+        void init() {
+            mThread = Thread.currentThread();
+            mOldUncaughtExceptionHandler = mThread.getUncaughtExceptionHandler();
+            mThread.setUncaughtExceptionHandler(mUncaughtExceptionHandler);
+        }
+
+        void fini() {
+            if (mThread != null) {
+                mThread.setUncaughtExceptionHandler(mOldUncaughtExceptionHandler);
+            }
+            mOldUncaughtExceptionHandler = null;
+            mThread = null;
+        }
+    }
 }
