@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.RANDO_PHOTO_PATH;
@@ -28,6 +29,7 @@ public class CropToSquareImageTask implements Runnable {
     private WeakReference<byte[]> data;
     private Context context;
     private boolean isFrontCamera;
+    private AtomicBoolean isCanceled = new AtomicBoolean(false);
 
     public CropToSquareImageTask(byte[] data, boolean isFrontCamera, Context context) {
         this.data = new WeakReference<>(data);
@@ -39,9 +41,49 @@ public class CropToSquareImageTask implements Runnable {
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
+        if (isCanceled.get()) {
+            data.clear();
+            data = null;
+            return null;
+        }
         BitmapFactory.decodeByteArray(data.get(), 0, data.get().length, options);
-        int size = Math.min(options.outWidth, options.outHeight);
+        int rotateDegree = calculateImageRotation(data.get());
+        if (isCanceled.get()) {
+            data.clear();
+            data = null;
+            return null;
+        }
+        WeakReference<Bitmap> bitmap = decodeSquare(data, options);
+        data.clear();
+        data = null;
+        if (isCanceled.get()) {
+            bitmap.get().recycle();
+            bitmap.clear();
+            return null;
+        }
 
+        Bitmap resultedBitmap = rotate(bitmap, rotateDegree);
+
+        if (isCanceled.get()) {
+            bitmap.get().recycle();
+            bitmap.clear();
+            resultedBitmap.recycle();
+            resultedBitmap = null;
+            return null;
+        }
+
+        File file = saveBitmap(resultedBitmap);
+        bitmap.get().recycle();
+        bitmap.clear();
+        bitmap = null;
+        resultedBitmap.recycle();
+        resultedBitmap = null;
+
+        return file;
+    }
+
+    private WeakReference<Bitmap> decodeSquare(WeakReference<byte[]> data, BitmapFactory.Options options) {
+        int size = Math.min(options.outWidth, options.outHeight);
         //We need to crop square image from the center of the image
         int indent = (Math.max(options.outWidth, options.outHeight) - size) / 2;
         Rect rect;
@@ -55,36 +97,31 @@ public class CropToSquareImageTask implements Runnable {
         options.inPurgeable = true;
         options.inInputShareable = true;
 
-        int rotateDegree = calculateImageRotation(data.get());
-        WeakReference<Bitmap> bitmap = null;
+        WeakReference<Bitmap> result;
         try {
             BitmapRegionDecoder regionDecoder = BitmapRegionDecoder.newInstance(data.get(), 0, data.get().length, true);
-            bitmap = new WeakReference<>(regionDecoder.decodeRegion(rect, options));
+            result = new WeakReference<>(regionDecoder.decodeRegion(rect, options));
             regionDecoder.recycle();
+            regionDecoder = null;
         } catch (IOException ex) {
             Log.e(CropToSquareImageTask.class, "exception creating BitmapRegionDecoder", ex);
             throw new RuntimeException("Error creating BitmapRegionDecoder");
         }
-        data = null;
 
-        File file;
+        return result;
+    }
+
+    private Bitmap rotate(WeakReference<Bitmap> bitmap, int rotateDegree) {
         if (rotateDegree != 0 || isFrontCamera) {
             Matrix matrix = new Matrix();
             matrix.postRotate(rotateDegree);
-            if (isFrontCamera){
-                matrix.postScale(-1,1);
+            if (isFrontCamera) {
+                matrix.postScale(-1, 1);
             }
-            Bitmap resultedBitmap = Bitmap.createBitmap(bitmap.get(), 0, 0, bitmap.get().getWidth(), bitmap.get().getHeight(), matrix, true);
-            file = saveBitmap(resultedBitmap);
-            resultedBitmap.recycle();
-            resultedBitmap = null;
+            return Bitmap.createBitmap(bitmap.get(), 0, 0, bitmap.get().getWidth(), bitmap.get().getHeight(), matrix, true);
         } else {
-            file = saveBitmap(bitmap.get());
+            return bitmap.get();
         }
-        bitmap.get().recycle();
-        bitmap = null;
-
-        return file;
     }
 
     private int calculateImageRotation(byte[] data) {
@@ -150,11 +187,14 @@ public class CropToSquareImageTask implements Runnable {
     public void run() {
         File image = saveSquareImage();
         Intent intent = new Intent(CAMERA_BROADCAST_EVENT);
-        if (image != null) {
+        if (image != null && !isCanceled.get()) {
             intent.putExtra(RANDO_PHOTO_PATH, image.getAbsolutePath());
-        } else {
-            intent.putExtra(RANDO_PHOTO_PATH, "");
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
         }
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+
+    public void cancel() {
+        Log.d(CropToSquareImageTask.class, "Cancelling...");
+        isCanceled.set(true);
     }
 }

@@ -18,6 +18,8 @@ public class Analytics {
     private static String OPEN_TAB_OWN_RANDOS = "open_tab_own_randos";
     private static String OPEN_TAB_STRANGER_RANDOS = "open_tab_stranger_randos";
     private static String OPEN_TAB_SETTINGS = "open_tab_settings";
+    private static String SWITCH_CAMERA_TO_FRONT = "switch_camera_to_front";
+    private static String SWITCH_CAMERA_TO_BACK = "switch_camera_to_back";
 
     //unwanted rando events
     private static String CLICK_UNWANTED_RANDO = "click_unwanted_rando";
@@ -90,6 +92,14 @@ public class Analytics {
 
     public static void logCancelUnwantedRandoDialog(FirebaseAnalytics analytics) {
         analytics.logEvent(CANCEL_UNWANTED_RANDO_DIALOG, null);
+    }
+
+    public static void logSwitchCameraToFront(FirebaseAnalytics analytics) {
+        analytics.logEvent(SWITCH_CAMERA_TO_FRONT, null);
+    }
+
+    public static void logSwitchCameraToBack(FirebaseAnalytics analytics) {
+        analytics.logEvent(SWITCH_CAMERA_TO_BACK, null);
     }
 
 }

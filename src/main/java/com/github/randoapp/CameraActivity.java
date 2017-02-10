@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -47,6 +48,7 @@ import static com.github.randoapp.Constants.CAMERA_ACTIVITY_CAMERA_PERMISSION_RE
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.CAMERA_PERMISSION_REQUEST_CODE;
 import static com.github.randoapp.Constants.LOCATION_PERMISSION_REQUEST_CODE;
+import static com.google.android.cameraview.CameraView.FACING_FRONT;
 
 public class CameraActivity extends Activity {
 
@@ -88,11 +90,12 @@ public class CameraActivity extends Activity {
     private FirebaseAnalytics mFirebaseAnalytics;
     private Animation[] leftToRightAnimation;
     private CircleMaskView circleMaskView;
+    private CropToSquareImageTask mCropTask;
 
     private static final SparseArrayCompat<Integer> CAMERA_FACING_ICONS = new SparseArrayCompat<>();
 
     static {
-        CAMERA_FACING_ICONS.put(CameraView.FACING_FRONT, R.drawable.ic_camera_front_white_24dp);
+        CAMERA_FACING_ICONS.put(FACING_FRONT, R.drawable.ic_camera_front_white_24dp);
         CAMERA_FACING_ICONS.put(CameraView.FACING_BACK, R.drawable.ic_camera_rear_white_24dp);
     }
 
@@ -154,8 +157,14 @@ public class CameraActivity extends Activity {
                 public void onClick(View v) {
                     enableButtons(false);
                     if (cameraView != null) {
-                        int facing = cameraView.getFacing() == CameraView.FACING_FRONT ?
-                                CameraView.FACING_BACK : CameraView.FACING_FRONT;
+                        int facing;
+                        if (cameraView.getFacing() == FACING_FRONT) {
+                            facing = CameraView.FACING_BACK;
+                            Analytics.logSwitchCameraToBack(mFirebaseAnalytics);
+                        } else {
+                            facing = FACING_FRONT;
+                            Analytics.logSwitchCameraToFront(mFirebaseAnalytics);
+                        }
                         imageViewAnimatedChange(cameraSwitchButton, CAMERA_FACING_ICONS.get(facing));
                         enableButtons(false);
                         cameraView.setFacing(facing);
@@ -229,6 +238,7 @@ public class CameraActivity extends Activity {
         if (progressBar.getVisibility() != View.GONE) {
             progressBar.setVisibility(View.GONE);
         }
+        stopCropTask();
         if (mBackgroundHandler != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 mBackgroundHandler.getLooper().quitSafely();
@@ -317,7 +327,7 @@ public class CameraActivity extends Activity {
         @Override
         public void onClick(View v) {
             Log.d(CameraActivity.class, "Take Pic Click ");
-
+            stopCropTask();
             enableButtons(false);
             cameraView.takePicture();
             if (ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
@@ -328,6 +338,13 @@ public class CameraActivity extends Activity {
             }
             Analytics.logTakeRando(mFirebaseAnalytics);
         }
+    }
+
+    private void stopCropTask(){
+        if (mCropTask != null) {
+            mCropTask.cancel();
+        }
+        mCropTask = null;
     }
 
     private void imageViewAnimatedChange(final ImageView v, final int imageResource) {
@@ -375,7 +392,23 @@ public class CameraActivity extends Activity {
         @Override
         public void onCameraOpened(CameraView cameraView) {
             Log.d(CameraView.Callback.class, "onCameraOpened" + Thread.currentThread());
-            enableButtons(true);
+            final Runnable enableButtonsRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    enableButtons(true);
+                }
+            };
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                final Handler handler = new Handler();
+                handler.postDelayed(enableButtonsRunnable, 500);
+            } else {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                    //do nothing
+                }
+                runOnUiThread(enableButtonsRunnable);
+            }
         }
 
         @Override
@@ -388,7 +421,8 @@ public class CameraActivity extends Activity {
         public void onPictureTaken(CameraView cameraView, final byte[] data) {
             Log.d(CameraView.Callback.class, "onPictureTaken " + data.length + "Thread " + Thread.currentThread());
             cameraView.stop();
-            getBackgroundHandler().post(new CropToSquareImageTask(data, cameraView.getFacing() == CameraView.FACING_FRONT, getBaseContext()));
+            mCropTask = new CropToSquareImageTask(data, cameraView.getFacing() == FACING_FRONT, getBaseContext());
+            getBackgroundHandler().post(mCropTask);
             progressBar.setVisibility(View.VISIBLE);
         }
     };
