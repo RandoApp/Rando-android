@@ -187,7 +187,7 @@ public class CropToSquareImageTask implements Runnable {
     }
 
     public void cancel() {
-        Log.d(CropToSquareImageTask.class, "Cancellung...");
+        Log.d(CropToSquareImageTask.class, "Cancelling...");
         isCanceled.set(true);
     }
 }
