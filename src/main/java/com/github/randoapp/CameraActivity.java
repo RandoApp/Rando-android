@@ -407,19 +407,23 @@ public class CameraActivity extends Activity {
             @Override
             public void uncaughtException(Thread thread, Throwable ex) { // gets called on the same (main) thread
                 cameraView.stop();
-                if(mOldUncaughtExceptionHandler != null) {
+                if (mOldUncaughtExceptionHandler != null) {
                     // it displays the "force close" dialog
                     mOldUncaughtExceptionHandler.uncaughtException(thread, ex);
                 }
             }
         };
+
         void init() {
             mThread = Thread.currentThread();
             mOldUncaughtExceptionHandler = mThread.getUncaughtExceptionHandler();
             mThread.setUncaughtExceptionHandler(mUncaughtExceptionHandler);
         }
+
         void fini() {
-            mThread.setUncaughtExceptionHandler(mOldUncaughtExceptionHandler);
+            if (mThread != null) {
+                mThread.setUncaughtExceptionHandler(mOldUncaughtExceptionHandler);
+            }
             mOldUncaughtExceptionHandler = null;
             mThread = null;
         }

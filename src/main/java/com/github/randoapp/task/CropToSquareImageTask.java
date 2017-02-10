@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.RANDO_PHOTO_PATH;
@@ -28,6 +29,7 @@ public class CropToSquareImageTask implements Runnable {
     private WeakReference<byte[]> data;
     private Context context;
     private boolean isFrontCamera;
+    private AtomicBoolean isCancelled = new AtomicBoolean(false);
 
     public CropToSquareImageTask(byte[] data, boolean isFrontCamera, Context context) {
         this.data = new WeakReference<>(data);
