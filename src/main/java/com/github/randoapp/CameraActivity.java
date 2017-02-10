@@ -222,10 +222,7 @@ public class CameraActivity extends Activity {
         if (progressBar.getVisibility() != View.GONE) {
             progressBar.setVisibility(View.GONE);
         }
-        if (mCropTask!=null){
-            mCropTask.cancel();
-        }
-        mCropTask = null;
+        stopCropTask();
         if (mBackgroundHandler != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 mBackgroundHandler.getLooper().quitSafely();
@@ -306,10 +303,7 @@ public class CameraActivity extends Activity {
         @Override
         public void onClick(View v) {
             Log.d(CameraActivity.class, "Take Pic Click ");
-            if (mCropTask != null) {
-                mCropTask.cancel();
-            }
-            mCropTask = null;
+            stopCropTask();
             enableButtons(false);
             cameraView.takePicture();
             if (ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
@@ -320,6 +314,13 @@ public class CameraActivity extends Activity {
             }
             Analytics.logTakeRando(mFirebaseAnalytics);
         }
+    }
+
+    private void stopCropTask(){
+        if (mCropTask != null) {
+            mCropTask.cancel();
+        }
+        mCropTask = null;
     }
 
     private void imageViewAnimatedChange(final ImageView v, final int imageResource) {

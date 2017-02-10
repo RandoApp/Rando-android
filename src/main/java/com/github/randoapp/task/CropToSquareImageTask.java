@@ -47,37 +47,8 @@ public class CropToSquareImageTask implements Runnable {
             return null;
         }
         BitmapFactory.decodeByteArray(data.get(), 0, data.get().length, options);
-        int size = Math.min(options.outWidth, options.outHeight);
-
-        //We need to crop square image from the center of the image
-        int indent = (Math.max(options.outWidth, options.outHeight) - size) / 2;
-        Rect rect;
-        if (options.outHeight >= options.outWidth) {
-            rect = new Rect(0, indent, size, size + indent);
-        } else {
-            rect = new Rect(indent, 0, size + indent, size);
-        }
-
-        options.inJustDecodeBounds = false;
-        options.inPurgeable = true;
-        options.inInputShareable = true;
-
         int rotateDegree = calculateImageRotation(data.get());
-        if (isCanceled.get()) {
-            data.clear();
-            data = null;
-            return null;
-        }
-        WeakReference<Bitmap> bitmap = null;
-        try {
-            BitmapRegionDecoder regionDecoder = BitmapRegionDecoder.newInstance(data.get(), 0, data.get().length, true);
-            bitmap = new WeakReference<>(regionDecoder.decodeRegion(rect, options));
-            regionDecoder.recycle();
-            regionDecoder = null;
-        } catch (IOException ex) {
-            Log.e(CropToSquareImageTask.class, "exception creating BitmapRegionDecoder", ex);
-            throw new RuntimeException("Error creating BitmapRegionDecoder");
-        }
+        WeakReference<Bitmap> bitmap = decodeSquare(data, options);
         data.clear();
         data = null;
         if (isCanceled.get()) {
@@ -87,17 +58,7 @@ public class CropToSquareImageTask implements Runnable {
             return null;
         }
 
-        Bitmap resultedBitmap;
-        if (rotateDegree != 0 || isFrontCamera) {
-            Matrix matrix = new Matrix();
-            matrix.postRotate(rotateDegree);
-            if (isFrontCamera) {
-                matrix.postScale(-1, 1);
-            }
-            resultedBitmap = Bitmap.createBitmap(bitmap.get(), 0, 0, bitmap.get().getWidth(), bitmap.get().getHeight(), matrix, true);
-        } else {
-            resultedBitmap = bitmap.get();
-        }
+        Bitmap resultedBitmap = rotate(bitmap, rotateDegree);
 
         if (isCanceled.get()) {
             bitmap.get().recycle();
@@ -115,6 +76,53 @@ public class CropToSquareImageTask implements Runnable {
         resultedBitmap = null;
 
         return file;
+    }
+
+    private WeakReference<Bitmap> decodeSquare(WeakReference<byte[]> data, BitmapFactory.Options options) {
+        int size = Math.min(options.outWidth, options.outHeight);
+        //We need to crop square image from the center of the image
+        int indent = (Math.max(options.outWidth, options.outHeight) - size) / 2;
+        Rect rect;
+        if (options.outHeight >= options.outWidth) {
+            rect = new Rect(0, indent, size, size + indent);
+        } else {
+            rect = new Rect(indent, 0, size + indent, size);
+        }
+
+        options.inJustDecodeBounds = false;
+        options.inPurgeable = true;
+        options.inInputShareable = true;
+
+        if (isCanceled.get()) {
+            data.clear();
+            data = null;
+            return null;
+        }
+        WeakReference<Bitmap> result;
+        try {
+            BitmapRegionDecoder regionDecoder = BitmapRegionDecoder.newInstance(data.get(), 0, data.get().length, true);
+            result = new WeakReference<>(regionDecoder.decodeRegion(rect, options));
+            regionDecoder.recycle();
+            regionDecoder = null;
+        } catch (IOException ex) {
+            Log.e(CropToSquareImageTask.class, "exception creating BitmapRegionDecoder", ex);
+            throw new RuntimeException("Error creating BitmapRegionDecoder");
+        }
+
+        return result;
+    }
+
+    private Bitmap rotate(WeakReference<Bitmap> bitmap, int rotateDegree) {
+        if (rotateDegree != 0 || isFrontCamera) {
+            Matrix matrix = new Matrix();
+            matrix.postRotate(rotateDegree);
+            if (isFrontCamera) {
+                matrix.postScale(-1, 1);
+            }
+            return Bitmap.createBitmap(bitmap.get(), 0, 0, bitmap.get().getWidth(), bitmap.get().getHeight(), matrix, true);
+        } else {
+            return bitmap.get();
+        }
     }
 
     private int calculateImageRotation(byte[] data) {
