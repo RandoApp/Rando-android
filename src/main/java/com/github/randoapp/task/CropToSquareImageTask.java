@@ -53,7 +53,6 @@ public class CropToSquareImageTask implements Runnable {
         data = null;
         if (isCanceled.get()) {
             bitmap.get().recycle();
-            ;
             bitmap.clear();
             return null;
         }
