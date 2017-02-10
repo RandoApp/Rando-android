@@ -87,6 +87,7 @@ public class CameraActivity extends Activity {
     private Handler mBackgroundHandler;
     private FirebaseAnalytics mFirebaseAnalytics;
     private Animation[] leftToRightAnimation;
+    private CropToSquareImageTask mCropTask;
 
     private static final SparseArrayCompat<Integer> CAMERA_FACING_ICONS = new SparseArrayCompat<>();
 
@@ -221,6 +222,7 @@ public class CameraActivity extends Activity {
         if (progressBar.getVisibility() != View.GONE) {
             progressBar.setVisibility(View.GONE);
         }
+        stopCropTask();
         if (mBackgroundHandler != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 mBackgroundHandler.getLooper().quitSafely();
@@ -301,7 +303,7 @@ public class CameraActivity extends Activity {
         @Override
         public void onClick(View v) {
             Log.d(CameraActivity.class, "Take Pic Click ");
-
+            stopCropTask();
             enableButtons(false);
             cameraView.takePicture();
             if (ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
@@ -312,6 +314,13 @@ public class CameraActivity extends Activity {
             }
             Analytics.logTakeRando(mFirebaseAnalytics);
         }
+    }
+
+    private void stopCropTask(){
+        if (mCropTask != null) {
+            mCropTask.cancel();
+        }
+        mCropTask = null;
     }
 
     private void imageViewAnimatedChange(final ImageView v, final int imageResource) {
@@ -365,13 +374,13 @@ public class CameraActivity extends Activity {
                     enableButtons(true);
                 }
             };
-            if(Looper.myLooper() == Looper.getMainLooper()) {
+            if (Looper.myLooper() == Looper.getMainLooper()) {
                 final Handler handler = new Handler();
                 handler.postDelayed(enableButtonsRunnable, 500);
-            } else  {
+            } else {
                 try {
                     Thread.sleep(500);
-                } catch (InterruptedException ex){
+                } catch (InterruptedException ex) {
                     //do nothing
                 }
                 runOnUiThread(enableButtonsRunnable);
@@ -388,7 +397,8 @@ public class CameraActivity extends Activity {
         public void onPictureTaken(CameraView cameraView, final byte[] data) {
             Log.d(CameraView.Callback.class, "onPictureTaken " + data.length + "Thread " + Thread.currentThread());
             cameraView.stop();
-            getBackgroundHandler().post(new CropToSquareImageTask(data, cameraView.getFacing() == FACING_FRONT, getBaseContext()));
+            mCropTask = new CropToSquareImageTask(data, cameraView.getFacing() == FACING_FRONT, getBaseContext());
+            getBackgroundHandler().post(mCropTask);
             progressBar.setVisibility(View.VISIBLE);
         }
     };
