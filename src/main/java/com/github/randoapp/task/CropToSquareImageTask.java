@@ -48,6 +48,11 @@ public class CropToSquareImageTask implements Runnable {
         }
         BitmapFactory.decodeByteArray(data.get(), 0, data.get().length, options);
         int rotateDegree = calculateImageRotation(data.get());
+        if (isCanceled.get()) {
+            data.clear();
+            data = null;
+            return null;
+        }
         WeakReference<Bitmap> bitmap = decodeSquare(data, options);
         data.clear();
         data = null;
@@ -92,11 +97,6 @@ public class CropToSquareImageTask implements Runnable {
         options.inPurgeable = true;
         options.inInputShareable = true;
 
-        if (isCanceled.get()) {
-            data.clear();
-            data = null;
-            return null;
-        }
         WeakReference<Bitmap> result;
         try {
             BitmapRegionDecoder regionDecoder = BitmapRegionDecoder.newInstance(data.get(), 0, data.get().length, true);
