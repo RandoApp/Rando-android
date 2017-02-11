@@ -83,8 +83,8 @@ public class CameraActivity extends Activity {
 
     private CameraView cameraView;
     private ImageView captureButton;
-    private ImageButton cameraSwitchButton;
-    private ImageButton gridButton;
+    private ImageView cameraSwitchButton;
+    private ImageView gridButton;
     private LinearLayout progressBar;
     private Handler mBackgroundHandler;
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -142,12 +142,12 @@ public class CameraActivity extends Activity {
             }
         });
 
+        int buttonsSideMargin = (displayMetrics.widthPixels - getResources().getDimensionPixelSize(R.dimen.rando_button_size)) / 4 - getResources().getDimensionPixelSize(R.dimen.switch_camera_button_size) / 2;
         if (Camera.getNumberOfCameras() > 1) {
             leftToRightAnimation = AnimationFactory.flipAnimation(getResources().getDimensionPixelSize(R.dimen.switch_camera_button_size), AnimationFactory.FlipDirection.LEFT_RIGHT, 150, null);
-            cameraSwitchButton = (ImageButton) findViewById(R.id.camera_switch_button);
+            cameraSwitchButton = (ImageView) findViewById(R.id.camera_switch_button);
             RelativeLayout.LayoutParams cameraSwitchButtonLayoutParams = (RelativeLayout.LayoutParams) cameraSwitchButton.getLayoutParams();
-            int marginLeft = (displayMetrics.widthPixels - getResources().getDimensionPixelSize(R.dimen.rando_button_size)) / 4 - getResources().getDimensionPixelSize(R.dimen.switch_camera_button_size) / 2;
-            cameraSwitchButtonLayoutParams.setMargins(marginLeft, 0, 0, getResources().getDimensionPixelSize(R.dimen.switch_camera_margin_bottom));
+            cameraSwitchButtonLayoutParams.setMargins(buttonsSideMargin, 0, 0, getResources().getDimensionPixelSize(R.dimen.switch_camera_margin_bottom));
             cameraSwitchButton.setLayoutParams(cameraSwitchButtonLayoutParams);
             cameraView.setFacing(Preferences.getCameraFacing());
             cameraSwitchButton.setImageResource(CAMERA_FACING_ICONS.get(cameraView.getFacing()));
@@ -165,7 +165,7 @@ public class CameraActivity extends Activity {
                             facing = FACING_FRONT;
                             Analytics.logSwitchCameraToFront(mFirebaseAnalytics);
                         }
-                        imageViewAnimatedChange(cameraSwitchButton, CAMERA_FACING_ICONS.get(facing));
+                        imageViewAnimatedChange(cameraSwitchButton, CAMERA_FACING_ICONS.get(facing), 0);
                         enableButtons(false);
                         cameraView.setFacing(facing);
                         Preferences.setCameraFacing(facing);
@@ -175,17 +175,24 @@ public class CameraActivity extends Activity {
         }
         circleMaskView = (CircleMaskView) findViewById(R.id.circle_mask);
         circleMaskView.setDrawGrid(Preferences.getCameraGrid());
-        gridButton = (ImageButton) findViewById(R.id.grid_button);
+        gridButton = (ImageView) findViewById(R.id.grid_button);
+        RelativeLayout.LayoutParams gridButtonLayoutParams = (RelativeLayout.LayoutParams) gridButton.getLayoutParams();
+        gridButtonLayoutParams.setMargins(0, 0, buttonsSideMargin, getResources().getDimensionPixelSize(R.dimen.switch_camera_margin_bottom));
+        gridButton.setLayoutParams(gridButtonLayoutParams);
         gridButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 circleMaskView.setDrawGrid(!circleMaskView.isDrawGrid());
-                circleMaskView.invalidate();
                 Preferences.setCameraGrid(circleMaskView.isDrawGrid());
-                updateGridIcon();
+                if (circleMaskView.isDrawGrid()) {
+                    imageViewAnimatedChange(gridButton, R.drawable.ic_grid_on_white_24dp, 0);
+                } else {
+                    imageViewAnimatedChange(gridButton, R.drawable.ic_grid_off_white_24dp, 0);
+                }
+                circleMaskView.invalidate();
             }
         });
-        updateGridIcon();
+        //updateGridIcon();
     }
 
     @Override
@@ -306,14 +313,6 @@ public class CameraActivity extends Activity {
         }
     }
 
-    private void updateGridIcon(){
-        if (circleMaskView.isDrawGrid()) {
-            gridButton.setBackgroundResource(R.drawable.ic_grid_on_gray_36dp);
-        } else {
-            gridButton.setBackgroundResource(R.drawable.ic_grid_off_gray_36dp);
-        }
-    }
-
     private Handler getBackgroundHandler() {
         if (mBackgroundHandler == null) {
             HandlerThread thread = new HandlerThread("background");
@@ -340,14 +339,14 @@ public class CameraActivity extends Activity {
         }
     }
 
-    private void stopCropTask(){
+    private void stopCropTask() {
         if (mCropTask != null) {
             mCropTask.cancel();
         }
         mCropTask = null;
     }
 
-    private void imageViewAnimatedChange(final ImageView v, final int imageResource) {
+    private void imageViewAnimatedChange(final ImageView v, final int imageResource, final int backgroundResource) {
         final Animation anim_out = leftToRightAnimation[0];
         final Animation anim_in = leftToRightAnimation[1];
         anim_out.setAnimationListener(new Animation.AnimationListener() {
@@ -364,6 +363,9 @@ public class CameraActivity extends Activity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 v.setImageResource(imageResource);
+                if (backgroundResource > 0) {
+                    v.setBackgroundResource(backgroundResource);
+                }
                 anim_in.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {
