@@ -144,7 +144,7 @@ public class Preferences {
 
     public static boolean getCameraGrid() {
         synchronized (monitor) {
-            return getSharedPreferences().getBoolean(CAMERA_GRID, true);
+            return getSharedPreferences().getBoolean(CAMERA_GRID, false);
         }
     }
 

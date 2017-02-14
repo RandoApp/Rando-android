@@ -26,7 +26,6 @@ import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.animation.Animation;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -36,6 +35,7 @@ import com.github.randoapp.animation.AnimationFactory;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.task.CropToSquareImageTask;
+import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.LocationHelper;
 import com.github.randoapp.util.PermissionUtils;
@@ -165,7 +165,7 @@ public class CameraActivity extends Activity {
                             facing = FACING_FRONT;
                             Analytics.logSwitchCameraToFront(mFirebaseAnalytics);
                         }
-                        imageViewAnimatedChange(cameraSwitchButton, CAMERA_FACING_ICONS.get(facing), 0);
+                        imageViewAnimatedChange(cameraSwitchButton, CAMERA_FACING_ICONS.get(facing), 0, null);
                         enableButtons(false);
                         cameraView.setFacing(facing);
                         Preferences.setCameraFacing(facing);
@@ -184,15 +184,20 @@ public class CameraActivity extends Activity {
             public void onClick(View v) {
                 circleMaskView.setDrawGrid(!circleMaskView.isDrawGrid());
                 Preferences.setCameraGrid(circleMaskView.isDrawGrid());
+                OnAnimationEnd onAnimationEnd = new OnAnimationEnd() {
+                    @Override
+                    public void onEnd() {
+                        circleMaskView.invalidate();
+                    }
+                };
                 if (circleMaskView.isDrawGrid()) {
-                    imageViewAnimatedChange(gridButton, R.drawable.ic_grid_on_white_24dp, 0);
+                    imageViewAnimatedChange(gridButton, R.drawable.ic_grid_on_white_24dp, R.drawable.switch_camera_background, onAnimationEnd);
                 } else {
-                    imageViewAnimatedChange(gridButton, R.drawable.ic_grid_off_white_24dp, 0);
+                    imageViewAnimatedChange(gridButton, R.drawable.ic_grid_off_white_24dp, R.drawable.camera_action_button_background_off, onAnimationEnd);
                 }
-                circleMaskView.invalidate();
             }
         });
-        //updateGridIcon();
+        setupGridIcon();
     }
 
     @Override
@@ -236,6 +241,17 @@ public class CameraActivity extends Activity {
         if (cameraSwitchButton != null) {
             cameraSwitchButton.setEnabled(enable);
         }
+    }
+
+    private void setupGridIcon() {
+        if (circleMaskView.isDrawGrid()) {
+            gridButton.setImageResource(R.drawable.ic_grid_on_white_24dp);
+            gridButton.setBackgroundResource(R.drawable.switch_camera_background);
+        } else {
+            gridButton.setImageResource(R.drawable.ic_grid_off_white_24dp);
+            gridButton.setBackgroundResource(R.drawable.camera_action_button_background_off);
+        }
+        circleMaskView.invalidate();
     }
 
     @Override
@@ -346,7 +362,7 @@ public class CameraActivity extends Activity {
         mCropTask = null;
     }
 
-    private void imageViewAnimatedChange(final ImageView v, final int imageResource, final int backgroundResource) {
+    private void imageViewAnimatedChange(final ImageView v, final int imageResource, final int backgroundResource, final OnAnimationEnd onAnimationEnd) {
         final Animation anim_out = leftToRightAnimation[0];
         final Animation anim_in = leftToRightAnimation[1];
         anim_out.setAnimationListener(new Animation.AnimationListener() {
@@ -379,7 +395,9 @@ public class CameraActivity extends Activity {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        //Do nothing
+                        if (onAnimationEnd != null) {
+                            onAnimationEnd.onEnd();
+                        }
                     }
                 });
                 v.startAnimation(anim_in);
@@ -428,4 +446,8 @@ public class CameraActivity extends Activity {
             progressBar.setVisibility(View.VISIBLE);
         }
     };
+
+    private abstract class OnAnimationEnd {
+        public abstract void onEnd();
+    }
 }
