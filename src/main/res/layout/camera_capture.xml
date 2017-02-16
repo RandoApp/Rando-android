@@ -36,9 +36,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="18dp"
-        android:background="@drawable/ic_close_grey_36dp"/>
+        android:background="@drawable/ic_close_gray_36dp"/>
 
-    <ImageButton
+    <ImageView
+        android:id="@+id/grid_button"
+        android:layout_width="@dimen/switch_camera_button_size"
+        android:layout_height="@dimen/switch_camera_button_size"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/switch_camera_margin_bottom"
+        android:layout_marginRight="@dimen/camera_button_margin_left"
+        android:background="@drawable/switch_camera_background"
+        android:scaleType="center"
+        android:src="@drawable/ic_grid_on_white_24dp"/>
+
+    <ImageView
         android:id="@+id/camera_switch_button"
         android:layout_width="@dimen/switch_camera_button_size"
         android:layout_height="@dimen/switch_camera_button_size"

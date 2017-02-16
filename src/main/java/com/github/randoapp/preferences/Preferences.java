@@ -13,6 +13,8 @@ import static com.github.randoapp.Constants.ACCOUNT;
 import static com.github.randoapp.Constants.AUTH_TOKEN;
 import static com.github.randoapp.Constants.CAMERA_FACING;
 import static com.github.randoapp.Constants.CAMERA_FLASH_MODE;
+import static com.github.randoapp.Constants.CAMERA_GRID;
+import static com.github.randoapp.Constants.ENABLE_VIBRATE;
 import static com.github.randoapp.Constants.FIREBASE_INSTANCE_ID;
 import static com.github.randoapp.Constants.LATITUDE_PARAM;
 import static com.github.randoapp.Constants.LOCATION;
@@ -141,9 +143,15 @@ public class Preferences {
         }
     }
 
-    public static void removeCameraFacing() {
+    public static boolean getCameraGrid() {
         synchronized (monitor) {
-            getSharedPreferences().edit().remove(CAMERA_FACING).commit();
+            return getSharedPreferences().getBoolean(CAMERA_GRID, false);
+        }
+    }
+
+    public static void setCameraGrid( boolean cameraGrid) {
+        synchronized (monitor) {
+            getSharedPreferences().edit().putBoolean(CAMERA_GRID, cameraGrid).commit();
         }
     }
 
@@ -163,6 +171,18 @@ public class Preferences {
     public static void removeCameraFlashMode() {
         synchronized (monitor) {
             getSharedPreferences().edit().remove(CAMERA_FLASH_MODE).commit();
+        }
+    }
+
+    public static boolean getEnableVibrate() {
+        synchronized (monitor) {
+            return getSharedPreferences().getBoolean(ENABLE_VIBRATE, true);
+        }
+    }
+
+    public static void setEnableVibrate( boolean cameraGrid) {
+        synchronized (monitor) {
+            getSharedPreferences().edit().putBoolean(ENABLE_VIBRATE, cameraGrid).commit();
         }
     }
 

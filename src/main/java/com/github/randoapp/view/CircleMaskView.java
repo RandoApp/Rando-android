@@ -15,6 +15,9 @@ import com.github.randoapp.R;
 
 public class CircleMaskView extends View {
 
+    private boolean drawGrid = true;
+    private int numColumns = 3;
+    private int numRows = 3;
 
     public CircleMaskView(Context context) {
         super(context);
@@ -28,7 +31,37 @@ public class CircleMaskView extends View {
         super(context, attrs);
     }
 
-    private Bitmap initPaints(int size, int center) {
+    public boolean isDrawGrid() {
+        return drawGrid;
+    }
+
+    public void setDrawGrid(boolean drawGrid) {
+        this.drawGrid = drawGrid;
+    }
+
+    private void initGridLines(Canvas canvas, int radius, int xOffset, int yOffset) {
+        float width = radius * 2;
+        float height = radius * 2;
+        float cellWidth = width / 3;
+        float cellHeight = height / 3;
+
+        float lineLengthDelta = (float) (radius - Math.sqrt(radius * radius - cellWidth * cellWidth / 4));
+
+        Paint gray = new Paint();
+        gray.setColor(Color.GRAY);
+        gray.setStrokeWidth(3);
+
+
+        for (int i = 1; i < numColumns; i++) {
+            canvas.drawLine(i * cellWidth + xOffset, 0 + yOffset + lineLengthDelta, i * cellWidth + xOffset, height + yOffset - lineLengthDelta, gray);
+        }
+
+        for (int i = 1; i < numRows; i++) {
+            canvas.drawLine(0 + xOffset + lineLengthDelta, i * cellHeight + yOffset, width + xOffset - lineLengthDelta, i * cellHeight + yOffset, gray);
+        }
+    }
+
+    private Bitmap initPaints(int size, int center, int radius) {
         Bitmap bitmap;
 
         if (Build.VERSION.SDK_INT >= 14) {
@@ -36,8 +69,6 @@ public class CircleMaskView extends View {
         } else {
             bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
         }
-
-        int radius = center - getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left);
 
         Paint eraser = new Paint();
         eraser.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
@@ -53,9 +84,9 @@ public class CircleMaskView extends View {
         super.onDraw(canvas);
         int width = canvas.getWidth();
         int height = canvas.getHeight();
-        int size = Math.min(width,height);
+        int size = Math.min(width, height);
         int center = size / 2;
-        int biggerSize = Math.max(width,height);
+        int biggerSize = Math.max(width, height);
 
         Paint black = new Paint();
         black.setColor(Color.BLACK);
@@ -66,11 +97,17 @@ public class CircleMaskView extends View {
             bitmapPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         }
 
-        Bitmap bitmap = initPaints(size, center);
+        int margin = getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left);
+        int radius = center - margin;
+
+        Bitmap bitmap = initPaints(size, center, radius);
         if (height > width) {
             canvas.drawBitmap(bitmap, 0, biggerSize / 2 - center, bitmapPaint);
             canvas.drawRect(0, biggerSize / 2 + center, size, biggerSize, black);
             canvas.drawRect(0, 0, size, biggerSize / 2 - center, black);
+            if (drawGrid) {
+                initGridLines(canvas, radius, margin, margin + biggerSize / 2 - center);
+            }
         } else {
             canvas.drawBitmap(bitmap, biggerSize / 2 - center, 0, bitmapPaint);
             canvas.drawRect(biggerSize / 2 + center, 0, biggerSize, size, black);

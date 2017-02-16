@@ -30,7 +30,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/logo"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/linearLayout">
 
             <TextView
                 android:id="@+id/app_name"
@@ -61,6 +62,13 @@
             android:textColor="@color/rando_dark_grey"
             android:textSize="15.0sp"/>
     </RelativeLayout>
+
+    <CheckBox
+        android:text="@string/enable_vibration"
+        android:layout_marginTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/enable_vibrate" />
 
     <TextView
         android:id="@+id/guide"
