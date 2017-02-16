@@ -16,7 +16,6 @@ import com.github.randoapp.R;
 public class CircleMaskView extends View {
 
     private boolean drawGrid = true;
-    private float[] lines;
     private int numColumns = 3;
     private int numRows = 3;
 

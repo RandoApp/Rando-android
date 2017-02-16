@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.github.randoapp"
-    android:versionCode="72"
-    android:versionName="1.1.0">
+    android:versionCode="75"
+    android:versionName="1.1.1">
 
     <uses-sdk
         android:minSdkVersion="10"
@@ -43,7 +43,6 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <service
             android:name=".upload.UploadServiceLegacy"
             android:enabled="true"

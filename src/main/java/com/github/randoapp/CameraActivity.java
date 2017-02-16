@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -25,7 +26,6 @@ import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.animation.Animation;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -47,6 +47,7 @@ import static com.github.randoapp.Constants.CAMERA_ACTIVITY_CAMERA_PERMISSION_RE
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.CAMERA_PERMISSION_REQUEST_CODE;
 import static com.github.randoapp.Constants.LOCATION_PERMISSION_REQUEST_CODE;
+import static com.google.android.cameraview.CameraView.FACING_FRONT;
 
 public class CameraActivity extends Activity {
 
@@ -75,24 +76,26 @@ public class CameraActivity extends Activity {
         }
     };
 
+    private UnexpectedTerminationHelper mUnexpectedTerminationHelper = new UnexpectedTerminationHelper();
 
     private boolean isReturningFromCameraPermissionRequest = false;
     private boolean isReturningFromLocationPermissionRequest = false;
 
     private CameraView cameraView;
     private ImageView captureButton;
-    private ImageButton cameraSwitchButton;
-    private ImageButton gridButton;
+    private ImageView cameraSwitchButton;
+    private ImageView gridButton;
     private LinearLayout progressBar;
     private Handler mBackgroundHandler;
     private FirebaseAnalytics mFirebaseAnalytics;
     private Animation[] leftToRightAnimation;
     private CircleMaskView circleMaskView;
+    private CropToSquareImageTask mCropTask;
 
     private static final SparseArrayCompat<Integer> CAMERA_FACING_ICONS = new SparseArrayCompat<>();
 
     static {
-        CAMERA_FACING_ICONS.put(CameraView.FACING_FRONT, R.drawable.ic_camera_front_white_24dp);
+        CAMERA_FACING_ICONS.put(FACING_FRONT, R.drawable.ic_camera_front_white_24dp);
         CAMERA_FACING_ICONS.put(CameraView.FACING_BACK, R.drawable.ic_camera_rear_white_24dp);
     }
 
@@ -139,12 +142,12 @@ public class CameraActivity extends Activity {
             }
         });
 
+        int buttonsSideMargin = (displayMetrics.widthPixels - getResources().getDimensionPixelSize(R.dimen.rando_button_size)) / 4 - getResources().getDimensionPixelSize(R.dimen.switch_camera_button_size) / 2;
         if (Camera.getNumberOfCameras() > 1) {
             leftToRightAnimation = AnimationFactory.flipAnimation(getResources().getDimensionPixelSize(R.dimen.switch_camera_button_size), AnimationFactory.FlipDirection.LEFT_RIGHT, 150, null);
-            cameraSwitchButton = (ImageButton) findViewById(R.id.camera_switch_button);
+            cameraSwitchButton = (ImageView) findViewById(R.id.camera_switch_button);
             RelativeLayout.LayoutParams cameraSwitchButtonLayoutParams = (RelativeLayout.LayoutParams) cameraSwitchButton.getLayoutParams();
-            int marginLeft = (displayMetrics.widthPixels - getResources().getDimensionPixelSize(R.dimen.rando_button_size)) / 4 - getResources().getDimensionPixelSize(R.dimen.switch_camera_button_size) / 2;
-            cameraSwitchButtonLayoutParams.setMargins(marginLeft, 0, 0, getResources().getDimensionPixelSize(R.dimen.switch_camera_margin_bottom));
+            cameraSwitchButtonLayoutParams.setMargins(buttonsSideMargin, 0, 0, getResources().getDimensionPixelSize(R.dimen.switch_camera_margin_bottom));
             cameraSwitchButton.setLayoutParams(cameraSwitchButtonLayoutParams);
             cameraView.setFacing(Preferences.getCameraFacing());
             cameraSwitchButton.setImageResource(CAMERA_FACING_ICONS.get(cameraView.getFacing()));
@@ -154,9 +157,15 @@ public class CameraActivity extends Activity {
                 public void onClick(View v) {
                     enableButtons(false);
                     if (cameraView != null) {
-                        int facing = cameraView.getFacing() == CameraView.FACING_FRONT ?
-                                CameraView.FACING_BACK : CameraView.FACING_FRONT;
-                        imageViewAnimatedChange(cameraSwitchButton, CAMERA_FACING_ICONS.get(facing));
+                        int facing;
+                        if (cameraView.getFacing() == FACING_FRONT) {
+                            facing = CameraView.FACING_BACK;
+                            Analytics.logSwitchCameraToBack(mFirebaseAnalytics);
+                        } else {
+                            facing = FACING_FRONT;
+                            Analytics.logSwitchCameraToFront(mFirebaseAnalytics);
+                        }
+                        imageViewAnimatedChange(cameraSwitchButton, CAMERA_FACING_ICONS.get(facing), 0, null);
                         enableButtons(false);
                         cameraView.setFacing(facing);
                         Preferences.setCameraFacing(facing);
@@ -166,17 +175,29 @@ public class CameraActivity extends Activity {
         }
         circleMaskView = (CircleMaskView) findViewById(R.id.circle_mask);
         circleMaskView.setDrawGrid(Preferences.getCameraGrid());
-        gridButton = (ImageButton) findViewById(R.id.grid_button);
+        gridButton = (ImageView) findViewById(R.id.grid_button);
+        RelativeLayout.LayoutParams gridButtonLayoutParams = (RelativeLayout.LayoutParams) gridButton.getLayoutParams();
+        gridButtonLayoutParams.setMargins(0, 0, buttonsSideMargin, getResources().getDimensionPixelSize(R.dimen.switch_camera_margin_bottom));
+        gridButton.setLayoutParams(gridButtonLayoutParams);
         gridButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 circleMaskView.setDrawGrid(!circleMaskView.isDrawGrid());
-                circleMaskView.invalidate();
                 Preferences.setCameraGrid(circleMaskView.isDrawGrid());
-                updateGridIcon();
+                OnAnimationEnd onAnimationEnd = new OnAnimationEnd() {
+                    @Override
+                    public void onEnd() {
+                        circleMaskView.invalidate();
+                    }
+                };
+                if (circleMaskView.isDrawGrid()) {
+                    imageViewAnimatedChange(gridButton, R.drawable.ic_grid_on_white_24dp, R.drawable.switch_camera_background, onAnimationEnd);
+                } else {
+                    imageViewAnimatedChange(gridButton, R.drawable.ic_grid_off_white_24dp, R.drawable.camera_action_button_background_off, onAnimationEnd);
+                }
             }
         });
-        updateGridIcon();
+        setupGridIcon();
     }
 
     @Override
@@ -190,6 +211,7 @@ public class CameraActivity extends Activity {
         super.onPostResume();
         if (isReturningFromCameraPermissionRequest) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                mUnexpectedTerminationHelper.init();
                 cameraView.start();
             } else {
                 setResult(CAMERA_ACTIVITY_CAMERA_PERMISSION_REQUIRED);
@@ -198,6 +220,7 @@ public class CameraActivity extends Activity {
             isReturningFromCameraPermissionRequest = false;
         } else {
             if (!PermissionUtils.checkAndRequestMissingPermissions(this, CAMERA_PERMISSION_REQUEST_CODE, android.Manifest.permission.CAMERA)) {
+                mUnexpectedTerminationHelper.init();
                 cameraView.start();
             }
         }
@@ -222,13 +245,26 @@ public class CameraActivity extends Activity {
         }
     }
 
+    private void setupGridIcon() {
+        if (circleMaskView.isDrawGrid()) {
+            gridButton.setImageResource(R.drawable.ic_grid_on_white_24dp);
+            gridButton.setBackgroundResource(R.drawable.switch_camera_background);
+        } else {
+            gridButton.setImageResource(R.drawable.ic_grid_off_white_24dp);
+            gridButton.setBackgroundResource(R.drawable.camera_action_button_background_off);
+        }
+        circleMaskView.invalidate();
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
         cameraView.stop();
+        mUnexpectedTerminationHelper.fini();
         if (progressBar.getVisibility() != View.GONE) {
             progressBar.setVisibility(View.GONE);
         }
+        stopCropTask();
         if (mBackgroundHandler != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 mBackgroundHandler.getLooper().quitSafely();
@@ -296,14 +332,6 @@ public class CameraActivity extends Activity {
         }
     }
 
-    private void updateGridIcon(){
-        if (circleMaskView.isDrawGrid()) {
-            gridButton.setBackgroundResource(R.drawable.ic_grid_on_gray_36dp);
-        } else {
-            gridButton.setBackgroundResource(R.drawable.ic_grid_off_gray_36dp);
-        }
-    }
-
     private Handler getBackgroundHandler() {
         if (mBackgroundHandler == null) {
             HandlerThread thread = new HandlerThread("background");
@@ -317,20 +345,25 @@ public class CameraActivity extends Activity {
         @Override
         public void onClick(View v) {
             Log.d(CameraActivity.class, "Take Pic Click ");
-
+            stopCropTask();
             enableButtons(false);
             cameraView.takePicture();
-            if (ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
+            if (Preferences.getEnableVibrate()
+                    && ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
                 ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(50);
-            }
-            if (Build.VERSION.SDK_INT >= 11) {
-                cameraView.setAlpha(0.7f);
             }
             Analytics.logTakeRando(mFirebaseAnalytics);
         }
     }
 
-    private void imageViewAnimatedChange(final ImageView v, final int imageResource) {
+    private void stopCropTask() {
+        if (mCropTask != null) {
+            mCropTask.cancel();
+        }
+        mCropTask = null;
+    }
+
+    private void imageViewAnimatedChange(final ImageView v, final int imageResource, final int backgroundResource, final OnAnimationEnd onAnimationEnd) {
         final Animation anim_out = leftToRightAnimation[0];
         final Animation anim_in = leftToRightAnimation[1];
         anim_out.setAnimationListener(new Animation.AnimationListener() {
@@ -347,6 +380,9 @@ public class CameraActivity extends Activity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 v.setImageResource(imageResource);
+                if (backgroundResource > 0) {
+                    v.setBackgroundResource(backgroundResource);
+                }
                 anim_in.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {
@@ -360,7 +396,9 @@ public class CameraActivity extends Activity {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        //Do nothing
+                        if (onAnimationEnd != null) {
+                            onAnimationEnd.onEnd();
+                        }
                     }
                 });
                 v.startAnimation(anim_in);
@@ -375,7 +413,23 @@ public class CameraActivity extends Activity {
         @Override
         public void onCameraOpened(CameraView cameraView) {
             Log.d(CameraView.Callback.class, "onCameraOpened" + Thread.currentThread());
-            enableButtons(true);
+            final Runnable enableButtonsRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    enableButtons(true);
+                }
+            };
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                final Handler handler = new Handler();
+                handler.postDelayed(enableButtonsRunnable, 500);
+            } else {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                    //do nothing
+                }
+                runOnUiThread(enableButtonsRunnable);
+            }
         }
 
         @Override
@@ -385,12 +439,52 @@ public class CameraActivity extends Activity {
         }
 
         @Override
-        public void onPictureTaken(CameraView cameraView, final byte[] data) {
+        public void onPictureTaken(final CameraView cameraView, final byte[] data) {
             Log.d(CameraView.Callback.class, "onPictureTaken " + data.length + "Thread " + Thread.currentThread());
-            cameraView.stop();
-            getBackgroundHandler().post(new CropToSquareImageTask(data, cameraView.getFacing() == CameraView.FACING_FRONT, getBaseContext()));
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    cameraView.stop();
+                    mUnexpectedTerminationHelper.fini();
+                }
+            });
+            mCropTask = new CropToSquareImageTask(data, cameraView.getFacing() == FACING_FRONT, getBaseContext());
+            getBackgroundHandler().post(mCropTask);
             progressBar.setVisibility(View.VISIBLE);
         }
 
     };
+
+    private abstract class OnAnimationEnd {
+        public abstract void onEnd();
+    }
+
+    private class UnexpectedTerminationHelper {
+        private Thread mThread;
+        private Thread.UncaughtExceptionHandler mOldUncaughtExceptionHandler = null;
+        private Thread.UncaughtExceptionHandler mUncaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, Throwable ex) { // gets called on the same (main) thread
+                cameraView.stop();
+                if (mOldUncaughtExceptionHandler != null) {
+                    // it displays the "force close" dialog
+                    mOldUncaughtExceptionHandler.uncaughtException(thread, ex);
+                }
+            }
+        };
+
+        public void init() {
+            mThread = Thread.currentThread();
+            mOldUncaughtExceptionHandler = mThread.getUncaughtExceptionHandler();
+            mThread.setUncaughtExceptionHandler(mUncaughtExceptionHandler);
+        }
+
+        public void fini() {
+            if (mThread != null) {
+                mThread.setUncaughtExceptionHandler(mOldUncaughtExceptionHandler);
+            }
+            mOldUncaughtExceptionHandler = null;
+            mThread = null;
+        }
+    }
 }
