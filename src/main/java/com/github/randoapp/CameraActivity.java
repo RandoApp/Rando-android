@@ -76,7 +76,7 @@ public class CameraActivity extends Activity {
         }
     };
 
-    private UnexpectedTerminationHelper mUnexpectedTerminationHelper = new UnexpectedTerminationHelper();O
+    private UnexpectedTerminationHelper mUnexpectedTerminationHelper = new UnexpectedTerminationHelper();
 
 
     private boolean isReturningFromCameraPermissionRequest = false;
