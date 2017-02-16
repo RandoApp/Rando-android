@@ -345,7 +345,8 @@ public class CameraActivity extends Activity {
             stopCropTask();
             enableButtons(false);
             cameraView.takePicture();
-            if (ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
+            if (Preferences.getEnableVibrate()
+                    && ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
                 ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(50);
             }
             if (Build.VERSION.SDK_INT >= 11) {

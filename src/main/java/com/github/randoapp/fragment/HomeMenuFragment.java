@@ -12,6 +12,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -103,6 +105,15 @@ public class HomeMenuFragment extends Fragment {
 
                 intent.setData(uri);
                 startActivity(Intent.createChooser(intent, "Send Support Email"));
+            }
+        });
+
+        CheckBox enablebleVibrate = (CheckBox) rootView.findViewById(R.id.enable_vibrate);
+        enablebleVibrate.setChecked(Preferences.getEnableVibrate());
+        enablebleVibrate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Preferences.setEnableVibrate(isChecked);
             }
         });
 

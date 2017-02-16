@@ -78,7 +78,8 @@ public class ImageReviewUploadActivity extends FragmentActivity {
                 return;
             }
 
-            if (ContextCompat.checkSelfPermission(v.getContext(), android.Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
+            if (Preferences.getEnableVibrate()
+                    && ContextCompat.checkSelfPermission(v.getContext(), android.Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
                 ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(50);
             }
 
