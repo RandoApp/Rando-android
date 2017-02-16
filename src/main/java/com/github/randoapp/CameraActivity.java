@@ -35,7 +35,6 @@ import com.github.randoapp.animation.AnimationFactory;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.task.CropToSquareImageTask;
-import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.LocationHelper;
 import com.github.randoapp.util.PermissionUtils;
@@ -76,6 +75,8 @@ public class CameraActivity extends Activity {
             }
         }
     };
+
+    private UnexpectedTerminationHelper mUnexpectedTerminationHelper = new UnexpectedTerminationHelper();O
 
 
     private boolean isReturningFromCameraPermissionRequest = false;
@@ -211,6 +212,7 @@ public class CameraActivity extends Activity {
         super.onPostResume();
         if (isReturningFromCameraPermissionRequest) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                mUnexpectedTerminationHelper.init();
                 cameraView.start();
             } else {
                 setResult(CAMERA_ACTIVITY_CAMERA_PERMISSION_REQUIRED);
@@ -219,6 +221,7 @@ public class CameraActivity extends Activity {
             isReturningFromCameraPermissionRequest = false;
         } else {
             if (!PermissionUtils.checkAndRequestMissingPermissions(this, CAMERA_PERMISSION_REQUEST_CODE, android.Manifest.permission.CAMERA)) {
+                mUnexpectedTerminationHelper.init();
                 cameraView.start();
             }
         }
@@ -258,6 +261,7 @@ public class CameraActivity extends Activity {
     protected void onPause() {
         super.onPause();
         cameraView.stop();
+        mUnexpectedTerminationHelper.fini();
         if (progressBar.getVisibility() != View.GONE) {
             progressBar.setVisibility(View.GONE);
         }
@@ -349,9 +353,6 @@ public class CameraActivity extends Activity {
                     && ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
                 ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(50);
             }
-            if (Build.VERSION.SDK_INT >= 11) {
-                cameraView.setAlpha(0.7f);
-            }
             Analytics.logTakeRando(mFirebaseAnalytics);
         }
     }
@@ -439,9 +440,15 @@ public class CameraActivity extends Activity {
         }
 
         @Override
-        public void onPictureTaken(CameraView cameraView, final byte[] data) {
+        public void onPictureTaken(final CameraView cameraView, final byte[] data) {
             Log.d(CameraView.Callback.class, "onPictureTaken " + data.length + "Thread " + Thread.currentThread());
-            cameraView.stop();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    cameraView.stop();
+                    mUnexpectedTerminationHelper.fini();
+                }
+            });
             mCropTask = new CropToSquareImageTask(data, cameraView.getFacing() == FACING_FRONT, getBaseContext());
             getBackgroundHandler().post(mCropTask);
             progressBar.setVisibility(View.VISIBLE);
@@ -450,5 +457,34 @@ public class CameraActivity extends Activity {
 
     private abstract class OnAnimationEnd {
         public abstract void onEnd();
+    }
+
+    private class UnexpectedTerminationHelper {
+        private Thread mThread;
+        private Thread.UncaughtExceptionHandler mOldUncaughtExceptionHandler = null;
+        private Thread.UncaughtExceptionHandler mUncaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, Throwable ex) { // gets called on the same (main) thread
+                cameraView.stop();
+                if (mOldUncaughtExceptionHandler != null) {
+                    // it displays the "force close" dialog
+                    mOldUncaughtExceptionHandler.uncaughtException(thread, ex);
+                }
+            }
+        };
+
+        public void init() {
+            mThread = Thread.currentThread();
+            mOldUncaughtExceptionHandler = mThread.getUncaughtExceptionHandler();
+            mThread.setUncaughtExceptionHandler(mUncaughtExceptionHandler);
+        }
+
+        public void fini() {
+            if (mThread != null) {
+                mThread.setUncaughtExceptionHandler(mOldUncaughtExceptionHandler);
+            }
+            mOldUncaughtExceptionHandler = null;
+            mThread = null;
+        }
     }
 }
