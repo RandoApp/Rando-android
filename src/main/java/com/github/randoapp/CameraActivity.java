@@ -78,7 +78,6 @@ public class CameraActivity extends Activity {
 
     private UnexpectedTerminationHelper mUnexpectedTerminationHelper = new UnexpectedTerminationHelper();
 
-
     private boolean isReturningFromCameraPermissionRequest = false;
     private boolean isReturningFromLocationPermissionRequest = false;
 
