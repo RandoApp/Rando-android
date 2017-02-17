@@ -21,12 +21,10 @@ env:
 
 android:
   components:
-    - tools
     - platform-tools
     - tools
     - build-tools-25.0.2
     - android-25
-    #- android-24
     - extra-android-m2repository
     - extra-google-m2repository
     - android-$ANDROID_API
@@ -48,7 +46,7 @@ cache:
 
 before_install:
   # Install lftp for apk upload:
-  - sudo apt-get update -qq
+  #- sudo apt-get update -qq
   - sudo apt-get install -qq lftp
   # Install tree for directory structure debug
   #- sudo apt-get install -qq tree
