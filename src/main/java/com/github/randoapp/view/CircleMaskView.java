@@ -48,8 +48,8 @@ public class CircleMaskView extends View {
         float lineLengthDelta = (float) (radius - Math.sqrt(radius * radius - cellWidth * cellWidth / 4));
 
         Paint gray = new Paint();
-        gray.setColor(Color.GRAY);
-        gray.setStrokeWidth(3);
+        gray.setColor(Color.WHITE);
+        gray.setStrokeWidth(1);
 
 
         for (int i = 1; i < numColumns; i++) {

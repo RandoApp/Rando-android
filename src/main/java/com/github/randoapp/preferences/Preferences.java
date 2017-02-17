@@ -20,7 +20,6 @@ import static com.github.randoapp.Constants.LATITUDE_PARAM;
 import static com.github.randoapp.Constants.LOCATION;
 import static com.github.randoapp.Constants.LONGITUDE_PARAM;
 import static com.github.randoapp.Constants.PREFERENCES_FILE_NAME;
-import static com.github.randoapp.Constants.RANDOS_BALANCE;
 import static com.github.randoapp.Constants.TRAINING_FRAGMENT_SHOWN;
 import static com.github.randoapp.Constants.UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE;
 
@@ -28,7 +27,6 @@ public class Preferences {
     public static final String AUTH_TOKEN_DEFAULT_VALUE = "";
     public static final String FIREBASE_INSTANCE_ID_DEFAULT_VALUE = "";
     public static final String ACCOUNT_DEFAULT_VALUE = "";
-    public static final int RANDOS_BALANCE_DEFAULT_VALUE = 0;
 
     private static Object monitor = new Object();
 
