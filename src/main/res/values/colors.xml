@@ -11,7 +11,6 @@
     <color name="error_font">#FF0000</color>
     <color name="album_background">#AA0045</color>
     <color name="back_button_background">#393939</color>
-    <color name="button_disabled_background">#595959</color>
 
     <color name="takepicture_bottom_panel_background">#16181a</color>
 
@@ -40,11 +39,13 @@
     <color name="white_button_background_pressed">#ffdddddd</color>
     <color name="light_gray_button_background_normal">#fff1f1f1</color>
     <color name="light_gray_button_text">#ff8f8f8f</color>
-    <color name="grey_button_background_normal">#ffd1d1d1</color>
-    <color name="grey_button_background_pressed">#ffb6b6b6</color>
     <color name="capture_button_background_normal">#fff87b00</color>
     <color name="capture_button_background_pressed">#ffdc6f00</color>
     <color name="capture_button_background_disabled">#fffaa24b</color>
+    <color name="gray_button_background_normal">#ffd1d1d1</color>
+    <color name="gray_button_background_pressed">#ffb6b6b6</color>
+    <color name="dark_gray_button_background_normal">#ff595959</color>
+    <color name="dark_gray_button_background_pressed">#ff494949</color>
     <color name="yellow_button_background_normal">#fffcc400</color>
     <color name="yellow_button_background_pressed">#ffcea000</color>
     <color name="yellow_button_background_disabled">#fffdd54b</color>
@@ -55,7 +56,4 @@
     <color name="create_background">#ff000000</color>
     <color name="rando_edit_mode_overlay">#bbffffff</color>
 
-
-    <color name="gray_button_background_normal">#ffd1d1d1</color>
-    <color name="gray_button_background_pressed">#ffb6b6b6</color>
 </resources>
