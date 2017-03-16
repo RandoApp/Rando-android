@@ -49,7 +49,7 @@ import static com.github.randoapp.Constants.CAMERA_PERMISSION_REQUEST_CODE;
 import static com.github.randoapp.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static com.google.android.cameraview.CameraView.FACING_FRONT;
 
-public class CameraActivity9 extends Activity {
+public class CameraActivity10 extends Activity {
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -61,7 +61,7 @@ public class CameraActivity9 extends Activity {
                 String photoPath = (String) extra.get(Constants.RANDO_PHOTO_PATH);
                 if (photoPath != null && !photoPath.isEmpty()) {
 
-                    Intent activityIntent = new Intent(CameraActivity9.this, ImageReviewUploadActivity.class);
+                    Intent activityIntent = new Intent(CameraActivity10.this, ImageReviewUploadActivity.class);
                     activityIntent.putExtra(Constants.FILEPATH, photoPath);
                     activityIntent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                     startActivity(activityIntent);
@@ -69,7 +69,7 @@ public class CameraActivity9 extends Activity {
                     finish();
                     return;
                 } else {
-                    Toast.makeText(CameraActivity9.this, getResources().getText(R.string.image_crop_failed),
+                    Toast.makeText(CameraActivity10.this, getResources().getText(R.string.image_crop_failed),
                             Toast.LENGTH_LONG).show();
                 }
             }
@@ -102,7 +102,7 @@ public class CameraActivity9 extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.camera_capture);
+        setContentView(R.layout.camera_capture10);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
@@ -127,7 +127,7 @@ public class CameraActivity9 extends Activity {
         cameraView.setLayoutParams(layoutParams);
         cameraView.setFlash(Preferences.getCameraFlashMode());
 
-        Log.d(CameraActivity9.class, leftRightMargin + " " + topBottomMargin + " " + cameraView.getAspectRatio() + " ");
+        Log.d(CameraActivity10.class, leftRightMargin + " " + topBottomMargin + " " + cameraView.getAspectRatio() + " ");
 
         captureButton = (ImageView) findViewById(R.id.capture_button);
         captureButton.setOnClickListener(new CaptureButtonListener());
@@ -344,7 +344,7 @@ public class CameraActivity9 extends Activity {
     private class CaptureButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            Log.d(CameraActivity9.class, "Take Pic Click ");
+            Log.d(CameraActivity10.class, "Take Pic Click ");
             stopCropTask();
             enableButtons(false);
             cameraView.takePicture();

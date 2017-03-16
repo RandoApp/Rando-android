@@ -3,7 +3,7 @@ package com.github.randoapp.test.activity;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 
-import com.github.randoapp.CameraActivity9;
+import com.github.randoapp.CameraActivity10;
 import com.github.randoapp.R;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -12,15 +12,15 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.Matchers.not;
 
-public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<CameraActivity9> implements ActivityTestI {
+public class TakePictureActivityTest extends ActivityInstrumentationTestCase2<CameraActivity10> implements ActivityTestI {
 
     //Activity to test
-    private CameraActivity9 takePictureActivity;
+    private CameraActivity10 takePictureActivity;
 
     // Be careful about letting the IDE create the constructor.  As of this writing,
     // it creates a constructor that's compiles cleanly but doesn't run any tests
     public TakePictureActivityTest() {
-        super(CameraActivity9.class);
+        super(CameraActivity10.class);
     }
 
     @Override
