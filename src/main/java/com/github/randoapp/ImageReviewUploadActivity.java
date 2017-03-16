@@ -64,7 +64,7 @@ public class ImageReviewUploadActivity extends FragmentActivity {
 
     @Override
     public void onBackPressed() {
-        Intent activityIntent = new Intent(this, CameraActivity.class);
+        Intent activityIntent = new Intent(this, CameraActivity9.class);
         activityIntent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(activityIntent);
         finish();

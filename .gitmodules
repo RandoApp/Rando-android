@@ -4,3 +4,6 @@
 [submodule "modules/cameraview"]
 	path = modules/cameraview
 	url = https://github.com/RandoApp/cameraview.git
+[submodule "modules/CameraKit-Android"]
+	path = modules/CameraKit-Android
+	url = https://github.com/RandoApp/CameraKit-Android.git

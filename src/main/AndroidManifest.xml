@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CameraActivity"
+            android:name=".CameraActivity9"
             android:configChanges="orientation"
             android:label="@string/take_picture_screen_label"
             android:screenOrientation="portrait"

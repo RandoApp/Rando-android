@@ -154,11 +154,11 @@ tasks.coveralls {
     onlyIf { System.env.'CI' }
 }
 
-configurations.all {
+/*configurations.all {
     resolutionStrategy {
         force 'com.android.support:support-annotations:25.0.1'
     }
-}
+}*/
 
 dependencies {
     compile project(':volley')
@@ -174,11 +174,11 @@ dependencies {
     compile 'com.google.firebase:firebase-crash:10.0.1'
 
     compile 'com.evernote:android-job:1.1.3'
-    compile "com.android.support:exifinterface:25.1.0"
+    compile "com.android.support:exifinterface:25+"
 
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
-    androidTestCompile 'com.android.support:support-annotations:25.0.1'
+    androidTestCompile 'com.android.support:support-annotations:25+'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
     androidTestCompile 'com.squareup:javawriter:2.1.1'
     androidTestCompile 'javax.annotation:javax.annotation-api:1.2'
