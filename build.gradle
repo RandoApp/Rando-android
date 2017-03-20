@@ -166,7 +166,7 @@ ext {
 dependencies {
     compile project(':volley')
     compile project(':cameraview')
-    compile project(':CameraKit-Android')
+    compile project(':camerakit')
 
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile 'com.makeramen:roundedimageview:2.3.+'

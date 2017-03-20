@@ -43,6 +43,7 @@ import com.github.randoapp.util.LocationHelper;
 import com.github.randoapp.util.PermissionUtils;
 import com.github.randoapp.view.CircleMaskView;
 import com.flurgle.camerakit.CameraView;
+import com.github.randoapp.view.FocusMarkerLayout;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.File;
@@ -94,6 +95,7 @@ public class CameraActivity16  extends Activity{
     private FirebaseAnalytics mFirebaseAnalytics;
     private Animation[] leftToRightAnimation;
     private CircleMaskView circleMaskView;
+    private FocusMarkerLayout focusMarker;
     private CropToSquareImageTask mCropTask;
     @Facing
     private int mCurrentFacing;

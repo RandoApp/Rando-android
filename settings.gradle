@@ -1,5 +1,5 @@
-include ':volley' , ':cameraview', ':CameraKit-Android'
+include ':volley' , ':cameraview', ':camerakit'
 
 project(':volley').projectDir = new File(settingsDir, 'modules/volley')
 project(':cameraview').projectDir = new File(settingsDir, 'modules/cameraview/library')
-project(':CameraKit-Android').projectDir = new File(settingsDir, 'modules/CameraKit-Android/camerakit')
+project(':camerakit').projectDir = new File(settingsDir, 'modules/CameraKit-Android/camerakit')

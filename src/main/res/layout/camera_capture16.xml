@@ -10,6 +10,15 @@
         android:keepScreenOn="true"
         android:adjustViewBounds="true"/>
 
+    <com.github.randoapp.view.FocusMarkerLayout
+        android:id="@+id/focusMarker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/camera"
+        android:layout_alignLeft="@+id/camera"
+        android:layout_alignRight="@+id/camera"
+        android:layout_alignTop="@+id/camera" />
+
     <com.github.randoapp.view.CircleMaskView
         android:id="@+id/circle_mask"
         android:layout_width="match_parent"
