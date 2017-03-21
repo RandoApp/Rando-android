@@ -23,6 +23,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.ImageView;
@@ -48,13 +49,12 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.File;
 
-import static android.R.attr.data;
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_CAMERA_PERMISSION_REQUIRED;
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.CAMERA_PERMISSION_REQUEST_CODE;
 import static com.github.randoapp.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 
-public class CameraActivity16  extends Activity{
+public class CameraActivity16 extends Activity {
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -120,17 +120,19 @@ public class CameraActivity16  extends Activity{
 
         cameraView.setFocus(CameraKit.Constants.FOCUS_TAP);
 
-        AspectRatio aspectRatio = AspectRatio.of(3,4);
-                //cameraView.getAspectRatio();
+        focusMarker = (FocusMarkerLayout) findViewById(R.id.focusMarker);
 
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        AspectRatio aspectRatio = AspectRatio.of(3, 4);
+        //cameraView.getAspectRatio();
 
-        int leftRightMargin = (int) getResources().getDimension(R.dimen.rando_padding_portrait_column_left);
+        final DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+
+        final  int leftRightMargin = (int) getResources().getDimension(R.dimen.rando_padding_portrait_column_left);
 
         //make preview height to be aligned with width according to AspectRatio
         int heightRatio = Math.max(aspectRatio.getX(), aspectRatio.getY());
         int widthRatio = Math.min(aspectRatio.getX(), aspectRatio.getY());
-        int topBottomMargin = (displayMetrics.heightPixels - (displayMetrics.widthPixels - 2 * leftRightMargin) * heightRatio / widthRatio) / 2;
+        final int topBottomMargin = (displayMetrics.heightPixels - (displayMetrics.widthPixels - 2 * leftRightMargin) * heightRatio / widthRatio) / 2;
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) cameraView.getLayoutParams();
         layoutParams.setMargins(leftRightMargin, topBottomMargin, leftRightMargin, topBottomMargin);
@@ -187,6 +189,25 @@ public class CameraActivity16  extends Activity{
         }
         circleMaskView = (CircleMaskView) findViewById(R.id.circle_mask);
         circleMaskView.setDrawGrid(Preferences.getCameraGrid());
+        circleMaskView.setOnTouchListener(
+                new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        Log.d(CameraActivity16.class,event.toString());
+                        int size = Math.min(displayMetrics.heightPixels, displayMetrics.widthPixels);
+                        float radius = size / 2.0f;
+                        float delta = (displayMetrics.heightPixels - displayMetrics.widthPixels) / 2;
+                        float eX = event.getX() - radius;
+                        float eY = event.getY() - radius - delta;
+                        float vector = (float) Math.sqrt(eX * eX + eY * eY);
+                        if (vector < radius) {
+                            focusMarker.focus(event.getX(), event.getY(), leftRightMargin, topBottomMargin);
+                            return false;
+                        }
+                        return  true;
+                    }
+                }
+        );
         gridButton = (ImageView) findViewById(R.id.grid_button);
         RelativeLayout.LayoutParams gridButtonLayoutParams = (RelativeLayout.LayoutParams) gridButton.getLayoutParams();
         gridButtonLayoutParams.setMargins(0, 0, buttonsSideMargin, getResources().getDimensionPixelSize(R.dimen.switch_camera_margin_bottom));
@@ -421,47 +442,35 @@ public class CameraActivity16  extends Activity{
 
     private CameraListener mCallback
             = new CameraListener() {
-
-
-
         @Override
         public void onCameraOpened() {
-            Log.d(CameraListener.class, "onCameraOpened" + Thread.currentThread());
-            final Runnable enableButtonsRunnable = new Runnable() {
+            runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException ex) {
+                        //do nothing
+                    }
                     enableButtons(true);
                 }
-            };
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                final Handler handler = new Handler();
-                handler.postDelayed(enableButtonsRunnable, 500);
-            } else {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException ex) {
-                    //do nothing
-                }
-                runOnUiThread(enableButtonsRunnable);
-            }
+            });
         }
 
         @Override
         public void onCameraClosed() {
             Log.d(CameraListener.class, "onCameraClosed");
-            enableButtons(false);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    enableButtons(false);
+                }
+            });
         }
 
         @Override
         public void onPictureTaken(byte[] jpeg) {
             Log.d(CameraListener.class, "onPictureTaken " + jpeg.length + "Thread " + Thread.currentThread());
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    cameraView.stop();
-                    mUnexpectedTerminationHelper.fini();
-                }
-            });
             mCropTask = new CropToSquareImageTask(jpeg, mCurrentFacing == CameraKit.Constants.FACING_FRONT, getBaseContext());
             getBackgroundHandler().post(mCropTask);
             progressBar.setVisibility(View.VISIBLE);

@@ -2,7 +2,9 @@ package com.github.randoapp.view;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -21,6 +23,7 @@ public class FocusMarkerLayout extends FrameLayout {
         super(context, null);
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public FocusMarkerLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         LayoutInflater.from(getContext()).inflate(R.layout.layout_focus_marker, this);
@@ -31,9 +34,10 @@ public class FocusMarkerLayout extends FrameLayout {
         mFocusMarkerContainer.setAlpha(0);
     }
 
-    public void focus(float mx, float my) {
-        int x = (int) (mx - mFocusMarkerContainer.getWidth() / 2);
-        int y = (int) (my - mFocusMarkerContainer.getWidth() / 2);
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void focus(float mx, float my, float dx, float dy) {
+        int x = (int) (mx - dx - mFocusMarkerContainer.getWidth() / 2);
+        int y = (int) (my - dy - mFocusMarkerContainer.getWidth() / 2);
 
         mFocusMarkerContainer.setTranslationX(x);
         mFocusMarkerContainer.setTranslationY(y);
