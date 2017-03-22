@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Looper;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -182,6 +181,7 @@ public class CameraActivity16 extends Activity {
                         imageViewAnimatedChange(cameraSwitchButton, CAMERA_FACING_ICONS.get(facing), 0, null);
                         enableButtons(false);
                         cameraView.setFacing(facing);
+                        mCurrentFacing = facing;
                         Preferences.setCameraFacing(facing);
                     }
                 }
@@ -193,6 +193,10 @@ public class CameraActivity16 extends Activity {
                 new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
+                        if (mCurrentFacing == CameraKit.Constants.FACING_FRONT)
+                        {
+                            return true;
+                        }
                         Log.d(CameraActivity16.class,event.toString());
                         int size = Math.min(displayMetrics.heightPixels, displayMetrics.widthPixels);
                         float radius = size / 2.0f;
@@ -200,7 +204,7 @@ public class CameraActivity16 extends Activity {
                         float eX = event.getX() - radius;
                         float eY = event.getY() - radius - delta;
                         float vector = (float) Math.sqrt(eX * eX + eY * eY);
-                        if (vector < radius) {
+                        if (vector < radius - getResources().getDimensionPixelSize(R.dimen.focus_marker_size)/2) {
                             focusMarker.focus(event.getX(), event.getY(), leftRightMargin, topBottomMargin);
                             return false;
                         }

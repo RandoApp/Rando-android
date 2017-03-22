@@ -156,13 +156,13 @@ public class CropToSquareImageTask implements Runnable {
             }
         }
 
-        if (isFrontCamera) {
+        /*if (isFrontCamera) {
             if (rotation != 0) {
                 rotation = (360 - rotation) % 360;
             } else {
                 rotation = 180;
             }
-        }
+        }*/
         return rotation;
     }
 

@@ -62,5 +62,7 @@
 
     <dimen name="help_icon_size">25dp</dimen>
 
+    <dimen name="focus_marker_size">55dp</dimen>
+
 </resources>
 

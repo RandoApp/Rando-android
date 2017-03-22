@@ -33,7 +33,7 @@ public class EmptyHomeWallFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent;
-                if (Build.VERSION.SDK_INT < 16) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                      intent = new Intent(rootView.getContext(), CameraActivity10.class);
                 } else {
                     intent = new Intent(rootView.getContext(), CameraActivity16.class);
