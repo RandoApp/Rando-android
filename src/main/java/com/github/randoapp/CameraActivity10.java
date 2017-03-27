@@ -449,6 +449,7 @@ public class CameraActivity10 extends Activity {
                 }
             });
             mCropTask = new CropToSquareImageTask(data, cameraView.getFacing() == FACING_FRONT, getBaseContext());
+            mCropTask.setLegacyTrue();
             getBackgroundHandler().post(mCropTask);
             progressBar.setVisibility(View.VISIBLE);
         }
