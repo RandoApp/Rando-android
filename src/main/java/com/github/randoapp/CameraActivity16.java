@@ -34,6 +34,7 @@ import com.flurgle.camerakit.AspectRatio;
 import com.flurgle.camerakit.CameraKit;
 import com.flurgle.camerakit.CameraListener;
 import com.flurgle.camerakit.Facing;
+import com.flurgle.camerakit.Size;
 import com.github.randoapp.animation.AnimationFactory;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
@@ -86,6 +87,8 @@ public class CameraActivity16 extends Activity {
     private boolean isReturningFromLocationPermissionRequest = false;
 
     private CameraView cameraView;
+    private  int mCameraViewleftRightMargin = 0;
+    private  int mCameraViewtopBottomMargin = 0;
     private ImageView captureButton;
     private ImageView cameraSwitchButton;
     private ImageView gridButton;
@@ -121,22 +124,6 @@ public class CameraActivity16 extends Activity {
 
         focusMarker = (FocusMarkerLayout) findViewById(R.id.focusMarker);
 
-        AspectRatio aspectRatio = AspectRatio.of(3, 4);
-        //cameraView.getAspectRatio();
-
-        final DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-
-        final  int leftRightMargin = (int) getResources().getDimension(R.dimen.rando_padding_portrait_column_left);
-
-        //make preview height to be aligned with width according to AspectRatio
-        int heightRatio = Math.max(aspectRatio.getX(), aspectRatio.getY());
-        int widthRatio = Math.min(aspectRatio.getX(), aspectRatio.getY());
-        final int topBottomMargin = (displayMetrics.heightPixels - (displayMetrics.widthPixels - 2 * leftRightMargin) * heightRatio / widthRatio) / 2;
-
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) cameraView.getLayoutParams();
-        layoutParams.setMargins(leftRightMargin, topBottomMargin, leftRightMargin, topBottomMargin);
-
-        cameraView.setLayoutParams(layoutParams);
         cameraView.setFlash(Preferences.getCameraFlashMode());
 
         //Log.d(CameraActivity16.class, leftRightMargin + " " + topBottomMargin + " " + cameraView.getAspectRatio() + " ");
@@ -154,6 +141,7 @@ public class CameraActivity16 extends Activity {
             }
         });
 
+        final DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         int buttonsSideMargin = (displayMetrics.widthPixels - getResources().getDimensionPixelSize(R.dimen.rando_button_size)) / 4 - getResources().getDimensionPixelSize(R.dimen.switch_camera_button_size) / 2;
         if (Camera.getNumberOfCameras() > 1) {
             leftToRightAnimation = AnimationFactory.flipAnimation(getResources().getDimensionPixelSize(R.dimen.switch_camera_button_size), AnimationFactory.FlipDirection.LEFT_RIGHT, 150, null);
@@ -205,7 +193,7 @@ public class CameraActivity16 extends Activity {
                         float eY = event.getY() - radius - delta;
                         float vector = (float) Math.sqrt(eX * eX + eY * eY);
                         if (vector < radius) {
-                            focusMarker.focus(event.getX(), event.getY(), leftRightMargin, topBottomMargin);
+                            focusMarker.focus(event.getX(), event.getY(), mCameraViewleftRightMargin, mCameraViewtopBottomMargin);
                             return false;
                         }
                         return  true;
@@ -235,6 +223,24 @@ public class CameraActivity16 extends Activity {
             }
         });
         setupGridIcon();
+    }
+
+    private void adjustPreviewSize(){
+        final DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+
+        Size size = cameraView.getPreviewSize();
+        AspectRatio aspectRatio = AspectRatio.of(size.getWidth(), size.getHeight());
+
+        mCameraViewleftRightMargin = (int) getResources().getDimension(R.dimen.rando_padding_portrait_column_left);
+
+        //make preview height to be aligned with width according to AspectRatio
+        int heightRatio = Math.max(aspectRatio.getX(), aspectRatio.getY());
+        int widthRatio = Math.min(aspectRatio.getX(), aspectRatio.getY());
+        mCameraViewtopBottomMargin = (displayMetrics.heightPixels - (displayMetrics.widthPixels - 2 * mCameraViewleftRightMargin) * heightRatio / widthRatio) / 2;
+
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) cameraView.getLayoutParams();
+        layoutParams.setMargins(mCameraViewleftRightMargin, mCameraViewtopBottomMargin, mCameraViewleftRightMargin, mCameraViewtopBottomMargin);
+        cameraView.setLayoutParams(layoutParams);
     }
 
     @Override
@@ -448,6 +454,7 @@ public class CameraActivity16 extends Activity {
             = new CameraListener() {
         @Override
         public void onCameraOpened() {
+            adjustPreviewSize();
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
