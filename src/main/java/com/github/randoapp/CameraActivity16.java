@@ -204,7 +204,7 @@ public class CameraActivity16 extends Activity {
                         float eX = event.getX() - radius;
                         float eY = event.getY() - radius - delta;
                         float vector = (float) Math.sqrt(eX * eX + eY * eY);
-                        if (vector < radius - getResources().getDimensionPixelSize(R.dimen.focus_marker_size)/2) {
+                        if (vector < radius) {
                             focusMarker.focus(event.getX(), event.getY(), leftRightMargin, topBottomMargin);
                             return false;
                         }
