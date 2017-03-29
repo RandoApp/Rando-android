@@ -119,7 +119,6 @@ public class CameraActivity16 extends Activity {
         cameraView = (CameraView) findViewById(R.id.camera);
         cameraView.setCameraListener(mCallback);
         cameraView.setFlash(CameraKit.Constants.FLASH_OFF);
-
         cameraView.setFocus(CameraKit.Constants.FOCUS_TAP);
 
         focusMarker = (FocusMarkerLayout) findViewById(R.id.focusMarker);
