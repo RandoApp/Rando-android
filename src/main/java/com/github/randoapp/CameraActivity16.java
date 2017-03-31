@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,6 +34,7 @@ import android.widget.Toast;
 import com.flurgle.camerakit.AspectRatio;
 import com.flurgle.camerakit.CameraKit;
 import com.flurgle.camerakit.CameraListener;
+import com.flurgle.camerakit.CameraView;
 import com.flurgle.camerakit.Facing;
 import com.flurgle.camerakit.Size;
 import com.github.randoapp.animation.AnimationFactory;
@@ -43,7 +45,6 @@ import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.LocationHelper;
 import com.github.randoapp.util.PermissionUtils;
 import com.github.randoapp.view.CircleMaskView;
-import com.flurgle.camerakit.CameraView;
 import com.github.randoapp.view.FocusMarkerLayout;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -87,8 +88,8 @@ public class CameraActivity16 extends Activity {
     private boolean isReturningFromLocationPermissionRequest = false;
 
     private CameraView cameraView;
-    private  int mCameraViewleftRightMargin = 0;
-    private  int mCameraViewtopBottomMargin = 0;
+    private int mCameraViewleftRightMargin = 0;
+    private int mCameraViewtopBottomMargin = 0;
     private ImageView captureButton;
     private ImageView cameraSwitchButton;
     private ImageView gridButton;
@@ -180,11 +181,10 @@ public class CameraActivity16 extends Activity {
                 new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
-                        if (mCurrentFacing == CameraKit.Constants.FACING_FRONT)
-                        {
+                        if (mCurrentFacing == CameraKit.Constants.FACING_FRONT) {
                             return true;
                         }
-                        Log.d(CameraActivity16.class,event.toString());
+                        Log.d(CameraActivity16.class, event.toString());
                         int size = Math.min(displayMetrics.heightPixels, displayMetrics.widthPixels);
                         float radius = size / 2.0f;
                         float delta = (displayMetrics.heightPixels - displayMetrics.widthPixels) / 2;
@@ -195,7 +195,7 @@ public class CameraActivity16 extends Activity {
                             focusMarker.focus(event.getX(), event.getY(), mCameraViewleftRightMargin, mCameraViewtopBottomMargin);
                             return false;
                         }
-                        return  true;
+                        return true;
                     }
                 }
         );
@@ -224,7 +224,7 @@ public class CameraActivity16 extends Activity {
         setupGridIcon();
     }
 
-    private void adjustPreviewSize(){
+    private void adjustPreviewSize() {
         final DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
 
         Size size = cameraView.getPreviewSize();
@@ -457,12 +457,13 @@ public class CameraActivity16 extends Activity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException ex) {
-                        //do nothing
-                    }
-                    enableButtons(true);
+                    new Handler().postDelayed(new Runnable() {
+                                                  @Override
+                                                  public void run() {
+                                                      enableButtons(true);
+                                                  }
+                                              },
+                            500);
                 }
             });
         }
