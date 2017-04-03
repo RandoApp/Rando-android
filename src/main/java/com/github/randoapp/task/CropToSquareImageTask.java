@@ -29,6 +29,7 @@ public class CropToSquareImageTask implements Runnable {
     private WeakReference<byte[]> data;
     private Context context;
     private boolean isFrontCamera;
+    private boolean isLegacy = false;
     private AtomicBoolean isCanceled = new AtomicBoolean(false);
 
     public CropToSquareImageTask(byte[] data, boolean isFrontCamera, Context context) {
@@ -156,7 +157,7 @@ public class CropToSquareImageTask implements Runnable {
             }
         }
 
-        if (isFrontCamera) {
+        if (isLegacy && isFrontCamera) {
             if (rotation != 0) {
                 rotation = (360 - rotation) % 360;
             } else {
@@ -164,6 +165,10 @@ public class CropToSquareImageTask implements Runnable {
             }
         }
         return rotation;
+    }
+
+    public void setLegacyTrue() {
+        isLegacy = true;
     }
 
     private File saveBitmap(Bitmap bitmap) {

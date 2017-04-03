@@ -154,31 +154,35 @@ tasks.coveralls {
     onlyIf { System.env.'CI' }
 }
 
-configurations.all {
-    resolutionStrategy {
-        force 'com.android.support:support-annotations:25.0.1'
-    }
+ext {
+    compileSdkVersion = 25
+    buildToolsVersion = "25.0.2"
+    minSdkVersion = 9
+    targetSdkVersion = 25
+    supportLibraryVersion = "25+"
+    firebaseLibraryVersion = "10.0.1"
 }
 
 dependencies {
     compile project(':volley')
     compile project(':cameraview')
+    compile project(':camerakit')
 
-    compile 'com.android.support:appcompat-v7:25+'
-    compile 'com.makeramen:roundedimageview:2.3.0'
+    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
+    compile 'com.makeramen:roundedimageview:2.3.+'
     compile 'ch.acra:acra:4.9.2'
 
-    compile 'com.google.android.gms:play-services-auth:10.0.1'
-    compile 'com.google.firebase:firebase-core:10.0.1'
-    compile 'com.google.firebase:firebase-messaging:10.0.1'
-    compile 'com.google.firebase:firebase-crash:10.0.1'
+    compile "com.google.android.gms:play-services-auth:$firebaseLibraryVersion"
+    compile "com.google.firebase:firebase-core:$firebaseLibraryVersion"
+    compile "com.google.firebase:firebase-messaging:$firebaseLibraryVersion"
+    compile "com.google.firebase:firebase-crash:$firebaseLibraryVersion"
 
-    compile 'com.evernote:android-job:1.1.3'
-    compile "com.android.support:exifinterface:25.1.0"
+    compile 'com.evernote:android-job:1.1.8'
+    compile "com.android.support:exifinterface:$supportLibraryVersion"
 
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
-    androidTestCompile 'com.android.support:support-annotations:25.0.1'
+    androidTestCompile "com.android.support:support-annotations:$supportLibraryVersion"
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
     androidTestCompile 'com.squareup:javawriter:2.1.1'
     androidTestCompile 'javax.annotation:javax.annotation-api:1.2'
@@ -192,14 +196,6 @@ dependencies {
     androidTestCompile 'com.google.guava:guava:19.0'
     androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
     androidTestCompile 'com.squareup.assertj:assertj-android:1.1.1'
-}
-
-ext {
-    compileSdkVersion = 25
-    buildToolsVersion = "25.0.2"
-    minSdkVersion = 9
-    targetSdkVersion = 25
-    supportLibraryVersion = '25.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'
