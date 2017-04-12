@@ -380,6 +380,7 @@ public class RandoDAO {
             rando.imageURLSize.small = randoUpload.file;
             rando.imageURLSize.medium = randoUpload.file;
             rando.imageURLSize.large = randoUpload.file;
+            rando.toUpload = true;
             randos.add(rando);
         }
         randos.addAll(getAllRandosByStatus(Rando.Status.OUT));

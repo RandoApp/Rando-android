@@ -124,7 +124,25 @@ public class RandoListAdapter extends BaseAdapter {
             holder.randoItemLayout.addView(unwantedRandoView, 1, layoutParams);
             holder.unwantedRandoView = unwantedRandoView;
         } else {
-            setAnimations(holder);
+            if (holder.rando.toUpload) {
+                ProgressBar progressBar = new ProgressBar(convertView.getContext(), null);
+                //progressBar.setProgress(R.drawable.circular_progress_bar);
+                progressBar.setProgressDrawable(convertView.getResources().getDrawable(R.drawable.circular_progress_bar));
+
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
+                layoutParams.setMargins(convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left),
+                        convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
+                        convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right),
+                        convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));
+                //layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                //layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                //insert Unwanted view at index 1, right after "rando_placeholder"
+                holder.randoItemLayout.addView(progressBar, 1, layoutParams);
+                holder.progressBar = progressBar;
+                progressBar.showContextMenu();
+            } else {
+                setAnimations(holder);
+            }
         }
         return convertView;
     }
@@ -364,6 +382,12 @@ public class RandoListAdapter extends BaseAdapter {
             holder.unwantedRandoView = null;
         }
 
+        if (holder.progressBar != null){
+            holder.progressBar.clearAnimation();
+            holder.randoItemLayout.removeView(holder.progressBar);
+            holder.progressBar = null;
+        }
+
         holder.rando = null;
     }
 
@@ -540,6 +564,8 @@ public class RandoListAdapter extends BaseAdapter {
         public RelativeLayout randoItemLayout;
 
         public UnwantedRandoView unwantedRandoView;
+
+        public ProgressBar progressBar;
 
         public boolean animationInProgress = false;
 
