@@ -20,12 +20,14 @@ def googleApiKeyLocal = googleApiKey
 
 repositories {
     jcenter()
+    maven { url 'https://jitpack.io' }
 }
 
 allprojects {
     repositories {
         jcenter()
         mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -179,6 +181,8 @@ dependencies {
 
     compile 'com.evernote:android-job:1.1.8'
     compile "com.android.support:exifinterface:$supportLibraryVersion"
+
+    compile 'com.github.faruktoptas:FancyShowCaseView:0.0.5'
 
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'

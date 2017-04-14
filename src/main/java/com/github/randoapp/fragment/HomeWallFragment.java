@@ -18,6 +18,8 @@ import com.github.randoapp.adapter.HomePagerAdapter;
 import com.github.randoapp.util.Analytics;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import me.toptas.fancyshowcase.FancyShowCaseView;
+
 public class HomeWallFragment extends Fragment {
 
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -72,6 +74,9 @@ public class HomeWallFragment extends Fragment {
                 startActivityForResult(intent, Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE);
             }
         });
+
+
+
         return rootView;
     }
 }

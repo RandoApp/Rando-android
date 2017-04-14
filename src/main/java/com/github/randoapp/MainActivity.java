@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -25,6 +27,7 @@ import com.github.randoapp.fragment.MissingStoragePermissionFragment;
 import com.github.randoapp.fragment.TrainingHomeFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
+import com.github.randoapp.service.TutorialService;
 import com.github.randoapp.util.GooglePlayServicesUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -34,6 +37,8 @@ import org.acra.ACRA;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
+import me.toptas.fancyshowcase.FancyShowCaseView;
 
 import static com.github.randoapp.Constants.AUTH_FAILURE_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.AUTH_SUCCCESS_BROADCAST_EVENT;
@@ -83,6 +88,8 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         activity = this;
         setContentView(R.layout.activity_main);
+
+
     }
 
     private Fragment getFragment() {
@@ -122,6 +129,8 @@ public class MainActivity extends FragmentActivity {
         if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName()) == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
         }
+
+        new TutorialService().showStep1OpenCamera(this);
     }
 
     private void registerReceivers() {

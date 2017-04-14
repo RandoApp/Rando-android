@@ -41,6 +41,8 @@ public class EmptyHomeWallFragment extends Fragment {
                 startActivityForResult(intent, CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE);
             }
         });
+
+
         return rootView;
     }
 
