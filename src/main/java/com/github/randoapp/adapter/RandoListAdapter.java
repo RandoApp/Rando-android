@@ -35,6 +35,7 @@ import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.BitmapUtil;
 import com.github.randoapp.util.NetworkUtil;
 import com.github.randoapp.util.RandoUtil;
+import com.github.randoapp.view.DottedArcProgress;
 import com.github.randoapp.view.RandoActionsView;
 import com.github.randoapp.view.UnwantedRandoView;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -125,21 +126,10 @@ public class RandoListAdapter extends BaseAdapter {
             holder.unwantedRandoView = unwantedRandoView;
         } else {
             if (holder.rando.toUpload) {
-                ProgressBar progressBar = new ProgressBar(convertView.getContext(), null);
-                //progressBar.setProgress(R.drawable.circular_progress_bar);
-                progressBar.setProgressDrawable(convertView.getResources().getDrawable(R.drawable.circular_progress_bar));
-
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
-                layoutParams.setMargins(convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left),
-                        convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
-                        convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right),
-                        convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));
-                //layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                //layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                //insert Unwanted view at index 1, right after "rando_placeholder"
+                DottedArcProgress progressBar = new DottedArcProgress(convertView.getContext(), (float)(container.getWidth()/2.0 - convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left)*0.6)-3);
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(container.getWidth(), container.getWidth());
                 holder.randoItemLayout.addView(progressBar, 1, layoutParams);
                 holder.progressBar = progressBar;
-                progressBar.showContextMenu();
             } else {
                 setAnimations(holder);
             }
@@ -565,7 +555,7 @@ public class RandoListAdapter extends BaseAdapter {
 
         public UnwantedRandoView unwantedRandoView;
 
-        public ProgressBar progressBar;
+        public DottedArcProgress progressBar;
 
         public boolean animationInProgress = false;
 
