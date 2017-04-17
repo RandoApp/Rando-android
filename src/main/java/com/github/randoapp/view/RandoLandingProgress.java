@@ -9,8 +9,8 @@ import android.view.View;
 
 import com.github.randoapp.R;
 
-public class DottedArcProgress extends View {
 
+public class RandoLandingProgress extends View{
     private final int colorArc2;
     private Paint paint = new Paint();
     private int startAngle2 = 1;
@@ -24,7 +24,7 @@ public class DottedArcProgress extends View {
 
     private boolean stopAnimation = false;
 
-    public DottedArcProgress(Context context, float radius) {
+    public RandoLandingProgress(Context context, int radius) {
         super(context);
         paint.setStyle(Paint.Style.STROKE);
         this.out_rad = radius == 0 ? 50 : radius - 8;

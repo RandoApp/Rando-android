@@ -37,6 +37,7 @@ import com.github.randoapp.util.NetworkUtil;
 import com.github.randoapp.util.RandoUtil;
 import com.github.randoapp.view.DottedArcProgress;
 import com.github.randoapp.view.RandoActionsView;
+import com.github.randoapp.view.RandoLandingProgress;
 import com.github.randoapp.view.UnwantedRandoView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -126,10 +127,10 @@ public class RandoListAdapter extends BaseAdapter {
             holder.unwantedRandoView = unwantedRandoView;
         } else {
             if (holder.rando.toUpload) {
-                DottedArcProgress progressBar = new DottedArcProgress(convertView.getContext(), (float)(container.getWidth()/2.0 - convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left)*0.6)-3);
+                DottedArcProgress progressBar = new DottedArcProgress(convertView.getContext(), (float) (container.getWidth() / 2.0 - convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left) * 0.6) - 3);
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(container.getWidth(), container.getWidth());
                 holder.randoItemLayout.addView(progressBar, 1, layoutParams);
-                holder.progressBar = progressBar;
+                holder.uploadingProgress = progressBar;
             } else {
                 setAnimations(holder);
             }
@@ -322,6 +323,15 @@ public class RandoListAdapter extends BaseAdapter {
                         Analytics.logTapOwnRando(mFirebaseAnalytics);
                     }
                     holder.viewSwitcher.showNext();
+                    if (holder.rando.isMapEmpty()) {
+                        RandoLandingProgress landingProgress = new RandoLandingProgress(holder.randoItemLayout.getContext(), imageSize - 56);
+                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize - 56, imageSize - 56);
+                        ImageView imageView = new ImageView(holder.map.getContext());
+                        imageView.setImageResource(R.drawable.capture_image_background);
+                        holder.randoItemLayout.addView(imageView, 1, layoutParams);
+                        //holder.randoItemLayout.addView(landingProgress, 1, layoutParams);
+                        holder.randoLandingProgress = landingProgress;
+                    }
                 }
             }
         };
@@ -372,10 +382,10 @@ public class RandoListAdapter extends BaseAdapter {
             holder.unwantedRandoView = null;
         }
 
-        if (holder.progressBar != null){
-            holder.progressBar.clearAnimation();
-            holder.randoItemLayout.removeView(holder.progressBar);
-            holder.progressBar = null;
+        if (holder.uploadingProgress != null) {
+            holder.uploadingProgress.clearAnimation();
+            holder.randoItemLayout.removeView(holder.uploadingProgress);
+            holder.uploadingProgress = null;
         }
 
         holder.rando = null;
@@ -463,7 +473,11 @@ public class RandoListAdapter extends BaseAdapter {
         }
 
         loadImage(holder, RandoUtil.getUrlByImageSize(imageSize, rando.imageURLSize), Priority.HIGH);
-        loadMapImage(holder, RandoUtil.getUrlByImageSize(imageSize, rando.mapURLSize), Priority.LOW);
+        if (rando.isMapEmpty()) {
+            holder.map.setImageResource(R.drawable.ic_globe);
+        } else {
+            loadMapImage(holder, RandoUtil.getUrlByImageSize(imageSize, rando.mapURLSize), Priority.LOW);
+        }
     }
 
     private void loadFile(final ViewHolder holder, final String filePath) {
@@ -555,7 +569,8 @@ public class RandoListAdapter extends BaseAdapter {
 
         public UnwantedRandoView unwantedRandoView;
 
-        public DottedArcProgress progressBar;
+        public DottedArcProgress uploadingProgress;
+        public RandoLandingProgress randoLandingProgress;
 
         public boolean animationInProgress = false;
 
