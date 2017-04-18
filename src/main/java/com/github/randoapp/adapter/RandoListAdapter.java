@@ -14,6 +14,7 @@ import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -324,15 +325,26 @@ public class RandoListAdapter extends BaseAdapter {
                         Analytics.logTapOwnRando(mFirebaseAnalytics);
                     }
                     holder.viewSwitcher.showNext();
-                    if (holder.rando.isMapEmpty()) {
-                        //RandoLandingProgress landingProgress = new RandoLandingProgress(holder.randoItemLayout.getContext(), (float) (holder.randoItemLayout.getWidth() / 2.0 - holder.randoItemLayout.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left) * 0.6) - 3);
+                    holder.isMap = !holder.isMap;
+                    if (holder.rando.isMapEmpty() && holder.isMap) {
                         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(40,40);
                         layoutParams.setMargins(0,0,0,0);
-                        ImageView imageView = new ImageView(holder.randoItemLayout.getContext());
+                        final ImageView imageView = new ImageView(holder.randoItemLayout.getContext());
                         imageView.setImageResource(R.drawable.ic_launcher);
-                        holder.randoItemLayout.addView(imageView, 1, layoutParams);
-                        imageView.setAnimation(AnimationUtils.loadAnimation(holder.randoItemLayout.getContext(), R.anim.flow_map));
-                        //holder.randoLandingProgress = landingProgress;
+                        ((FrameLayout)(holder.map.getParent())).addView(imageView, 1, layoutParams);
+                        final Animation animation = AnimationUtils.loadAnimation(holder.randoItemLayout.getContext(), R.anim.flow_map);
+                        animation.setRepeatCount(Integer.MAX_VALUE);
+                        animation.setRepeatMode(Animation.INFINITE);
+                        imageView.setAnimation(animation);
+                        animation.setAnimationListener(new AnimationListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                imageView.setAnimation(animation);
+                                animation.setAnimationListener(this);
+                                animation.start();
+                            }
+                        });
+                        animation.start();
                     }
                 }
             }
@@ -371,6 +383,7 @@ public class RandoListAdapter extends BaseAdapter {
 
         holder.image.setImageBitmap(null);
         holder.map.setImageBitmap(null);
+        holder.isMap = false;
 
         setAlpha(holder.image, 1f);
         setAlpha(holder.map, 1f);
@@ -572,13 +585,13 @@ public class RandoListAdapter extends BaseAdapter {
         public UnwantedRandoView unwantedRandoView;
 
         public DottedArcProgress uploadingProgress;
-        public RandoLandingProgress randoLandingProgress;
 
         public boolean animationInProgress = false;
 
         public ViewSwitcher viewSwitcher;
         public RoundedImageView image;
         public RoundedImageView map;
+        public boolean isMap;
 
         public RandoActionsView actionsLayer;
         public Button deleteButton;
