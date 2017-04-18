@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -324,13 +325,14 @@ public class RandoListAdapter extends BaseAdapter {
                     }
                     holder.viewSwitcher.showNext();
                     if (holder.rando.isMapEmpty()) {
-                        RandoLandingProgress landingProgress = new RandoLandingProgress(holder.randoItemLayout.getContext(), imageSize - 56);
-                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize - 56, imageSize - 56);
-                        ImageView imageView = new ImageView(holder.map.getContext());
-                        imageView.setImageResource(R.drawable.capture_image_background);
+                        //RandoLandingProgress landingProgress = new RandoLandingProgress(holder.randoItemLayout.getContext(), (float) (holder.randoItemLayout.getWidth() / 2.0 - holder.randoItemLayout.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left) * 0.6) - 3);
+                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(40,40);
+                        layoutParams.setMargins(0,0,0,0);
+                        ImageView imageView = new ImageView(holder.randoItemLayout.getContext());
+                        imageView.setImageResource(R.drawable.ic_launcher);
                         holder.randoItemLayout.addView(imageView, 1, layoutParams);
-                        //holder.randoItemLayout.addView(landingProgress, 1, layoutParams);
-                        holder.randoLandingProgress = landingProgress;
+                        imageView.setAnimation(AnimationUtils.loadAnimation(holder.randoItemLayout.getContext(), R.anim.flow_map));
+                        //holder.randoLandingProgress = landingProgress;
                     }
                 }
             }
