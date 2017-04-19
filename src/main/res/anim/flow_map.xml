@@ -1,28 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <set xmlns:android="http://schemas.android.com/apk/res/android"
-    android:repeatMode="restart"
-    android:repeatCount="infinite">
+    android:interpolator="@android:anim/linear_interpolator"
+    android:shareInterpolator="false">
+
+
+    <alpha
+       android:duration="1000"
+       android:fromAlpha="0"
+       android:interpolator="@android:anim/linear_interpolator"
+       android:startOffset="0"
+       android:toAlpha="1.0" />
 
     <translate
-        android:interpolator="@android:anim/accelerate_interpolator"
-        android:fromXDelta="0%"
-        android:toXDelta="500%"
-        android:fromYDelta="0%"
-        android:toYDelta="500%"
-        android:duration="2000"
-        android:startOffset="0" />
+        android:duration="1500"
+        android:fromXDelta="15%p"
+        android:fromYDelta="20%p"
+        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+        android:startOffset="100"
+        android:toXDelta="50%p"
+        android:toYDelta="60%p" />
 
-<alpha
-        android:duration="300"
+    <!--alpha
+        android:duration="200"
         android:fromAlpha="1.0"
-        android:interpolator="@android:anim/accelerate_interpolator"
-        android:toAlpha="0.0"
-        android:startOffset="2000" />
+        android:interpolator="@android:anim/linear_interpolator"
+        android:repeatCount="1"
+        android:repeatMode="reverse"
+        android:startOffset="1500"
+        android:toAlpha="0.2" / -->
 
-    <!-- alpha
-        android:duration="300"
-        android:fromAlpha="0.0"
-        android:interpolator="@android:anim/accelerate_interpolator"
-        android:toAlpha="1.0"
-        android:startOffset="2300" / -->
+    <!-- translate
+        android:duration="1500"
+        android:fromXDelta="50%p"
+        android:fromYDelta="60%p"
+        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+        android:startOffset="1900"
+        android:toXDelta="100%p"
+        android:toYDelta="100%p" / -->
 </set>

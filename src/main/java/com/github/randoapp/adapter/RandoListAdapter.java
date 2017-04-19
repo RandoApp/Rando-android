@@ -39,7 +39,6 @@ import com.github.randoapp.util.NetworkUtil;
 import com.github.randoapp.util.RandoUtil;
 import com.github.randoapp.view.DottedArcProgress;
 import com.github.randoapp.view.RandoActionsView;
-import com.github.randoapp.view.RandoLandingProgress;
 import com.github.randoapp.view.UnwantedRandoView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -327,19 +326,17 @@ public class RandoListAdapter extends BaseAdapter {
                     holder.viewSwitcher.showNext();
                     holder.isMap = !holder.isMap;
                     if (holder.rando.isMapEmpty() && holder.isMap) {
-                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(40,40);
-                        layoutParams.setMargins(0,0,0,0);
+                        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(40,40);
                         final ImageView imageView = new ImageView(holder.randoItemLayout.getContext());
+                        imageView.setAlpha(0);
                         imageView.setImageResource(R.drawable.ic_launcher);
                         ((FrameLayout)(holder.map.getParent())).addView(imageView, 1, layoutParams);
                         final Animation animation = AnimationUtils.loadAnimation(holder.randoItemLayout.getContext(), R.anim.flow_map);
-                        animation.setRepeatCount(Integer.MAX_VALUE);
-                        animation.setRepeatMode(Animation.INFINITE);
                         imageView.setAnimation(animation);
                         animation.setAnimationListener(new AnimationListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animation animation) {
-                                imageView.setAnimation(animation);
+                                //imageView.setAnimation(animation);
                                 animation.setAnimationListener(this);
                                 animation.start();
                             }
