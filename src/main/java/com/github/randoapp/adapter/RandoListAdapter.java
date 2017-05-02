@@ -496,7 +496,7 @@ public class RandoListAdapter extends BaseAdapter {
 
         loadImage(holder, RandoUtil.getUrlByImageSize(imageSize, rando.imageURLSize), Priority.HIGH);
         if (rando.isMapEmpty()) {
-            holder.map.setImageResource(R.drawable.crete);
+            holder.map.setImageResource(R.drawable.flat_map_for_vec);
         } else {
             loadMapImage(holder, RandoUtil.getUrlByImageSize(imageSize, rando.mapURLSize), Priority.LOW);
         }
