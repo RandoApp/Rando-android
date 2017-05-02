@@ -340,8 +340,6 @@ public class RandoListAdapter extends BaseAdapter {
                         animation.setAnimationListener(new AnimationListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animation animation) {
-                                imageView.setAnimation(animation);
-                                animation.setAnimationListener(this);
                                 animation.start();
                             }
                         });
@@ -361,8 +359,8 @@ public class RandoListAdapter extends BaseAdapter {
         animSet.addAnimation(animation);
         animation.getDuration();
         AlphaAnimation alphaAnimation = new AlphaAnimation(0.3f, 1f);
-        alphaAnimation.setDuration(5*1800);
-        alphaAnimation.setInterpolator(new LinearWithPauseInterpolator(1000, 1800, 5));
+        alphaAnimation.setDuration(6*1800);
+        alphaAnimation.setInterpolator(new LinearWithPauseInterpolator(1000, 1800, 6));
         animSet.addAnimation(alphaAnimation);
         animSet.setRepeatCount(Animation.INFINITE);
         return animSet;
