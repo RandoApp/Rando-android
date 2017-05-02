@@ -127,14 +127,6 @@ public class Rando implements Serializable {
         return mapURLSize.large != null && mapURLSize.medium != null && mapURLSize.small != null && mapURLSize.large.isEmpty() && mapURLSize.medium.isEmpty() && mapURLSize.small.isEmpty();
     }
 
-    public String getRandoFileName() {
-        return imageURL == null ? null : imageURL.substring(imageURL.lastIndexOf('/') + 1);
-    }
-
-    public String getMapFileName() {
-        return mapURL == null ? null : mapURL.substring(mapURL.lastIndexOf('/') + 1);
-    }
-
     public static class DateComparator implements Comparator<Rando> {
 
         @Override

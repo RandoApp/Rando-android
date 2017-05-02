@@ -325,23 +325,27 @@ public class RandoListAdapter extends BaseAdapter {
                     }
                     holder.viewSwitcher.showNext();
                     holder.isMap = !holder.isMap;
-                    if (holder.rando.isMapEmpty() && holder.isMap) {
-                        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(40,40);
+                    if (holder.rando.isMapEmpty() && holder.isMap && holder.landingImage == null) {
+                        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(40, 40);
                         final ImageView imageView = new ImageView(holder.randoItemLayout.getContext());
-                        imageView.setAlpha(0);
                         imageView.setImageResource(R.drawable.ic_launcher);
-                        ((FrameLayout)(holder.map.getParent())).addView(imageView, 1, layoutParams);
+                        holder.landingImage = imageView;
+                        ((FrameLayout) (holder.map.getParent())).addView(imageView, 1, layoutParams);
                         final Animation animation = AnimationUtils.loadAnimation(holder.randoItemLayout.getContext(), R.anim.flow_map);
                         imageView.setAnimation(animation);
+                        imageView.setVisibility(View.GONE);
                         animation.setAnimationListener(new AnimationListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animation animation) {
-                                //imageView.setAnimation(animation);
+                                imageView.setVisibility(View.GONE);
+                                imageView.setAnimation(animation);
                                 animation.setAnimationListener(this);
                                 animation.start();
+                                imageView.setVisibility(View.VISIBLE);
                             }
                         });
                         animation.start();
+                        imageView.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -400,6 +404,12 @@ public class RandoListAdapter extends BaseAdapter {
             holder.uploadingProgress = null;
         }
 
+        if (holder.landingImage != null) {
+            holder.landingImage.clearAnimation();
+            ((FrameLayout) (holder.map.getParent())).removeView(holder.landingImage);
+            holder.landingImage = null;
+        }
+
         holder.rando = null;
     }
 
@@ -431,7 +441,7 @@ public class RandoListAdapter extends BaseAdapter {
         }
     }
 
-    private void setAlpha(RoundedImageView view, float alpha) {
+    private void setAlpha(ImageView view, float alpha) {
         if (Build.VERSION.SDK_INT >= 11) {
             view.setAlpha(alpha);
         } else {
@@ -486,7 +496,7 @@ public class RandoListAdapter extends BaseAdapter {
 
         loadImage(holder, RandoUtil.getUrlByImageSize(imageSize, rando.imageURLSize), Priority.HIGH);
         if (rando.isMapEmpty()) {
-            holder.map.setImageResource(R.drawable.ic_globe);
+            holder.map.setImageResource(R.drawable.crete);
         } else {
             loadMapImage(holder, RandoUtil.getUrlByImageSize(imageSize, rando.mapURLSize), Priority.LOW);
         }
@@ -582,6 +592,7 @@ public class RandoListAdapter extends BaseAdapter {
         public UnwantedRandoView unwantedRandoView;
 
         public DottedArcProgress uploadingProgress;
+        public ImageView landingImage;
 
         public boolean animationInProgress = false;
 
