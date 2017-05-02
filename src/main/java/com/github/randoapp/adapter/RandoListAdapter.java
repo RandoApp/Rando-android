@@ -9,8 +9,11 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
+import android.view.animation.BounceInterpolator;
 import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -27,6 +30,7 @@ import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.animation.AnimationFactory;
 import com.github.randoapp.animation.AnimationListenerAdapter;
+import com.github.randoapp.animation.LinearWithPauseInterpolator;
 import com.github.randoapp.api.API;
 import com.github.randoapp.api.listeners.DeleteRandoListener;
 import com.github.randoapp.db.RandoDAO;
@@ -331,7 +335,7 @@ public class RandoListAdapter extends BaseAdapter {
                         imageView.setImageResource(R.drawable.ic_launcher);
                         holder.landingImage = imageView;
                         ((FrameLayout) (holder.map.getParent())).addView(imageView, 1, layoutParams);
-                        final Animation animation = AnimationUtils.loadAnimation(holder.randoItemLayout.getContext(), R.anim.flow_map);
+                        AnimationSet animation = buildLandingAnimation(holder.randoItemLayout.getContext());
                         imageView.setAnimation(animation);
                         animation.setAnimationListener(new AnimationListenerAdapter() {
                             @Override
@@ -346,6 +350,22 @@ public class RandoListAdapter extends BaseAdapter {
                 }
             }
         };
+    }
+
+    private AnimationSet buildLandingAnimation(Context context){
+        AnimationSet animSet = new AnimationSet(false);
+        animSet.setFillAfter(true);
+        animSet.setInterpolator(new BounceInterpolator());
+
+        final Animation animation = AnimationUtils.loadAnimation(context, R.anim.flow_map);
+        animSet.addAnimation(animation);
+        animation.getDuration();
+        AlphaAnimation alphaAnimation = new AlphaAnimation(0.3f, 1f);
+        alphaAnimation.setDuration(5*1800);
+        alphaAnimation.setInterpolator(new LinearWithPauseInterpolator(1000, 1800, 5));
+        animSet.addAnimation(alphaAnimation);
+        animSet.setRepeatCount(Animation.INFINITE);
+        return animSet;
     }
 
     private View.OnClickListener createShareRandoOnClickListener(final ViewHolder holder) {
