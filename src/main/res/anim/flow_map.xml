@@ -38,7 +38,7 @@
         android:interpolator="@android:anim/accelerate_decelerate_interpolator"
         android:startOffset="6201"
         android:toXDelta="0"
-        android:toYDelta="-28%p" />
+        android:toYDelta="-30%p" />
 
     <translate
         android:duration="1000"
@@ -46,8 +46,8 @@
         android:fromYDelta="0"
         android:interpolator="@android:anim/accelerate_decelerate_interpolator"
         android:startOffset="8001"
-        android:toXDelta="-15%p"
-        android:toYDelta="-10%p" />
+        android:toXDelta="-25%p"
+        android:toYDelta="-15%p" />
 
     <!-- translate
         android:duration="1000"
