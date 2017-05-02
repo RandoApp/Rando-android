@@ -4,12 +4,12 @@
     android:shareInterpolator="false"
     android:fillAfter="true">
 
-
     <alpha
        android:duration="800"
-       android:fromAlpha="0"
-       android:interpolator="@android:anim/linear_interpolator"
+       android:fromAlpha="0.5"
+       android:interpolator="@android:anim/cycle_interpolator"
        android:startOffset="0"
+       android:repeatCount="infinite"
        android:toAlpha="1.0" />
 
     <translate
@@ -17,25 +17,16 @@
         android:fromXDelta="20%p"
         android:fromYDelta="20%p"
         android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-        android:startOffset="800"
+        android:startOffset="0"
         android:toXDelta="50%p"
         android:toYDelta="60%p"
         />
-
-    <!-- alpha
-        android:duration="200"
-        android:fromAlpha="1.0"
-        android:interpolator="@android:anim/linear_interpolator"
-        android:repeatCount="1"
-        android:repeatMode="reverse"
-        android:startOffset="2300"
-        android:toAlpha="0.2" /-->
 
     <translate
         android:duration="1000"
         android:fromXDelta="0"
         android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-        android:startOffset="1801"
+        android:startOffset="2601"
         android:toXDelta="-10%p" />
 
     <translate
@@ -80,12 +71,5 @@
         android:startOffset="6801"
         android:toXDelta="-69%p"
         android:toYDelta="-50%p" />
-
-    <alpha
-        android:duration="800"
-        android:fromAlpha="1.0"
-        android:interpolator="@android:anim/linear_interpolator"
-        android:startOffset="7801"
-        android:toAlpha="0" />
 
 </set>

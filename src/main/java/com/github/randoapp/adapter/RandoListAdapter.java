@@ -333,19 +333,15 @@ public class RandoListAdapter extends BaseAdapter {
                         ((FrameLayout) (holder.map.getParent())).addView(imageView, 1, layoutParams);
                         final Animation animation = AnimationUtils.loadAnimation(holder.randoItemLayout.getContext(), R.anim.flow_map);
                         imageView.setAnimation(animation);
-                        imageView.setVisibility(View.GONE);
                         animation.setAnimationListener(new AnimationListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animation animation) {
-                                imageView.setVisibility(View.GONE);
                                 imageView.setAnimation(animation);
                                 animation.setAnimationListener(this);
                                 animation.start();
-                                imageView.setVisibility(View.VISIBLE);
                             }
                         });
                         animation.start();
-                        imageView.setVisibility(View.VISIBLE);
                     }
                 }
             }
