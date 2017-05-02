@@ -49,14 +49,16 @@
         android:toXDelta="-25%p"
         android:toYDelta="-15%p" />
 
-    <!-- translate
+    <translate
         android:duration="1000"
         android:fromYDelta="0"
+        android:fromXDelta="0"
         android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-        android:startOffset="6001"
-        android:toYDelta="10%p" />
+        android:startOffset="9801"
+        android:toXDelta="-25%p"
+        android:toYDelta="11%p" />
 
-    <translate
+    <!-- translate
         android:duration="1000"
         android:fromXDelta="0"
         android:fromYDelta="0"
