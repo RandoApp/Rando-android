@@ -7,7 +7,7 @@
     <alpha
        android:duration="800"
        android:fromAlpha="0.5"
-       android:interpolator="@android:anim/cycle_interpolator"
+       android:interpolator="@anim/custom_interpolator"
        android:startOffset="0"
        android:repeatCount="infinite"
        android:toAlpha="1.0" />
@@ -19,8 +19,7 @@
         android:interpolator="@android:anim/accelerate_decelerate_interpolator"
         android:startOffset="0"
         android:toXDelta="50%p"
-        android:toYDelta="60%p"
-        />
+        android:toYDelta="60%p" />
 
     <translate
         android:duration="1000"
