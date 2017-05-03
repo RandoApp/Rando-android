@@ -11,7 +11,6 @@ public class AnimationListenerAdapter implements Animation.AnimationListener {
 
     @Override
     public void onAnimationEnd(Animation animation) {
-
     }
 
     @Override

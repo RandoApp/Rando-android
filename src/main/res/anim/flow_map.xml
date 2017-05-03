@@ -1,64 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
 <set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillAfter="true"
     android:interpolator="@android:anim/linear_interpolator"
-    android:shareInterpolator="false"
-    android:fillAfter="true">
+    android:shareInterpolator="false">
 
-    <translate
-        android:duration="1000"
-        android:fromXDelta="13%p"
-        android:fromYDelta="17%p"
-        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-        android:startOffset="800"
-        android:toXDelta="10%p"
-        android:toYDelta="30%p" />
+    <!--set android:startOffset="0">
+        < alpha
+            android:duration="200"
+            android:fromAlpha="1.0"
+            android:interpolator="@android:anim/linear_interpolator"
+            android:toAlpha="0" / -->
 
-    <translate
-        android:duration="1000"
-        android:fromXDelta="0"
-        android:fromYDelta="0"
-        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-        android:startOffset="2601"
-        android:toXDelta="20%p"
-        android:toYDelta="28%p"/>
+        <!-- translate
+            android:duration="10"
+            android:fromXDelta="0"
+            android:fromYDelta="0"
+            android:interpolator="@android:anim/linear_interpolator"
+            android:toXDelta="13%p"
+            android:toYDelta="17%p" />
+    </set -->
 
-    <translate
-        android:duration="1000"
-        android:fromXDelta="0"
-        android:fromYDelta="0"
-        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-        android:startOffset="4401"
-        android:toXDelta="33%p"
-        android:toYDelta="-7%p" />
+    <!-- set android:startOffset="200">
+        <alpha
+            android:duration="100"
+            android:fromAlpha="0"
+            android:interpolator="@android:anim/linear_interpolator"
+            android:toAlpha="1.0" />
+    </set -->
 
-    <translate
-        android:duration="1000"
-        android:fromXDelta="0"
-        android:fromYDelta="0"
-        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-        android:startOffset="6201"
-        android:toXDelta="0"
-        android:toYDelta="-30%p" />
+    <set android:startOffset="0">
+        <translate
+            android:duration="1000"
+            android:fromXDelta="13%p"
+            android:fromYDelta="17%p"
+            android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+            android:toXDelta="10%p"
+            android:toYDelta="30%p" />
+    </set>
 
-    <translate
+    <set android:startOffset="1000">
+        <translate
         android:duration="1000"
         android:fromXDelta="0"
         android:fromYDelta="0"
         android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-        android:startOffset="8001"
-        android:toXDelta="-25%p"
-        android:toYDelta="-15%p" />
+        android:toXDelta="3%p"
+        android:toYDelta="-13%p" />
+    </set>
 
-    <translate
-        android:duration="1000"
-        android:fromYDelta="0"
-        android:fromXDelta="0"
-        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-        android:startOffset="9801"
-        android:toXDelta="-25%p"
-        android:toYDelta="11%p" />
+    <!-- set android:startOffset="1001">
 
-    <!-- translate
+        <!- - alpha
+            android:duration="400"
+            android:fromAlpha="1.0"
+            android:interpolator="@android:anim/linear_interpolator"
+            android:repeatCount="2"
+            android:repeatMode="reverse"
+            android:toAlpha="0.3"
+            android:fillAfter="false"/ - ->
+
+        <translate
+            android:duration="1000"
+            android:fromXDelta="0"
+            android:fromYDelta="0"
+            android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+            android:startOffset="801"
+            android:toXDelta="20%p"
+            android:toYDelta="28%p" />
+    </set>
+
+    <!- - set android:startOffset="2801">
+        <! - - alpha
+            android:duration="800"
+            android:fromAlpha="1.0"
+            android:interpolator="@android:anim/linear_interpolator"
+            android:repeatCount="2"
+            android:repeatMode="reverse"
+            android:toAlpha="0.3"
+            android:fillAfter="false"/ - - >
+        <translate
+            android:duration="1000"
+            android:fromXDelta="0"
+            android:fromYDelta="0"
+            android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+            android:startOffset="801"
+            android:toXDelta="33%p"
+            android:toYDelta="-7%p" />
+
+    </set>
+
+    <set android:startOffset="4601">
+        <translate
+            android:duration="1000"
+            android:fromXDelta="0"
+            android:fromYDelta="0"
+            android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+            android:startOffset="801"
+            android:toXDelta="0"
+            android:toYDelta="-30%p" />
+    </set>
+
+    <set android:startOffset="6401">
+        <translate
+            android:duration="1000"
+            android:fromXDelta="0"
+            android:fromYDelta="0"
+            android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+            android:startOffset="801"
+            android:toXDelta="-25%p"
+            android:toYDelta="-15%p" />
+    </set>
+
+    <set android:startOffset="8201">
+        <translate
+            android:duration="1000"
+            android:fillAfter="true"
+            android:fromXDelta="0"
+            android:fromYDelta="0"
+            android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+            android:startOffset="801"
+            android:toXDelta="-25%p"
+            android:toYDelta="11%p" />
+    </set>
+
+    <!- - translate
         android:duration="1000"
         android:fromXDelta="0"
         android:fromYDelta="0"
