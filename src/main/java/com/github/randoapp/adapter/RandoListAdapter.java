@@ -281,6 +281,10 @@ public class RandoListAdapter extends BaseAdapter {
                     setAlpha(holder.map, 1f);
                     return;
                 }
+                if (holder.rando.toUpload){
+
+                    return;
+                }
                 if (holder.rando.isUnwanted()) {
                     Analytics.logClickUnwantedRando(mFirebaseAnalytics);
                     AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
@@ -340,10 +344,10 @@ public class RandoListAdapter extends BaseAdapter {
                         animation.setAnimationListener(new AnimationListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animation animation) {
-                                animation.start();
+                                imageView.startAnimation(animation);
                             }
                         });
-                        animation.start();
+                        imageView.startAnimation(animation);
                     }
                 }
             }
