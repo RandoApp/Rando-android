@@ -1,5 +1,8 @@
 package com.github.randoapp.adapter;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,11 +12,13 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -338,18 +343,11 @@ public class RandoListAdapter extends BaseAdapter {
 
                         final Animation anim = AnimationUtils.loadAnimation(holder.viewSwitcher.getContext(), R.anim.flow_map);
                         anim.setFillAfter(true);
-
-                        final ImageView imageView = new ImageView(holder.randoItemLayout.getContext()) {
-                            @Override
-                            protected void onAnimationStart() {
-                                super.onAnimationStart();
-                                setVisibility(VISIBLE);
-                            }
+                        final ImageView imageView = new ImageView(holder.randoItemLayout.getContext()){
 
                             @Override
                             protected void onAnimationEnd() {
                                 super.onAnimationEnd();
-                                setVisibility(GONE);
                                 holder.landingImage.clearAnimation();
                                 holder.landingImage.startAnimation(anim);
                             }
@@ -358,6 +356,16 @@ public class RandoListAdapter extends BaseAdapter {
                         holder.landingImage = imageView;
 
                         ((FrameLayout) (holder.map.getParent())).addView(imageView, 1, layoutParams);
+
+                        ObjectAnimator moveX = ObjectAnimator.ofFloat(imageView, "translationX", imageSize*0.13f);
+                        moveX.setDuration(1);
+                        ObjectAnimator moveY = ObjectAnimator.ofFloat(imageView, "translationY", imageSize*0.17f);
+                        moveY.setDuration(1);
+                        final AnimatorSet preset = new AnimatorSet();
+                        preset.play(moveX);
+                        preset.play(moveY).with(moveX);
+                        preset.start();
+
                         imageView.startAnimation(anim);
                     }
                 }

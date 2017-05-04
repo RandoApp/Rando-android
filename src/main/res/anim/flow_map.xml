@@ -4,60 +4,26 @@
     android:interpolator="@android:anim/linear_interpolator"
     android:shareInterpolator="false">
 
-    <!--set android:startOffset="0">
-        < alpha
-            android:duration="200"
-            android:fromAlpha="1.0"
-            android:interpolator="@android:anim/linear_interpolator"
-            android:toAlpha="0" / -->
-
-        <!-- translate
-            android:duration="10"
-            android:fromXDelta="0"
-            android:fromYDelta="0"
-            android:interpolator="@android:anim/linear_interpolator"
-            android:toXDelta="13%p"
-            android:toYDelta="17%p" />
-    </set -->
-
-    <!-- set android:startOffset="200">
-        <alpha
-            android:duration="100"
-            android:fromAlpha="0"
-            android:interpolator="@android:anim/linear_interpolator"
-            android:toAlpha="1.0" />
-    </set -->
-
     <set android:startOffset="0">
         <translate
             android:duration="1000"
-            android:fromXDelta="13%p"
-            android:fromYDelta="17%p"
+            android:fromXDelta="0"
+            android:fromYDelta="0"
             android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-            android:toXDelta="10%p"
-            android:toYDelta="30%p" />
+            android:toXDelta="-3%p"
+            android:toYDelta="13%p" />
     </set>
 
-    <set android:startOffset="1000">
-        <translate
-        android:duration="1000"
-        android:fromXDelta="0"
-        android:fromYDelta="0"
-        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-        android:toXDelta="3%p"
-        android:toYDelta="-13%p" />
-    </set>
+    <set android:startOffset="1001">
 
-    <!-- set android:startOffset="1001">
-
-        <!- - alpha
+        <!-- alpha
             android:duration="400"
             android:fromAlpha="1.0"
             android:interpolator="@android:anim/linear_interpolator"
             android:repeatCount="2"
             android:repeatMode="reverse"
             android:toAlpha="0.3"
-            android:fillAfter="false"/ - ->
+            android:fillAfter="false"/ -->
 
         <translate
             android:duration="1000"
@@ -69,15 +35,15 @@
             android:toYDelta="28%p" />
     </set>
 
-    <!- - set android:startOffset="2801">
-        <! - - alpha
+    <set android:startOffset="2801">
+        <!-- alpha
             android:duration="800"
             android:fromAlpha="1.0"
             android:interpolator="@android:anim/linear_interpolator"
             android:repeatCount="2"
             android:repeatMode="reverse"
             android:toAlpha="0.3"
-            android:fillAfter="false"/ - - >
+            android:fillAfter="false"/ -->
         <translate
             android:duration="1000"
             android:fromXDelta="0"
@@ -123,7 +89,7 @@
             android:toYDelta="11%p" />
     </set>
 
-    <!- - translate
+    <!-- translate
         android:duration="1000"
         android:fromXDelta="0"
         android:fromYDelta="0"
