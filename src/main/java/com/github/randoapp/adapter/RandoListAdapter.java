@@ -339,7 +339,7 @@ public class RandoListAdapter extends BaseAdapter {
                     holder.viewSwitcher.showNext();
                     holder.isMap = !holder.isMap;
                     if (holder.rando.isMapEmpty() && holder.isMap && holder.landingImage == null) {
-                        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(40, 40);
+                        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams((int)(imageSize*0.05f), (int)(imageSize*0.05f));
 
                         final Animation anim = AnimationUtils.loadAnimation(holder.viewSwitcher.getContext(), R.anim.flow_map);
                         anim.setFillAfter(true);
