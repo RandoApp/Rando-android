@@ -1,24 +1,17 @@
 package com.github.randoapp.adapter;
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
-import android.view.animation.BounceInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -26,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
@@ -35,7 +29,6 @@ import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.animation.AnimationFactory;
 import com.github.randoapp.animation.AnimationListenerAdapter;
-import com.github.randoapp.animation.LinearWithPauseInterpolator;
 import com.github.randoapp.api.API;
 import com.github.randoapp.api.listeners.DeleteRandoListener;
 import com.github.randoapp.db.RandoDAO;
@@ -142,7 +135,7 @@ public class RandoListAdapter extends BaseAdapter {
                 holder.randoItemLayout.addView(progressBar, 1, layoutParams);
                 holder.uploadingProgress = progressBar;
             } else {
-                //setAnimations(holder);
+                setAnimations(holder);
             }
         }
         return convertView;
@@ -190,8 +183,8 @@ public class RandoListAdapter extends BaseAdapter {
                 holder.deleteButton.setOnClickListener(createDeleteOnClickListener(holder));
                 holder.shareButton.setOnClickListener(createShareRandoOnClickListener(holder));
 
-                setAlpha(holder.image, 0.25f);
-                setAlpha(holder.map, 0.25f);
+                holder.image.setAlpha(0.25f);
+                holder.map.setAlpha(0.25f);
                 return true;
             }
         };
@@ -219,8 +212,8 @@ public class RandoListAdapter extends BaseAdapter {
                                         notifyDataSetChanged();
                                         Toast.makeText(v.getContext(), R.string.rando_deleted,
                                                 Toast.LENGTH_LONG).show();
-                                        setAlpha(holder.image, 1f);
-                                        setAlpha(holder.map, 1f);
+                                        holder.image.setAlpha(1f);
+                                        holder.map.setAlpha(1f);
                                         showSpinner(holder, false);
                                     }
 
@@ -249,8 +242,8 @@ public class RandoListAdapter extends BaseAdapter {
                     builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             recycleActionsLayer(holder);
-                            setAlpha(holder.image, 1f);
-                            setAlpha(holder.map, 1f);
+                            holder.image.setAlpha(1f);
+                            holder.map.setAlpha(1f);
                             return;
                         }
                     }).setTitle(R.string.delete_rando).setMessage(R.string.delete_rando_confirm).create().show();
@@ -282,11 +275,12 @@ public class RandoListAdapter extends BaseAdapter {
             public void onClick(final View v) {
                 if (holder.actionsLayer != null) {
                     recycleActionsLayer(holder);
-                    setAlpha(holder.image, 1f);
-                    setAlpha(holder.map, 1f);
+                    holder.image.setAlpha(1f);
+                    holder.map.setAlpha(1f);
                     return;
                 }
                 if (holder.rando.toUpload) {
+                    TextView uploadingText = new TextView(holder.image.getContext());
 
                     return;
                 }
@@ -339,11 +333,11 @@ public class RandoListAdapter extends BaseAdapter {
                     holder.viewSwitcher.showNext();
                     holder.isMap = !holder.isMap;
                     if (holder.rando.isMapEmpty() && holder.isMap && holder.landingImage == null) {
-                        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams((int)(imageSize*0.05f), (int)(imageSize*0.05f));
+                        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams((int) (imageSize * 0.05f), (int) (imageSize * 0.05f));
 
                         final Animation anim = AnimationUtils.loadAnimation(holder.viewSwitcher.getContext(), R.anim.flow_map);
                         anim.setFillAfter(true);
-                        final ImageView imageView = new ImageView(holder.randoItemLayout.getContext()){
+                        final ImageView imageView = new ImageView(holder.randoItemLayout.getContext()) {
 
                             @Override
                             protected void onAnimationEnd() {
@@ -357,13 +351,12 @@ public class RandoListAdapter extends BaseAdapter {
 
                         ((FrameLayout) (holder.map.getParent())).addView(imageView, 1, layoutParams);
 
-                        ObjectAnimator moveX = ObjectAnimator.ofFloat(imageView, "translationX", imageSize*0.13f);
-                        moveX.setDuration(1);
-                        ObjectAnimator moveY = ObjectAnimator.ofFloat(imageView, "translationY", imageSize*0.17f);
-                        moveY.setDuration(1);
+                        ObjectAnimator moveX = ObjectAnimator.ofFloat(imageView, "translationX", imageSize * 0.13f);
+                        ObjectAnimator moveY = ObjectAnimator.ofFloat(imageView, "translationY", imageSize * 0.17f);
                         final AnimatorSet preset = new AnimatorSet();
                         preset.play(moveX);
                         preset.play(moveY).with(moveX);
+                        preset.setDuration(1);
                         preset.start();
 
                         imageView.startAnimation(anim);
@@ -371,21 +364,6 @@ public class RandoListAdapter extends BaseAdapter {
                 }
             }
         };
-    }
-
-    private AnimationSet buildLandingAnimation(Context context) {
-        AnimationSet animSet = new AnimationSet(false);
-        animSet.setFillAfter(true);
-        animSet.setInterpolator(new BounceInterpolator());
-
-        final Animation animation = AnimationUtils.loadAnimation(context, R.anim.flow_map);
-        animSet.addAnimation(animation);
-        animation.getDuration();
-        AlphaAnimation alphaAnimation = new AlphaAnimation(0.3f, 1f);
-        alphaAnimation.setDuration(6 * 1800);
-        alphaAnimation.setInterpolator(new LinearWithPauseInterpolator(1000, 1800, 6));
-        //animSet.addAnimation(alphaAnimation);
-        return animSet;
     }
 
     private View.OnClickListener createShareRandoOnClickListener(final ViewHolder holder) {
@@ -422,8 +400,8 @@ public class RandoListAdapter extends BaseAdapter {
         holder.map.setImageBitmap(null);
         holder.isMap = false;
 
-        setAlpha(holder.image, 1f);
-        setAlpha(holder.map, 1f);
+        holder.image.setAlpha(1f);
+        holder.map.setAlpha(1f);
         showSpinner(holder, false);
 
         recycleActionsLayer(holder);
@@ -474,14 +452,6 @@ public class RandoListAdapter extends BaseAdapter {
         if (holder.mapContainer != null) {
             holder.mapContainer.cancelRequest();
             holder.mapContainer = null;
-        }
-    }
-
-    private void setAlpha(ImageView view, float alpha) {
-        if (Build.VERSION.SDK_INT >= 11) {
-            view.setAlpha(alpha);
-        } else {
-            view.setAlpha((int) (255 * alpha));
         }
     }
 

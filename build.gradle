@@ -35,7 +35,7 @@ model {
         buildToolsVersion rootProject.ext.buildToolsVersion
 
         defaultConfig {
-            minSdkVersion.apiLevel 10
+            minSdkVersion.apiLevel 11
             targetSdkVersion.apiLevel 25
             testApplicationId 'com.github.randoapp.test'
             testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
