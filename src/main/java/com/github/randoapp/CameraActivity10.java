@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.github.randoapp.animation.AnimationFactory;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
+import com.github.randoapp.service.TutorialBuilder;
 import com.github.randoapp.task.CropToSquareImageTask;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.LocationHelper;

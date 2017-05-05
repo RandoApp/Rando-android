@@ -17,6 +17,7 @@
     <string name="photo_upload_ok">Upload Finished Successfully.</string>
     <string name="photo_upload_failed">"Upload Failed. Please check you connection and try again."</string>
     <string name="failed_to_set_bon_appetit_for_rando">"Bon Appetit Failed. Please check you internet connection and try again."</string>
+    <string name="auth_acitvity_label">You are not authorized. Please, signin or signup.</string>
 
     <string name="email_should_be">You have error in email</string>
     <string name="password_should_be">Password can not be empty</string>
@@ -38,6 +39,8 @@
     <string name="report">Report</string>
     <string name="report_off">Report OFF</string>
     <string name="report_message">Report</string>
+    <string name="login_progress">Login…</string>
+    <string name="loading_user_progress">Loading user data…</string>
     <string name="loading_progress">Loading…</string>
     <string name="logout_progress">Logout…</string>
     <string name="cropping_progress">Prepairing to Upload…</string>

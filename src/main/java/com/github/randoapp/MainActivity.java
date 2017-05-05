@@ -7,9 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -19,15 +17,11 @@ import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 import com.github.randoapp.api.API;
-import com.github.randoapp.db.RandoDAO;
-import com.github.randoapp.fragment.AuthFragment;
-import com.github.randoapp.fragment.EmptyHomeWallFragment;
 import com.github.randoapp.fragment.HomeWallFragment;
 import com.github.randoapp.fragment.MissingStoragePermissionFragment;
-import com.github.randoapp.fragment.TrainingHomeFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
-import com.github.randoapp.service.TutorialService;
+import com.github.randoapp.service.TutorialBuilder;
 import com.github.randoapp.util.GooglePlayServicesUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -37,8 +31,6 @@ import org.acra.ACRA;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-
-import me.toptas.fancyshowcase.FancyShowCaseView;
 
 import static com.github.randoapp.Constants.AUTH_FAILURE_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.AUTH_SUCCCESS_BROADCAST_EVENT;
@@ -76,6 +68,12 @@ public class MainActivity extends FragmentActivity {
                 default:
                     break;
             }
+
+            if (isNotAuthorized()) {
+                startAuthActivity();
+                return;
+            }
+
             Fragment fragment = getFragment();
             if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName()) == null) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
@@ -83,31 +81,25 @@ public class MainActivity extends FragmentActivity {
         }
     };
 
+    private void startAuthActivity() {
+        Intent intent = new Intent(this, AuthActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = this;
         setContentView(R.layout.activity_main);
-
-
     }
 
     private Fragment getFragment() {
-        if (isNotAuthorized()) {
-            return new AuthFragment();
-        }
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             return new MissingStoragePermissionFragment();
         }
-        if (!Preferences.isTrainingFragmentShown()) {
-            return new TrainingHomeFragment();
-        }
-        if (RandoDAO.countAllRandosNumber() == 0) {
-            return new EmptyHomeWallFragment();
-        } else {
-            return new HomeWallFragment();
-        }
+
+        return new HomeWallFragment();
     }
 
     private boolean isNotAuthorized() {
@@ -125,12 +117,21 @@ public class MainActivity extends FragmentActivity {
         super.onPostResume();
         registerReceivers();
         showUpdatePlayServicesDialogIfNecessary();
+
+        if (isNotAuthorized()) {
+            startAuthActivity();
+            return;
+        }
+
+        new TutorialBuilder(this)
+//                .learnTakeARando();
+                .learnWaitForUploading();
+
+
         Fragment fragment = getFragment();
         if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName()) == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
         }
-
-        new TutorialService().showStep1OpenCamera(this);
     }
 
     private void registerReceivers() {
@@ -189,6 +190,12 @@ public class MainActivity extends FragmentActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE) {
+
+            if (isNotAuthorized()) {
+                startAuthActivity();
+                return;
+            }
+
             Fragment fragment = getFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
         } else if (requestCode == UPDATE_PLAY_SERVICES_REQUEST_CODE) {

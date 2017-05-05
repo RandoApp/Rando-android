@@ -4,6 +4,7 @@
     <color name="black">#000000</color>
 
     <color name="auth_button">#006DCC</color>
+    <color name="skip_link">#006DCC</color>
     <color name="auth_text">#FFFFFF</color>
     <color name="auth_input_text">#000000</color>
 

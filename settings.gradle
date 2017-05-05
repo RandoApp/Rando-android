@@ -1,5 +1,6 @@
-include ':volley' , ':cameraview', ':camerakit'
+include ':volley' , ':cameraview', ':camerakit', ':spotlight'
 
 project(':volley').projectDir = new File(settingsDir, 'modules/volley')
 project(':cameraview').projectDir = new File(settingsDir, 'modules/cameraview/library')
 project(':camerakit').projectDir = new File(settingsDir, 'modules/CameraKit-Android/camerakit')
+project(':spotlight').projectDir = new File(settingsDir, 'modules/Spotlight/Spotlight-library')

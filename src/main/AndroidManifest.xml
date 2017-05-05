@@ -45,6 +45,12 @@
             android:label="@string/take_picture_screen_label"
             android:screenOrientation="portrait"
             android:theme="@style/RandoThemeFullScreen" />
+        <activity
+            android:name=".AuthActivity"
+            android:configChanges="orientation"
+            android:label="@string/auth_acitvity_label"
+            android:screenOrientation="portrait"
+            android:theme="@style/RandoThemeFullScreen" />
 
         <meta-data
             android:name="com.google.android.gms.version"

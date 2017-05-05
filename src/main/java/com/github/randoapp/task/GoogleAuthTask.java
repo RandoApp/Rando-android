@@ -1,12 +1,13 @@
 package com.github.randoapp.task;
 
+import android.app.Activity;
+
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.api.API;
-import com.github.randoapp.fragment.AuthFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.preferences.Preferences;
@@ -30,13 +31,13 @@ import static com.github.randoapp.Constants.UPDATE_PLAY_SERVICES_REQUEST_CODE;
 public class GoogleAuthTask extends BaseTask {
 
     private String email;
-    private AuthFragment authFragment;
+    private Activity activity;
 
 
-    public GoogleAuthTask(String email, AuthFragment authFragment) {
+    public GoogleAuthTask(String email, Activity activity) {
         Log.d(GoogleAuthTask.class, "Auth Task started for email: ", email);
         this.email = email;
-        this.authFragment = authFragment;
+        this.activity = activity;
     }
 
     @Override
@@ -51,12 +52,12 @@ public class GoogleAuthTask extends BaseTask {
                 return OK;
             }
         } catch (final GooglePlayServicesAvailabilityException playEx) {
-            authFragment.getActivity().runOnUiThread(new Runnable() {
+            activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
                     if (googleApiAvailability.isUserResolvableError(playEx.getConnectionStatusCode())) {
-                        googleApiAvailability.getErrorDialog(authFragment.getActivity(), playEx.getConnectionStatusCode(), UPDATE_PLAY_SERVICES_REQUEST_CODE).show();
+                        googleApiAvailability.getErrorDialog(activity, playEx.getConnectionStatusCode(), UPDATE_PLAY_SERVICES_REQUEST_CODE).show();
                     }
                 }
             });
@@ -64,7 +65,7 @@ public class GoogleAuthTask extends BaseTask {
             return ERROR;
         } catch (UserRecoverableAuthException userRecoverableException) {
             Log.e(GoogleAuthTask.class, "Start Google activity because we have UserRecoverableAuthException and user should fix this: ", userRecoverableException.getMessage());
-            authFragment.startActivityForResult(userRecoverableException.getIntent(), Constants.GOOGLE_ACTIVITIES_AUTH_REQUEST_CODE);
+            activity.startActivityForResult(userRecoverableException.getIntent(), Constants.GOOGLE_ACTIVITIES_AUTH_REQUEST_CODE);
             //Do not set any error to data, because we don't need change fragments before G+ activity done
             return ERROR;
         } catch (GoogleAuthException fatalException) {

@@ -37,7 +37,7 @@ model {
         buildToolsVersion rootProject.ext.buildToolsVersion
 
         defaultConfig {
-            minSdkVersion.apiLevel 10
+            minSdkVersion.apiLevel 11
             targetSdkVersion.apiLevel 25
             testApplicationId 'com.github.randoapp.test'
             testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
@@ -169,6 +169,7 @@ dependencies {
     compile project(':volley')
     compile project(':cameraview')
     compile project(':camerakit')
+    compile project(':spotlight')
 
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile 'com.makeramen:roundedimageview:2.3.+'
@@ -183,6 +184,7 @@ dependencies {
     compile "com.android.support:exifinterface:$supportLibraryVersion"
 
     compile 'com.github.faruktoptas:FancyShowCaseView:0.0.5'
+
 
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'

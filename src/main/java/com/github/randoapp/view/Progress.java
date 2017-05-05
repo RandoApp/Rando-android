@@ -34,4 +34,12 @@ public class Progress {
     public static void showLoading() {
         show(App.context.getResources().getString(R.string.loading_progress));
     }
+
+    public static void showLogin(Activity activity) {
+        show(activity.getString(R.string.login_progress), activity);
+    }
+
+    public static void showLoading(Activity activity) {
+        show(activity.getString(R.string.loading_progress), activity);
+    }
 }

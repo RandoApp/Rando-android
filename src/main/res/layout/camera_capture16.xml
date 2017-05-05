@@ -49,6 +49,7 @@
 
     <ImageView
         android:id="@+id/grid_button"
+        android:tag="grid_button"
         android:layout_width="@dimen/switch_camera_button_size"
         android:layout_height="@dimen/switch_camera_button_size"
         android:layout_alignParentBottom="true"
@@ -61,6 +62,7 @@
 
     <ImageView
         android:id="@+id/camera_switch_button"
+        android:tag="camera_switch_button"
         android:layout_width="@dimen/switch_camera_button_size"
         android:layout_height="@dimen/switch_camera_button_size"
         android:layout_alignParentBottom="true"
@@ -72,6 +74,7 @@
 
     <ImageView
         android:id="@+id/capture_button"
+        android:tag="capture_button"
         android:layout_width="@dimen/rando_button_size"
         android:layout_height="@dimen/rando_button_size"
         android:layout_alignParentBottom="true"
