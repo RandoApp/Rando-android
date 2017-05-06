@@ -1,5 +1,7 @@
 package com.github.randoapp.db.model;
 
+import android.text.TextUtils;
+
 import com.github.randoapp.log.Log;
 
 import java.io.Serializable;
@@ -22,6 +24,8 @@ public class Rando implements Serializable {
     public Status status;
     public String detected;
 
+    public boolean toUpload = false;
+
     public Rando() {
     }
 
@@ -37,8 +41,8 @@ public class Rando implements Serializable {
         rando.detected = detected;
     }
 
-    public boolean isUnwanted(){
-        return  detected != null && detected.contains("unwanted");
+    public boolean isUnwanted() {
+        return detected != null && detected.contains("unwanted");
     }
 
     @Override
@@ -57,7 +61,8 @@ public class Rando implements Serializable {
             return false;
         if (randoId != null ? !randoId.equals(rando.randoId) : rando.randoId != null) return false;
         if (status != rando.status) return false;
-        if (detected != null ? !detected.equals(rando.detected) : rando.detected != null) return false;
+        if (detected != null ? !detected.equals(rando.detected) : rando.detected != null)
+            return false;
 
         return true;
     }
@@ -120,11 +125,8 @@ public class Rando implements Serializable {
         }
     }
 
-    public String getRandoFileName() {
-        return imageURL == null ? null : imageURL.substring(imageURL.lastIndexOf('/') + 1);
-    }
-    public String getMapFileName() {
-        return mapURL == null ? null : mapURL.substring(mapURL.lastIndexOf('/') + 1);
+    public boolean isMapEmpty() {
+        return TextUtils.isEmpty(mapURLSize.large) && TextUtils.isEmpty(mapURLSize.medium) && TextUtils.isEmpty(mapURLSize.small);
     }
 
     public static class DateComparator implements Comparator<Rando> {

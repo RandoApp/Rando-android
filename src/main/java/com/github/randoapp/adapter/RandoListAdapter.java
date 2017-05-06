@@ -1,18 +1,22 @@
 package com.github.randoapp.adapter;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -25,6 +29,7 @@ import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.animation.AnimationFactory;
 import com.github.randoapp.animation.AnimationListenerAdapter;
+import com.github.randoapp.animation.AnimatorListenerAdapter;
 import com.github.randoapp.api.API;
 import com.github.randoapp.api.listeners.DeleteRandoListener;
 import com.github.randoapp.db.RandoDAO;
@@ -36,12 +41,14 @@ import com.github.randoapp.util.BitmapUtil;
 import com.github.randoapp.util.NetworkUtil;
 import com.github.randoapp.util.RandoUtil;
 import com.github.randoapp.view.RandoActionsView;
+import com.github.randoapp.view.RoundProgress;
 import com.github.randoapp.view.UnwantedRandoView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
 
+import static android.widget.Toast.makeText;
 import static com.android.volley.Request.Priority;
 
 public class RandoListAdapter extends BaseAdapter {
@@ -124,7 +131,14 @@ public class RandoListAdapter extends BaseAdapter {
             holder.randoItemLayout.addView(unwantedRandoView, 1, layoutParams);
             holder.unwantedRandoView = unwantedRandoView;
         } else {
-            setAnimations(holder);
+            if (holder.rando.toUpload) {
+                RoundProgress progressBar = new RoundProgress(convertView.getContext(), (float) (container.getWidth() / 2.0 - convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left) * 0.6) - 3);
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(container.getWidth(), container.getWidth());
+                holder.randoItemLayout.addView(progressBar, 1, layoutParams);
+                holder.uploadingProgress = progressBar;
+            } else {
+                setAnimations(holder);
+            }
         }
         return convertView;
     }
@@ -171,8 +185,8 @@ public class RandoListAdapter extends BaseAdapter {
                 holder.deleteButton.setOnClickListener(createDeleteOnClickListener(holder));
                 holder.shareButton.setOnClickListener(createShareRandoOnClickListener(holder));
 
-                setAlpha(holder.image, 0.25f);
-                setAlpha(holder.map, 0.25f);
+                holder.image.setAlpha(0.25f);
+                holder.map.setAlpha(0.25f);
                 return true;
             }
         };
@@ -198,16 +212,16 @@ public class RandoListAdapter extends BaseAdapter {
                                     public void onOk() {
                                         RandoDAO.deleteRandoByRandoId(holder.rando.randoId);
                                         notifyDataSetChanged();
-                                        Toast.makeText(v.getContext(), R.string.rando_deleted,
+                                        makeText(v.getContext(), R.string.rando_deleted,
                                                 Toast.LENGTH_LONG).show();
-                                        setAlpha(holder.image, 1f);
-                                        setAlpha(holder.map, 1f);
+                                        holder.image.setAlpha(1f);
+                                        holder.map.setAlpha(1f);
                                         showSpinner(holder, false);
                                     }
 
                                     @Override
                                     public void onError() {
-                                        Toast.makeText(v.getContext(), R.string.error_unknown_err,
+                                        makeText(v.getContext(), R.string.error_unknown_err,
                                                 Toast.LENGTH_LONG).show();
                                         holder.shareButton.setVisibility(View.VISIBLE);
                                         holder.deleteButton.setVisibility(View.VISIBLE);
@@ -215,7 +229,7 @@ public class RandoListAdapter extends BaseAdapter {
                                     }
                                 });
                             } catch (Exception e) {
-                                Toast.makeText(v.getContext(), R.string.error_unknown_err,
+                                makeText(v.getContext(), R.string.error_unknown_err,
                                         Toast.LENGTH_LONG).show();
                                 if (holder.shareButton != null) {
                                     holder.shareButton.setVisibility(View.VISIBLE);
@@ -230,14 +244,14 @@ public class RandoListAdapter extends BaseAdapter {
                     builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             recycleActionsLayer(holder);
-                            setAlpha(holder.image, 1f);
-                            setAlpha(holder.map, 1f);
+                            holder.image.setAlpha(1f);
+                            holder.map.setAlpha(1f);
                             return;
                         }
                     }).setTitle(R.string.delete_rando).setMessage(R.string.delete_rando_confirm).create().show();
                     return;
                 } else {
-                    Toast.makeText(v.getContext(), R.string.error_no_network,
+                    makeText(v.getContext(), R.string.error_no_network,
                             Toast.LENGTH_LONG).show();
                 }
             }
@@ -263,8 +277,28 @@ public class RandoListAdapter extends BaseAdapter {
             public void onClick(final View v) {
                 if (holder.actionsLayer != null) {
                     recycleActionsLayer(holder);
-                    setAlpha(holder.image, 1f);
-                    setAlpha(holder.map, 1f);
+                    holder.image.setAlpha(1f);
+                    holder.map.setAlpha(1f);
+                    return;
+                }
+                if (holder.rando.toUpload) {
+                    LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    final View uploadingToast = inflater.inflate(R.layout.uploading_toast, null);
+
+                    FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    layoutParams.gravity = Gravity.CENTER;
+                    ((FrameLayout) (holder.image.getParent())).addView(uploadingToast, 1, layoutParams);
+                    Animator alphaAnimator = ObjectAnimator.ofFloat(uploadingToast, "alpha", 1, 0.2f).setDuration(700);
+                    alphaAnimator.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            if (uploadingToast != null) {
+                                ((FrameLayout) (holder.image.getParent())).removeView(uploadingToast);
+                            }
+                        }
+                    });
+                    alphaAnimator.setStartDelay(1500);
+                    alphaAnimator.start();
                     return;
                 }
                 if (holder.rando.isUnwanted()) {
@@ -280,20 +314,20 @@ public class RandoListAdapter extends BaseAdapter {
                                     public void onOk() {
                                         RandoDAO.deleteRandoByRandoId(holder.rando.randoId);
                                         notifyDataSetChanged();
-                                        Toast.makeText(v.getContext(), R.string.rando_deleted,
+                                        makeText(v.getContext(), R.string.rando_deleted,
                                                 Toast.LENGTH_LONG).show();
                                         showSpinner(holder, false);
                                     }
 
                                     @Override
                                     public void onError() {
-                                        Toast.makeText(v.getContext(), R.string.error_unknown_err,
+                                        makeText(v.getContext(), R.string.error_unknown_err,
                                                 Toast.LENGTH_LONG).show();
                                         showSpinner(holder, false);
                                     }
                                 });
                             } catch (Exception e) {
-                                Toast.makeText(v.getContext(), R.string.error_unknown_err,
+                                makeText(v.getContext(), R.string.error_unknown_err,
                                         Toast.LENGTH_LONG).show();
                                 showSpinner(holder, false);
                             }
@@ -314,6 +348,30 @@ public class RandoListAdapter extends BaseAdapter {
                         Analytics.logTapOwnRando(mFirebaseAnalytics);
                     }
                     holder.viewSwitcher.showNext();
+                    holder.isMap = !holder.isMap;
+                    if (holder.rando.isMapEmpty() && holder.isMap && holder.landingImage == null) {
+                        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams((int) (imageSize * 0.05f), (int) (imageSize * 0.05f));
+
+                        final Animation anim = AnimationUtils.loadAnimation(holder.viewSwitcher.getContext(), R.anim.flow_map);
+                        anim.setFillAfter(true);
+                        final ImageView floatingRando = new ImageView(holder.randoItemLayout.getContext()) {
+
+                            @Override
+                            protected void onAnimationEnd() {
+                                super.onAnimationEnd();
+                                holder.landingImage.clearAnimation();
+                                holder.landingImage.startAnimation(anim);
+                            }
+                        };
+                        floatingRando.setImageResource(R.drawable.ic_launcher);
+                        holder.landingImage = floatingRando;
+
+                        layoutParams.leftMargin = (int) (imageSize * 0.09f);
+                        layoutParams.topMargin = (int) (imageSize * 0.20f);
+                        ((FrameLayout) (holder.map.getParent())).addView(floatingRando, 1, layoutParams);
+
+                        floatingRando.startAnimation(anim);
+                    }
                 }
             }
         };
@@ -324,7 +382,7 @@ public class RandoListAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if (Constants.TO_UPLOAD_RANDO_ID.equals(holder.rando.randoId)) {
-                    Toast.makeText(v.getContext(), R.string.cant_share_not_uploaded,
+                    makeText(v.getContext(), R.string.cant_share_not_uploaded,
                             Toast.LENGTH_LONG).show();
                 } else {
                     Analytics.logShareRando(mFirebaseAnalytics);
@@ -351,9 +409,10 @@ public class RandoListAdapter extends BaseAdapter {
 
         holder.image.setImageBitmap(null);
         holder.map.setImageBitmap(null);
+        holder.isMap = false;
 
-        setAlpha(holder.image, 1f);
-        setAlpha(holder.map, 1f);
+        holder.image.setAlpha(1f);
+        holder.map.setAlpha(1f);
         showSpinner(holder, false);
 
         recycleActionsLayer(holder);
@@ -362,6 +421,18 @@ public class RandoListAdapter extends BaseAdapter {
             holder.unwantedRandoView.clearAnimation();
             holder.randoItemLayout.removeView(holder.unwantedRandoView);
             holder.unwantedRandoView = null;
+        }
+
+        if (holder.uploadingProgress != null) {
+            holder.uploadingProgress.clearAnimation();
+            holder.randoItemLayout.removeView(holder.uploadingProgress);
+            holder.uploadingProgress = null;
+        }
+
+        if (holder.landingImage != null) {
+            holder.landingImage.clearAnimation();
+            ((FrameLayout) (holder.map.getParent())).removeView(holder.landingImage);
+            holder.landingImage = null;
         }
 
         holder.rando = null;
@@ -392,14 +463,6 @@ public class RandoListAdapter extends BaseAdapter {
         if (holder.mapContainer != null) {
             holder.mapContainer.cancelRequest();
             holder.mapContainer = null;
-        }
-    }
-
-    private void setAlpha(RoundedImageView view, float alpha) {
-        if (Build.VERSION.SDK_INT >= 11) {
-            view.setAlpha(alpha);
-        } else {
-            view.setAlpha((int) (255 * alpha));
         }
     }
 
@@ -449,7 +512,11 @@ public class RandoListAdapter extends BaseAdapter {
         }
 
         loadImage(holder, RandoUtil.getUrlByImageSize(imageSize, rando.imageURLSize), Priority.HIGH);
-        loadMapImage(holder, RandoUtil.getUrlByImageSize(imageSize, rando.mapURLSize), Priority.LOW);
+        if (rando.isMapEmpty()) {
+            holder.map.setImageResource(R.drawable.flat_map_for_vec);
+        } else {
+            loadMapImage(holder, RandoUtil.getUrlByImageSize(imageSize, rando.mapURLSize), Priority.LOW);
+        }
     }
 
     private void loadFile(final ViewHolder holder, final String filePath) {
@@ -541,11 +608,15 @@ public class RandoListAdapter extends BaseAdapter {
 
         public UnwantedRandoView unwantedRandoView;
 
+        public RoundProgress uploadingProgress;
+        public ImageView landingImage;
+
         public boolean animationInProgress = false;
 
         public ViewSwitcher viewSwitcher;
         public RoundedImageView image;
         public RoundedImageView map;
+        public boolean isMap;
 
         public RandoActionsView actionsLayer;
         public Button deleteButton;

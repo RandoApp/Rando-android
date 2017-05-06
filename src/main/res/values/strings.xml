@@ -3,7 +3,6 @@
     <string name="app_name">Rando 4Me</string>
     <string name="email">Email:</string>
     <string name="password">Password:</string>
-    <string name="facebook">Facebook</string>
     <string name="signup">Sign in | Sign up</string>
     <string name="skip">Skip…</string>
     <string name="action_settings">Settings</string>
@@ -15,8 +14,6 @@
     <string name="take_picture_screen_label">Take Picture</string>
     <string name="review_and_upload_picture_screen_label">Review and Upload Picture</string>
     <string name="photo_upload_ok">Upload Finished Successfully.</string>
-    <string name="photo_upload_failed">"Upload Failed. Please check you connection and try again."</string>
-    <string name="failed_to_set_bon_appetit_for_rando">"Bon Appetit Failed. Please check you internet connection and try again."</string>
 
     <string name="email_should_be">You have error in email</string>
     <string name="password_should_be">Password can not be empty</string>
@@ -41,7 +38,7 @@
     <string name="loading_progress">Loading…</string>
     <string name="logout_progress">Logout…</string>
     <string name="cropping_progress">Prepairing to Upload…</string>
-    <string name="uploading_progress">Uploading…</string>
+    <string name="uploading_progress">To be uploaded</string>
     <string name="tap_to_update">Tap to update randos</string>
 
     <string name="version">Version: </string>

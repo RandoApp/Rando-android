@@ -1,10 +1,7 @@
 package com.github.randoapp.util;
 
 import com.github.randoapp.Constants;
-import com.github.randoapp.api.beans.User;
-import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
-import com.github.randoapp.preferences.Preferences;
 
 import org.json.JSONArray;
 import org.json.JSONException;
