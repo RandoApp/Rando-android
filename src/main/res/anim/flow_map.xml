@@ -4,26 +4,17 @@
     android:interpolator="@android:anim/linear_interpolator"
     android:shareInterpolator="false">
 
-    <set android:startOffset="0">
+    <set android:startOffset="800">
         <translate
             android:duration="1000"
             android:fromXDelta="0"
             android:fromYDelta="0"
             android:interpolator="@android:anim/accelerate_decelerate_interpolator"
             android:toXDelta="-3%p"
-            android:toYDelta="13%p" />
+            android:toYDelta="10%p" />
     </set>
 
-    <set android:startOffset="1001">
-
-        <!-- alpha
-            android:duration="400"
-            android:fromAlpha="1.0"
-            android:interpolator="@android:anim/linear_interpolator"
-            android:repeatCount="2"
-            android:repeatMode="reverse"
-            android:toAlpha="0.3"
-            android:fillAfter="false"/ -->
+    <set android:startOffset="1801">
 
         <translate
             android:duration="1000"
@@ -35,38 +26,41 @@
             android:toYDelta="25%p" />
     </set>
 
-    <set android:startOffset="2801">
-        <!-- alpha
-            android:duration="800"
-            android:fromAlpha="1.0"
-            android:interpolator="@android:anim/linear_interpolator"
-            android:repeatCount="2"
-            android:repeatMode="reverse"
-            android:toAlpha="0.3"
-            android:fillAfter="false"/ -->
+    <set android:startOffset="3601">
         <translate
             android:duration="1000"
             android:fromXDelta="0"
             android:fromYDelta="0"
             android:interpolator="@android:anim/accelerate_decelerate_interpolator"
             android:startOffset="801"
-            android:toXDelta="35%p"
+            android:toXDelta="32%p"
             android:toYDelta="-4%p" />
 
     </set>
 
-    <set android:startOffset="4601">
+    <set android:startOffset="5401">
         <translate
             android:duration="1000"
             android:fromXDelta="0"
             android:fromYDelta="0"
             android:interpolator="@android:anim/accelerate_decelerate_interpolator"
             android:startOffset="801"
-            android:toXDelta="0"
-            android:toYDelta="-30%p" />
+            android:toXDelta="30%p"
+            android:toYDelta="-23%p" />
     </set>
 
-    <set android:startOffset="6401">
+    <set android:startOffset="7201">
+        <translate
+            android:duration="1000"
+            android:fromXDelta="0"
+            android:fromYDelta="0"
+            android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+            android:startOffset="801"
+            android:toXDelta="-27%p"
+            android:toYDelta="-7%p" />
+    </set>
+
+    <set android:startOffset="9001">
         <translate
             android:duration="1000"
             android:fromXDelta="0"
@@ -77,7 +71,7 @@
             android:toYDelta="-15%p" />
     </set>
 
-    <set android:startOffset="8201">
+    <set android:startOffset="10801">
         <translate
             android:duration="1000"
             android:fillAfter="true"
@@ -86,15 +80,7 @@
             android:interpolator="@android:anim/accelerate_decelerate_interpolator"
             android:startOffset="801"
             android:toXDelta="-25%p"
-            android:toYDelta="11%p" />
+            android:toYDelta="14%p" />
     </set>
 
-    <!-- translate
-        android:duration="1000"
-        android:fromXDelta="0"
-        android:fromYDelta="0"
-        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-        android:startOffset="7401"
-        android:toXDelta="-69%p"
-        android:toYDelta="-50%p" / -->
 </set>

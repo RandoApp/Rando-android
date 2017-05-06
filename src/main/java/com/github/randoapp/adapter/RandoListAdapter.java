@@ -366,8 +366,8 @@ public class RandoListAdapter extends BaseAdapter {
                         floatingRando.setImageResource(R.drawable.ic_launcher);
                         holder.landingImage = floatingRando;
 
-                        layoutParams.leftMargin = (int) (imageSize * 0.13f);
-                        layoutParams.topMargin = (int) (imageSize * 0.17f);
+                        layoutParams.leftMargin = (int) (imageSize * 0.09f);
+                        layoutParams.topMargin = (int) (imageSize * 0.20f);
                         ((FrameLayout) (holder.map.getParent())).addView(floatingRando, 1, layoutParams);
 
                         floatingRando.startAnimation(anim);
