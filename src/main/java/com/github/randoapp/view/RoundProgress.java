@@ -9,41 +9,41 @@ import android.view.View;
 
 import com.github.randoapp.R;
 
-public class DottedArcProgress extends View {
+public class RoundProgress extends View {
 
-    private final int colorArc2;
     private Paint paint = new Paint();
-    private int startAngle2 = 1;
-    private RectF oval = new RectF();
+    private float startAngle2 = 1;
     private int sweepAngle = -90;
+    private RectF oval = new RectF();
 
     private float out_rad;
-    private int colorArc;
     private int currentColor;
     private int currentBackgroundColor;
 
+    private int[] colors = {Color.parseColor("#AA68e4a2"), Color.parseColor("#AAdbd663")};
+    private int currentColorId = 0;
+
     private boolean stopAnimation = false;
 
-    public DottedArcProgress(Context context, float radius) {
+    public RoundProgress(Context context, float radius) {
         super(context);
         paint.setStyle(Paint.Style.STROKE);
+        paint.setFlags(Paint.ANTI_ALIAS_FLAG);
+        paint.setAntiAlias(true);
         this.out_rad = radius == 0 ? 50 : radius - 8;
-        this.colorArc = Color.parseColor("#AA68e4a2");
-        this.colorArc2 = Color.parseColor("#AAdbd663");
-        currentColor = colorArc;
+        currentColor = colors[currentColorId];
         currentBackgroundColor = Color.parseColor("#66dce0df");
+        paint.setStrokeWidth((int) (getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left) * 1.4));
         post(animator);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth((int) (getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left) * 1.4));
         oval.set(getWidth() / 2 - out_rad, getHeight() / 2 - out_rad, getWidth() / 2 + out_rad, getHeight() / 2 + out_rad);
         paint.setColor(currentBackgroundColor);
-        canvas.drawArc(oval, 0, 360, false, paint);
+        canvas.drawArc(oval, startAngle2 + sweepAngle, 360 - startAngle2, false, paint);
         paint.setColor(currentColor);
         canvas.drawArc(oval, sweepAngle, startAngle2, false, paint);
     }
@@ -64,20 +64,16 @@ public class DottedArcProgress extends View {
         @Override
         public void run() {
             if (startAngle2 < 360) {
-                startAngle2 += 1;
+                startAngle2 += 0.5;
             } else {
                 startAngle2 = 0;
-                if (currentColor == colorArc) {
-                    currentColor = colorArc2;
-                    currentBackgroundColor = colorArc;
-                } else {
-                    currentColor = colorArc;
-                    currentBackgroundColor = colorArc2;
-                }
+                currentBackgroundColor = colors[currentColorId];
+                currentColorId = (currentColorId + 1) % colors.length;
+                currentColor = colors[currentColorId];
             }
             invalidate();
             if (!stopAnimation) {
-                postDelayed(this, 100);
+                postDelayed(this, 50);
             }
         }
     };

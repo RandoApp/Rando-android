@@ -1,5 +1,7 @@
 package com.github.randoapp.db.model;
 
+import android.text.TextUtils;
+
 import com.github.randoapp.log.Log;
 
 import java.io.Serializable;
@@ -124,7 +126,7 @@ public class Rando implements Serializable {
     }
 
     public boolean isMapEmpty() {
-        return mapURLSize.large != null && mapURLSize.medium != null && mapURLSize.small != null && mapURLSize.large.isEmpty() && mapURLSize.medium.isEmpty() && mapURLSize.small.isEmpty();
+        return TextUtils.isEmpty(mapURLSize.large) && TextUtils.isEmpty(mapURLSize.medium) && TextUtils.isEmpty(mapURLSize.small);
     }
 
     public static class DateComparator implements Comparator<Rando> {
