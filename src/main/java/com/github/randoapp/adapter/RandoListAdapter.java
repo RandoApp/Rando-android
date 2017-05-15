@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -44,6 +45,9 @@ import com.github.randoapp.view.RandoActionsView;
 import com.github.randoapp.view.RoundProgress;
 import com.github.randoapp.view.UnwantedRandoView;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.hitomi.cmlibrary.CircleMenu;
+import com.hitomi.cmlibrary.OnMenuSelectedListener;
+import com.hitomi.cmlibrary.OnMenuStatusChangeListener;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
@@ -179,12 +183,36 @@ public class RandoListAdapter extends BaseAdapter {
                 holder.randoItemLayout.addView(actionsLayer);
 
                 holder.actionsLayer = actionsLayer;
-                holder.deleteButton = (Button) actionsLayer.findViewWithTag("delete_button");
-                holder.shareButton = (Button) actionsLayer.findViewWithTag("share_button");
+                CircleMenu circleMenu = (CircleMenu) actionsLayer.findViewWithTag("circle_menu");
 
-                holder.deleteButton.setOnClickListener(createDeleteOnClickListener(holder));
-                holder.shareButton.setOnClickListener(createShareRandoOnClickListener(holder));
 
+                //holder.deleteButton = (Button) actionsLayer.findViewWithTag("delete_button");
+                //holder.shareButton = (Button) actionsLayer.findViewWithTag("share_button");
+
+                //holder.deleteButton.setOnClickListener(createDeleteOnClickListener(holder));
+                //holder.shareButton.setOnClickListener(createShareRandoOnClickListener(holder));
+
+                circleMenu.setMainMenu(Color.parseColor("#CDCDCD"), R.drawable.ic_share_rando, R.drawable.ic_globe)
+                        .addSubMenu(Color.parseColor("#258CFF"), R.drawable.ic_trash_rando)
+                        .addSubMenu(Color.parseColor("#30A400"), R.drawable.ic_trash_rando)
+                        .addSubMenu(Color.parseColor("#FF4B32"), R.drawable.ic_trash_rando)
+                        .addSubMenu(Color.parseColor("#8A39FF"), R.drawable.ic_trash_rando)
+                        .addSubMenu(Color.parseColor("#FF6A00"), R.drawable.ic_trash_rando)
+                        .setOnMenuSelectedListener(new OnMenuSelectedListener() {
+
+                            @Override
+                            public void onMenuSelected(int index) {}
+
+                        }).setOnMenuStatusChangeListener(new OnMenuStatusChangeListener() {
+
+                    @Override
+                    public void onMenuOpened() {}
+
+                    @Override
+                    public void onMenuClosed() {}
+
+                });
+                circleMenu.openMenu();
                 holder.image.setAlpha(0.25f);
                 holder.map.setAlpha(0.25f);
                 return true;

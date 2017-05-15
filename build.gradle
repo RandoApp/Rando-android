@@ -26,6 +26,7 @@ allprojects {
     repositories {
         jcenter()
         mavenCentral()
+        maven { url "https://jitpack.io" }
     }
 }
 
@@ -171,6 +172,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile 'com.makeramen:roundedimageview:2.3.+'
     compile 'ch.acra:acra:4.9.2'
+    compile 'com.github.Hitomis:CircleMenu:v1.1.0'
 
     compile "com.google.android.gms:play-services-auth:$firebaseLibraryVersion"
     compile "com.google.firebase:firebase-core:$firebaseLibraryVersion"
