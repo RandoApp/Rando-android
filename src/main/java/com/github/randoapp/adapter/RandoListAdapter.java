@@ -191,8 +191,6 @@ public class RandoListAdapter extends BaseAdapter {
 
                                 @Override
                                 public void onMenuSelected(int index) {
-                                    Log.d(RandoListAdapter.class, "Menu index:" + index);
-
                                     switch (index) {
                                         case 0:
                                             shareRando(holder);
