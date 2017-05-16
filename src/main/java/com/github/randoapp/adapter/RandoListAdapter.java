@@ -249,8 +249,6 @@ public class RandoListAdapter extends BaseAdapter {
                                 notifyDataSetChanged();
                                 makeText(holder.randoItemLayout.getContext(), R.string.rando_deleted,
                                         Toast.LENGTH_LONG).show();
-                                holder.image.setAlpha(1f);
-                                holder.map.setAlpha(1f);
                                 showSpinner(holder, false);
                             }
 
@@ -291,8 +289,6 @@ public class RandoListAdapter extends BaseAdapter {
                                 notifyDataSetChanged();
                                 makeText(holder.randoItemLayout.getContext(), R.string.rando_reported,
                                         Toast.LENGTH_LONG).show();
-                                holder.image.setAlpha(1f);
-                                holder.map.setAlpha(1f);
                                 showSpinner(holder, false);
                             }
 
@@ -335,10 +331,6 @@ public class RandoListAdapter extends BaseAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                if (holder.circleMenu != null) {
-                    holder.circleMenu.closeMenu();
-                    return;
-                }
                 if (holder.rando.toUpload) {
                     LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     final View uploadingToast = inflater.inflate(R.layout.uploading_toast, null);
