@@ -75,6 +75,7 @@ import static com.github.randoapp.Constants.LATITUDE_PARAM;
 import static com.github.randoapp.Constants.LOGOUT_URL;
 import static com.github.randoapp.Constants.LONGITUDE_PARAM;
 import static com.github.randoapp.Constants.NOT_UPDATED;
+import static com.github.randoapp.Constants.REPORT_URL;
 import static com.github.randoapp.Constants.SIGNUP_EMAIL_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_PASSWORD_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_URL;
@@ -275,7 +276,7 @@ public class API {
 
     public static void report(final String randoId, final NetworkResultListener reportRandoListener) throws Exception {
         Log.d(API.class, "Deleting Rando:", randoId);
-        BackgroundPreprocessRequest request = new BackgroundPreprocessRequest(Request.Method.POST, DELETE_URL + randoId, null, null, new Response.Listener<JSONObject>() {
+        BackgroundPreprocessRequest request = new BackgroundPreprocessRequest(Request.Method.POST, REPORT_URL + randoId, null, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {

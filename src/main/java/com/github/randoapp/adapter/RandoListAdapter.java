@@ -283,7 +283,7 @@ public class RandoListAdapter extends BaseAdapter {
                 public void onClick(DialogInterface dialog, int id) {
                     try {
                         showSpinner(holder, true);
-                        API.delete(holder.rando.randoId, new NetworkResultListener() {
+                        API.report(holder.rando.randoId, new NetworkResultListener() {
                             @Override
                             public void onOk() {
                                 RandoDAO.deleteRandoByRandoId(holder.rando.randoId);
