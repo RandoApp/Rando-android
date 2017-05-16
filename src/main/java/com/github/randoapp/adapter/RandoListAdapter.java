@@ -182,9 +182,11 @@ public class RandoListAdapter extends BaseAdapter {
                     holder.randoItemLayout.addView(holder.circleMenu, layoutParams);
 
                     holder.circleMenu.setMainMenu(Color.parseColor("#CDCDCD"), R.drawable.ic_close_gray_36dp, R.drawable.ic_close_gray_36dp)
-                            .addSubMenu(Color.parseColor("#30A400"), R.drawable.ic_share_white_24dp)
-                            .addSubMenu(Color.parseColor("#FF4B32"), R.drawable.ic_flag_white_24dp)
-                            .addSubMenu(Color.parseColor("#8A39FF"), R.drawable.ic_delete_white_24dp)
+                            .addSubMenu(Color.parseColor("#30A400"), R.drawable.ic_share_white_24dp);
+                    if (isStranger) {
+                        holder.circleMenu.addSubMenu(Color.parseColor("#FF4B32"), R.drawable.ic_flag_white_24dp);
+                    }
+                    holder.circleMenu.addSubMenu(Color.parseColor("#8A39FF"), R.drawable.ic_delete_white_24dp)
                             .setOnMenuSelectedListener(new OnMenuSelectedListener() {
 
                                 @Override
