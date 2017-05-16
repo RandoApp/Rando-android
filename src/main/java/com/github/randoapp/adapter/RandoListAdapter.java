@@ -212,6 +212,7 @@ public class RandoListAdapter extends BaseAdapter {
 
                         @Override
                         public void onMenuOpened() {
+                            //do nothing
                         }
 
                         @Override
