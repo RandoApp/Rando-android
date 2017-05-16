@@ -268,14 +268,7 @@ public class RandoListAdapter extends BaseAdapter {
                     }
                 }
             });
-            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    if (holder.circleMenu != null) {
-                        holder.circleMenu.closeMenu();
-                    }
-                    return;
-                }
-            }).setTitle(R.string.delete_rando).setMessage(R.string.delete_rando_confirm).create().show();
+            builder.setNegativeButton(R.string.cancel, null).setTitle(R.string.delete_rando).setMessage(R.string.delete_rando_confirm).create().show();
             return;
         } else {
             makeText(holder.randoItemLayout.getContext(), R.string.error_no_network,
@@ -317,14 +310,7 @@ public class RandoListAdapter extends BaseAdapter {
                     }
                 }
             });
-            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    if (holder.circleMenu != null) {
-                        holder.circleMenu.closeMenu();
-                    }
-                    return;
-                }
-            }).setTitle(R.string.report_rando).setMessage(R.string.report_rando_confirm).create().show();
+            builder.setNegativeButton(R.string.cancel, null).setTitle(R.string.report_rando).setMessage(R.string.report_rando_confirm).create().show();
             return;
         } else {
             makeText(holder.randoItemLayout.getContext(), R.string.error_no_network,
