@@ -185,19 +185,18 @@ public class RandoListAdapter extends BaseAdapter {
                 holder.actionsLayer = actionsLayer;
                 CircleMenu circleMenu = (CircleMenu) actionsLayer.findViewWithTag("circle_menu");
 
-
                 //holder.deleteButton = (Button) actionsLayer.findViewWithTag("delete_button");
                 //holder.shareButton = (Button) actionsLayer.findViewWithTag("share_button");
 
                 //holder.deleteButton.setOnClickListener(createDeleteOnClickListener(holder));
                 //holder.shareButton.setOnClickListener(createShareRandoOnClickListener(holder));
 
-                circleMenu.setMainMenu(Color.parseColor("#CDCDCD"), R.drawable.ic_share_rando, R.drawable.ic_globe)
+                circleMenu.setMainMenu(Color.parseColor("#CDCDCD"), R.drawable.ic_close_gray_36dp, R.drawable.ic_close_gray_36dp)
                         .addSubMenu(Color.parseColor("#258CFF"), R.drawable.ic_trash_rando)
-                        .addSubMenu(Color.parseColor("#30A400"), R.drawable.ic_trash_rando)
+                        .addSubMenu(Color.parseColor("#30A400"), R.drawable.ic_share_rando)
                         .addSubMenu(Color.parseColor("#FF4B32"), R.drawable.ic_trash_rando)
-                        .addSubMenu(Color.parseColor("#8A39FF"), R.drawable.ic_trash_rando)
-                        .addSubMenu(Color.parseColor("#FF6A00"), R.drawable.ic_trash_rando)
+                        //.addSubMenu(Color.parseColor("#8A39FF"), R.drawable.ic_trash_rando)
+                        //.addSubMenu(Color.parseColor("#FF6A00"), R.drawable.ic_trash_rando)
                         .setOnMenuSelectedListener(new OnMenuSelectedListener() {
 
                             @Override
@@ -209,7 +208,11 @@ public class RandoListAdapter extends BaseAdapter {
                     public void onMenuOpened() {}
 
                     @Override
-                    public void onMenuClosed() {}
+                    public void onMenuClosed() {
+                        recycleActionsLayer(holder);
+                        holder.image.setAlpha(1f);
+                        holder.map.setAlpha(1f);
+                    }
 
                 });
                 circleMenu.openMenu();
