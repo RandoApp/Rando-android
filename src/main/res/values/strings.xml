@@ -33,8 +33,11 @@
     <string name="enable_vibration">Vibrate on take rando</string>
     <string name="contact_us">Contact Us</string>
     <string name="report">Report</string>
+    <string name="report_rando_confirm">Do you really want to report and delete this Rando?</string>
+    <string name="rando_reported">Rando has beed reported.</string>
     <string name="report_off">Report OFF</string>
     <string name="report_message">Report</string>
+    <string name="report_rando">Report Rando</string>
     <string name="loading_progress">Loading…</string>
     <string name="logout_progress">Logout…</string>
     <string name="cropping_progress">Prepairing to Upload…</string>

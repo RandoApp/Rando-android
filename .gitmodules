@@ -7,3 +7,6 @@
 [submodule "modules/CameraKit-Android"]
 	path = modules/CameraKit-Android
 	url = https://github.com/RandoApp/CameraKit-Android.git
+[submodule "modules/CircleMenu"]
+	path = modules/CircleMenu
+	url = https://github.com/RandoApp/CircleMenu.git

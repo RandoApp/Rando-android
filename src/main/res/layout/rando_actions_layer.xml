@@ -7,9 +7,9 @@
     android:orientation="horizontal">
 
     <com.hitomi.cmlibrary.CircleMenu
-        android:id="@+id/circle_menu"
         android:layout_width="400dp"
         android:layout_height="400dp"
+        android:layout_gravity="center"
         android:tag="circle_menu"/>
 
     <!-- Button
