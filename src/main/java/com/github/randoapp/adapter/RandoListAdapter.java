@@ -461,6 +461,7 @@ public class RandoListAdapter extends BaseAdapter {
 
         if (holder.circleMenu != null) {
             holder.randoItemLayout.removeView(holder.circleMenu);
+            holder.circleMenu = null;
         }
 
         if (holder.unwantedRandoView != null) {
