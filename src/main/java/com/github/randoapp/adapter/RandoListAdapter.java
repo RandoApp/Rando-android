@@ -184,9 +184,12 @@ public class RandoListAdapter extends BaseAdapter {
                     holder.randoItemLayout.addView(holder.circleMenu, layoutParams);
 
                     Resources res = holder.circleMenu.getResources();
-                    holder.circleMenu.setMainMenu(res.getColor(R.color.menu_button_color), R.drawable.ic_close_white_24dp, R.drawable.ic_close_white_24dp)
-                            .addSubMenu(res.getColor(R.color.share_menu_button_color), R.drawable.ic_share_white_24dp)
-                            .addSubMenu(res.getColor(R.color.delete_menu_button_color), R.drawable.ic_delete_white_24dp);
+                    holder.circleMenu.setMainMenu(res.getColor(R.color.menu_button_color), R.drawable.ic_close_white_24dp, R.drawable.ic_close_white_24dp);
+                    if (!holder.rando.toUpload) {
+                        holder.circleMenu.addSubMenu(res.getColor(R.color.share_menu_button_color), R.drawable.ic_share_white_24dp);
+                    }
+
+                    holder.circleMenu.addSubMenu(res.getColor(R.color.delete_menu_button_color), R.drawable.ic_delete_white_24dp);
                     if (isStranger) {
                         holder.circleMenu.addSubMenu(res.getColor(R.color.report_menu_button_color), R.drawable.ic_flag_white_24dp);
                     }
@@ -194,6 +197,11 @@ public class RandoListAdapter extends BaseAdapter {
 
                         @Override
                         public void onMenuSelected(int index) {
+                            if(index == 0 && holder.rando.toUpload){
+                                RandoDAO.deleteRandoToUploadById(String.valueOf(holder.rando.id));
+                                notifyDataSetChanged();
+                                return;
+                            }
                             switch (index) {
                                 case 0:
                                     shareRando(holder);

@@ -125,7 +125,10 @@ public class RandoDAO {
     }
 
     public static synchronized void deleteRandoToUpload(RandoUpload rando) {
-        String id = String.valueOf(rando.id);
+        deleteRandoByRandoId(String.valueOf(rando.id));
+    }
+
+    public static synchronized void deleteRandoToUploadById(String id) {
         getDB().delete(RandoDBHelper.RandoUploadTable.NAME, RandoDBHelper.RandoUploadTable.COLUMN_ID + " = " + id, null);
         Log.i(RandoDAO.class, "Rando to upload deleted with id: ", String.valueOf(id));
     }
@@ -374,6 +377,7 @@ public class RandoDAO {
         List<RandoUpload> randosToUpload = getAllRandosToUpload("DESC");
         for (RandoUpload randoUpload : randosToUpload) {
             Rando rando = new Rando();
+            rando.id = randoUpload.id;
             rando.randoId = String.valueOf(Constants.TO_UPLOAD_RANDO_ID);
             rando.date = randoUpload.date;
             rando.imageURL = randoUpload.file;
