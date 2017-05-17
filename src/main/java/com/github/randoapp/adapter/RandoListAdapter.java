@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -50,6 +51,7 @@ import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
 
+import static android.icu.lang.UCharacter.JoiningGroup.E;
 import static android.widget.Toast.makeText;
 import static com.android.volley.Request.Priority;
 
@@ -170,7 +172,7 @@ public class RandoListAdapter extends BaseAdapter {
         View.OnLongClickListener onLongClickListener = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (holder.circleMenu == null) {
+                if (holder.circleMenu == null && !holder.rando.isUnwanted()) {
                     RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) (imageSize * 0.9), (int) (imageSize * 0.9));
                     layoutParams.setMargins(v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left),
                             v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
@@ -181,32 +183,33 @@ public class RandoListAdapter extends BaseAdapter {
                     holder.circleMenu = new CircleMenu(holder.randoItemLayout.getContext());
                     holder.randoItemLayout.addView(holder.circleMenu, layoutParams);
 
-                    holder.circleMenu.setMainMenu(Color.parseColor("#CDCDCD"), R.drawable.ic_close_gray_36dp, R.drawable.ic_close_gray_36dp)
-                            .addSubMenu(Color.parseColor("#30A400"), R.drawable.ic_share_white_24dp);
+                    Resources res = holder.circleMenu.getResources();
+                    holder.circleMenu.setMainMenu(res.getColor(R.color.menu_button_color), R.drawable.ic_close_white_24dp, R.drawable.ic_close_white_24dp)
+                            .addSubMenu(res.getColor(R.color.share_menu_button_color), R.drawable.ic_share_white_24dp)
+                            .addSubMenu(res.getColor(R.color.delete_menu_button_color), R.drawable.ic_delete_white_24dp);
                     if (isStranger) {
-                        holder.circleMenu.addSubMenu(Color.parseColor("#FF4B32"), R.drawable.ic_flag_white_24dp);
+                        holder.circleMenu.addSubMenu(res.getColor(R.color.report_menu_button_color), R.drawable.ic_flag_white_24dp);
                     }
-                    holder.circleMenu.addSubMenu(Color.parseColor("#8A39FF"), R.drawable.ic_delete_white_24dp)
-                            .setOnMenuSelectedListener(new OnMenuSelectedListener() {
+                    holder.circleMenu.setOnMenuSelectedListener(new OnMenuSelectedListener() {
 
-                                @Override
-                                public void onMenuSelected(int index) {
-                                    switch (index) {
-                                        case 0:
-                                            shareRando(holder);
-                                            break;
-                                        case 1:
-                                            reportRando(holder);
-                                            break;
-                                        case 2:
-                                            deleteRando(holder);
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                }
+                        @Override
+                        public void onMenuSelected(int index) {
+                            switch (index) {
+                                case 0:
+                                    shareRando(holder);
+                                    break;
+                                case 1:
+                                    deleteRando(holder);
+                                    break;
+                                case 2:
+                                    reportRando(holder);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
 
-                            }).setOnMenuStatusChangeListener(new OnMenuStatusChangeListener() {
+                    }).setOnMenuStatusChangeListener(new OnMenuStatusChangeListener() {
 
                         @Override
                         public void onMenuOpened() {
