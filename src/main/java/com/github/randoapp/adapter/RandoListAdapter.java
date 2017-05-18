@@ -680,4 +680,3 @@ public class RandoListAdapter extends BaseAdapter {
         public boolean needSetMapError = false;
     }
 }
-
