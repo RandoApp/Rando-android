@@ -198,8 +198,7 @@ public class RandoListAdapter extends BaseAdapter {
                         @Override
                         public void onMenuSelected(int index) {
                             if (index == 0 && holder.rando.toUpload) {
-                                RandoDAO.deleteRandoToUploadById(holder.rando.id);
-                                notifyDataSetChanged();
+                                deleteRando(holder);
                                 return;
                             }
                             switch (index) {
@@ -246,10 +245,15 @@ public class RandoListAdapter extends BaseAdapter {
 
     private void deleteRando(final ViewHolder holder) {
         Analytics.logDeleteRando(mFirebaseAnalytics);
-        if (NetworkUtil.isOnline(holder.randoItemLayout.getContext())) {
+        if (NetworkUtil.isOnline(holder.randoItemLayout.getContext()) || holder.rando.toUpload) {
             AlertDialog.Builder builder = new AlertDialog.Builder(holder.randoItemLayout.getContext());
             builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
+                    if (holder.rando.toUpload){
+                        RandoDAO.deleteRandoToUploadById(holder.rando.id);
+                        notifyDataSetChanged();
+                        return;
+                    }
                     try {
                         showSpinner(holder, true);
                         API.delete(holder.rando.randoId, new NetworkResultListener() {
