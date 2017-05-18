@@ -289,7 +289,7 @@ public class RandoListAdapter extends BaseAdapter {
     }
 
     private void reportRando(final ViewHolder holder) {
-        Analytics.logDeleteRando(mFirebaseAnalytics);
+        Analytics.logReportRando(mFirebaseAnalytics);
         if (NetworkUtil.isOnline(holder.randoItemLayout.getContext())) {
             AlertDialog.Builder builder = new AlertDialog.Builder(holder.randoItemLayout.getContext());
             builder.setPositiveButton(R.string.report, new DialogInterface.OnClickListener() {
