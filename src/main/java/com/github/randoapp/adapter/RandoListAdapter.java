@@ -197,8 +197,8 @@ public class RandoListAdapter extends BaseAdapter {
 
                         @Override
                         public void onMenuSelected(int index) {
-                            if(index == 0 && holder.rando.toUpload){
-                                RandoDAO.deleteRandoToUploadById(String.valueOf(holder.rando.id));
+                            if (index == 0 && holder.rando.toUpload) {
+                                RandoDAO.deleteRandoToUploadById(holder.rando.id);
                                 notifyDataSetChanged();
                                 return;
                             }

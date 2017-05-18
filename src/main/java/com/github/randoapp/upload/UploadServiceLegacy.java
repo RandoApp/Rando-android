@@ -171,7 +171,7 @@ public class UploadServiceLegacy extends Service {
     private void deleteRando(RandoUpload rando) {
         Log.d(UploadServiceLegacy.class, "Delete rando:",rando.toString());
         FileUtil.removeFileIfExist(rando.file);
-        RandoDAO.deleteRandoToUpload(rando);
+        RandoDAO.deleteRandoToUploadById(rando.id);
     }
 
     private void sleep() {

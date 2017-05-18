@@ -124,14 +124,18 @@ public class RandoDAO {
         getDB().update(RandoDBHelper.RandoUploadTable.NAME, values, RandoDBHelper.RandoTable.COLUMN_ID + " = " + rando.id, null);
     }
 
-    public static synchronized void deleteRandoToUpload(RandoUpload rando) {
-        deleteRandoByRandoId(String.valueOf(rando.id));
-    }
-
-    public static synchronized void deleteRandoToUploadById(String id) {
+    /**
+     * Removes RandoToUpload by id
+     * @param id of item to remove
+     */
+    public static synchronized void deleteRandoToUploadById(int id) {
         getDB().delete(RandoDBHelper.RandoUploadTable.NAME, RandoDBHelper.RandoUploadTable.COLUMN_ID + " = " + id, null);
         Log.i(RandoDAO.class, "Rando to upload deleted with id: ", String.valueOf(id));
     }
+
+    /**
+     * Removes all rows from RandoToUpload table
+     */
 
     public static synchronized void clearRandoToUpload() {
         getDB().delete(RandoDBHelper.RandoUploadTable.NAME, "", null);
