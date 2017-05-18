@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.github.randoapp"
-    android:versionCode="83"
-    android:versionName="1.1.3">
+    android:versionCode="84"
+    android:versionName="1.1.4">
 
     <uses-sdk
         android:minSdkVersion="11"
