@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -15,7 +16,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -31,7 +31,7 @@ import com.github.randoapp.animation.AnimationFactory;
 import com.github.randoapp.animation.AnimationListenerAdapter;
 import com.github.randoapp.animation.AnimatorListenerAdapter;
 import com.github.randoapp.api.API;
-import com.github.randoapp.api.listeners.DeleteRandoListener;
+import com.github.randoapp.api.listeners.NetworkResultListener;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
@@ -40,10 +40,12 @@ import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.BitmapUtil;
 import com.github.randoapp.util.NetworkUtil;
 import com.github.randoapp.util.RandoUtil;
-import com.github.randoapp.view.RandoActionsView;
 import com.github.randoapp.view.RoundProgress;
 import com.github.randoapp.view.UnwantedRandoView;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.hitomi.cmlibrary.CircleMenu;
+import com.hitomi.cmlibrary.OnMenuSelectedListener;
+import com.hitomi.cmlibrary.OnMenuStatusChangeListener;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
@@ -168,25 +170,70 @@ public class RandoListAdapter extends BaseAdapter {
         View.OnLongClickListener onLongClickListener = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                RandoActionsView actionsLayer = new RandoActionsView(v.getContext());
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
-                layoutParams.setMargins(v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left),
-                        v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
-                        v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right),
-                        v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));
+                if (holder.circleMenu == null && !holder.rando.isUnwanted()) {
+                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) (imageSize * 0.9), (int) (imageSize * 0.9));
+                    layoutParams.setMargins(v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left),
+                            v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
+                            v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right),
+                            v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));
+                    layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 
-                actionsLayer.setLayoutParams(layoutParams);
-                holder.randoItemLayout.addView(actionsLayer);
+                    holder.circleMenu = new CircleMenu(holder.randoItemLayout.getContext());
+                    holder.randoItemLayout.addView(holder.circleMenu, layoutParams);
 
-                holder.actionsLayer = actionsLayer;
-                holder.deleteButton = (Button) actionsLayer.findViewWithTag("delete_button");
-                holder.shareButton = (Button) actionsLayer.findViewWithTag("share_button");
+                    Resources res = holder.circleMenu.getResources();
+                    holder.circleMenu.setMainMenu(res.getColor(R.color.menu_button_color), R.drawable.ic_close_white_24dp, R.drawable.ic_close_white_24dp);
+                    if (!holder.rando.toUpload) {
+                        holder.circleMenu.addSubMenu(res.getColor(R.color.share_menu_button_color), R.drawable.ic_share_white_24dp);
+                    }
 
-                holder.deleteButton.setOnClickListener(createDeleteOnClickListener(holder));
-                holder.shareButton.setOnClickListener(createShareRandoOnClickListener(holder));
+                    holder.circleMenu.addSubMenu(res.getColor(R.color.delete_menu_button_color), R.drawable.ic_delete_white_24dp);
+                    if (isStranger) {
+                        holder.circleMenu.addSubMenu(res.getColor(R.color.report_menu_button_color), R.drawable.ic_flag_white_24dp);
+                    }
+                    holder.circleMenu.setOnMenuSelectedListener(new OnMenuSelectedListener() {
 
-                holder.image.setAlpha(0.25f);
-                holder.map.setAlpha(0.25f);
+                        @Override
+                        public void onMenuSelected(int index) {
+                            if (index == 0 && holder.rando.toUpload) {
+                                deleteRando(holder);
+                                return;
+                            }
+                            switch (index) {
+                                case 0:
+                                    shareRando(holder);
+                                    break;
+                                case 1:
+                                    deleteRando(holder);
+                                    break;
+                                case 2:
+                                    reportRando(holder);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+                    }).setOnMenuStatusChangeListener(new OnMenuStatusChangeListener() {
+
+                        @Override
+                        public void onMenuOpened() {
+                            //do nothing
+                        }
+
+                        @Override
+                        public void onMenuClosed() {
+                            holder.randoItemLayout.removeView(holder.circleMenu);
+                            holder.circleMenu = null;
+                            holder.image.setAlpha(1f);
+                            holder.map.setAlpha(1f);
+                        }
+
+                    });
+                    holder.image.setAlpha(0.25f);
+                    holder.map.setAlpha(0.25f);
+                    holder.circleMenu.openMenu();
+                }
                 return true;
             }
         };
@@ -194,68 +241,89 @@ public class RandoListAdapter extends BaseAdapter {
         holder.map.setOnLongClickListener(onLongClickListener);
     }
 
-    private View.OnClickListener createDeleteOnClickListener(final ViewHolder holder) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                Analytics.logDeleteRando(mFirebaseAnalytics);
-                if (NetworkUtil.isOnline(v.getContext())) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                    builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            try {
-                                holder.shareButton.setVisibility(View.GONE);
-                                holder.deleteButton.setVisibility(View.GONE);
-                                showSpinner(holder, true);
-                                API.delete(holder.rando.randoId, new DeleteRandoListener() {
-                                    @Override
-                                    public void onOk() {
-                                        RandoDAO.deleteRandoByRandoId(holder.rando.randoId);
-                                        notifyDataSetChanged();
-                                        makeText(v.getContext(), R.string.rando_deleted,
-                                                Toast.LENGTH_LONG).show();
-                                        holder.image.setAlpha(1f);
-                                        holder.map.setAlpha(1f);
-                                        showSpinner(holder, false);
-                                    }
-
-                                    @Override
-                                    public void onError() {
-                                        makeText(v.getContext(), R.string.error_unknown_err,
-                                                Toast.LENGTH_LONG).show();
-                                        holder.shareButton.setVisibility(View.VISIBLE);
-                                        holder.deleteButton.setVisibility(View.VISIBLE);
-                                        showSpinner(holder, false);
-                                    }
-                                });
-                            } catch (Exception e) {
-                                makeText(v.getContext(), R.string.error_unknown_err,
+    private void deleteRando(final ViewHolder holder) {
+        Analytics.logDeleteRando(mFirebaseAnalytics);
+        if (NetworkUtil.isOnline(holder.randoItemLayout.getContext()) || holder.rando.toUpload) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(holder.randoItemLayout.getContext());
+            builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    if (holder.rando.toUpload) {
+                        RandoDAO.deleteRandoToUploadById(holder.rando.id);
+                        notifyDataSetChanged();
+                        return;
+                    }
+                    try {
+                        showSpinner(holder, true);
+                        API.delete(holder.rando.randoId, new NetworkResultListener() {
+                            @Override
+                            public void onOk() {
+                                RandoDAO.deleteRandoByRandoId(holder.rando.randoId);
+                                notifyDataSetChanged();
+                                makeText(holder.randoItemLayout.getContext(), R.string.rando_deleted,
                                         Toast.LENGTH_LONG).show();
-                                if (holder.shareButton != null) {
-                                    holder.shareButton.setVisibility(View.VISIBLE);
-                                }
-                                if (holder.deleteButton != null) {
-                                    holder.deleteButton.setVisibility(View.VISIBLE);
-                                }
                                 showSpinner(holder, false);
                             }
-                        }
-                    });
-                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            recycleActionsLayer(holder);
-                            holder.image.setAlpha(1f);
-                            holder.map.setAlpha(1f);
-                            return;
-                        }
-                    }).setTitle(R.string.delete_rando).setMessage(R.string.delete_rando_confirm).create().show();
-                    return;
-                } else {
-                    makeText(v.getContext(), R.string.error_no_network,
-                            Toast.LENGTH_LONG).show();
+
+                            @Override
+                            public void onError() {
+                                makeText(holder.randoItemLayout.getContext(), R.string.error_unknown_err,
+                                        Toast.LENGTH_LONG).show();
+                                showSpinner(holder, false);
+                            }
+                        });
+                    } catch (Exception e) {
+                        makeText(holder.randoItemLayout.getContext(), R.string.error_unknown_err,
+                                Toast.LENGTH_LONG).show();
+                        showSpinner(holder, false);
+                    }
                 }
-            }
-        };
+            });
+            builder.setNegativeButton(R.string.cancel, null).setTitle(R.string.delete_rando).setMessage(R.string.delete_rando_confirm).create().show();
+            return;
+        } else {
+            makeText(holder.randoItemLayout.getContext(), R.string.error_no_network,
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void reportRando(final ViewHolder holder) {
+        Analytics.logReportRando(mFirebaseAnalytics);
+        if (NetworkUtil.isOnline(holder.randoItemLayout.getContext())) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(holder.randoItemLayout.getContext());
+            builder.setPositiveButton(R.string.report, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    try {
+                        showSpinner(holder, true);
+                        API.report(holder.rando.randoId, new NetworkResultListener() {
+                            @Override
+                            public void onOk() {
+                                RandoDAO.deleteRandoByRandoId(holder.rando.randoId);
+                                notifyDataSetChanged();
+                                makeText(holder.randoItemLayout.getContext(), R.string.rando_reported,
+                                        Toast.LENGTH_LONG).show();
+                                showSpinner(holder, false);
+                            }
+
+                            @Override
+                            public void onError() {
+                                makeText(holder.randoItemLayout.getContext(), R.string.error_unknown_err,
+                                        Toast.LENGTH_LONG).show();
+                                showSpinner(holder, false);
+                            }
+                        });
+                    } catch (Exception e) {
+                        makeText(holder.randoItemLayout.getContext(), R.string.error_unknown_err,
+                                Toast.LENGTH_LONG).show();
+                        showSpinner(holder, false);
+                    }
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, null).setTitle(R.string.report_rando).setMessage(R.string.report_rando_confirm).create().show();
+            return;
+        } else {
+            makeText(holder.randoItemLayout.getContext(), R.string.error_no_network,
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     private void showSpinner(ViewHolder holder, boolean show) {
@@ -275,12 +343,6 @@ public class RandoListAdapter extends BaseAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                if (holder.actionsLayer != null) {
-                    recycleActionsLayer(holder);
-                    holder.image.setAlpha(1f);
-                    holder.map.setAlpha(1f);
-                    return;
-                }
                 if (holder.rando.toUpload) {
                     LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     final View uploadingToast = inflater.inflate(R.layout.uploading_toast, null);
@@ -309,7 +371,7 @@ public class RandoListAdapter extends BaseAdapter {
                             Analytics.logDeleteUnwantedRandoDialog(mFirebaseAnalytics);
                             try {
                                 showSpinner(holder, true);
-                                API.delete(holder.rando.randoId, new DeleteRandoListener() {
+                                API.delete(holder.rando.randoId, new NetworkResultListener() {
                                     @Override
                                     public void onOk() {
                                         RandoDAO.deleteRandoByRandoId(holder.rando.randoId);
@@ -377,27 +439,17 @@ public class RandoListAdapter extends BaseAdapter {
         };
     }
 
-    private View.OnClickListener createShareRandoOnClickListener(final ViewHolder holder) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Constants.TO_UPLOAD_RANDO_ID.equals(holder.rando.randoId)) {
-                    makeText(v.getContext(), R.string.cant_share_not_uploaded,
-                            Toast.LENGTH_LONG).show();
-                } else {
-                    Analytics.logShareRando(mFirebaseAnalytics);
-                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                    shareIntent.setType("text/plain");
-                    shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+    private void shareRando(final ViewHolder holder) {
+        Analytics.logShareRando(mFirebaseAnalytics);
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 
-                    // Add data to the intent, the receiving app will decide
-                    // what to do with it.
-                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, v.getContext().getResources().getString(R.string.share_subject));
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, v.getContext().getResources().getString(R.string.share_text) + " " + String.format(Constants.SHARE_URL, holder.rando.randoId));
-                    v.getContext().startActivity(Intent.createChooser(shareIntent, "Share Rando using"));
-                }
-            }
-        };
+        // Add data to the intent, the receiving app will decide
+        // what to do with it.
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, holder.randoItemLayout.getContext().getResources().getString(R.string.share_subject));
+        shareIntent.putExtra(Intent.EXTRA_TEXT, holder.randoItemLayout.getContext().getResources().getString(R.string.share_text) + " " + String.format(Constants.SHARE_URL, holder.rando.randoId));
+        holder.randoItemLayout.getContext().startActivity(Intent.createChooser(shareIntent, "Share Rando using"));
     }
 
     private void recycle(ViewHolder holder) {
@@ -415,7 +467,10 @@ public class RandoListAdapter extends BaseAdapter {
         holder.map.setAlpha(1f);
         showSpinner(holder, false);
 
-        recycleActionsLayer(holder);
+        if (holder.circleMenu != null) {
+            holder.randoItemLayout.removeView(holder.circleMenu);
+            holder.circleMenu = null;
+        }
 
         if (holder.unwantedRandoView != null) {
             holder.unwantedRandoView.clearAnimation();
@@ -444,15 +499,6 @@ public class RandoListAdapter extends BaseAdapter {
         viewSwitcher.setInAnimation(null);
         viewSwitcher.setOutAnimation(null);
         viewSwitcher.setDisplayedChild(0);
-    }
-
-    private void recycleActionsLayer(ViewHolder holder) {
-        if (holder.actionsLayer != null) {
-            holder.randoItemLayout.removeView(holder.actionsLayer);
-            holder.actionsLayer = null;
-            holder.shareButton = null;
-            holder.deleteButton = null;
-        }
     }
 
     private void cancelRequests(ViewHolder holder) {
@@ -618,9 +664,7 @@ public class RandoListAdapter extends BaseAdapter {
         public RoundedImageView map;
         public boolean isMap;
 
-        public RandoActionsView actionsLayer;
-        public Button deleteButton;
-        public Button shareButton;
+        public CircleMenu circleMenu;
 
         public ProgressBar spinner;
 

@@ -69,7 +69,7 @@ public class UploadJob extends Job {
                     }
                     Log.d(UploadJob.class, "Delete rando", randoToUpload.toString());
                     FileUtil.removeFileIfExist(randoToUpload.file);
-                    RandoDAO.deleteRandoToUpload(randoToUpload);
+                    RandoDAO.deleteRandoToUploadById(randoToUpload.id);
                     Intent intent = new Intent(Constants.UPLOAD_SERVICE_BROADCAST_EVENT);
                     UploadJob.this.getContext().sendBroadcast(intent);
                     resultFuture.put(Result.SUCCESS);
@@ -104,7 +104,7 @@ public class UploadJob extends Job {
                             } else if (networkResponse.statusCode == 400) {
                                 errorMessage = message + " Wrong Request when uploading Rando: " + randoToUpload.toString();
                                 FileUtil.removeFileIfExist(randoToUpload.file);
-                                RandoDAO.deleteRandoToUpload(randoToUpload);
+                                RandoDAO.deleteRandoToUploadById(randoToUpload.id);
                             } else if (networkResponse.statusCode == 500) {
                                 errorMessage = message + " Something is getting wrong";
                             }

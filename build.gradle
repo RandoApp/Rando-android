@@ -7,6 +7,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:2.2.3'
         classpath 'com.google.gms:google-services:3.0.0'
         classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
     }
 }
 apply plugin: 'com.android.model.application'
@@ -167,6 +168,7 @@ dependencies {
     compile project(':volley')
     compile project(':cameraview')
     compile project(':camerakit')
+    compile project(':CircleMenu')
 
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile 'com.makeramen:roundedimageview:2.3.+'

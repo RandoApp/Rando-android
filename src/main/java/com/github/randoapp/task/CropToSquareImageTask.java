@@ -66,10 +66,11 @@ public class CropToSquareImageTask implements Runnable {
         Bitmap resultedBitmap = rotate(bitmap, rotateDegree);
 
         if (isCanceled.get()) {
-            bitmap.get().recycle();
+            if (bitmap.get()!= null) {
+                bitmap.get().recycle();
+            }
             bitmap.clear();
             resultedBitmap.recycle();
-            resultedBitmap = null;
             return null;
         }
 

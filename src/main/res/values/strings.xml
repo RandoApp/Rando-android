@@ -32,9 +32,11 @@
     <string name="about">About</string>
     <string name="enable_vibration">Vibrate on take rando</string>
     <string name="contact_us">Contact Us</string>
-    <string name="report">Report</string>
-    <string name="report_off">Report OFF</string>
+    <string name="report">Yes, report</string>
+    <string name="report_rando_confirm">Do you want to report user and delete this rando?</string>
+    <string name="rando_reported">User has been reported</string>
     <string name="report_message">Report</string>
+    <string name="report_rando">Report inappropriate content</string>
     <string name="loading_progress">Loading…</string>
     <string name="logout_progress">Logout…</string>
     <string name="cropping_progress">Prepairing to Upload…</string>
@@ -43,8 +45,6 @@
 
     <string name="version">Version: </string>
     <string name="account">Account: </string>
-
-    <string name="crop_failed">Crop Failed.</string>
 
     <string name="error_400">You are not authorized. Please, signup.</string>
     <string name="error_411">You are temporarily blocked, because of big amount of images sent in a row. Please, try again later:</string>
@@ -105,10 +105,10 @@
     <!-- Permission strings END -->
     
     <string name="rando_deleted">Rando has beed deleted.</string>
-    <string name="delete">Delete</string>
+    <string name="delete">Yes, delete</string>
     <string name="cancel">Cancel</string>
     <string name="delete_rando">Delete Rando</string>
-    <string name="delete_rando_confirm">Do you really want to delete this Rando?</string>
+    <string name="delete_rando_confirm">Do you really want to delete this rando?</string>
 
     <string name="rando_excluded">Excluded from exchange</string>
     <string name="rando_excluded_text">This Rando was excluded from exchange. This happens for one of the following reasons:\n - duplicated;\n - offensive;\n - boring (e.g. too dark);\n - other reason.</string>

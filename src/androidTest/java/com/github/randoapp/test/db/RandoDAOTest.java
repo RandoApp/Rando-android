@@ -215,7 +215,7 @@ public class RandoDAOTest {
         RandoUpload randoUpload = RandoDAO.getAllRandosToUpload("DESC").get(1);
         assertThat("Unexpected second rando", randoUpload.file, is("/path/to/file2"));
 
-        RandoDAO.deleteRandoToUpload(randoUpload);
+        RandoDAO.deleteRandoToUploadById(randoUpload.id);
         assertThat("After delete rando to upload number is not correct", RandoDAO.getRandosToUploadNumber(), is(2));
     }
 
@@ -223,7 +223,7 @@ public class RandoDAOTest {
     public void testDeleteRandoToUploadEmptyTableDetele() {
         assertThat("Initial RandoUpload table is not empty", RandoDAO.getRandosToUploadNumber(), is(0));
         RandoUpload randoUpload = new RandoUpload("/path/to/file2", 13.33, 14.44, new Date());
-        RandoDAO.deleteRandoToUpload(randoUpload);
+        RandoDAO.deleteRandoToUploadById(randoUpload.id);
         assertThat("After delete rando to upload number is not correct", RandoDAO.getRandosToUploadNumber(), is(0));
     }
 
@@ -234,7 +234,7 @@ public class RandoDAOTest {
         assertThat("Initial delete rando to upload number is not correct", RandoDAO.getRandosToUploadNumber(), is(2));
 
         RandoUpload randoUpload = new RandoUpload("/path/to/file2", 23.33, 24.44, new Date());
-        RandoDAO.deleteRandoToUpload(randoUpload);
+        RandoDAO.deleteRandoToUploadById(randoUpload.id);
         assertThat("After delete rando to upload number is not correct", RandoDAO.getRandosToUploadNumber(), is(2));
     }
 

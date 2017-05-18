@@ -1,6 +1,6 @@
 package com.github.randoapp.api.listeners;
 
-public interface DeleteRandoListener {
+public interface NetworkResultListener {
     void onOk();
 
     void onError();

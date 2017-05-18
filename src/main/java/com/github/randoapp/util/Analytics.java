@@ -8,6 +8,7 @@ public class Analytics {
     private static String UPLOAD_RANDO = "upload_rando";
     private static String SHARE_RANDO = "share_rando";
     private static String DELETE_RANDO = "delete_rando";
+    private static String REPORT_RANDO = "report_rando";
     private static String TAP_STRANGER_RANDO = "tap_stranger_rando";
     private static String TAP_OWN_RANDO = "tap_own_rando";
     private static String FORCE_SYNC = "force_sync";
@@ -40,6 +41,10 @@ public class Analytics {
 
     public static void logDeleteRando(FirebaseAnalytics analytics) {
         analytics.logEvent(DELETE_RANDO, null);
+    }
+
+    public static void logReportRando(FirebaseAnalytics analytics) {
+        analytics.logEvent(REPORT_RANDO, null);
     }
 
     public static void logTapStrangerRando(FirebaseAnalytics analytics) {

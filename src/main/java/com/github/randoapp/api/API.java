@@ -11,7 +11,7 @@ import com.github.randoapp.R;
 import com.github.randoapp.api.beans.User;
 import com.github.randoapp.api.callback.OnFetchUser;
 import com.github.randoapp.api.exception.ForbiddenException;
-import com.github.randoapp.api.listeners.DeleteRandoListener;
+import com.github.randoapp.api.listeners.NetworkResultListener;
 import com.github.randoapp.api.listeners.ErrorResponseListener;
 import com.github.randoapp.api.listeners.UploadRandoListener;
 import com.github.randoapp.api.listeners.UserFetchResultListener;
@@ -75,6 +75,7 @@ import static com.github.randoapp.Constants.LATITUDE_PARAM;
 import static com.github.randoapp.Constants.LOGOUT_URL;
 import static com.github.randoapp.Constants.LONGITUDE_PARAM;
 import static com.github.randoapp.Constants.NOT_UPDATED;
+import static com.github.randoapp.Constants.REPORT_URL;
 import static com.github.randoapp.Constants.SIGNUP_EMAIL_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_PASSWORD_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_URL;
@@ -243,7 +244,7 @@ public class API {
         VolleySingleton.getInstance().getRequestQueue().add(uploadMultipart);
     }
 
-    public static void delete(final String randoId, final DeleteRandoListener deleteRandoListener) throws Exception {
+    public static void delete(final String randoId, final NetworkResultListener deleteRandoListener) throws Exception {
         Log.d(API.class, "Deleting Rando:", randoId);
         BackgroundPreprocessRequest request = new BackgroundPreprocessRequest(Request.Method.POST, DELETE_URL + randoId, null, null, new Response.Listener<JSONObject>() {
             @Override
@@ -264,6 +265,36 @@ public class API {
             public void onErrorResponse(VolleyError error) {
                 Log.e(API.class, "Error Deleting Rando", error);
                 deleteRandoListener.onError();
+            }
+        });
+
+        request.setHeaders(getHeaders());
+        request.setRetryPolicy(new DefaultRetryPolicy(API_CONNECTION_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        VolleySingleton.getInstance().getRequestQueue().add(request);
+    }
+
+    public static void report(final String randoId, final NetworkResultListener reportRandoListener) throws Exception {
+        Log.d(API.class, "Reporting Rando:", randoId);
+        BackgroundPreprocessRequest request = new BackgroundPreprocessRequest(Request.Method.POST, REPORT_URL + randoId, null, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    if ("report".equals(response.getString("command")) &&
+                            "done".equals(response.getString("result"))) {
+                        Log.d(API.class, "Reported Rando:", randoId);
+                        reportRandoListener.onOk();
+                    }
+                } catch (JSONException e) {
+                    Log.e(API.class, "Error Reporting Rando", e);
+                    reportRandoListener.onError();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(API.class, "Error Reporting Rando", error);
+                reportRandoListener.onError();
             }
         });
 
