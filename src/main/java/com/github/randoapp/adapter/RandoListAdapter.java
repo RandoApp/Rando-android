@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -51,7 +50,6 @@ import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
 
-import static android.icu.lang.UCharacter.JoiningGroup.E;
 import static android.widget.Toast.makeText;
 import static com.android.volley.Request.Priority;
 
