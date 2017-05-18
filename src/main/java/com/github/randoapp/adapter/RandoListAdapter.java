@@ -247,7 +247,7 @@ public class RandoListAdapter extends BaseAdapter {
             AlertDialog.Builder builder = new AlertDialog.Builder(holder.randoItemLayout.getContext());
             builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    if (holder.rando.toUpload){
+                    if (holder.rando.toUpload) {
                         RandoDAO.deleteRandoToUploadById(holder.rando.id);
                         notifyDataSetChanged();
                         return;
@@ -440,21 +440,16 @@ public class RandoListAdapter extends BaseAdapter {
     }
 
     private void shareRando(final ViewHolder holder) {
-        if (Constants.TO_UPLOAD_RANDO_ID.equals(holder.rando.randoId)) {
-            makeText(holder.randoItemLayout.getContext(), R.string.cant_share_not_uploaded,
-                    Toast.LENGTH_LONG).show();
-        } else {
-            Analytics.logShareRando(mFirebaseAnalytics);
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("text/plain");
-            shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        Analytics.logShareRando(mFirebaseAnalytics);
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 
-            // Add data to the intent, the receiving app will decide
-            // what to do with it.
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, holder.randoItemLayout.getContext().getResources().getString(R.string.share_subject));
-            shareIntent.putExtra(Intent.EXTRA_TEXT, holder.randoItemLayout.getContext().getResources().getString(R.string.share_text) + " " + String.format(Constants.SHARE_URL, holder.rando.randoId));
-            holder.randoItemLayout.getContext().startActivity(Intent.createChooser(shareIntent, "Share Rando using"));
-        }
+        // Add data to the intent, the receiving app will decide
+        // what to do with it.
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, holder.randoItemLayout.getContext().getResources().getString(R.string.share_subject));
+        shareIntent.putExtra(Intent.EXTRA_TEXT, holder.randoItemLayout.getContext().getResources().getString(R.string.share_text) + " " + String.format(Constants.SHARE_URL, holder.rando.randoId));
+        holder.randoItemLayout.getContext().startActivity(Intent.createChooser(shareIntent, "Share Rando using"));
     }
 
     private void recycle(ViewHolder holder) {
