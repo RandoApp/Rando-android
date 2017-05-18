@@ -275,7 +275,7 @@ public class API {
     }
 
     public static void report(final String randoId, final NetworkResultListener reportRandoListener) throws Exception {
-        Log.d(API.class, "Deleting Rando:", randoId);
+        Log.d(API.class, "Reporting Rando:", randoId);
         BackgroundPreprocessRequest request = new BackgroundPreprocessRequest(Request.Method.POST, REPORT_URL + randoId, null, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
