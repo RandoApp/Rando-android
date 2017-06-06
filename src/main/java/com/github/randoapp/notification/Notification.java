@@ -7,21 +7,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.RingtoneManager;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.MainActivity;
 import com.github.randoapp.R;
+import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 
 public class Notification {
 
-    private static final int NOTIFICATION_MIN_API_LEVEL = 11;
+    private static final int NOTIFICATION_MIN_API_LEVEL = Build.VERSION_CODES.HONEYCOMB;
     private static final int LED_MS_TO_BE_ON = 3000;
     private static final int LED_MS_TO_BE_OFF = 3000;
 
-    public static void show(Context context, String title, String text) {
+    public static void show(Context context, String title, String text, Rando rando) {
         Log.d(Notification.class, "Show with following params: title -> " + title + " text -> " + text);
 
         if (android.os.Build.VERSION.SDK_INT < NOTIFICATION_MIN_API_LEVEL) {
@@ -39,6 +41,7 @@ public class Notification {
                 .setLights(Color.RED, LED_MS_TO_BE_ON, LED_MS_TO_BE_OFF);
 
         Intent resultIntent = new Intent(context, MainActivity.class);
+        resultIntent.putExtra(Constants.RANDO_ID_PARAM, rando.randoId);
         PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
         notificationBuilder.setContentIntent(resultPendingIntent);
