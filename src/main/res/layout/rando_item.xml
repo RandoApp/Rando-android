@@ -44,10 +44,12 @@
         </ViewSwitcher>
     </LinearLayout>
     <ImageButton
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:tag="rating"
-        android:src="@drawable/common_full_open_on_phone"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/ic_thumb_up_gray_24dp"
+        android:background="@color/transparent"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"/>
 </RelativeLayout>

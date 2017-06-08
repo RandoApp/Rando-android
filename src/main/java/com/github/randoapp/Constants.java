@@ -114,6 +114,7 @@ public class Constants {
     public static final String DELETE_URL = SERVER_API_URL + "/delete/";
     public static final String REPORT_URL = SERVER_API_URL + "/report/";
     public static final String SHARE_URL = SERVER_URL + "/s/%s";
+    public static final String RATE_URL = SERVER_API_URL + "/rate/";
 
     public static final String REPORT_BROADCAST = "Report";
 

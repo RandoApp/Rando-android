@@ -75,6 +75,7 @@ import static com.github.randoapp.Constants.LATITUDE_PARAM;
 import static com.github.randoapp.Constants.LOGOUT_URL;
 import static com.github.randoapp.Constants.LONGITUDE_PARAM;
 import static com.github.randoapp.Constants.NOT_UPDATED;
+import static com.github.randoapp.Constants.RATE_URL;
 import static com.github.randoapp.Constants.REPORT_URL;
 import static com.github.randoapp.Constants.SIGNUP_EMAIL_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_PASSWORD_PARAM;
@@ -294,6 +295,36 @@ public class API {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(API.class, "Error Reporting Rando", error);
+                reportRandoListener.onError();
+            }
+        });
+
+        request.setHeaders(getHeaders());
+        request.setRetryPolicy(new DefaultRetryPolicy(API_CONNECTION_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        VolleySingleton.getInstance().getRequestQueue().add(request);
+    }
+
+    public static void rate(final String randoId, final int rating, final NetworkResultListener reportRandoListener) {
+        Log.d(API.class, "Rate Rando:", randoId);
+        BackgroundPreprocessRequest request = new BackgroundPreprocessRequest(Request.Method.POST, RATE_URL + randoId+"?rating="+rating, null, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    if ("rate".equals(response.getString("command")) &&
+                            "done".equals(response.getString("result"))) {
+                        Log.d(API.class, "Rated Rando:", randoId);
+                        reportRandoListener.onOk();
+                    }
+                } catch (JSONException e) {
+                    Log.e(API.class, "Error Rating Rando", e);
+                    reportRandoListener.onError();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(API.class, "Error Rating Rando", error);
                 reportRandoListener.onError();
             }
         });

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -47,7 +46,6 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.hitomi.cmlibrary.CircleMenu;
 import com.hitomi.cmlibrary.OnMenuSelectedListener;
 import com.hitomi.cmlibrary.OnMenuStatusChangeListener;
-import com.hsalf.smilerating.SmileRating;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
@@ -226,8 +224,7 @@ public class RandoListAdapter extends BaseAdapter {
 
                         @Override
                         public void onMenuClosed() {
-                            holder.randoItemLayout.removeView(holder.circleMenu);
-                            holder.circleMenu = null;
+                            recycleCircleMenu(holder);
                             holder.image.setAlpha(1f);
                             holder.map.setAlpha(1f);
                         }
@@ -246,16 +243,57 @@ public class RandoListAdapter extends BaseAdapter {
         holder.rateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.ratingBar = new SmileRating(v.getContext());
+                recycleCircleMenu(holder);
+                if (holder.ratingMenu !=null){
+                    return;
+                }
+                holder.ratingMenu = new CircleMenu(v.getContext());
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) (imageSize * 0.9), (int) (imageSize * 0.9));
                 layoutParams.setMargins(v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left),
                         v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
                         v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right),
                         v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));
                 layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-                holder.ratingBar.setNameForSmile(0,"");
+                holder.randoItemLayout.addView(holder.ratingMenu, layoutParams);
 
-                holder.randoItemLayout.addView(holder.ratingBar, layoutParams);
+                Resources res = holder.ratingMenu.getResources();
+                holder.ratingMenu.setMainMenu(res.getColor(R.color.menu_button_color), R.drawable.ic_close_white_24dp, R.drawable.ic_close_white_24dp)
+                        .addSubMenu(res.getColor(R.color.report_menu_button_color), R.drawable.ic_thumb_down_white_24dp)
+                        .addSubMenu(res.getColor(R.color.share_menu_button_color), R.drawable.ic_thumb_up_white_24dp)
+                        .setOnMenuSelectedListener(new OnMenuSelectedListener() {
+                            @Override
+                            public void onMenuSelected(int index) {
+                                switch (index) {
+                                    case 0:
+                                        Analytics.logRateRandoDown(mFirebaseAnalytics);
+                                        rateRando(holder, -1);
+                                        break;
+                                    case 1:
+                                        Analytics.logRateRandoUp(mFirebaseAnalytics);
+                                        rateRando(holder, 1);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+
+                        }).setOnMenuStatusChangeListener(new OnMenuStatusChangeListener() {
+
+                    @Override
+                    public void onMenuOpened() {
+                        //do nothing
+                    }
+
+                    @Override
+                    public void onMenuClosed() {
+                        holder.randoItemLayout.removeView(holder.ratingMenu);
+                        holder.ratingMenu = null;
+                        holder.image.setAlpha(1f);
+                        holder.map.setAlpha(1f);
+                    }
+                }).openMenu();
+                holder.image.setAlpha(0.25f);
+                holder.map.setAlpha(0.25f);
 
                 return;
             }
@@ -461,6 +499,22 @@ public class RandoListAdapter extends BaseAdapter {
         };
     }
 
+    private void rateRando(final ViewHolder holder, final int rating) {
+        Analytics.logShareRando(mFirebaseAnalytics);
+        API.rate(holder.rando.randoId, rating, new NetworkResultListener() {
+            @Override
+            public void onOk() {
+                holder.rateButton.setImageResource(rating == 1 ? R.drawable.ic_thumb_up_green_24dp: R.drawable.ic_thumb_down_red_24dp);
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+
+    }
+
     private void shareRando(final ViewHolder holder) {
         Analytics.logShareRando(mFirebaseAnalytics);
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -489,10 +543,14 @@ public class RandoListAdapter extends BaseAdapter {
         holder.map.setAlpha(1f);
         showSpinner(holder, false);
 
-        if (holder.circleMenu != null) {
-            holder.randoItemLayout.removeView(holder.circleMenu);
-            holder.circleMenu = null;
+        recycleCircleMenu(holder);
+
+        if (holder.ratingMenu != null) {
+            holder.randoItemLayout.removeView(holder.ratingMenu);
+            holder.ratingMenu = null;
         }
+
+        holder.rateButton.setImageResource(R.drawable.ic_thumb_up_gray_24dp);
 
         if (holder.unwantedRandoView != null) {
             holder.unwantedRandoView.clearAnimation();
@@ -515,6 +573,12 @@ public class RandoListAdapter extends BaseAdapter {
         holder.rando = null;
     }
 
+    private void recycleCircleMenu(ViewHolder holder){
+        if (holder.circleMenu != null) {
+            holder.randoItemLayout.removeView(holder.circleMenu);
+            holder.circleMenu = null;
+        }
+    }
     private void recycleViewSwitcher(ViewSwitcher viewSwitcher) {
         //disable animation for immediately and undetectable switching to zero child:
         viewSwitcher.clearAnimation();
@@ -687,9 +751,8 @@ public class RandoListAdapter extends BaseAdapter {
         public boolean isMap;
 
         public CircleMenu circleMenu;
-
         public ImageView rateButton;
-        public SmileRating ratingBar;
+        public CircleMenu ratingMenu;
 
         public ProgressBar spinner;
 
