@@ -8,7 +8,7 @@
     <uses-sdk
         android:minSdkVersion="11"
         android:targetSdkVersion="25"
-        tools:overrideLibrary="com.evernote.android.job, net.vrallev.android.cat, com.flurgle.camerakit, com.hitomi.cmlibrary"/>
+        tools:overrideLibrary="com.evernote.android.job, net.vrallev.android.cat, com.flurgle.camerakit, com.hitomi.cmlibrary, com.hsalf.smilerating"/>
 
     <application
         android:name=".App"

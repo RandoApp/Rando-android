@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -46,6 +47,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.hitomi.cmlibrary.CircleMenu;
 import com.hitomi.cmlibrary.OnMenuSelectedListener;
 import com.hitomi.cmlibrary.OnMenuStatusChangeListener;
+import com.hsalf.smilerating.SmileRating;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
@@ -158,6 +160,7 @@ public class RandoListAdapter extends BaseAdapter {
         ViewSwitcher.LayoutParams randoImagesLayout = new ViewSwitcher.LayoutParams(imageSize, imageSize);
         holder.image.setLayoutParams(randoImagesLayout);
         holder.map.setLayoutParams(randoImagesLayout);
+        holder.rateButton = (ImageView) convertView.findViewWithTag("rating");
 
         convertView.setTag(holder);
         return holder;
@@ -239,6 +242,25 @@ public class RandoListAdapter extends BaseAdapter {
         };
         holder.image.setOnLongClickListener(onLongClickListener);
         holder.map.setOnLongClickListener(onLongClickListener);
+
+        holder.rateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.ratingBar = new SmileRating(v.getContext());
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) (imageSize * 0.9), (int) (imageSize * 0.9));
+                layoutParams.setMargins(v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left),
+                        v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
+                        v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right),
+                        v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));
+                layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+                holder.ratingBar.setNameForSmile(0,"");
+
+                holder.randoItemLayout.addView(holder.ratingBar, layoutParams);
+
+                return;
+            }
+        });
+
     }
 
     private void deleteRando(final ViewHolder holder) {
@@ -665,6 +687,9 @@ public class RandoListAdapter extends BaseAdapter {
         public boolean isMap;
 
         public CircleMenu circleMenu;
+
+        public ImageView rateButton;
+        public SmileRating ratingBar;
 
         public ProgressBar spinner;
 

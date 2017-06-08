@@ -43,4 +43,11 @@
             </FrameLayout>
         </ViewSwitcher>
     </LinearLayout>
+    <ImageButton
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:tag="rating"
+        android:src="@drawable/common_full_open_on_phone"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"/>
 </RelativeLayout>

@@ -172,6 +172,7 @@ dependencies {
 
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile 'com.makeramen:roundedimageview:2.3.+'
+    compile 'com.github.sujithkanna:smileyrating:1.6.6'
     compile 'ch.acra:acra:4.9.2'
 
     compile "com.google.android.gms:play-services-auth:$firebaseLibraryVersion"
@@ -179,7 +180,7 @@ dependencies {
     compile "com.google.firebase:firebase-messaging:$firebaseLibraryVersion"
     compile "com.google.firebase:firebase-crash:$firebaseLibraryVersion"
 
-    compile 'com.evernote:android-job:1.1.8'
+    compile 'com.evernote:android-job:1.1.10'
     compile "com.android.support:exifinterface:$supportLibraryVersion"
 
     androidTestCompile 'com.android.support.test:runner:0.5'
