@@ -59,6 +59,9 @@
     <color name="report_menu_button_color">#e93229</color>
 
     <color name="vertical_line_separator">#ffdddddd</color>
+    <color name="permanent_ban_label">#dde93229</color>
     <color name="suspend_upload_label">#aa15aa2a</color>
+
+    <color name="ban_contact_us_pressed">#ddbf2a22</color>
 
 </resources>

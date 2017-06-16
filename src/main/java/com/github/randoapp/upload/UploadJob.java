@@ -108,7 +108,6 @@ public class UploadJob extends Job {
                                 FileUtil.removeFileIfExist(randoToUpload.file);
                                 RandoDAO.deleteRandoToUploadById(randoToUpload.id);
                             } else if (networkResponse.statusCode == 403) {
-                                //Banned case
                                 BanService banService = new BanService();
                                 banService.processForbiddenRequest(message);
                             } else if (networkResponse.statusCode == 500) {

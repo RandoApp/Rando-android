@@ -29,7 +29,7 @@
         android:id="@+id/banLabel"
         android:layout_width="match_parent"
         android:layout_height="@dimen/ban_label_height"
-        android:background="@color/rando_red"
+        android:background="@color/permanent_ban_label"
         android:orientation="horizontal"
         android:gravity="center"
         android:visibility="gone">
