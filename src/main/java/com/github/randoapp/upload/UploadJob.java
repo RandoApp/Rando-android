@@ -16,6 +16,8 @@ import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.db.model.RandoUpload;
 import com.github.randoapp.log.Log;
+import com.github.randoapp.preferences.Preferences;
+import com.github.randoapp.service.BanService;
 import com.github.randoapp.util.FileUtil;
 import com.github.randoapp.util.NetworkUtil;
 
@@ -105,6 +107,10 @@ public class UploadJob extends Job {
                                 errorMessage = message + " Wrong Request when uploading Rando: " + randoToUpload.toString();
                                 FileUtil.removeFileIfExist(randoToUpload.file);
                                 RandoDAO.deleteRandoToUploadById(randoToUpload.id);
+                            } else if (networkResponse.statusCode == 403) {
+                                //Banned case
+                                BanService banService = new BanService();
+                                banService.processForbiddenRequest(message);
                             } else if (networkResponse.statusCode == 500) {
                                 errorMessage = message + " Something is getting wrong";
                             }

@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Chronometer;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,6 +22,8 @@ import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
+import com.github.randoapp.service.BanService;
+import com.github.randoapp.service.ContactUsService;
 import com.github.randoapp.task.LogoutTask;
 import com.github.randoapp.task.callback.OnDone;
 import com.github.randoapp.util.Analytics;
@@ -84,27 +87,7 @@ public class HomeMenuFragment extends Fragment {
         rootView.findViewById(R.id.contactUsButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_SENDTO);
-
-                String versionName = "";
-                try {
-                    PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
-                    versionName = pInfo.versionName;
-                } catch (PackageManager.NameNotFoundException e) {
-                    Log.e(HomeMenuFragment.class, "Failed to get version name", e);
-                }
-
-                String email = getResources().getString(R.string.contact_us_email);
-                String subject = String.format(getResources().getString(R.string.contact_us_subject), versionName);
-                String body = String.format(getResources().getString(R.string.contact_us_body), Preferences.getAccount());
-
-                String uriText = "mailto:" + Uri.encode(email) +
-                        "?subject=" + Uri.encode(subject) +
-                        "&body=" + Uri.encode(body);
-                Uri uri = Uri.parse(uriText);
-
-                intent.setData(uri);
-                startActivity(Intent.createChooser(intent, "Send Support Email"));
+                new ContactUsService().openContactUsActivity(getActivity());
             }
         });
 
@@ -128,6 +111,7 @@ public class HomeMenuFragment extends Fragment {
         super.onResume();
         initAccountName();
         getActivity().registerReceiver(receiver, new IntentFilter(SYNC_BROADCAST_EVENT));
+        new BanService().showBanMessageIfNeeded(getActivity().findViewById(R.id.banLabel));
     }
 
     @Override

@@ -67,6 +67,7 @@ public class Constants {
     public static final String CAMERA_FLASH_MODE = "camera.flash.mode";
     public static final String ACCOUNT = "account";
     public static final String TRAINING_FRAGMENT_SHOWN = "training.fragment.shown";
+    public static final String BAN_RESET_AT = "main.ban.reset.at";
 
     public static final String AUTH_TOKEN_PARAM = "token";
     public static final String SIGNUP_EMAIL_PARAM = "email";

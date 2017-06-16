@@ -58,4 +58,7 @@
     <color name="share_menu_button_color">#13aa61</color>
     <color name="report_menu_button_color">#e93229</color>
 
+    <color name="vertical_line_separator">#ffdddddd</color>
+    <color name="suspend_upload_label">#aa15aa2a</color>
+
 </resources>

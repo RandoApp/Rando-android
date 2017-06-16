@@ -35,6 +35,8 @@
     <string name="report">Yes, report</string>
     <string name="report_rando_confirm">Do you want to report user and delete this rando?</string>
     <string name="rando_reported">User has been reported</string>
+    <string name="contact_support">Contact\nSupport</string>
+    <string name="report_off">Report OFF</string>
     <string name="report_message">Report</string>
     <string name="report_rando">Report inappropriate content</string>
     <string name="loading_progress">Loading…</string>
@@ -121,5 +123,8 @@
     <string name="contact_us_email">randoapp.me@gmail.com</string>
     <string name="contact_us_subject">Question about Rando 4Me (%1$s)</string>
     <string name="contact_us_body">"Hi Rando 4Me Team, \n\nI'm using Rando 4Me and my account is: %1$s\nI have following question:\n\nThanks\n"</string>
+
+    <string name="permanent_ban">Your account has been banned</string>
+    <string name="upload_suspend">Resume suspended upload in </string>
 
 </resources>

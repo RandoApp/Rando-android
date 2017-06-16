@@ -21,6 +21,7 @@ import static com.github.randoapp.Constants.LOCATION;
 import static com.github.randoapp.Constants.LONGITUDE_PARAM;
 import static com.github.randoapp.Constants.PREFERENCES_FILE_NAME;
 import static com.github.randoapp.Constants.TRAINING_FRAGMENT_SHOWN;
+import static com.github.randoapp.Constants.BAN_RESET_AT;
 import static com.github.randoapp.Constants.UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE;
 
 public class Preferences {
@@ -92,6 +93,14 @@ public class Preferences {
 
     public static void removeTrainingFragmentShown() {
         getSharedPreferences().edit().remove(TRAINING_FRAGMENT_SHOWN).commit();
+    }
+
+    public static void setBanResetAt(long resetAt) {
+        getSharedPreferences().edit().putLong(BAN_RESET_AT, resetAt).commit();
+    }
+
+    public static long getBanResetAt() {
+        return getSharedPreferences().getLong(BAN_RESET_AT, 0L);
     }
 
     private static SharedPreferences getSharedPreferences() {
