@@ -11,7 +11,6 @@ import com.github.randoapp.preferences.Preferences;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,7 +53,7 @@ public class BanService {
         }
 
         long banResetAt = Preferences.getBanResetAt();
-        if (banResetAt > 0  && !isPermanentBan(banResetAt) && !isSuspendUploadAlreadySetup(banView)) {
+        if (banResetAt > 0 && !isPermanentBan(banResetAt) && !isSuspendUploadAlreadySetup(banView)) {
             showSuspendUpload(banView, banResetAt);
         } else if (isPermanentBan(banResetAt)) {
             TextView contactUsButton = (TextView) banView.findViewWithTag("contactUsButton");
@@ -62,7 +61,7 @@ public class BanService {
                 contactUsButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                    new ContactUsService().openContactUsActivity(view.getContext());
+                        new ContactUsService().openContactUsActivity(view.getContext());
                     }
                 });
             }

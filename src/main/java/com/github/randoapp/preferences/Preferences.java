@@ -11,6 +11,7 @@ import java.util.Date;
 
 import static com.github.randoapp.Constants.ACCOUNT;
 import static com.github.randoapp.Constants.AUTH_TOKEN;
+import static com.github.randoapp.Constants.BAN_RESET_AT;
 import static com.github.randoapp.Constants.CAMERA_FACING;
 import static com.github.randoapp.Constants.CAMERA_FLASH_MODE;
 import static com.github.randoapp.Constants.CAMERA_GRID;
@@ -21,7 +22,6 @@ import static com.github.randoapp.Constants.LOCATION;
 import static com.github.randoapp.Constants.LONGITUDE_PARAM;
 import static com.github.randoapp.Constants.PREFERENCES_FILE_NAME;
 import static com.github.randoapp.Constants.TRAINING_FRAGMENT_SHOWN;
-import static com.github.randoapp.Constants.BAN_RESET_AT;
 import static com.github.randoapp.Constants.UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE;
 
 public class Preferences {
@@ -156,7 +156,7 @@ public class Preferences {
         }
     }
 
-    public static void setCameraGrid( boolean cameraGrid) {
+    public static void setCameraGrid(boolean cameraGrid) {
         synchronized (monitor) {
             getSharedPreferences().edit().putBoolean(CAMERA_GRID, cameraGrid).commit();
         }
@@ -187,7 +187,7 @@ public class Preferences {
         }
     }
 
-    public static void setEnableVibrate( boolean cameraGrid) {
+    public static void setEnableVibrate(boolean cameraGrid) {
         synchronized (monitor) {
             getSharedPreferences().edit().putBoolean(ENABLE_VIBRATE, cameraGrid).commit();
         }
