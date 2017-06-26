@@ -59,6 +59,7 @@ import cz.msebera.android.httpclient.message.BasicNameValuePair;
 import cz.msebera.android.httpclient.util.EntityUtils;
 
 import static com.github.randoapp.Constants.ANONYMOUS_ID_PARAM;
+import static com.github.randoapp.Constants.ANONYMOUS_URL;
 import static com.github.randoapp.Constants.API_CONNECTION_TIMEOUT;
 import static com.github.randoapp.Constants.AUTHORIZATION_HEADER;
 import static com.github.randoapp.Constants.DELETE_URL;
@@ -128,7 +129,7 @@ public class API {
         params.put(GOOGLE_FAMILY_NAME_PARAM, familyName);
         params.put(FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
 
-        VolleySingleton.getInstance().getRequestQueue().add(new JsonObjectRequest(Request.Method.POST, SIGNUP_URL, new JSONObject(params), new Response.Listener<JSONObject>() {
+        VolleySingleton.getInstance().getRequestQueue().add(new JsonObjectRequest(Request.Method.POST, GOOGLE_URL, new JSONObject(params), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -158,7 +159,7 @@ public class API {
         params.put(ANONYMOUS_ID_PARAM, uuid);
         params.put(FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
 
-        VolleySingleton.getInstance().getRequestQueue().add(new JsonObjectRequest(Request.Method.POST, SIGNUP_URL, new JSONObject(params), new Response.Listener<JSONObject>() {
+        VolleySingleton.getInstance().getRequestQueue().add(new JsonObjectRequest(Request.Method.POST, ANONYMOUS_URL, new JSONObject(params), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
