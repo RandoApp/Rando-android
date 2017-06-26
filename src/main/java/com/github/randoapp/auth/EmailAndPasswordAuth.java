@@ -5,17 +5,18 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.github.randoapp.Constants;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.github.randoapp.R;
+import com.github.randoapp.api.API;
 import com.github.randoapp.fragment.AuthFragment;
-import com.github.randoapp.task.SignupTask;
-import com.github.randoapp.task.callback.OnError;
-import com.github.randoapp.task.callback.OnOk;
+import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.view.Progress;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-import java.util.Map;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class EmailAndPasswordAuth extends BaseAuth {
 
@@ -45,24 +46,30 @@ public class EmailAndPasswordAuth extends BaseAuth {
         }
 
         Progress.showLoading();
+        Preferences.setAccount(email);
 
-        new SignupTask(email, password)
-                .onOk(new OnOk() {
-                    @Override
-                    public void onOk(Map<String, Object> data) {
-                        done(authFragment.getActivity());
-                    }
-                })
-                .onError(new OnError() {
-                    @Override
-                    public void onError(Map<String, Object> data) {
-                        Progress.hide();
-                        if (data.get(Constants.ERROR) != null) {
-                            Toast.makeText(authFragment.getActivity(), (CharSequence) data.get("error"), Toast.LENGTH_LONG).show();
+        API.signup(email, password, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                BaseAuth.done(authFragment.getActivity());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Progress.hide();
+                try {
+                    if (error != null && error.networkResponse != null) {
+                        String errorMessage = API.parseNetworkResponse(error.networkResponse).result.getString("message");
+                        if (errorMessage != null) {
+                            Toast.makeText(authFragment.getActivity(), errorMessage, Toast.LENGTH_LONG).show();
                         }
                     }
-                })
-                .execute();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
     private boolean isEmailCorrect(String email) {

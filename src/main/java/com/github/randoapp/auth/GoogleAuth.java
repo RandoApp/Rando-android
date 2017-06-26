@@ -8,20 +8,40 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.RequestFuture;
+import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
+import com.github.randoapp.api.API;
 import com.github.randoapp.fragment.AuthFragment;
-import com.github.randoapp.task.GoogleAuthTask;
-import com.github.randoapp.task.callback.OnDone;
-import com.github.randoapp.task.callback.OnError;
-import com.github.randoapp.task.callback.OnOk;
+import com.github.randoapp.log.Log;
+import com.github.randoapp.network.VolleySingleton;
+import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.AccountUtil;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.PermissionUtils;
 import com.github.randoapp.view.Progress;
+import com.google.android.gms.auth.GoogleAuthException;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
+import com.google.android.gms.auth.UserRecoverableAuthException;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-import java.util.Map;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+
+import static com.github.randoapp.Constants.GOOGLE_AUTH_SCOPE;
+import static com.github.randoapp.Constants.GOOGLE_FAMILY_NAME_PARAM;
+import static com.github.randoapp.Constants.GOOGLE_USER_INFO_URL;
+import static com.github.randoapp.Constants.UPDATE_PLAY_SERVICES_REQUEST_CODE;
 
 public class GoogleAuth extends BaseAuth implements View.OnTouchListener {
 
@@ -64,32 +84,66 @@ public class GoogleAuth extends BaseAuth implements View.OnTouchListener {
         }
     }
 
-    private void fetchUserToken(String email) {
+    private void fetchUserToken(final String email) {
         Progress.showLoading();
-        new GoogleAuthTask(email, authFragment)
-                .onOk(new OnOk() {
-                    @Override
-                    public void onOk(Map<String, Object> data) {
-                        done(authFragment.getActivity());
+        String token = "";
+        String familyName = "";
+
+        try {
+            token = fetchToken(email);
+            familyName = fetchFamilyName(token);
+        } catch (final GooglePlayServicesAvailabilityException playEx) {
+            authFragment.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+                    if (googleApiAvailability.isUserResolvableError(playEx.getConnectionStatusCode())) {
+                        googleApiAvailability.getErrorDialog(authFragment.getActivity(), playEx.getConnectionStatusCode(), UPDATE_PLAY_SERVICES_REQUEST_CODE).show();
                     }
-                })
-                .onError(new OnError() {
-                    @Override
-                    public void onError(Map<String, Object> data) {
-                        Progress.hide();
-                        String error = (String) data.get("error");
-                        if (error != null) {
-                            Toast.makeText(authFragment.getActivity(), error, Toast.LENGTH_LONG).show();
+                }
+            });
+            Log.e(GoogleAuth.class, "Google Play service exception: ", playEx.getMessage());
+        } catch (UserRecoverableAuthException userRecoverableException) {
+            Log.e(GoogleAuth.class, "Start Google activity because we have UserRecoverableAuthException and user should fix this: ", userRecoverableException.getMessage());
+            authFragment.startActivityForResult(userRecoverableException.getIntent(), Constants.GOOGLE_ACTIVITIES_AUTH_REQUEST_CODE);
+            //Do not set any error to data, because we don't need change fragments before G+ activity done
+        } catch (GoogleAuthException fatalException) {
+            Toast.makeText(authFragment.getActivity(), "Problem with Google service. Please try again.", Toast.LENGTH_LONG).show();
+            Log.e(GoogleAuth.class, "Unrecoverable error " + fatalException.getMessage());
+            return;
+        } catch (IOException exc) {
+            Toast.makeText(authFragment.getActivity(), "Problem with Google service. Please try again.", Toast.LENGTH_LONG).show();
+            Log.e(GoogleAuth.class, "IOException when fetch google token: " + exc.getMessage());
+            return;
+        } catch (Exception e) {
+            Toast.makeText(authFragment.getActivity(), "Problem with Google service. Please try again.", Toast.LENGTH_LONG).show();
+            Log.e(GoogleAuth.class, "API.google exception" + e.getMessage());
+            return;
+        }
+
+        API.google(email, token, familyName, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                BaseAuth.done(authFragment.getActivity());
+                Preferences.setAccount(email);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Progress.hide();
+                try {
+                    if (error != null && error.networkResponse != null) {
+                        String errorMessage = API.parseNetworkResponse(error.networkResponse).result.getString("message");
+                        if (errorMessage != null) {
+                            Toast.makeText(authFragment.getActivity(), errorMessage, Toast.LENGTH_LONG).show();
                         }
                     }
-                })
-                .onDone(new OnDone() {
-                    @Override
-                    public void onDone(Map<String, Object> data) {
-                        setButtonNormal();
-                    }
-                })
-                .execute();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void selectAccount(final CharSequence[] names) {
@@ -114,5 +168,28 @@ public class GoogleAuth extends BaseAuth implements View.OnTouchListener {
             setButtonFocused();
         }
         return false;
+    }
+
+    private String fetchToken(String email) throws IOException, GoogleAuthException {
+        return GoogleAuthUtil.getToken(App.context, email, GOOGLE_AUTH_SCOPE);
+    }
+
+    private String fetchFamilyName(String token) {
+        if (token == null) return null;
+
+        try {
+            String url = GOOGLE_USER_INFO_URL + token;
+            RequestFuture<JSONObject> future = RequestFuture.newFuture();
+            VolleySingleton.getInstance().getRequestQueue().add(new JsonObjectRequest(Request.Method.GET, url, null, future, future));
+            JSONObject response = future.get();
+            return response.getString(GOOGLE_FAMILY_NAME_PARAM);
+        } catch (InterruptedException e) {
+            Log.w(GoogleAuth.class, "Interrupt fetch familyName call: ", e.getMessage());
+        } catch (ExecutionException e) {
+            Log.w(GoogleAuth.class, "Execution exception when fetch familyName call: ", e.getMessage());
+        } catch (JSONException e) {
+            Log.w(GoogleAuth.class, "JSON parse problem: ", e.getMessage());
+        }
+        return null;
     }
 }
