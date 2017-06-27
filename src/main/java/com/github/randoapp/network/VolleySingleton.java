@@ -11,19 +11,8 @@ import com.github.randoapp.cache.LruMemCache;
 
 import java.io.File;
 
-import cz.msebera.android.httpclient.client.HttpClient;
-import cz.msebera.android.httpclient.conn.ClientConnectionManager;
-import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
-import cz.msebera.android.httpclient.impl.conn.tsccm.ThreadSafeClientConnManager;
-import cz.msebera.android.httpclient.params.BasicHttpParams;
-import cz.msebera.android.httpclient.params.HttpConnectionParams;
-import cz.msebera.android.httpclient.params.HttpParams;
-import cz.msebera.android.httpclient.params.HttpProtocolParams;
-
-import static com.github.randoapp.Constants.UPLOAD_CONNECTION_TIMEOUT;
 import static com.github.randoapp.Constants.DEFAULT_CACHE_DIR;
 import static com.github.randoapp.Constants.DEFAULT_CACHE_SIZE;
-import static com.github.randoapp.Constants.ESTABLISH_CONNECTION_TIMEOUT;
 
 public class VolleySingleton {
 
@@ -31,19 +20,8 @@ public class VolleySingleton {
 
     private RequestQueue requestQueue;
     private ImageLoader imageLoader;
-    public HttpClient httpClient;
 
     private VolleySingleton() {
-        HttpParams httpParams = new BasicHttpParams();
-        HttpConnectionParams.setConnectionTimeout(httpParams, ESTABLISH_CONNECTION_TIMEOUT);
-        HttpConnectionParams.setSoTimeout(httpParams, UPLOAD_CONNECTION_TIMEOUT);
-        HttpProtocolParams.setUseExpectContinue(httpParams, false);
-
-        httpClient = new DefaultHttpClient(httpParams);
-        ClientConnectionManager mgr = httpClient.getConnectionManager();
-        HttpParams params = httpClient.getParams();
-        httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(params,
-                mgr.getSchemeRegistry()), params);
         requestQueue = createRequestQueue();
         imageLoader = new ImageLoader(this.requestQueue, new LruMemCache());
     }
@@ -53,10 +31,6 @@ public class VolleySingleton {
             instance = new VolleySingleton();
         }
         return instance;
-    }
-
-    public HttpClient getHttpClient() {
-        return httpClient;
     }
 
     public RequestQueue getRequestQueue() {

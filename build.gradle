@@ -175,6 +175,7 @@ dependencies {
     compile 'ch.acra:acra:4.9.2'
 
     compile "com.google.android.gms:play-services-auth:$firebaseLibraryVersion"
+
     compile "com.google.firebase:firebase-core:$firebaseLibraryVersion"
     compile "com.google.firebase:firebase-messaging:$firebaseLibraryVersion"
     compile "com.google.firebase:firebase-crash:$firebaseLibraryVersion"

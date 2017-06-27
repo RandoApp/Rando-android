@@ -2,6 +2,7 @@ package com.github.randoapp.auth;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
+import com.github.randoapp.MainActivity;
 import com.github.randoapp.R;
 import com.github.randoapp.api.API;
 import com.github.randoapp.api.listeners.NetworkResultListener;
@@ -28,7 +30,12 @@ import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
 import com.google.android.gms.auth.UserRecoverableAuthException;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.json.JSONException;
@@ -46,6 +53,7 @@ public class GoogleAuth extends BaseAuth implements View.OnTouchListener {
 
     private Button googleButton;
     private AuthFragment authFragment;
+    private GoogleApiClient googleApiClient;
 
     public GoogleAuth(@NonNull AuthFragment authFragment, Button googleButton) {
         super(authFragment);
@@ -68,6 +76,39 @@ public class GoogleAuth extends BaseAuth implements View.OnTouchListener {
     @Override
     public void onClick(View v) {
         Analytics.logLoginGoogle(FirebaseAnalytics.getInstance(authFragment.getActivity()));
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+
+        googleApiClient = new GoogleApiClient.Builder(authFragment.getActivity())
+                .enableAutoManage(authFragment.getActivity() /* FragmentActivity */, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                        Toast.makeText(authFragment.getActivity(), "Problem with Google service. Please try again.", Toast.LENGTH_LONG).show();
+                        Log.e(GoogleAuth.class, "API.google exception");
+                    }
+                })
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+
+        SignInButton signInButton = (SignInButton) authFragment.getActivity().findViewById(R.id.sign_in_button);
+        signInButton.setSize(SignInButton.SIZE_WIDE);
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.sign_in_button:
+                        signIn();
+                        break;
+                    // ...
+                }
+            }
+        });
+
+/*
         if (!PermissionUtils.checkAndRequestMissingPermissions(authFragment.getActivity(), Constants.CONTACTS_PERMISSION_REQUEST_CODE, android.Manifest.permission.GET_ACCOUNTS)) {
             String[] names = AccountUtil.getAccountNames();
             if (names.length == 1) {
@@ -80,7 +121,12 @@ public class GoogleAuth extends BaseAuth implements View.OnTouchListener {
             }
         } else {
             authFragment.isGoogleLoginPressed = true;
-        }
+        }*/
+    }
+
+    private void signIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+        authFragment.startActivityForResult(signInIntent, Constants.GOOGLE_SIGN_IN);
     }
 
     private void fetchUserToken(final String email) {
