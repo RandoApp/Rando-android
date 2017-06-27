@@ -1,5 +1,6 @@
 language: android
 jdk: oraclejdk8
+sudo: required
 
 env:
   matrix:
@@ -22,9 +23,9 @@ env:
 android:
   components:
     - tools
+    - build-tools-25.0.2
     - platform-tools
     - tools
-    - build-tools-25.0.2
     - android-25
     - extra-android-m2repository
     - extra-google-m2repository
@@ -44,8 +45,13 @@ cache:
     - $HOME/.m2
     - $HOME/.gradle
     - $DOWNLOADS_HOME
+    - ${TRAVIS_BUILD_DIR}/gradle/caches/
+    - ${TRAVIS_BUILD_DIR}/gradle/wrapper/dists/
 
 before_install:
+  - export EMULATOR="system-images;android-${EMULATOR_API_LEVEL};${EMULATOR_TAG};${EMULATOR_ABI}" # Used to install/create emulator
+  - echo 'count=0' > /home/travis/.android/repositories.cfg # Avoid warning
+install:
   # Install lftp for apk upload:
   - sudo apt-get update -qq
   - sudo apt-get install -qq lftp
@@ -68,15 +74,30 @@ before_install:
   #- if [ ! -d $APPS_HOME/android-ndk-r11c ]; then unzip -qq android-ndk.zip -d $APPS_HOME; fi
   #- export ANDROID_NDK_HOME=$APPS_HOME/android-ndk-r11c
   #- export PATH=$ANDROID_NDK_HOME/bin:$PATH
-
-before_script:
+#Clean up some space
+  - sdkmanager --list || true
+  - sdkmanager --uninstall "system-images;android-16;default;armeabi-v7a"
+  - sdkmanager --uninstall "system-images;android-17;default;armeabi-v7a"
+  - sdkmanager --uninstall "system-images;android-18;default;armeabi-v7a"
+  - sdkmanager --uninstall "system-images;android-21;default;armeabi-v7a"
+  - sdkmanager --uninstall "extras;google;google_play_services"
+  - sdkmanager --uninstall "extras;android;support"
+  - sdkmanager --uninstall "platforms;android-10"
+  - sdkmanager --uninstall "platforms;android-15"
+  - sdkmanager --uninstall "platforms;android-16"
+  - sdkmanager --uninstall "platforms;android-17"
+  - sdkmanager --uninstall "platforms;android-18"
+  - sdkmanager --uninstall "platforms;android-19"
+  - sdkmanager --uninstall "platforms;android-20"
+  - sdkmanager --uninstall "platforms;android-21"
+  - sdkmanager --uninstall "build-tools;21.1.2"
 # Create and start emulator
   # For a full list of android targets, run "android list targets"
   - android list targets
   - android list sdk -a -e
   - echo no | android create avd --force -n test -t android-$ANDROID_API --abi $ANDROID_ABI
   - emulator -memory 1536 -avd test -no-window &
-  - travis_wait 30 android-wait-for-emulator
+  - travis_wait 10 android-wait-for-emulator
   - adb shell input keyevent 82 &
 
   # Create gradle.properties with secret stroke password:
@@ -92,9 +113,9 @@ before_script:
 
 script:
   - gradle connectedAndroidTest coveralls --stacktrace
-  - if [ $NEED_UPLOAD_APK ]; then gradle assembleRelease; fi
 
 after_success:
+  - if [ $NEED_UPLOAD_APK ]; then gradle assembleRelease; fi
   - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "put build/outputs/apk/Rando-android-release.apk; bye"; fi
 
 after_failure:

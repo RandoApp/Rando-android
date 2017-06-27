@@ -1,7 +1,6 @@
 package com.github.randoapp;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,29 +13,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.view.View;
 import android.widget.Toast;
 
 import com.github.randoapp.api.API;
-import com.github.randoapp.api.listeners.NetworkResultListener;
-import com.github.randoapp.auth.BaseAuth;
-import com.github.randoapp.db.RandoDAO;
-import com.github.randoapp.fragment.AuthFragment;
-import com.github.randoapp.fragment.EmptyHomeWallFragment;
 import com.github.randoapp.fragment.HomeWallFragment;
 import com.github.randoapp.fragment.MissingStoragePermissionFragment;
-import com.github.randoapp.fragment.TrainingHomeFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.GooglePlayServicesUtil;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.crash.FirebaseCrash;
 
 import org.acra.ACRA;
@@ -56,7 +42,6 @@ import static com.github.randoapp.Constants.UPDATE_PLAY_SERVICES_REQUEST_CODE;
 
 public class MainActivity extends FragmentActivity {
 
-    public static Activity activity;
     private int playServicesStatus;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -80,6 +65,12 @@ public class MainActivity extends FragmentActivity {
                 default:
                     break;
             }
+
+            if (isNotAuthorized()) {
+                startAuthActivity();
+                return;
+            }
+
             Fragment fragment = getFragment();
             if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName()) == null) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
@@ -87,32 +78,24 @@ public class MainActivity extends FragmentActivity {
         }
     };
 
+    private void startAuthActivity() {
+        Intent intent = new Intent(this, AuthActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activity = this;
         setContentView(R.layout.activity_main);
     }
 
-    private AuthFragment authFragment;
-
     private Fragment getFragment() {
-        if (isNotAuthorized()) {
-            authFragment = new AuthFragment();
-            return authFragment;
-        }
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             return new MissingStoragePermissionFragment();
         }
-        if (!Preferences.isTrainingFragmentShown()) {
-            return new TrainingHomeFragment();
-        }
-        if (RandoDAO.countAllRandosNumber() == 0) {
-            return new EmptyHomeWallFragment();
-        } else {
-            return new HomeWallFragment();
-        }
+
+        return new HomeWallFragment();
     }
 
     private boolean isNotAuthorized() {
@@ -130,6 +113,12 @@ public class MainActivity extends FragmentActivity {
         super.onPostResume();
         registerReceivers();
         showUpdatePlayServicesDialogIfNecessary();
+
+        if (isNotAuthorized()) {
+            startAuthActivity();
+            return;
+        }
+
         Fragment fragment = getFragment();
         if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName()) == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
@@ -193,6 +182,12 @@ public class MainActivity extends FragmentActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE) {
+
+            if (isNotAuthorized()) {
+                startAuthActivity();
+                return;
+            }
+
             Fragment fragment = getFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
         } else if (requestCode == UPDATE_PLAY_SERVICES_REQUEST_CODE) {
@@ -202,44 +197,6 @@ public class MainActivity extends FragmentActivity {
             }
         }
 
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-//        if (requestCode == Constants.GOOGLE_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result);
-//        }
     }
-
-    private void handleSignInResult(GoogleSignInResult result) {
-        Log.d(MainActivity.class, "handleSignInResult:" + result.isSuccess());
-        if (result.isSuccess()) {
-            // Signed in successfully, show authenticated UI.
-            final GoogleSignInAccount acct = result.getSignInAccount();
-            final String email = acct.getEmail();
-            String familyName = acct.getFamilyName();
-            String userId = acct.getId();
-            String token = acct.getIdToken();
-            API.google(email, userId, familyName, new NetworkResultListener() {
-                @Override
-                public void onOk() {
-                    Toast.makeText(getBaseContext(), "Google Signed in with email:" + email, Toast.LENGTH_LONG).show();
-                    BaseAuth.done(authFragment.getActivity());
-                }
-
-                @Override
-                public void onError(Exception error) {
-                    Toast.makeText(getBaseContext(), "Google Signed out.", Toast.LENGTH_LONG).show();
-                }
-            });
-
-
-//            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
-//            updateUI(true);
-        } else {
-            // Signed out, show unauthenticated UI.
-//            updateUI(false);
-            Toast.makeText(this, "Google Signed out.", Toast.LENGTH_LONG).show();
-        }
-    }
-
 
 }
