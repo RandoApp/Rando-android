@@ -79,6 +79,7 @@ public abstract class BaseAuthService {
         }
 
         loginProgress = new ProgressDialog(activity, AlertDialog.THEME_HOLO_DARK);
+        loginProgress.setCanceledOnTouchOutside(false);
         loginProgress.setMessage(activity.getString(R.string.login_progress));
         loginProgress.show();
     }
@@ -95,6 +96,7 @@ public abstract class BaseAuthService {
         }
 
         fetchUserProgress = new ProgressDialog(activity, AlertDialog.THEME_HOLO_DARK);
+        fetchUserProgress.setCanceledOnTouchOutside(false);
         fetchUserProgress.setMessage(activity.getString(R.string.loading_user_progress));
         fetchUserProgress.show();
     }
