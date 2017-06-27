@@ -14,8 +14,8 @@ import com.github.randoapp.R;
 import com.github.randoapp.api.beans.User;
 import com.github.randoapp.api.callback.OnFetchUser;
 import com.github.randoapp.api.exception.ForbiddenException;
-import com.github.randoapp.api.listeners.NetworkResultListener;
 import com.github.randoapp.api.listeners.ErrorResponseListener;
+import com.github.randoapp.api.listeners.NetworkResultListener;
 import com.github.randoapp.api.listeners.UploadRandoListener;
 import com.github.randoapp.api.listeners.UserFetchResultListener;
 import com.github.randoapp.api.request.BackgroundPreprocessedRequest;
@@ -34,15 +34,11 @@ import com.google.firebase.crash.FirebaseCrash;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -50,12 +46,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cz.msebera.android.httpclient.HttpResponse;
-import cz.msebera.android.httpclient.NameValuePair;
 import cz.msebera.android.httpclient.auth.AuthenticationException;
-import cz.msebera.android.httpclient.client.entity.UrlEncodedFormEntity;
-import cz.msebera.android.httpclient.client.methods.HttpPost;
-import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
 import static com.github.randoapp.Constants.ANONYMOUS_ID_PARAM;
 import static com.github.randoapp.Constants.ANONYMOUS_URL;
@@ -91,7 +82,7 @@ public class API {
     protected static final String PROTOCOL_CHARSET = "utf-8";
 
     public static void signup(final String email, final String password, final NetworkResultListener resultListener) {
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         params.put(SIGNUP_EMAIL_PARAM, email);
         params.put(SIGNUP_PASSWORD_PARAM, password);
         params.put(FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
@@ -103,26 +94,26 @@ public class API {
                     String authToken = response.getString(Constants.AUTH_TOKEN_PARAM);
                     Preferences.setAuthToken(authToken);
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Log.e(API.class, "Parse signup response failed", e);
                 }
 
                 if (resultListener != null) {
-                    resultListener.onOk(response);
+                    resultListener.onOk();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Response<JSONObject> resp = parseNetworkResponse(error.networkResponse);
-                processServerError(resp.result);
                 if (resultListener != null) {
-                    resultListener.onError(resp.result);
+                    resultListener.onError(processServerError(resp.result));
                 }
             }
         }));
     }
+
     public static void google(String email, String token, String familyName, final NetworkResultListener resultListener) {
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         params.put(GOOGLE_EMAIL_PARAM, email);
         params.put(GOOGLE_TOKEN_PARAM, token);
         params.put(GOOGLE_FAMILY_NAME_PARAM, familyName);
@@ -135,26 +126,25 @@ public class API {
                     String authToken = response.getString(Constants.AUTH_TOKEN_PARAM);
                     Preferences.setAuthToken(authToken);
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Log.e(API.class, "Parse google login response failed", e);
                 }
                 if (resultListener != null) {
-                    resultListener.onOk(response);
+                    resultListener.onOk();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Response<JSONObject> resp = parseNetworkResponse(error.networkResponse);
-                processServerError(resp.result);
                 if (resultListener != null) {
-                    resultListener.onError(resp.result);
+                    resultListener.onError(processServerError(resp.result));
                 }
             }
         }));
     }
 
     public static void anonymous(String uuid, final NetworkResultListener resultListener) {
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         params.put(ANONYMOUS_ID_PARAM, uuid);
         params.put(FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
 
@@ -165,40 +155,37 @@ public class API {
                     String authToken = response.getString(Constants.AUTH_TOKEN_PARAM);
                     Preferences.setAuthToken(authToken);
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Log.e(API.class, "Parse anonymous login response failed", e);
                 }
                 if (resultListener != null) {
-                    resultListener.onOk(response);
+                    resultListener.onOk();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Response<JSONObject> resp = parseNetworkResponse(error.networkResponse);
-                processServerError(resp.result);
                 if (resultListener != null) {
-                    resultListener.onError(resp.result);
+                    resultListener.onError(processServerError(resp.result));
                 }
             }
         }));
-
-    };
+    }
 
     public static void logout(final NetworkResultListener resultListener) {
         BackgroundPreprocessedRequest request = new BackgroundPreprocessedRequest(Request.Method.POST, LOGOUT_URL, null, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-            if (resultListener != null) {
-                resultListener.onOk(null);
-            }
+                if (resultListener != null) {
+                    resultListener.onOk();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Response<JSONObject> resp = parseNetworkResponse(error.networkResponse);
-                processServerError(resp.result);
                 if (resultListener != null) {
-                    resultListener.onError(resp.result);
+                    resultListener.onError(processServerError(resp.result));
                 }
             }
         });
@@ -287,7 +274,7 @@ public class API {
                     if ("delete".equals(response.getString("command")) &&
                             "done".equals(response.getString("result"))) {
                         Log.d(API.class, "Deleted Rando:", randoId);
-                        deleteRandoListener.onOk(null);
+                        deleteRandoListener.onOk();
                     }
                 } catch (JSONException e) {
                     Log.e(API.class, "Error Deleting Rando", e);
@@ -317,7 +304,7 @@ public class API {
                     if ("report".equals(response.getString("command")) &&
                             "done".equals(response.getString("result"))) {
                         Log.d(API.class, "Reported Rando:", randoId);
-                        reportRandoListener.onOk(null);
+                        reportRandoListener.onOk();
                     }
                 } catch (JSONException e) {
                     Log.e(API.class, "Error Reporting Rando", e);
@@ -336,34 +323,6 @@ public class API {
         request.setRetryPolicy(new DefaultRetryPolicy(API_CONNECTION_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         VolleySingleton.getInstance().getRequestQueue().add(request);
-    }
-
-    private static void addParamsToRequest(HttpPost request, String... args) throws UnsupportedEncodingException {
-        List<NameValuePair> nameValuePairs = new ArrayList<>(1);
-        for (int i = 0; i < args.length; i += 2) {
-            nameValuePairs.add(new BasicNameValuePair(args[i], args[i + 1]));
-        }
-        request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-    }
-
-
-    private static JSONObject readJSON(HttpResponse response) throws Exception {
-        try {
-            StringBuilder json = new StringBuilder();
-            BufferedReader buffer = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-
-            String line;
-            while ((line = buffer.readLine()) != null) {
-                json.append(line);
-            }
-
-            JSONObject jsonObject = new JSONObject(json.toString());
-            return jsonObject;
-        } catch (JSONException e) {
-            throw processError(e);
-        } catch (IOException e) {
-            throw processError(e);
-        }
     }
 
     private static Map<String, String> getHeaders() {

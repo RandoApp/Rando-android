@@ -32,8 +32,6 @@ import com.github.randoapp.view.Progress;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-import org.json.JSONObject;
-
 import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
 
 public class HomeMenuFragment extends Fragment {
@@ -66,12 +64,12 @@ public class HomeMenuFragment extends Fragment {
                 Progress.show(getActivity().getResources().getString(R.string.logout_progress));
                 API.logout(new NetworkResultListener() {
                     @Override
-                    public void onOk(JSONObject response) {
+                    public void onOk() {
                         doLogout();
                     }
 
                     @Override
-                    public void onError(JSONObject error) {
+                    public void onError(Exception error) {
                         doLogout();
                     }
                 });

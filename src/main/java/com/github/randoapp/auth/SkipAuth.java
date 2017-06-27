@@ -12,9 +12,6 @@ import com.github.randoapp.util.Analytics;
 import com.github.randoapp.view.Progress;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class SkipAuth extends BaseAuth {
 
     public SkipAuth(AuthFragment authFragment) {
@@ -28,19 +25,15 @@ public class SkipAuth extends BaseAuth {
         String uuid = createTemproryId();
         API.anonymous(uuid, new NetworkResultListener() {
             @Override
-            public void onOk(JSONObject response) {
+            public void onOk() {
                 BaseAuth.done(authFragment.getActivity());
             }
 
             @Override
-            public void onError(JSONObject error) {
-                try {
-                    Progress.hide();
-                    String errorMessage = error == null ? error.getString("message") : "Error";
-                    Toast.makeText(authFragment.getActivity(), errorMessage, Toast.LENGTH_LONG).show();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            public void onError(Exception error) {
+                Progress.hide();
+                String errorMessage = error == null ? error.getMessage(): "Error";
+                Toast.makeText(authFragment.getActivity(), errorMessage, Toast.LENGTH_LONG).show();
             }
         });
     }

@@ -125,21 +125,16 @@ public class GoogleAuth extends BaseAuth implements View.OnTouchListener {
 
         API.google(email, token, familyName, new NetworkResultListener() {
             @Override
-            public void onOk(JSONObject response) {
+            public void onOk() {
                 BaseAuth.done(authFragment.getActivity());
                 Preferences.setAccount(email);
             }
 
             @Override
-            public void onError(JSONObject error) {
-                try {
-                    Progress.hide();
-                    String errorMessage = error == null ? error.getString("message") : "Error";
-                    Toast.makeText(authFragment.getActivity(), errorMessage, Toast.LENGTH_LONG).show();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
+            public void onError(Exception error) {
+                Progress.hide();
+                String errorMessage = error == null ? error.getMessage(): "Error";
+                Toast.makeText(authFragment.getActivity(), errorMessage, Toast.LENGTH_LONG).show();
             }
         });
     }
