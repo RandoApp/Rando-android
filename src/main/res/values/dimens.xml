@@ -64,5 +64,8 @@
 
     <dimen name="focus_marker_size">55dp</dimen>
 
+    <dimen name="ban_label_height">60dp</dimen>
+    <dimen name="ban_label_font_size">16dp</dimen>
+
 </resources>
 

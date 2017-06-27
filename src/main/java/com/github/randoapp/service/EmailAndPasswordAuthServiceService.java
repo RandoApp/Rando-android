@@ -5,15 +5,13 @@ import android.util.Patterns;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.github.randoapp.Constants;
 import com.github.randoapp.R;
-import com.github.randoapp.task.SignupTask;
-import com.github.randoapp.task.callback.OnError;
-import com.github.randoapp.task.callback.OnOk;
+import com.github.randoapp.api.API;
+import com.github.randoapp.api.listeners.NetworkResultListener;
+import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.Analytics;
+import com.github.randoapp.view.Progress;
 import com.google.firebase.analytics.FirebaseAnalytics;
-
-import java.util.Map;
 
 public class EmailAndPasswordAuthServiceService extends BaseAuthService {
 
@@ -26,9 +24,9 @@ public class EmailAndPasswordAuthServiceService extends BaseAuthService {
         this.passwordText = (EditText) activity.findViewById(R.id.passwordEditText);
     }
 
-    public void process () {
+    public void process() {
         Analytics.logLoginEmail(FirebaseAnalytics.getInstance(activity));
-        String email = emailText.getText().toString();
+        final String email = emailText.getText().toString();
         String password = passwordText.getText().toString();
 
         if (!isEmailCorrect(email)) {
@@ -43,23 +41,23 @@ public class EmailAndPasswordAuthServiceService extends BaseAuthService {
 
         showLoginProgress();
 
-        new SignupTask(email, password)
-                .onOk(new OnOk() {
-                    @Override
-                    public void onOk(Map<String, Object> data) {
-                        done();
-                    }
-                })
-                .onError(new OnError() {
-                    @Override
-                    public void onError(Map<String, Object> data) {
-                        hideLoginProgress();
-                        if (data.get(Constants.ERROR) != null) {
-                            Toast.makeText(activity, (CharSequence) data.get("error"), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                })
-                .execute();
+        API.signup(email, password, new NetworkResultListener() {
+
+            @Override
+            public void onOk() {
+                Preferences.setAccount(email);
+                done();
+            }
+
+            @Override
+            public void onError(Exception error) {
+                hideLoginProgress();
+                String errorMessage = error != null ? error.getMessage() : "Error";
+                Toast.makeText(activity, errorMessage, Toast.LENGTH_LONG).show();
+            }
+
+        });
+
     }
 
     private boolean isEmailCorrect(String email) {

@@ -8,14 +8,14 @@
     <uses-sdk
         android:minSdkVersion="11"
         android:targetSdkVersion="25"
-        tools:overrideLibrary="com.evernote.android.job, net.vrallev.android.cat, com.flurgle.camerakit, com.hitomi.cmlibrary"/>
+        tools:overrideLibrary="com.evernote.android.job, net.vrallev.android.cat, com.flurgle.camerakit, com.hitomi.cmlibrary" />
 
     <application
         android:name=".App"
         android:allowBackup="true"
-        android:largeHeap="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:theme="@style/RandoTheme">
         <activity
             android:name=".MainActivity"
@@ -92,5 +92,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" android:protectionLevel="signature" />
 
 </manifest>

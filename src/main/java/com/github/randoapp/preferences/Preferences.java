@@ -11,6 +11,7 @@ import java.util.Date;
 
 import static com.github.randoapp.Constants.ACCOUNT;
 import static com.github.randoapp.Constants.AUTH_TOKEN;
+import static com.github.randoapp.Constants.BAN_RESET_AT;
 import static com.github.randoapp.Constants.CAMERA_FACING;
 import static com.github.randoapp.Constants.CAMERA_FLASH_MODE;
 import static com.github.randoapp.Constants.CAMERA_GRID;
@@ -94,6 +95,14 @@ public class Preferences {
         getSharedPreferences().edit().remove(TRAINING_FRAGMENT_SHOWN).commit();
     }
 
+    public static void setBanResetAt(long resetAt) {
+        getSharedPreferences().edit().putLong(BAN_RESET_AT, resetAt).commit();
+    }
+
+    public static long getBanResetAt() {
+        return getSharedPreferences().getLong(BAN_RESET_AT, 0L);
+    }
+
     private static SharedPreferences getSharedPreferences() {
         return App.context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE | Context.MODE_MULTI_PROCESS);
     }
@@ -147,7 +156,7 @@ public class Preferences {
         }
     }
 
-    public static void setCameraGrid( boolean cameraGrid) {
+    public static void setCameraGrid(boolean cameraGrid) {
         synchronized (monitor) {
             getSharedPreferences().edit().putBoolean(CAMERA_GRID, cameraGrid).commit();
         }
@@ -178,7 +187,7 @@ public class Preferences {
         }
     }
 
-    public static void setEnableVibrate( boolean cameraGrid) {
+    public static void setEnableVibrate(boolean cameraGrid) {
         synchronized (monitor) {
             getSharedPreferences().edit().putBoolean(ENABLE_VIBRATE, cameraGrid).commit();
         }

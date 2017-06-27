@@ -17,6 +17,7 @@ public class Progress {
             progress.hide();
         }
         progress = new ProgressDialog(activity, AlertDialog.THEME_HOLO_DARK);
+        progress.setCanceledOnTouchOutside(false);
         progress.setMessage(message);
         progress.show();
     }

@@ -17,17 +17,20 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
+import com.github.randoapp.api.API;
+import com.github.randoapp.api.listeners.NetworkResultListener;
+import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
-import com.github.randoapp.task.LogoutTask;
-import com.github.randoapp.task.callback.OnDone;
+import com.github.randoapp.service.BanService;
+import com.github.randoapp.service.ContactUsService;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.view.Progress;
+import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.firebase.analytics.FirebaseAnalytics;
-
-import java.util.Map;
 
 import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
 
@@ -59,16 +62,17 @@ public class HomeMenuFragment extends Fragment {
             public void onClick(View v) {
                 Analytics.logLogout(mFirebaseAnalytics);
                 Progress.show(getActivity().getResources().getString(R.string.logout_progress));
-                new LogoutTask()
-                        .onDone(new OnDone() {
-                            @Override
-                            public void onDone(Map<String, Object> data) {
-                                Intent intent = new Intent(Constants.LOGOUT_BROADCAST_EVENT);
-                                getContext().sendBroadcast(intent);
-                                Progress.hide();
-                            }
-                        })
-                        .execute();
+                API.logout(new NetworkResultListener() {
+                    @Override
+                    public void onOk() {
+                        doLogout();
+                    }
+
+                    @Override
+                    public void onError(Exception error) {
+                        doLogout();
+                    }
+                });
             }
         });
 
@@ -84,27 +88,7 @@ public class HomeMenuFragment extends Fragment {
         rootView.findViewById(R.id.contactUsButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_SENDTO);
-
-                String versionName = "";
-                try {
-                    PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
-                    versionName = pInfo.versionName;
-                } catch (PackageManager.NameNotFoundException e) {
-                    Log.e(HomeMenuFragment.class, "Failed to get version name", e);
-                }
-
-                String email = getResources().getString(R.string.contact_us_email);
-                String subject = String.format(getResources().getString(R.string.contact_us_subject), versionName);
-                String body = String.format(getResources().getString(R.string.contact_us_body), Preferences.getAccount());
-
-                String uriText = "mailto:" + Uri.encode(email) +
-                        "?subject=" + Uri.encode(subject) +
-                        "&body=" + Uri.encode(body);
-                Uri uri = Uri.parse(uriText);
-
-                intent.setData(uri);
-                startActivity(Intent.createChooser(intent, "Send Support Email"));
+                new ContactUsService().openContactUsActivity(getActivity());
             }
         });
 
@@ -123,11 +107,37 @@ public class HomeMenuFragment extends Fragment {
         return rootView;
     }
 
+    private void doLogout() {
+        try {
+            logoutGoogle();
+            Preferences.removeAuthToken();
+            Preferences.removeAccount();
+            Preferences.removeLocation();
+            RandoDAO.clearRandos();
+            RandoDAO.clearRandoToUpload();
+            Intent intent = new Intent(Constants.LOGOUT_BROADCAST_EVENT);
+            getContext().sendBroadcast(intent);
+            Progress.hide();
+        } catch (Exception e) {
+            Log.w(HomeMenuFragment.class, "Logout failed: ", e.getMessage());
+        }
+    }
+
+    private void logoutGoogle() {
+        try {
+            GoogleAuthUtil.invalidateToken(App.context, Preferences.getAuthToken());
+        } catch (Exception e) {
+            Log.w(HomeMenuFragment.class, "Logout Google. ignored exception from GoogleAuthUtil.invalidateToken: ", e.getMessage());
+        }
+    }
+
+
     @Override
     public void onResume() {
         super.onResume();
         initAccountName();
         getActivity().registerReceiver(receiver, new IntentFilter(SYNC_BROADCAST_EVENT));
+        new BanService().showBanMessageIfNeeded(getActivity().findViewById(R.id.banLabel));
     }
 
     @Override
@@ -170,12 +180,12 @@ public class HomeMenuFragment extends Fragment {
         ((TextView) view.findViewById(R.id.help_section_textview_description)).setText(rootView.getContext().getResources().getString(R.string.help_location_description));
 
         view = rootView.findViewById(R.id.help_layout_delete);
-        ((ImageView) view.findViewById(R.id.help_section_imageview_icon)).setImageDrawable(rootView.getContext().getResources().getDrawable(R.drawable.ic_trash_rando));
+        ((ImageView) view.findViewById(R.id.help_section_imageview_icon)).setImageResource(R.drawable.ic_delete_black_24dp);
         ((TextView) view.findViewById(R.id.help_section_textview_title)).setText(rootView.getContext().getResources().getString(R.string.help_delete_title));
         ((TextView) view.findViewById(R.id.help_section_textview_description)).setText(rootView.getContext().getResources().getString(R.string.help_delete_description));
 
         view = rootView.findViewById(R.id.help_layout_share);
-        ((ImageView) view.findViewById(R.id.help_section_imageview_icon)).setImageDrawable(rootView.getContext().getResources().getDrawable(R.drawable.ic_share_rando));
+        ((ImageView) view.findViewById(R.id.help_section_imageview_icon)).setImageResource(R.drawable.ic_share_black_24dp);
         ((TextView) view.findViewById(R.id.help_section_textview_title)).setText(rootView.getContext().getResources().getString(R.string.help_share_title));
         ((TextView) view.findViewById(R.id.help_section_textview_description)).setText(rootView.getContext().getResources().getString(R.string.help_share_description));
     }

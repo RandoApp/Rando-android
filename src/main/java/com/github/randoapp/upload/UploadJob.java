@@ -16,6 +16,7 @@ import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.db.model.RandoUpload;
 import com.github.randoapp.log.Log;
+import com.github.randoapp.service.BanService;
 import com.github.randoapp.util.FileUtil;
 import com.github.randoapp.util.NetworkUtil;
 
@@ -41,11 +42,11 @@ public class UploadJob extends Job {
         }
 
         RandoUpload randoUpload;
-        while ((randoUpload = RandoDAO.getNextRandoToUpload()) != null){
+        while ((randoUpload = RandoDAO.getNextRandoToUpload()) != null) {
             upload(randoUpload);
         }
 
-        if (RandoDAO.countAllRandosToUpload() > 0){
+        if (RandoDAO.countAllRandosToUpload() > 0) {
             return Result.RESCHEDULE;
         } else {
             return Result.SUCCESS;
@@ -105,6 +106,9 @@ public class UploadJob extends Job {
                                 errorMessage = message + " Wrong Request when uploading Rando: " + randoToUpload.toString();
                                 FileUtil.removeFileIfExist(randoToUpload.file);
                                 RandoDAO.deleteRandoToUploadById(randoToUpload.id);
+                            } else if (networkResponse.statusCode == 403) {
+                                BanService banService = new BanService();
+                                banService.processForbiddenRequest(message);
                             } else if (networkResponse.statusCode == 500) {
                                 errorMessage = message + " Something is getting wrong";
                             }
