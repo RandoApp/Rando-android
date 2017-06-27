@@ -29,7 +29,7 @@ public class SkipAuthService extends BaseAuthService {
             @Override
             public void onError(Exception error) {
                 hideLoginProgress();
-                String errorMessage = error == null ? error.getMessage() : "Error";
+                String errorMessage = error != null ? error.getMessage() : "Error";
                 Toast.makeText(activity, errorMessage, Toast.LENGTH_LONG).show();
             }
         });

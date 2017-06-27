@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.github.randoapp.service.EmailAndPasswordAuthServiceService;
-import com.github.randoapp.service.GoogleAuthService;
 import com.github.randoapp.service.SkipAuthService;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.util.AccountUtil;
@@ -58,7 +57,7 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     public void googleLoginClick(View view) {
-        new GoogleAuthService(this).process();
+        //TODO
     }
 
     public void skipLoginClick(View view) {
