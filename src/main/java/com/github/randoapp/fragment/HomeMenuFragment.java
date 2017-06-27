@@ -61,7 +61,7 @@ public class HomeMenuFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Analytics.logLogout(mFirebaseAnalytics);
-                Progress.show(getActivity().getResources().getString(R.string.logout_progress));
+                Progress.show(getActivity().getResources().getString(R.string.logout_progress), getActivity());
                 API.logout(new NetworkResultListener() {
                     @Override
                     public void onOk() {

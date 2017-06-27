@@ -1,7 +1,6 @@
 package com.github.randoapp;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -46,7 +45,6 @@ import static com.github.randoapp.Constants.UPDATE_PLAY_SERVICES_REQUEST_CODE;
 
 public class MainActivity extends FragmentActivity {
 
-    public static Activity activity;
     private int playServicesStatus;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -91,7 +89,6 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activity = this;
         setContentView(R.layout.activity_main);
     }
 
