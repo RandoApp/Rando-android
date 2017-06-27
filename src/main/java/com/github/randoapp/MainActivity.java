@@ -17,13 +17,8 @@ import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 import com.github.randoapp.api.API;
-import com.github.randoapp.auth.BaseAuth;
-import com.github.randoapp.db.RandoDAO;
-import com.github.randoapp.fragment.AuthFragment;
-import com.github.randoapp.fragment.EmptyHomeWallFragment;
 import com.github.randoapp.fragment.HomeWallFragment;
 import com.github.randoapp.fragment.MissingStoragePermissionFragment;
-import com.github.randoapp.fragment.TrainingHomeFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.GooglePlayServicesUtil;
@@ -75,12 +70,23 @@ public class MainActivity extends FragmentActivity {
                 default:
                     break;
             }
+
+            if (isNotAuthorized()) {
+                startAuthActivity();
+                return;
+            }
+
             Fragment fragment = getFragment();
             if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName()) == null) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
             }
         }
     };
+
+    private void startAuthActivity() {
+        Intent intent = new Intent(this, AuthActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,21 +96,12 @@ public class MainActivity extends FragmentActivity {
     }
 
     private Fragment getFragment() {
-        if (isNotAuthorized()) {
-            return new AuthFragment();
-        }
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             return new MissingStoragePermissionFragment();
         }
-        if (!Preferences.isTrainingFragmentShown()) {
-            return new TrainingHomeFragment();
-        }
-        if (RandoDAO.countAllRandosNumber() == 0) {
-            return new EmptyHomeWallFragment();
-        } else {
-            return new HomeWallFragment();
-        }
+
+        return new HomeWallFragment();
     }
 
     private boolean isNotAuthorized() {
@@ -122,6 +119,12 @@ public class MainActivity extends FragmentActivity {
         super.onPostResume();
         registerReceivers();
         showUpdatePlayServicesDialogIfNecessary();
+
+        if (isNotAuthorized()) {
+            startAuthActivity();
+            return;
+        }
+
         Fragment fragment = getFragment();
         if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName()) == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
@@ -184,6 +187,12 @@ public class MainActivity extends FragmentActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE) {
+
+            if (isNotAuthorized()) {
+                startAuthActivity();
+                return;
+            }
+
             Fragment fragment = getFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
         } else if (requestCode == UPDATE_PLAY_SERVICES_REQUEST_CODE) {
@@ -205,7 +214,7 @@ public class MainActivity extends FragmentActivity {
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            BaseAuth.done(this);
+//            BaseAuth.done(this);
             Preferences.setAccount(acct.getEmail());
 //            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
 //            updateUI(true);

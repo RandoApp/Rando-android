@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.github.randoapp.CameraActivity16;
 import com.github.randoapp.CameraActivity10;
+import com.github.randoapp.CameraActivity16;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.adapter.HomePagerAdapter;
@@ -72,6 +72,8 @@ public class HomeWallFragment extends Fragment {
                 startActivityForResult(intent, Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE);
             }
         });
+
+
         return rootView;
     }
 }
