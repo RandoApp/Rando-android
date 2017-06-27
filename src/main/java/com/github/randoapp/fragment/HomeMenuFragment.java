@@ -17,7 +17,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.api.API;
@@ -29,10 +28,6 @@ import com.github.randoapp.service.BanService;
 import com.github.randoapp.service.ContactUsService;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.view.Progress;
-import com.google.android.gms.auth.GoogleAuthUtil;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
@@ -64,7 +59,7 @@ public class HomeMenuFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Analytics.logLogout(mFirebaseAnalytics);
-                Progress.show(getActivity().getResources().getString(R.string.logout_progress));
+                Progress.show(getActivity().getResources().getString(R.string.logout_progress), getActivity());
                 API.logout(new NetworkResultListener() {
                     @Override
                     public void onOk() {
@@ -135,13 +130,13 @@ public class HomeMenuFragment extends Fragment {
     }
 
     private void revokeAccess() {
-        Auth.GoogleSignInApi.revokeAccess(AuthFragment.googleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        Log.i(BroadcastReceiver.class, "Google Signed out.");
-                    }
-                });
+//        Auth.GoogleSignInApi.revokeAccess(googleApiClient).setResultCallback(
+//                new ResultCallback<Status>() {
+//                    @Override
+//                    public void onResult(Status status) {
+//                        Log.i(BroadcastReceiver.class, "Google Signed out.");
+//                    }
+//                });
     }
 
 

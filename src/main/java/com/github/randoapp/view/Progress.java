@@ -22,25 +22,10 @@ public class Progress {
         progress.show();
     }
 
-    public static void show(String message) {
-        show(message, MainActivity.activity);
-    }
-
     public static void hide() {
         if (progress != null) {
             progress.hide();
         }
     }
 
-    public static void showLoading() {
-        show(App.context.getResources().getString(R.string.loading_progress));
-    }
-
-    public static void showLogin(Activity activity) {
-        show(activity.getString(R.string.login_progress), activity);
-    }
-
-    public static void showLoading(Activity activity) {
-        show(activity.getString(R.string.loading_progress), activity);
-    }
 }
