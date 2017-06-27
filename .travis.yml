@@ -49,6 +49,9 @@ cache:
     - ${TRAVIS_BUILD_DIR}/gradle/wrapper/dists/
 
 before_install:
+  - export EMULATOR="system-images;android-${EMULATOR_API_LEVEL};${EMULATOR_TAG};${EMULATOR_ABI}" # Used to install/create emulator
+  - echo 'count=0' > /home/travis/.android/repositories.cfg # Avoid warning
+install:
   # Install lftp for apk upload:
   - sudo apt-get update -qq
   - sudo apt-get install -qq lftp
@@ -71,8 +74,6 @@ before_install:
   #- if [ ! -d $APPS_HOME/android-ndk-r11c ]; then unzip -qq android-ndk.zip -d $APPS_HOME; fi
   #- export ANDROID_NDK_HOME=$APPS_HOME/android-ndk-r11c
   #- export PATH=$ANDROID_NDK_HOME/bin:$PATH
-
-before_script:
 #Clean up some space
   - sdkmanager --list || true
   - sdkmanager --uninstall "system-images;android-16;default;armeabi-v7a"
