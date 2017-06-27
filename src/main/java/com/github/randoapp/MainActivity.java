@@ -17,6 +17,7 @@ import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 import com.github.randoapp.api.API;
+import com.github.randoapp.auth.BaseAuth;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.fragment.AuthFragment;
 import com.github.randoapp.fragment.EmptyHomeWallFragment;
@@ -26,6 +27,9 @@ import com.github.randoapp.fragment.TrainingHomeFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.GooglePlayServicesUtil;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.crash.FirebaseCrash;
@@ -187,6 +191,28 @@ public class MainActivity extends FragmentActivity {
             if (status != ConnectionResult.SUCCESS && status != playServicesStatus) {
                 Preferences.removeUpdatePlayServicesDateShown();
             }
+        }
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == Constants.GOOGLE_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+        }
+    }
+
+    private void handleSignInResult(GoogleSignInResult result) {
+        Log.d(MainActivity.class, "handleSignInResult:" + result.isSuccess());
+        if (result.isSuccess()) {
+            // Signed in successfully, show authenticated UI.
+            GoogleSignInAccount acct = result.getSignInAccount();
+            BaseAuth.done(this);
+            Preferences.setAccount(acct.getEmail());
+//            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
+//            updateUI(true);
+        } else {
+            // Signed out, show unauthenticated UI.
+//            updateUI(false);
+            Toast.makeText(this, "Google Signed out.", Toast.LENGTH_LONG).show();
         }
     }
 

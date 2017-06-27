@@ -138,6 +138,8 @@ public class Constants {
     public static final int CONTACTS_PERMISSION_REQUEST_CODE = 704;
     public static final int STORAGE_PERMISSION_REQUEST_CODE = 705;
 
+    public static final int GOOGLE_SIGN_IN = 801;
+
     public static final String PUSH_NOTIFICATION_LANDED = "landed";
     public static final String PUSH_NOTIFICATION_RECEIVED = "received";
 
