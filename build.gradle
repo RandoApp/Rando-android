@@ -21,14 +21,12 @@ def googleApiKeyLocal = googleApiKey
 
 repositories {
     jcenter()
-    maven { url 'https://jitpack.io' }
 }
 
 allprojects {
     repositories {
         jcenter()
         mavenCentral()
-        maven { url 'https://jitpack.io' }
     }
 }
 
