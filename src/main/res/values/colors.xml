@@ -17,9 +17,6 @@
 
     <color name="overscroll">#33b5e5</color>
 
-    <color name="fader">#80000000</color>
-    <color name="report_button_background">#BB000000</color>
-
     <color name="empty_home_message">#BB000000</color>
     <color name="empty_home_message_shadow">#CCCCCC</color>
 
@@ -56,5 +53,10 @@
     <color name="help_background">#ffffffff</color>
     <color name="create_background">#ff000000</color>
     <color name="rando_edit_mode_overlay">#bbffffff</color>
+
+    <color name="menu_button_color">#9a9c9c</color>
+    <color name="delete_menu_button_color">#000000</color>
+    <color name="share_menu_button_color">#13aa61</color>
+    <color name="report_menu_button_color">#e93229</color>
 
 </resources>

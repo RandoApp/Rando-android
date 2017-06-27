@@ -112,6 +112,7 @@ public class Constants {
     public static final String FETCH_USER_URL = SERVER_API_URL + "/user";
     public static final String UPLOAD_RANDO_URL = SERVER_API_URL + "/image";
     public static final String DELETE_URL = SERVER_API_URL + "/delete/";
+    public static final String REPORT_URL = SERVER_API_URL + "/report/";
     public static final String SHARE_URL = SERVER_URL + "/s/%s";
 
     public static final String REPORT_BROADCAST = "Report";

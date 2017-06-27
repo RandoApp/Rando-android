@@ -124,11 +124,18 @@ public class RandoDAO {
         getDB().update(RandoDBHelper.RandoUploadTable.NAME, values, RandoDBHelper.RandoTable.COLUMN_ID + " = " + rando.id, null);
     }
 
-    public static synchronized void deleteRandoToUpload(RandoUpload rando) {
-        String id = String.valueOf(rando.id);
+    /**
+     * Removes RandoToUpload by id
+     * @param id of item to remove
+     */
+    public static synchronized void deleteRandoToUploadById(int id) {
         getDB().delete(RandoDBHelper.RandoUploadTable.NAME, RandoDBHelper.RandoUploadTable.COLUMN_ID + " = " + id, null);
         Log.i(RandoDAO.class, "Rando to upload deleted with id: ", String.valueOf(id));
     }
+
+    /**
+     * Removes all rows from RandoToUpload table
+     */
 
     public static synchronized void clearRandoToUpload() {
         getDB().delete(RandoDBHelper.RandoUploadTable.NAME, "", null);
@@ -374,12 +381,14 @@ public class RandoDAO {
         List<RandoUpload> randosToUpload = getAllRandosToUpload("DESC");
         for (RandoUpload randoUpload : randosToUpload) {
             Rando rando = new Rando();
+            rando.id = randoUpload.id;
             rando.randoId = String.valueOf(Constants.TO_UPLOAD_RANDO_ID);
             rando.date = randoUpload.date;
             rando.imageURL = randoUpload.file;
             rando.imageURLSize.small = randoUpload.file;
             rando.imageURLSize.medium = randoUpload.file;
             rando.imageURLSize.large = randoUpload.file;
+            rando.toUpload = true;
             randos.add(rando);
         }
         randos.addAll(getAllRandosByStatus(Rando.Status.OUT));

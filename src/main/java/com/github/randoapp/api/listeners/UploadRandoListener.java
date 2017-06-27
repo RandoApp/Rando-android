@@ -4,5 +4,5 @@ import com.github.randoapp.db.model.Rando;
 
 public interface UploadRandoListener {
 
-    public void onUpload(Rando rando);
+    void onUpload(Rando rando);
 }
