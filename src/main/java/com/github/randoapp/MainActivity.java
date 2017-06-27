@@ -79,8 +79,7 @@ public class MainActivity extends FragmentActivity {
     };
 
     private void startAuthActivity() {
-        Intent intent = new Intent(this, AuthActivity.class);
-        startActivity(intent);
+        Intent intent = new Intent(MainActivity.this, AuthActivity.class);
         startActivityForResult(intent, Constants.LOGOUT_ACTIVITY_RESULT);
     }
 
