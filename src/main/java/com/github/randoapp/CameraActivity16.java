@@ -39,7 +39,6 @@ import com.flurgle.camerakit.Size;
 import com.github.randoapp.animation.AnimationFactory;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
-import com.github.randoapp.service.TutorialBuilder;
 import com.github.randoapp.task.CropToSquareImageTask;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.LocationHelper;
@@ -278,10 +277,6 @@ public class CameraActivity16 extends Activity {
             }
         }
         isReturningFromLocationPermissionRequest = false;
-
-        new TutorialBuilder(this)
-                .learnActivateRuleOfThirdAndSwitchCameraToFrontForSelfie()
-                .learnCaptureImageWithTips();
     }
 
     private void enableButtons(boolean enable) {

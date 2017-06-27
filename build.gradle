@@ -169,7 +169,6 @@ dependencies {
     compile project(':volley')
     compile project(':cameraview')
     compile project(':camerakit')
-    compile project(':spotlight')
 
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile 'com.makeramen:roundedimageview:2.3.+'

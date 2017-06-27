@@ -21,7 +21,6 @@ import com.github.randoapp.fragment.HomeWallFragment;
 import com.github.randoapp.fragment.MissingStoragePermissionFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
-import com.github.randoapp.service.TutorialBuilder;
 import com.github.randoapp.util.GooglePlayServicesUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -122,11 +121,6 @@ public class MainActivity extends FragmentActivity {
             startAuthActivity();
             return;
         }
-
-        new TutorialBuilder(this)
-//                .learnTakeARando();
-                .learnWaitForUploading();
-
 
         Fragment fragment = getFragment();
         if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName()) == null) {

@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.RandoUpload;
 import com.github.randoapp.preferences.Preferences;
-import com.github.randoapp.service.TutorialBuilder;
 import com.github.randoapp.upload.UploadJobScheduler;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.BitmapUtil;
@@ -67,9 +66,6 @@ public class ImageReviewUploadActivity extends FragmentActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-
-        new TutorialBuilder(this)
-                .learnHowToUploadImage();
     }
 
 

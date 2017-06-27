@@ -7,6 +7,4 @@
 [submodule "modules/CameraKit-Android"]
 	path = modules/CameraKit-Android
 	url = https://github.com/RandoApp/CameraKit-Android.git
-[submodule "modules/Spotlight"]
-	path = modules/Spotlight
-	url = https://github.com/RandoApp/Spotlight.git
+

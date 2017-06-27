@@ -1,4 +1,4 @@
-include ':volley' , ':cameraview', ':camerakit', ':spotlight'
+include ':volley' , ':cameraview', ':camerakit'
 
 project(':volley').projectDir = new File(settingsDir, 'modules/volley')
 project(':cameraview').projectDir = new File(settingsDir, 'modules/cameraview/library')
