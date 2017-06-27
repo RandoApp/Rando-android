@@ -13,12 +13,12 @@ import com.github.randoapp.util.Analytics;
 import com.github.randoapp.view.Progress;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-public class EmailAndPasswordAuthServiceService extends BaseAuthService {
+public class EmailAndPasswordAuthService extends BaseAuthService {
 
     private EditText emailText;
     private EditText passwordText;
 
-    public EmailAndPasswordAuthServiceService(Activity activity) {
+    public EmailAndPasswordAuthService(Activity activity) {
         super(activity);
         this.emailText = (EditText) activity.findViewById(R.id.emailEditText);
         this.passwordText = (EditText) activity.findViewById(R.id.passwordEditText);

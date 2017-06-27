@@ -17,7 +17,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.api.API;
@@ -29,7 +28,6 @@ import com.github.randoapp.service.BanService;
 import com.github.randoapp.service.ContactUsService;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.view.Progress;
-import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
@@ -61,7 +59,7 @@ public class HomeMenuFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Analytics.logLogout(mFirebaseAnalytics);
-                Progress.show(getActivity().getResources().getString(R.string.logout_progress));
+                Progress.show(getActivity().getResources().getString(R.string.logout_progress), getActivity());
                 API.logout(new NetworkResultListener() {
                     @Override
                     public void onOk() {
@@ -109,7 +107,6 @@ public class HomeMenuFragment extends Fragment {
 
     private void doLogout() {
         try {
-            logoutGoogle();
             Preferences.removeAuthToken();
             Preferences.removeAccount();
             Preferences.removeLocation();
@@ -122,15 +119,6 @@ public class HomeMenuFragment extends Fragment {
             Log.w(HomeMenuFragment.class, "Logout failed: ", e.getMessage());
         }
     }
-
-    private void logoutGoogle() {
-        try {
-            GoogleAuthUtil.invalidateToken(App.context, Preferences.getAuthToken());
-        } catch (Exception e) {
-            Log.w(HomeMenuFragment.class, "Logout Google. ignored exception from GoogleAuthUtil.invalidateToken: ", e.getMessage());
-        }
-    }
-
 
     @Override
     public void onResume() {

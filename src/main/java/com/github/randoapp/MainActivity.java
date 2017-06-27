@@ -1,7 +1,6 @@
 package com.github.randoapp;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -22,9 +21,6 @@ import com.github.randoapp.fragment.MissingStoragePermissionFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.GooglePlayServicesUtil;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.crash.FirebaseCrash;
@@ -46,7 +42,6 @@ import static com.github.randoapp.Constants.UPDATE_PLAY_SERVICES_REQUEST_CODE;
 
 public class MainActivity extends FragmentActivity {
 
-    public static Activity activity;
     private int playServicesStatus;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -86,12 +81,12 @@ public class MainActivity extends FragmentActivity {
     private void startAuthActivity() {
         Intent intent = new Intent(this, AuthActivity.class);
         startActivity(intent);
+        startActivityForResult(intent, Constants.LOGOUT_ACTIVITY_RESULT);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activity = this;
         setContentView(R.layout.activity_main);
     }
 
@@ -129,6 +124,7 @@ public class MainActivity extends FragmentActivity {
         if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName()) == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
         }
+
     }
 
     private void registerReceivers() {
@@ -202,27 +198,6 @@ public class MainActivity extends FragmentActivity {
             }
         }
 
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == Constants.GOOGLE_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result);
-        }
-    }
-
-    private void handleSignInResult(GoogleSignInResult result) {
-        Log.d(MainActivity.class, "handleSignInResult:" + result.isSuccess());
-        if (result.isSuccess()) {
-            // Signed in successfully, show authenticated UI.
-            GoogleSignInAccount acct = result.getSignInAccount();
-//            BaseAuth.done(this);
-            Preferences.setAccount(acct.getEmail());
-//            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
-//            updateUI(true);
-        } else {
-            // Signed out, show unauthenticated UI.
-//            updateUI(false);
-            Toast.makeText(this, "Google Signed out.", Toast.LENGTH_LONG).show();
-        }
     }
 
 }
