@@ -64,6 +64,12 @@ public class ImageReviewUploadActivity extends FragmentActivity {
     }
 
     @Override
+    protected void onPostResume() {
+        super.onPostResume();
+    }
+
+
+    @Override
     public void onBackPressed() {
         Intent intent;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
