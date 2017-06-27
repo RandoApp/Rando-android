@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.view.View;
 import android.widget.Toast;
 
 import com.github.randoapp.api.API;
@@ -29,9 +30,12 @@ import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.GooglePlayServicesUtil;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.crash.FirebaseCrash;
 
 import org.acra.ACRA;
@@ -126,6 +130,7 @@ public class MainActivity extends FragmentActivity {
         if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName()) == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
         }
+
     }
 
     private void registerReceivers() {
@@ -194,10 +199,10 @@ public class MainActivity extends FragmentActivity {
         }
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == Constants.GOOGLE_SIGN_IN) {
+//        if (requestCode == Constants.GOOGLE_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
-        }
+//        }
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
@@ -207,6 +212,8 @@ public class MainActivity extends FragmentActivity {
             GoogleSignInAccount acct = result.getSignInAccount();
             BaseAuth.done(this);
             Preferences.setAccount(acct.getEmail());
+            Toast.makeText(this, "Google Signed in with email:" + acct.getEmail(), Toast.LENGTH_LONG).show();
+
 //            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
 //            updateUI(true);
         } else {
@@ -215,5 +222,6 @@ public class MainActivity extends FragmentActivity {
             Toast.makeText(this, "Google Signed out.", Toast.LENGTH_LONG).show();
         }
     }
+
 
 }
