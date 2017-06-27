@@ -30,7 +30,7 @@ public class GoogleAuthService extends BaseAuthService {
             String familyName = acct.getFamilyName();
             String userId = acct.getId();
             String token = acct.getIdToken();
-            API.google(email, userId, familyName, new NetworkResultListener() {
+            API.google(email, token, familyName, new NetworkResultListener() {
                 @Override
                 public void onOk() {
                     Preferences.setAccount(acct.getEmail());

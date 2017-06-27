@@ -43,6 +43,7 @@ public class AuthActivity extends AppCompatActivity {
     private void initGoogleButton() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
+                .requestIdToken("")
                 .build();
 
         googleApiClient = new GoogleApiClient.Builder(this)
