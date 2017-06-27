@@ -45,6 +45,8 @@ cache:
     - $HOME/.m2
     - $HOME/.gradle
     - $DOWNLOADS_HOME
+    - ${TRAVIS_BUILD_DIR}/gradle/caches/
+    - ${TRAVIS_BUILD_DIR}/gradle/wrapper/dists/
 
 before_install:
   # Install lftp for apk upload:
