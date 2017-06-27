@@ -17,19 +17,22 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
+import com.github.randoapp.api.API;
+import com.github.randoapp.api.listeners.NetworkResultListener;
+import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.service.BanService;
 import com.github.randoapp.service.ContactUsService;
-import com.github.randoapp.task.LogoutTask;
-import com.github.randoapp.task.callback.OnDone;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.view.Progress;
+import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-import java.util.Map;
+import org.json.JSONObject;
 
 import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
 
@@ -61,16 +64,17 @@ public class HomeMenuFragment extends Fragment {
             public void onClick(View v) {
                 Analytics.logLogout(mFirebaseAnalytics);
                 Progress.show(getActivity().getResources().getString(R.string.logout_progress));
-                new LogoutTask()
-                        .onDone(new OnDone() {
-                            @Override
-                            public void onDone(Map<String, Object> data) {
-                                Intent intent = new Intent(Constants.LOGOUT_BROADCAST_EVENT);
-                                getContext().sendBroadcast(intent);
-                                Progress.hide();
-                            }
-                        })
-                        .execute();
+                API.logout(new NetworkResultListener() {
+                    @Override
+                    public void onOk(JSONObject response) {
+                        doLogout();
+                    }
+
+                    @Override
+                    public void onError(JSONObject error) {
+                        doLogout();
+                    }
+                });
             }
         });
 
@@ -104,6 +108,31 @@ public class HomeMenuFragment extends Fragment {
         initHelp(rootView);
         return rootView;
     }
+
+    private void doLogout() {
+        try {
+            logoutGoogle();
+            Preferences.removeAuthToken();
+            Preferences.removeAccount();
+            Preferences.removeLocation();
+            RandoDAO.clearRandos();
+            RandoDAO.clearRandoToUpload();
+            Intent intent = new Intent(Constants.LOGOUT_BROADCAST_EVENT);
+            getContext().sendBroadcast(intent);
+            Progress.hide();
+        } catch (Exception e) {
+            Log.w(HomeMenuFragment.class, "Logout failed: ", e.getMessage());
+        }
+    }
+
+    private void logoutGoogle() {
+        try {
+            GoogleAuthUtil.invalidateToken(App.context, Preferences.getAuthToken());
+        } catch (Exception e) {
+            Log.w(HomeMenuFragment.class, "Logout Google. ignored exception from GoogleAuthUtil.invalidateToken: ", e.getMessage());
+        }
+    }
+
 
     @Override
     public void onResume() {

@@ -4,10 +4,9 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.Toast;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.github.randoapp.App;
 import com.github.randoapp.api.API;
+import com.github.randoapp.api.listeners.NetworkResultListener;
 import com.github.randoapp.fragment.AuthFragment;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.view.Progress;
@@ -27,22 +26,18 @@ public class SkipAuth extends BaseAuth {
         Analytics.logLoginSkip(FirebaseAnalytics.getInstance(authFragment.getActivity()));
         Progress.showLoading();
         String uuid = createTemproryId();
-        API.anonymous(uuid, new Response.Listener<JSONObject>() {
+        API.anonymous(uuid, new NetworkResultListener() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onOk(JSONObject response) {
                 BaseAuth.done(authFragment.getActivity());
             }
-        },  new Response.ErrorListener() {
+
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Progress.hide();
+            public void onError(JSONObject error) {
                 try {
-                    if (error != null && error.networkResponse != null) {
-                        String errorMessage = API.parseNetworkResponse(error.networkResponse).result.getString("message");
-                        if (errorMessage != null) {
-                            Toast.makeText(authFragment.getActivity(), errorMessage, Toast.LENGTH_LONG).show();
-                        }
-                    }
+                    Progress.hide();
+                    String errorMessage = error == null ? error.getString("message") : "Error";
+                    Toast.makeText(authFragment.getActivity(), errorMessage, Toast.LENGTH_LONG).show();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

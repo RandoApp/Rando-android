@@ -48,6 +48,8 @@ import com.hitomi.cmlibrary.OnMenuSelectedListener;
 import com.hitomi.cmlibrary.OnMenuStatusChangeListener;
 import com.makeramen.roundedimageview.RoundedImageView;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 import static android.widget.Toast.makeText;
@@ -256,7 +258,7 @@ public class RandoListAdapter extends BaseAdapter {
                         showSpinner(holder, true);
                         API.delete(holder.rando.randoId, new NetworkResultListener() {
                             @Override
-                            public void onOk() {
+                            public void onOk(JSONObject response) {
                                 RandoDAO.deleteRandoByRandoId(holder.rando.randoId);
                                 notifyDataSetChanged();
                                 makeText(holder.randoItemLayout.getContext(), R.string.rando_deleted,
@@ -265,7 +267,7 @@ public class RandoListAdapter extends BaseAdapter {
                             }
 
                             @Override
-                            public void onError() {
+                            public void onError(JSONObject error) {
                                 makeText(holder.randoItemLayout.getContext(), R.string.error_unknown_err,
                                         Toast.LENGTH_LONG).show();
                                 showSpinner(holder, false);
@@ -296,7 +298,7 @@ public class RandoListAdapter extends BaseAdapter {
                         showSpinner(holder, true);
                         API.report(holder.rando.randoId, new NetworkResultListener() {
                             @Override
-                            public void onOk() {
+                            public void onOk(JSONObject response) {
                                 RandoDAO.deleteRandoByRandoId(holder.rando.randoId);
                                 notifyDataSetChanged();
                                 makeText(holder.randoItemLayout.getContext(), R.string.rando_reported,
@@ -305,7 +307,7 @@ public class RandoListAdapter extends BaseAdapter {
                             }
 
                             @Override
-                            public void onError() {
+                            public void onError(JSONObject error) {
                                 makeText(holder.randoItemLayout.getContext(), R.string.error_unknown_err,
                                         Toast.LENGTH_LONG).show();
                                 showSpinner(holder, false);
@@ -373,7 +375,7 @@ public class RandoListAdapter extends BaseAdapter {
                                 showSpinner(holder, true);
                                 API.delete(holder.rando.randoId, new NetworkResultListener() {
                                     @Override
-                                    public void onOk() {
+                                    public void onOk(JSONObject response) {
                                         RandoDAO.deleteRandoByRandoId(holder.rando.randoId);
                                         notifyDataSetChanged();
                                         makeText(v.getContext(), R.string.rando_deleted,
@@ -382,7 +384,7 @@ public class RandoListAdapter extends BaseAdapter {
                                     }
 
                                     @Override
-                                    public void onError() {
+                                    public void onError(JSONObject error) {
                                         makeText(v.getContext(), R.string.error_unknown_err,
                                                 Toast.LENGTH_LONG).show();
                                         showSpinner(holder, false);

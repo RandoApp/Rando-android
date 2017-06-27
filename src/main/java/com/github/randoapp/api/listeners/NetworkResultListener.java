@@ -1,7 +1,10 @@
 package com.github.randoapp.api.listeners;
 
-public interface NetworkResultListener {
-    void onOk();
+import org.json.JSONObject;
 
-    void onError();
+public interface NetworkResultListener {
+
+    void onOk(JSONObject response);
+
+    void onError(JSONObject error);
 }

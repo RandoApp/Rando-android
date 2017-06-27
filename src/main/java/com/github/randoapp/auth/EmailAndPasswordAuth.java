@@ -5,10 +5,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.github.randoapp.R;
 import com.github.randoapp.api.API;
+import com.github.randoapp.api.listeners.NetworkResultListener;
 import com.github.randoapp.fragment.AuthFragment;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.Analytics;
@@ -48,28 +47,25 @@ public class EmailAndPasswordAuth extends BaseAuth {
         Progress.showLoading();
         Preferences.setAccount(email);
 
-        API.signup(email, password, new Response.Listener<JSONObject>() {
+        API.signup(email, password, new NetworkResultListener() {
+
             @Override
-            public void onResponse(JSONObject response) {
+            public void onOk(JSONObject response) {
                 BaseAuth.done(authFragment.getActivity());
             }
-        }, new Response.ErrorListener() {
+
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Progress.hide();
+            public void onError(JSONObject error) {
                 try {
-                    if (error != null && error.networkResponse != null) {
-                        String errorMessage = API.parseNetworkResponse(error.networkResponse).result.getString("message");
-                        if (errorMessage != null) {
-                            Toast.makeText(authFragment.getActivity(), errorMessage, Toast.LENGTH_LONG).show();
-                        }
-                    }
+                    Progress.hide();
+                    String errorMessage = error == null ? error.getString("message") : "Error";
+                    Toast.makeText(authFragment.getActivity(), errorMessage, Toast.LENGTH_LONG).show();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-        });
 
+        });
     }
 
     private boolean isEmailCorrect(String email) {

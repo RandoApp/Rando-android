@@ -18,7 +18,7 @@ import com.github.randoapp.api.listeners.NetworkResultListener;
 import com.github.randoapp.api.listeners.ErrorResponseListener;
 import com.github.randoapp.api.listeners.UploadRandoListener;
 import com.github.randoapp.api.listeners.UserFetchResultListener;
-import com.github.randoapp.api.request.BackgroundPreprocessRequest;
+import com.github.randoapp.api.request.BackgroundPreprocessedRequest;
 import com.github.randoapp.api.request.VolleyMultipartRequest;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
@@ -56,7 +56,6 @@ import cz.msebera.android.httpclient.auth.AuthenticationException;
 import cz.msebera.android.httpclient.client.entity.UrlEncodedFormEntity;
 import cz.msebera.android.httpclient.client.methods.HttpPost;
 import cz.msebera.android.httpclient.message.BasicNameValuePair;
-import cz.msebera.android.httpclient.util.EntityUtils;
 
 import static com.github.randoapp.Constants.ANONYMOUS_ID_PARAM;
 import static com.github.randoapp.Constants.ANONYMOUS_URL;
@@ -86,13 +85,12 @@ import static com.github.randoapp.Constants.UNAUTHORIZED_CODE;
 import static com.github.randoapp.Constants.UPDATED;
 import static com.github.randoapp.Constants.UPLOAD_CONNECTION_TIMEOUT;
 import static com.github.randoapp.Constants.UPLOAD_RANDO_URL;
-import static java.net.HttpURLConnection.HTTP_OK;
 
 public class API {
 
     protected static final String PROTOCOL_CHARSET = "utf-8";
 
-    public static void signup(final String email, final String password, final Response.Listener<JSONObject> syncListener, final Response.ErrorListener errorResponseListener) {
+    public static void signup(final String email, final String password, final NetworkResultListener resultListener) {
         Map<String, String> params = new HashMap<String, String>();
         params.put(SIGNUP_EMAIL_PARAM, email);
         params.put(SIGNUP_PASSWORD_PARAM, password);
@@ -107,8 +105,9 @@ public class API {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if (syncListener != null) {
-                    syncListener.onResponse(response);
+
+                if (resultListener != null) {
+                    resultListener.onOk(response);
                 }
             }
         }, new Response.ErrorListener() {
@@ -116,13 +115,13 @@ public class API {
             public void onErrorResponse(VolleyError error) {
                 Response<JSONObject> resp = parseNetworkResponse(error.networkResponse);
                 processServerError(resp.result);
-                if (errorResponseListener != null) {
-                    errorResponseListener.onErrorResponse(error);
+                if (resultListener != null) {
+                    resultListener.onError(resp.result);
                 }
             }
         }));
     }
-    public static void google(String email, String token, String familyName, final Response.Listener<JSONObject> syncListener, final Response.ErrorListener errorResponseListener) {
+    public static void google(String email, String token, String familyName, final NetworkResultListener resultListener) {
         Map<String, String> params = new HashMap<String, String>();
         params.put(GOOGLE_EMAIL_PARAM, email);
         params.put(GOOGLE_TOKEN_PARAM, token);
@@ -138,8 +137,8 @@ public class API {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if (syncListener != null) {
-                    syncListener.onResponse(response);
+                if (resultListener != null) {
+                    resultListener.onOk(response);
                 }
             }
         }, new Response.ErrorListener() {
@@ -147,14 +146,14 @@ public class API {
             public void onErrorResponse(VolleyError error) {
                 Response<JSONObject> resp = parseNetworkResponse(error.networkResponse);
                 processServerError(resp.result);
-                if (errorResponseListener != null) {
-                    errorResponseListener.onErrorResponse(error);
+                if (resultListener != null) {
+                    resultListener.onError(resp.result);
                 }
             }
         }));
     }
 
-    public static void anonymous(String uuid, final Response.Listener<JSONObject> syncListener, final Response.ErrorListener errorResponseListener) {
+    public static void anonymous(String uuid, final NetworkResultListener resultListener) {
         Map<String, String> params = new HashMap<String, String>();
         params.put(ANONYMOUS_ID_PARAM, uuid);
         params.put(FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
@@ -168,8 +167,8 @@ public class API {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if (syncListener != null) {
-                    syncListener.onResponse(response);
+                if (resultListener != null) {
+                    resultListener.onOk(response);
                 }
             }
         }, new Response.ErrorListener() {
@@ -177,37 +176,42 @@ public class API {
             public void onErrorResponse(VolleyError error) {
                 Response<JSONObject> resp = parseNetworkResponse(error.networkResponse);
                 processServerError(resp.result);
-                if (errorResponseListener != null) {
-                    errorResponseListener.onErrorResponse(error);
+                if (resultListener != null) {
+                    resultListener.onError(resp.result);
                 }
             }
         }));
 
     };
 
-    public static void logout() throws Exception {
-        HttpResponse response = null;
-        try {
-            HttpPost request = new HttpPost(LOGOUT_URL);
-            addAuthTokenHeader(request);
-            addFirebaseInstanceIdHeader(request);
+    public static void logout(final NetworkResultListener resultListener) {
+        BackgroundPreprocessedRequest request = new BackgroundPreprocessedRequest(Request.Method.POST, LOGOUT_URL, null, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+            if (resultListener != null) {
+                resultListener.onOk(null);
+            }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Response<JSONObject> resp = parseNetworkResponse(error.networkResponse);
+                processServerError(resp.result);
+                if (resultListener != null) {
+                    resultListener.onError(resp.result);
+                }
+            }
+        });
 
-            response = VolleySingleton.getInstance().getHttpClient().execute(request);
-            if (response.getStatusLine().getStatusCode() != HTTP_OK) {
-                throw processServerError(readJSON(response));
-            }
-        } catch (IOException e) {
-            throw processError(e);
-        } finally {
-            if (response != null) {
-                EntityUtils.consume(response.getEntity());
-            }
-        }
+        request.setHeaders(getHeaders());
+        request.setRetryPolicy(new DefaultRetryPolicy(API_CONNECTION_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        VolleySingleton.getInstance().getRequestQueue().add(request);
     }
 
     public static void syncUserAsync(final Response.Listener<JSONObject> syncListener, ErrorResponseListener errorResponseListener) {
         Log.d(API.class, "API.syncUserAsync");
-        BackgroundPreprocessRequest request = new BackgroundPreprocessRequest(Request.Method.GET, FETCH_USER_URL, null, new UserFetchResultListener(new OnFetchUser() {
+        BackgroundPreprocessedRequest request = new BackgroundPreprocessedRequest(Request.Method.GET, FETCH_USER_URL, null, new UserFetchResultListener(new OnFetchUser() {
             @Override
             public void onFetch(User user) {
                 Log.d(API.class, "Fetched ", user.toString(), " user. and procesing it in background thread.");
@@ -276,25 +280,25 @@ public class API {
 
     public static void delete(final String randoId, final NetworkResultListener deleteRandoListener) throws Exception {
         Log.d(API.class, "Deleting Rando:", randoId);
-        BackgroundPreprocessRequest request = new BackgroundPreprocessRequest(Request.Method.POST, DELETE_URL + randoId, null, null, new Response.Listener<JSONObject>() {
+        BackgroundPreprocessedRequest request = new BackgroundPreprocessedRequest(Request.Method.POST, DELETE_URL + randoId, null, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     if ("delete".equals(response.getString("command")) &&
                             "done".equals(response.getString("result"))) {
                         Log.d(API.class, "Deleted Rando:", randoId);
-                        deleteRandoListener.onOk();
+                        deleteRandoListener.onOk(null);
                     }
                 } catch (JSONException e) {
                     Log.e(API.class, "Error Deleting Rando", e);
-                    deleteRandoListener.onError();
+                    deleteRandoListener.onError(null);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(API.class, "Error Deleting Rando", error);
-                deleteRandoListener.onError();
+                deleteRandoListener.onError(null);
             }
         });
 
@@ -306,25 +310,25 @@ public class API {
 
     public static void report(final String randoId, final NetworkResultListener reportRandoListener) throws Exception {
         Log.d(API.class, "Reporting Rando:", randoId);
-        BackgroundPreprocessRequest request = new BackgroundPreprocessRequest(Request.Method.POST, REPORT_URL + randoId, null, null, new Response.Listener<JSONObject>() {
+        BackgroundPreprocessedRequest request = new BackgroundPreprocessedRequest(Request.Method.POST, REPORT_URL + randoId, null, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     if ("report".equals(response.getString("command")) &&
                             "done".equals(response.getString("result"))) {
                         Log.d(API.class, "Reported Rando:", randoId);
-                        reportRandoListener.onOk();
+                        reportRandoListener.onOk(null);
                     }
                 } catch (JSONException e) {
                     Log.e(API.class, "Error Reporting Rando", e);
-                    reportRandoListener.onError();
+                    reportRandoListener.onError(null);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(API.class, "Error Reporting Rando", error);
-                reportRandoListener.onError();
+                reportRandoListener.onError(null);
             }
         });
 
@@ -369,16 +373,6 @@ public class API {
             headers.put(FIREBASE_INSTANCE_ID_HEADER, Preferences.getFirebaseInstanceId());
         }
         return headers;
-    }
-
-    private static void addAuthTokenHeader(HttpPost request) {
-        request.setHeader(AUTHORIZATION_HEADER, "Token " + Preferences.getAuthToken());
-    }
-
-    private static void addFirebaseInstanceIdHeader(HttpPost request) {
-        if (!Preferences.getFirebaseInstanceId().isEmpty()) {
-            request.setHeader(FIREBASE_INSTANCE_ID_HEADER, Preferences.getFirebaseInstanceId());
-        }
     }
 
     private static Exception processServerError(JSONObject json) {

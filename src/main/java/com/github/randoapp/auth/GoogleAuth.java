@@ -9,14 +9,13 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.api.API;
+import com.github.randoapp.api.listeners.NetworkResultListener;
 import com.github.randoapp.fragment.AuthFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
@@ -110,38 +109,37 @@ public class GoogleAuth extends BaseAuth implements View.OnTouchListener {
         } catch (GoogleAuthException fatalException) {
             Toast.makeText(authFragment.getActivity(), "Problem with Google service. Please try again.", Toast.LENGTH_LONG).show();
             Log.e(GoogleAuth.class, "Unrecoverable error " + fatalException.getMessage());
+            Progress.hide();
             return;
         } catch (IOException exc) {
             Toast.makeText(authFragment.getActivity(), "Problem with Google service. Please try again.", Toast.LENGTH_LONG).show();
             Log.e(GoogleAuth.class, "IOException when fetch google token: " + exc.getMessage());
+            Progress.hide();
             return;
         } catch (Exception e) {
             Toast.makeText(authFragment.getActivity(), "Problem with Google service. Please try again.", Toast.LENGTH_LONG).show();
             Log.e(GoogleAuth.class, "API.google exception" + e.getMessage());
+            Progress.hide();
             return;
         }
 
-        API.google(email, token, familyName, new Response.Listener<JSONObject>() {
-
+        API.google(email, token, familyName, new NetworkResultListener() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onOk(JSONObject response) {
                 BaseAuth.done(authFragment.getActivity());
                 Preferences.setAccount(email);
             }
-        }, new Response.ErrorListener() {
+
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Progress.hide();
+            public void onError(JSONObject error) {
                 try {
-                    if (error != null && error.networkResponse != null) {
-                        String errorMessage = API.parseNetworkResponse(error.networkResponse).result.getString("message");
-                        if (errorMessage != null) {
-                            Toast.makeText(authFragment.getActivity(), errorMessage, Toast.LENGTH_LONG).show();
-                        }
-                    }
+                    Progress.hide();
+                    String errorMessage = error == null ? error.getString("message") : "Error";
+                    Toast.makeText(authFragment.getActivity(), errorMessage, Toast.LENGTH_LONG).show();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
             }
         });
     }
