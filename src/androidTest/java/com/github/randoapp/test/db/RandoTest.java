@@ -1,29 +1,20 @@
 package com.github.randoapp.test.db;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
-
 import com.github.randoapp.db.model.Rando;
 
 import org.hamcrest.Matchers;
+import org.junit.Test;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class RandoTest extends AndroidTestCase {
+public class RandoTest  {
 
-    @SmallTest
-    public void testRandoPairUsersNotNull() {
-        Rando rando = new Rando();
-        assertThat(rando, notNullValue());
-    }
-
-    @SmallTest
+    @Test
     public void testDateEqual() {
         Date date = new Date();
         Rando rando1 = RandoTestHelper.getRandomRando(Rando.Status.IN);
@@ -33,7 +24,7 @@ public class RandoTest extends AndroidTestCase {
         assertThat("Equal Rando dates doesn't return 0 on compare.", new Rando.DateComparator().compare(rando2, rando1), is(0));
     }
 
-    @SmallTest
+    @Test
     public void testDateLowerThan() {
         Date date1 = new Date();
         Date date2 = new Date();
@@ -45,7 +36,7 @@ public class RandoTest extends AndroidTestCase {
         assertThat("RandoPairs comparation failed", new Rando.DateComparator().compare(rando2, rando1), Matchers.greaterThan(0));
     }
 
-    @SmallTest
+    @Test
     public void testDateGreaterThan() {
         Date date1 = new Date();
         Date date2 = new Date();
@@ -57,7 +48,7 @@ public class RandoTest extends AndroidTestCase {
         assertThat("RandoPairs comparation failed", new Rando.DateComparator().compare(rando2, rando1), Matchers.lessThan(0));
     }
 
-    @SmallTest
+    @Test
     public void testDateSortability() {
         List<Rando> randos = RandoTestHelper.getNRandomRandos(100, Rando.Status.IN);
         Collections.sort(randos, new Rando.DateComparator());
