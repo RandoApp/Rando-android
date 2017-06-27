@@ -34,6 +34,7 @@ public class AuthFragment extends Fragment {
     private EditText emailText;
     public boolean isGoogleLoginPressed = false;
     private boolean requestAccountsOnFirstLoad = true;
+    public static GoogleApiClient googleApiClient;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,7 +73,7 @@ public class AuthFragment extends Fragment {
         }
     }
 
-    private GoogleApiClient googleApiClient;
+
 
     private void initGoogleAuthButton (View rootView) {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

@@ -30,6 +30,9 @@ import com.github.randoapp.service.ContactUsService;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.view.Progress;
 import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
@@ -125,10 +128,20 @@ public class HomeMenuFragment extends Fragment {
 
     private void logoutGoogle() {
         try {
-            GoogleAuthUtil.invalidateToken(App.context, Preferences.getAuthToken());
+            revokeAccess();
         } catch (Exception e) {
             Log.w(HomeMenuFragment.class, "Logout Google. ignored exception from GoogleAuthUtil.invalidateToken: ", e.getMessage());
         }
+    }
+
+    private void revokeAccess() {
+        Auth.GoogleSignInApi.revokeAccess(AuthFragment.googleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        Log.i(BroadcastReceiver.class, "Google Signed out.");
+                    }
+                });
     }
 
 

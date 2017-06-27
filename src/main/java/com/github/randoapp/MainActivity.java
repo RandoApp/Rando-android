@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.github.randoapp.api.API;
+import com.github.randoapp.api.listeners.NetworkResultListener;
 import com.github.randoapp.auth.BaseAuth;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.fragment.AuthFragment;
@@ -93,9 +94,12 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.activity_main);
     }
 
+    private AuthFragment authFragment;
+
     private Fragment getFragment() {
         if (isNotAuthorized()) {
-            return new AuthFragment();
+            authFragment = new AuthFragment();
+            return authFragment;
         }
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -209,10 +213,24 @@ public class MainActivity extends FragmentActivity {
         Log.d(MainActivity.class, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
-            GoogleSignInAccount acct = result.getSignInAccount();
-            BaseAuth.done(this);
-            Preferences.setAccount(acct.getEmail());
-            Toast.makeText(this, "Google Signed in with email:" + acct.getEmail(), Toast.LENGTH_LONG).show();
+            final GoogleSignInAccount acct = result.getSignInAccount();
+            final String email = acct.getEmail();
+            String familyName = acct.getFamilyName();
+            String userId = acct.getId();
+            String token = acct.getIdToken();
+            API.google(email, userId, familyName, new NetworkResultListener() {
+                @Override
+                public void onOk() {
+                    Toast.makeText(getBaseContext(), "Google Signed in with email:" + email, Toast.LENGTH_LONG).show();
+                    BaseAuth.done(authFragment.getActivity());
+                }
+
+                @Override
+                public void onError(Exception error) {
+                    Toast.makeText(getBaseContext(), "Google Signed out.", Toast.LENGTH_LONG).show();
+                }
+            });
+
 
 //            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
 //            updateUI(true);
