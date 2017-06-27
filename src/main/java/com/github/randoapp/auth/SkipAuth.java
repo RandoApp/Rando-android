@@ -5,16 +5,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.github.randoapp.App;
-import com.github.randoapp.Constants;
+import com.github.randoapp.api.API;
+import com.github.randoapp.api.listeners.NetworkResultListener;
 import com.github.randoapp.fragment.AuthFragment;
-import com.github.randoapp.task.AnonymousSignupTask;
-import com.github.randoapp.task.callback.OnError;
-import com.github.randoapp.task.callback.OnOk;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.view.Progress;
 import com.google.firebase.analytics.FirebaseAnalytics;
-
-import java.util.Map;
 
 public class SkipAuth extends BaseAuth {
 
@@ -27,23 +23,19 @@ public class SkipAuth extends BaseAuth {
         Analytics.logLoginSkip(FirebaseAnalytics.getInstance(authFragment.getActivity()));
         Progress.showLoading();
         String uuid = createTemproryId();
-        new AnonymousSignupTask(uuid)
-            .onOk(new OnOk() {
-                @Override
-                public void onOk(Map<String, Object> data) {
-                    done(authFragment.getActivity());
-                }
-            })
-            .onError(new OnError() {
-                @Override
-                public void onError(Map<String, Object> data) {
-                    Progress.hide();
-                    if (data.get(Constants.ERROR) != null) {
-                        Toast.makeText(authFragment.getActivity(), (CharSequence) data.get("error"), Toast.LENGTH_LONG).show();
-                    }
-                }
-            })
-            .execute();
+        API.anonymous(uuid, new NetworkResultListener() {
+            @Override
+            public void onOk() {
+                BaseAuth.done(authFragment.getActivity());
+            }
+
+            @Override
+            public void onError(Exception error) {
+                Progress.hide();
+                String errorMessage = error == null ? error.getMessage(): "Error";
+                Toast.makeText(authFragment.getActivity(), errorMessage, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private String createTemproryId() {

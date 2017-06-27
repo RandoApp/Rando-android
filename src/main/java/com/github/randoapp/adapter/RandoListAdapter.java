@@ -265,7 +265,7 @@ public class RandoListAdapter extends BaseAdapter {
                             }
 
                             @Override
-                            public void onError() {
+                            public void onError(Exception error) {
                                 makeText(holder.randoItemLayout.getContext(), R.string.error_unknown_err,
                                         Toast.LENGTH_LONG).show();
                                 showSpinner(holder, false);
@@ -305,7 +305,7 @@ public class RandoListAdapter extends BaseAdapter {
                             }
 
                             @Override
-                            public void onError() {
+                            public void onError(Exception error) {
                                 makeText(holder.randoItemLayout.getContext(), R.string.error_unknown_err,
                                         Toast.LENGTH_LONG).show();
                                 showSpinner(holder, false);
@@ -382,7 +382,7 @@ public class RandoListAdapter extends BaseAdapter {
                                     }
 
                                     @Override
-                                    public void onError() {
+                                    public void onError(Exception error) {
                                         makeText(v.getContext(), R.string.error_unknown_err,
                                                 Toast.LENGTH_LONG).show();
                                         showSpinner(holder, false);

@@ -23,15 +23,11 @@
             android:layout_marginTop="28dp"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/googleAuthButton"
-                android:layout_width="match_parent"
-                android:layout_height="62dp"
-                android:layout_marginTop="12dp"
-                android:text="Log in with Google"
-                android:textColor="@android:color/white"
-                android:textSize="18dp"
-                android:visibility="gone" />
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/sign_in_button"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
 
         <TextView

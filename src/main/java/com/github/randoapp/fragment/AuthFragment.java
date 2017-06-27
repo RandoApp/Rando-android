@@ -45,7 +45,6 @@ public class AuthFragment extends Fragment {
 
         Button signupButton = (Button) rootView.findViewById(R.id.signupButton);
         signupButton.setOnClickListener(new EmailAndPasswordAuth(rootView, this));
-        createGoogleAuthButton(rootView);
 
         emailText = (EditText) rootView.findViewById(R.id.emailEditText);
         return rootView;
@@ -65,25 +64,6 @@ public class AuthFragment extends Fragment {
         setEmailFromFirstAccount();
     }
 
-    private void createGoogleAuthButton(View rootView) {
-        try {
-            int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(rootView.getContext());
-            if (status == SUCCESS
-                    || (status == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED && !GooglePlayServicesUtil.isGPSVersionLowerThanRequired(getActivity().getPackageManager()))) {
-                googleButton = (Button) rootView.findViewById(R.id.googleAuthButton);
-                googleButton.setVisibility(VISIBLE);
-                googleButton.setBackgroundDrawable(getResources().getDrawable(com.google.android.gms.R.drawable.common_google_signin_btn_text_dark_normal));
-                googleButton.setText(getResources().getString(com.google.android.gms.R.string.common_signin_button_text_long));
-
-                GoogleAuth googleAuthListener = new GoogleAuth(this, googleButton);
-                googleButton.setOnTouchListener(googleAuthListener);
-                googleButton.setOnClickListener(googleAuthListener);
-
-            }
-        } catch (Exception exc) {
-            //Paranoiac try catch wrapper
-        }
-    }
 
     //Results from Google+ auth permission request activity:
     @Override
@@ -91,7 +71,6 @@ public class AuthFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         //if accept:
         if (resultCode == -1) {
-            Button googleButton = (Button) getActivity().findViewById(R.id.googleAuthButton);
             GoogleAuth googleAuthListener = new GoogleAuth(this, googleButton);
             googleAuthListener.onClick(googleButton);
         }

@@ -5,17 +5,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.github.randoapp.Constants;
 import com.github.randoapp.R;
+import com.github.randoapp.api.API;
+import com.github.randoapp.api.listeners.NetworkResultListener;
 import com.github.randoapp.fragment.AuthFragment;
-import com.github.randoapp.task.SignupTask;
-import com.github.randoapp.task.callback.OnError;
-import com.github.randoapp.task.callback.OnOk;
+import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.view.Progress;
 import com.google.firebase.analytics.FirebaseAnalytics;
-
-import java.util.Map;
 
 public class EmailAndPasswordAuth extends BaseAuth {
 
@@ -45,24 +42,23 @@ public class EmailAndPasswordAuth extends BaseAuth {
         }
 
         Progress.showLoading();
+        Preferences.setAccount(email);
 
-        new SignupTask(email, password)
-                .onOk(new OnOk() {
-                    @Override
-                    public void onOk(Map<String, Object> data) {
-                        done(authFragment.getActivity());
-                    }
-                })
-                .onError(new OnError() {
-                    @Override
-                    public void onError(Map<String, Object> data) {
-                        Progress.hide();
-                        if (data.get(Constants.ERROR) != null) {
-                            Toast.makeText(authFragment.getActivity(), (CharSequence) data.get("error"), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                })
-                .execute();
+        API.signup(email, password, new NetworkResultListener() {
+
+            @Override
+            public void onOk() {
+                BaseAuth.done(authFragment.getActivity());
+            }
+
+            @Override
+            public void onError(Exception error) {
+                Progress.hide();
+                String errorMessage = error == null ? error.getMessage() : "Error";
+                Toast.makeText(authFragment.getActivity(), errorMessage, Toast.LENGTH_LONG).show();
+            }
+
+        });
     }
 
     private boolean isEmailCorrect(String email) {
