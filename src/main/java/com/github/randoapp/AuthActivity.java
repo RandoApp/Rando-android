@@ -1,14 +1,15 @@
 package com.github.randoapp;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.github.randoapp.fragment.HomeMenuFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.service.EmailAndPasswordAuthService;
 import com.github.randoapp.service.GoogleAuthService;
@@ -20,14 +21,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 
 import static com.github.randoapp.Constants.CONTACTS_PERMISSION_REQUEST_CODE;
 
 public class AuthActivity extends AppCompatActivity {
 
     private EditText emailText;
-    private Button googleButton;
-    public boolean isGoogleLoginPressed = false;
     private boolean requestAccountsOnFirstLoad = true;
     private GoogleApiClient googleApiClient;
 
@@ -84,14 +85,10 @@ public class AuthActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //if accept:
-        if (resultCode == -1) {
-            googleButton.performClick();
-        }
 
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == Constants.GOOGLE_SIGN_IN) {
+        if (requestCode == Constants.LOGOUT_ACTIVITY_RESULT) {
+            logoutGoogle();
+        } else if (requestCode == Constants.GOOGLE_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             new GoogleAuthService(this).process(result);
         }
@@ -102,6 +99,24 @@ public class AuthActivity extends AppCompatActivity {
         if (accounts.length > 0) {
             emailText.setText(accounts[0]);
         }
+    }
+
+    private void logoutGoogle() {
+        try {
+            revokeAccess();
+        } catch (Exception e) {
+            Log.w(HomeMenuFragment.class, "Logout Google. ignored exception from GoogleAuthUtil.invalidateToken: ", e.getMessage());
+        }
+    }
+
+    private void revokeAccess() {
+        Auth.GoogleSignInApi.revokeAccess(googleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        Log.i(BroadcastReceiver.class, "Google Signed out.");
+                    }
+                });
     }
 
 }

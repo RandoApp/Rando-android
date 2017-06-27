@@ -107,7 +107,6 @@ public class HomeMenuFragment extends Fragment {
 
     private void doLogout() {
         try {
-            logoutGoogle();
             Preferences.removeAuthToken();
             Preferences.removeAccount();
             Preferences.removeLocation();
@@ -120,25 +119,6 @@ public class HomeMenuFragment extends Fragment {
             Log.w(HomeMenuFragment.class, "Logout failed: ", e.getMessage());
         }
     }
-
-    private void logoutGoogle() {
-        try {
-            revokeAccess();
-        } catch (Exception e) {
-            Log.w(HomeMenuFragment.class, "Logout Google. ignored exception from GoogleAuthUtil.invalidateToken: ", e.getMessage());
-        }
-    }
-
-    private void revokeAccess() {
-//        Auth.GoogleSignInApi.revokeAccess(googleApiClient).setResultCallback(
-//                new ResultCallback<Status>() {
-//                    @Override
-//                    public void onResult(Status status) {
-//                        Log.i(BroadcastReceiver.class, "Google Signed out.");
-//                    }
-//                });
-    }
-
 
     @Override
     public void onResume() {
