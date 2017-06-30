@@ -14,8 +14,6 @@ apply plugin: 'com.github.kt3k.coveralls'
 
 def reportsUserLocal = reportsUser
 def reportsPasswordLocal = reportsPassword
-def googleAppIdLocal = googleAppId
-def googleApiKeyLocal = googleApiKey
 
 repositories {
     jcenter()
@@ -25,6 +23,9 @@ allprojects {
     repositories {
         jcenter()
         mavenCentral()
+        maven {
+            url "https://maven.google.com"
+        }
     }
 }
 
@@ -46,9 +47,6 @@ android {
         targetSdkVersion 25
         testApplicationId 'com.github.randoapp.test'
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
-
-        //resValue "string", "google_app_id", googleAppIdLocal
-        //resValue "string", "google_api_key", googleApiKeyLocal
 
         buildConfigField "String", "RANDO_REPORTS_USER", reportsUserLocal
         buildConfigField "String", "RANDO_REPORTS_PASSWORD", reportsPasswordLocal
@@ -142,7 +140,6 @@ dependencies {
     androidTestCompile 'org.mockito:mockito-core:1.9.5'
     androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
     androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
-    androidTestCompile 'com.google.guava:guava:21.0'
     androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
     androidTestCompile 'com.squareup.assertj:assertj-android:1.1.1'
 }
