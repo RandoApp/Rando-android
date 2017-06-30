@@ -75,22 +75,22 @@ install:
   #- export ANDROID_NDK_HOME=$APPS_HOME/android-ndk-r11c
   #- export PATH=$ANDROID_NDK_HOME/bin:$PATH
 #Clean up some space
-  - sdkmanager --list || true
-  - sdkmanager --uninstall "system-images;android-16;default;armeabi-v7a"
-  - sdkmanager --uninstall "system-images;android-17;default;armeabi-v7a"
-  - sdkmanager --uninstall "system-images;android-18;default;armeabi-v7a"
-  - sdkmanager --uninstall "system-images;android-21;default;armeabi-v7a"
-  - sdkmanager --uninstall "extras;google;google_play_services"
-  - sdkmanager --uninstall "extras;android;support"
-  - sdkmanager --uninstall "platforms;android-10"
-  - sdkmanager --uninstall "platforms;android-15"
-  - sdkmanager --uninstall "platforms;android-16"
-  - sdkmanager --uninstall "platforms;android-17"
-  - sdkmanager --uninstall "platforms;android-18"
-  - sdkmanager --uninstall "platforms;android-19"
-  - sdkmanager --uninstall "platforms;android-20"
-  - sdkmanager --uninstall "platforms;android-21"
-  - sdkmanager --uninstall "build-tools;21.1.2"
+  #- sdkmanager --list || true
+  #- sdkmanager --uninstall "system-images;android-16;default;armeabi-v7a"
+  #- sdkmanager --uninstall "system-images;android-17;default;armeabi-v7a"
+  #- sdkmanager --uninstall "system-images;android-18;default;armeabi-v7a"
+  #- sdkmanager --uninstall "system-images;android-21;default;armeabi-v7a"
+  #- sdkmanager --uninstall "extras;google;google_play_services"
+  #- sdkmanager --uninstall "extras;android;support"
+  #- sdkmanager --uninstall "platforms;android-10"
+  #- sdkmanager --uninstall "platforms;android-15"
+  #- sdkmanager --uninstall "platforms;android-16"
+  #- sdkmanager --uninstall "platforms;android-17"
+  #- sdkmanager --uninstall "platforms;android-18"
+  #- sdkmanager --uninstall "platforms;android-19"
+  #- sdkmanager --uninstall "platforms;android-20"
+  #- sdkmanager --uninstall "platforms;android-21"
+  #- sdkmanager --uninstall "build-tools;21.1.2"
 # Create and start emulator
   # For a full list of android targets, run "android list targets"
   - android list targets
