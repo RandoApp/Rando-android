@@ -7,35 +7,16 @@
     <color name="auth_text">#FFFFFF</color>
     <color name="auth_input_text">#000000</color>
 
-    <color name="error_background">#FFFF00</color>
-    <color name="error_font">#FF0000</color>
-    <color name="album_background">#AA0045</color>
-    <color name="back_button_background">#393939</color>
-
-    <color name="takepicture_bottom_panel_background">#16181a</color>
-
-    <color name="overscroll">#33b5e5</color>
-
     <color name="empty_home_message">#BB000000</color>
     <color name="empty_home_message_shadow">#CCCCCC</color>
 
     <color name="rando_red">#ffe93229</color>
     <color name="rando_red_pressed">#ffbf2a22</color>
-    <color name="rando_grey">#ffe1e1e1</color>
     <color name="rando_dark_grey">#ff5a5a5a</color>
     <color name="rando_light_grey">#ff8f8f8f</color>
     <color name="rando_pairing_green">#ff1ea45e</color>
     <color name="rando_red_error">#ff8f2921</color>
-    <color name="general_text_grey">#ff8f8f8f</color>
     <color name="button_text">#ff5a5a5a</color>
-    <color name="overview_info_text">#ffc7c7c7</color>
-    <color name="edittext_background">#ffdddddd</color>
-    <color name="edittext_background_valid">#ff1ad334</color>
-    <color name="edittext_background_invalid">#ffe93229</color>
-    <color name="white_button_background_normal">#ffffffff</color>
-    <color name="white_button_background_pressed">#ffdddddd</color>
-    <color name="light_gray_button_background_normal">#fff1f1f1</color>
-    <color name="light_gray_button_text">#ff8f8f8f</color>
     <color name="capture_button_background_normal">#fff87b00</color>
     <color name="capture_button_background_pressed">#ffdc6f00</color>
     <color name="capture_button_background_disabled">#fffaa24b</color>
@@ -49,14 +30,10 @@
     <color name="green_button_background_normal">#ff1ad334</color>
     <color name="green_button_background_pressed">#ff15aa2a</color>
     <color name="green_button_background_disabled">#4e1ad334</color>
-    <color name="help_background">#ffffffff</color>
-    <color name="create_background">#ff000000</color>
-    <color name="rando_edit_mode_overlay">#bbffffff</color>
 
     <color name="menu_button_color">#cccccc</color>
     <color name="delete_menu_button_color">#000000</color>
     <color name="share_menu_button_color">#13aa61</color>
     <color name="report_menu_button_color">#e93229</color>
-    <color name="transparent">#0FFF</color>
 
 </resources>

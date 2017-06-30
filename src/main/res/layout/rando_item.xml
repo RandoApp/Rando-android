@@ -4,13 +4,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/rando_pair_padding_bottom"
-    android:tag="rando_item_layout">
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:tag="rando_placeholder">
+    android:tag="rando_item_layout"
+    android:clipChildren="false">
 
         <ViewSwitcher
             android:layout_width="match_parent"
@@ -42,14 +37,14 @@
                     app:riv_oval="true" />
             </FrameLayout>
         </ViewSwitcher>
-    </LinearLayout>
     <ImageButton
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:tag="rating"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="-40dp"
+        android:layout_marginRight="20dp"
         android:src="@drawable/ic_thumb_up_gray_24dp"
-        android:background="@color/transparent"
+        android:background="@null"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"/>
 </RelativeLayout>

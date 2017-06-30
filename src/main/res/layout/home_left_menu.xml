@@ -30,11 +30,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/logo"
-            android:orientation="vertical"
-            android:id="@+id/linearLayout">
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/app_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/app_name"
@@ -71,7 +69,6 @@
         android:id="@+id/enable_vibrate" />
 
     <TextView
-        android:id="@+id/guide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="58dp"

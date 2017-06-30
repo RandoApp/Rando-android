@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -129,7 +130,7 @@ public class RandoListAdapter extends BaseAdapter {
                     convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
                     convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right),
                     convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));
-            //insert Unwanted view at index 1, right after "rando_placeholder"
+            //insert Unwanted view at index 1, right after "view_switcher"
             holder.randoItemLayout.addView(unwantedRandoView, 1, layoutParams);
             holder.unwantedRandoView = unwantedRandoView;
         } else {
@@ -214,7 +215,6 @@ public class RandoListAdapter extends BaseAdapter {
                                     break;
                             }
                         }
-
                     }).setOnMenuStatusChangeListener(new OnMenuStatusChangeListener() {
 
                         @Override
@@ -248,15 +248,18 @@ public class RandoListAdapter extends BaseAdapter {
                     return;
                 }
                 holder.ratingMenu = new CircleMenu(v.getContext());
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) (imageSize * 0.9), (int) (imageSize * 0.9));
-                layoutParams.setMargins(v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left),
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) (imageSize * 0.6), (int) (imageSize * 0.6));
+                /*layoutParams.setMargins(v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left),
                         v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
                         v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right),
-                        v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));
+                        v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));*/
+                //layoutParams.setMargins(-20,-20,-20,-20);
                 layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
                 holder.randoItemLayout.addView(holder.ratingMenu, layoutParams);
 
+
                 Resources res = holder.ratingMenu.getResources();
+                holder.ratingMenu.setBackgroundColor(Color.BLACK);
                 holder.ratingMenu.setMainMenu(res.getColor(R.color.menu_button_color), R.drawable.ic_close_white_24dp, R.drawable.ic_close_white_24dp)
                         .addSubMenu(res.getColor(R.color.report_menu_button_color), R.drawable.ic_thumb_down_white_24dp)
                         .addSubMenu(res.getColor(R.color.share_menu_button_color), R.drawable.ic_thumb_up_white_24dp)
@@ -512,7 +515,6 @@ public class RandoListAdapter extends BaseAdapter {
 
             }
         });
-
     }
 
     private void shareRando(final ViewHolder holder) {

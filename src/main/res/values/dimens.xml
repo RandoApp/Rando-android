@@ -6,17 +6,11 @@
     <dimen name="bon_appetit_button_size">100dp</dimen>
 
     <dimen name="rando_button_size">80dp</dimen>
-    <dimen name="rando_button_ring_thickness">3.25dp</dimen>
-    <dimen name="rando_button_ring_size">32dp</dimen>
 
     <dimen name="rando_small_ring_size">48dp</dimen>
     <dimen name="rando_small_ring_thickness">1.95dp</dimen>
     <dimen name="rando_small_white_ring_size">19dp</dimen>
 
-    <dimen name="actionbar_button_ring_thickness">2dp</dimen>
-
-    <dimen name="camera_button_height">80dp</dimen>
-    <dimen name="camera_button_width">80dp</dimen>
     <dimen name="camera_button_margin_bottom">15dp</dimen>
 
     <dimen name="rando_padding_portrait_column_left">7.5dp</dimen>
@@ -24,29 +18,11 @@
     <dimen name="rando_padding_portrait_column_top">7.5dp</dimen>
     <dimen name="rando_padding_portrait_column_bottom">2.5dp</dimen>
 
-    <dimen name="takepicture_bottom_panel_with_buttons_min_height">144dp</dimen>
-    <dimen name="simple_camera_button_size">144dp</dimen>
-    <dimen name="takepicture_default_button_size">96dp</dimen>
-    <dimen name="takepicture_close_button_size">48dp</dimen>
-
     <dimen name="switch_camera_button_size">48dp</dimen>
     <dimen name="switch_camera_margin_bottom">30dp</dimen>
     <dimen name="camera_button_margin_left">35dp</dimen>
 
-    <dimen name="relative_layout_margin_top">5dp</dimen>
     <dimen name="rando_pair_padding_bottom">6dp</dimen>
-    <dimen name="rando_margin_portrait">30dp</dimen>
-
-    <dimen name="date_time_padding_bottom">3dp</dimen>
-
-    <dimen name="padding_small">4dp</dimen>
-    <dimen name="padding_medium">8dp</dimen>
-    <dimen name="padding_large">16dp</dimen>
-
-    <dimen name="text_size">28dp</dimen>
-
-    <dimen name="report_button_width">230dp</dimen>
-    <dimen name="report_button_height">150dp</dimen>
 
     <dimen name="empty_home_message_width">0dp</dimen>
 
@@ -56,9 +32,6 @@
 
     <!-- Added to resolve compilation error after switching from v7 support to v4 support -->
     <!-- Default height of an action bar. -->
-    <dimen name="abc_action_bar_default_height">48dip</dimen>
-
-    <dimen name="general_button_min_height">40.0dip</dimen>
 
     <dimen name="help_icon_size">25dp</dimen>
 

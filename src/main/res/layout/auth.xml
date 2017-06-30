@@ -35,7 +35,6 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/textViewEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/email"
@@ -52,7 +51,6 @@
             android:textSize="28dp" />
 
         <TextView
-            android:id="@+id/textViewPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/password"
