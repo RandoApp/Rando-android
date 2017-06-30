@@ -26,7 +26,7 @@ android:
     - tools
     - android-25
     #- extra-android-m2repository
-    #- extra-google-m2repository
+    - extra-google-m2repository
     - android-$ANDROID_API
     - sys-img-armeabi-v7a-android-$ANDROID_API
   licenses:
