@@ -13,8 +13,6 @@ env:
     - secure: Kq5NpWlyXvAvzZ5UUwAxtooG7Cwtdnzh1fhCNqE2Lx2441w9aEGntd5+ffCCTCF4orRHlFIbqfE4/D1YlH6cJtP9hW37SPI8swe3r6Zyfjftakbe3ld72bVfq0f2zx5T4zln63jppMs+XxKNYjg8UswC+9C8Vi2LeJdPUC/Zdzs=
     - secure: X6INcg26b1Bm48QDfDDhLnbRJm5tOffr+AWVcXkgaSbYybqPvYQmSLX7ai1ArCzDgTYqz12tUTVLgrgMlsXkQGFj41hoD+IEtO9zJOmHdtwUDkkh4yVvNwoJ7TTT/N7wL7ZAU556khWy76sS7/biv4iPohCy//R91LWki2d1240=
     - secure: WusDaL9feBHMAz/DydbMngPkSvVMxnKnkrJgXi+LuG3FuWEA5fgDIdEgB3mADUCQZRuNYUJ61H7nUYFttPZ1yZOe107ETDCk0/UpIJ7PzPr62v7uVNyqPijVBufHI9iJ+bxyVW3Nt4reocJ3yqRxwP0z9FV+aEsn8Ke1S8YaKzU=
-    - secure: "OOkn4n5DHotc4o2sm0Fgq6oJltCSmhIBnjYVgz0rM3FJ5UiQxQRSpmhff+FnDIdcjHkNgUDu94RqivmvFwFZdYM70iuJoHk89ycR8yqTG4k7yNLOrsBWizKrpQSn5IVrCB6R8S5nMqH8Y8tZyfKlHelHn+EeUNWwhC2Yh9fsozg="
-    - secure: "dMclH+XjGGpjc5q7DOAoROyLY1L6cBsVGXS3RIq9LaAyZ23jnhrb6P8rvEqagBO/6pU0DnHfEt3NDWiTjdKcXlezKwufiZReVGBxFRhvPkExU64Sxrk2+ACWinNbuTtsgPraN7OTkDxi2CgVYq1lAHME54Qv9Fg2vN3HfqyQgxo="
     - REPO="RandoApp/Rando-android"
     - DOWNLOADS_HOME=$HOME/downloads
     - APPS_HOME=$HOME/apps
