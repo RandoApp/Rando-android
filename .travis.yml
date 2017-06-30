@@ -67,6 +67,7 @@ install:
   - if [ ! -d $APPS_HOME/gradle-3.3 ]; then unzip --qq $DOWNLOADS_HOME/gradle.zip -d $APPS_HOME; fi
   - export GRADLE_HOME=$APPS_HOME/gradle-3.3
   - export PATH=$GRADLE_HOME/bin:$PATH
+  - gradle -version
 
   # Install NDK
   #- cd $DOWNLOADS_HOME
