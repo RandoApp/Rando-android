@@ -4,10 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 
-import com.github.randoapp.App;
-import com.github.randoapp.MainActivity;
-import com.github.randoapp.R;
-
 public class Progress {
 
     private static ProgressDialog progress;
