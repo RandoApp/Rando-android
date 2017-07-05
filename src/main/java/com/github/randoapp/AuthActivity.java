@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.github.randoapp.fragment.HomeMenuFragment;
 import com.github.randoapp.log.Log;
+import com.github.randoapp.service.ContactUsService;
 import com.github.randoapp.service.EmailAndPasswordAuthService;
 import com.github.randoapp.service.GoogleAuthService;
 import com.github.randoapp.service.SkipAuthService;
@@ -43,7 +44,7 @@ public class AuthActivity extends AppCompatActivity {
     private void initGoogleButton() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
-                .requestIdToken("")
+                .requestIdToken(getString(R.string.server_client_id))
                 .build();
 
         googleApiClient = new GoogleApiClient.Builder(this)
@@ -63,6 +64,10 @@ public class AuthActivity extends AppCompatActivity {
                 startActivityForResult(signInIntent, Constants.GOOGLE_SIGN_IN);
             }
         });
+    }
+
+    public void contactUsClick(View view) {
+        new ContactUsService().openContactUsActivity(view.getContext());
     }
 
     public void signUpClick(View view) {
