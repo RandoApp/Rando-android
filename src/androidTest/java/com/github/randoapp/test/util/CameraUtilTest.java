@@ -1,11 +1,15 @@
 package com.github.randoapp.test.util;
 
 import android.hardware.Camera;
-import android.test.AndroidTestCase;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.github.randoapp.Constants;
 import com.github.randoapp.camera.CameraSizes;
 import com.github.randoapp.util.CameraUtil;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,8 +20,11 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class CameraUtilTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+@SmallTest
+public class CameraUtilTest {
 
+    @Test
     public void testCameraSizesNexus4DefaultProfile() throws Exception {
         CameraSizes actualCameraSizes = CameraUtil.getCameraSizes(mockCameraParameters(
                 createSizes(
@@ -57,7 +64,7 @@ public class CameraUtilTest extends AndroidTestCase {
 
         assertThat("Picture sizes are not equal", actualCameraSizes, is(expectedCameraSizes));
     }
-
+    @Test
     public void testCameraSizesNexus4EnforceProfileRatio1_3() throws Exception {
         CameraSizes actualCameraSizes = CameraUtil.getCameraSizes(mockCameraParameters(
                 createSizes(
@@ -97,7 +104,7 @@ public class CameraUtilTest extends AndroidTestCase {
 
         assertThat("Picture sizes are not equal", actualCameraSizes, is(expectedCameraSizes));
     }
-
+    @Test
     public void testCameraSizesNexus4EnforceProfileRatio1_7() throws Exception {
         CameraSizes actualCameraSizes = CameraUtil.getCameraSizes(mockCameraParameters(
                 createSizes(
@@ -138,7 +145,7 @@ public class CameraUtilTest extends AndroidTestCase {
         assertThat("Picture sizes are not equal", actualCameraSizes, is(expectedCameraSizes));
     }
 
-
+    @Test
     public void testCameraSizesS3d2ucd2attEnforceProfile() throws Exception {
         CameraSizes actualCameraSizes = CameraUtil.getCameraSizes(mockCameraParameters(
                 createSizes(
@@ -173,7 +180,7 @@ public class CameraUtilTest extends AndroidTestCase {
 
         assertThat("Picture sizes are not equal", actualCameraSizes, is(expectedCameraSizes));
     }
-
+    @Test
     public void testCameraSizesNexus4DefaultProfileNoPreviewWithTheSameRatio() throws Exception {
         CameraSizes actualCameraSizes = CameraUtil.getCameraSizes(mockCameraParameters(
                 createSizes(
@@ -209,7 +216,7 @@ public class CameraUtilTest extends AndroidTestCase {
 
         assertThat("Picture sizes are not equal", actualCameraSizes, is(expectedCameraSizes));
     }
-
+    @Test
     public void testCameraSizesSamsungd2vmuEnforceProfile() throws Exception {
         CameraSizes actualCameraSizes = CameraUtil.getCameraSizes(mockCameraParameters(
                 createSizes(
