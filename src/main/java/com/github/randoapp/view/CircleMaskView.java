@@ -61,9 +61,7 @@ public class CircleMaskView extends View {
     }
 
     private Bitmap initPaints(int size, int center, int radius) {
-        Bitmap bitmap;
-
-        bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ALPHA_8);
+        Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ALPHA_8);
 
         Paint eraser = new Paint();
         eraser.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
