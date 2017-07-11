@@ -1,5 +1,7 @@
 package com.github.randoapp.api;
 
+import android.accounts.AuthenticatorException;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
@@ -45,8 +47,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import cz.msebera.android.httpclient.auth.AuthenticationException;
 
 import static com.github.randoapp.Constants.ANONYMOUS_ID_PARAM;
 import static com.github.randoapp.Constants.ANONYMOUS_URL;
@@ -338,7 +338,7 @@ public class API {
         try {
             switch (json.getInt(ERROR_CODE_PARAM)) {
                 case UNAUTHORIZED_CODE:
-                    return new AuthenticationException(App.context.getResources().getString(R.string.error_400));
+                    return new AuthenticatorException(App.context.getResources().getString(R.string.error_400));
                 case FORBIDDEN_CODE: {
                     String resetTime = "";
                     try {

@@ -132,9 +132,13 @@
 
     <string name="contact_us_email">randoapp.me@gmail.com</string>
     <string name="contact_us_subject">Question about Rando 4Me (%1$s)</string>
-    <string name="contact_us_body">"Hi Rando 4Me Team, \n\nI'm using Rando 4Me and my account is: %1$s\nI have following question:\n\nThanks\n"</string>
+    <string name="contact_us_body">"Hi Rando 4Me Team, \n\nI'm using Rando 4Me and my account is: %1$s\nI have following question:\n\n"</string>
 
     <string name="permanent_ban">Your account has been banned</string>
     <string name="upload_suspend">Resume suspended upload in </string>
+
+    <string name="server_client_id">295176137476-vte4eakbm0k8kb86tfol3oljgtk6r7to.apps.googleusercontent.com</string>
+
+
 
 </resources>

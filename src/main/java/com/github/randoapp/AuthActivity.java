@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.github.randoapp.fragment.HomeMenuFragment;
 import com.github.randoapp.log.Log;
+import com.github.randoapp.service.ContactUsService;
 import com.github.randoapp.service.EmailAndPasswordAuthService;
 import com.github.randoapp.service.GoogleAuthService;
 import com.github.randoapp.service.SkipAuthService;
@@ -37,9 +38,13 @@ public class AuthActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
         emailText = (EditText) this.findViewById(R.id.emailEditText);
+        initGoogleButton();
+    }
 
+    private void initGoogleButton() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
+                .requestIdToken(getString(R.string.server_client_id))
                 .build();
 
         googleApiClient = new GoogleApiClient.Builder(this)
@@ -51,19 +56,22 @@ public class AuthActivity extends AppCompatActivity {
                 })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+
+        findViewById(R.id.google_sign_in_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+                startActivityForResult(signInIntent, Constants.GOOGLE_SIGN_IN);
+            }
+        });
+    }
+
+    public void contactUsClick(View view) {
+        new ContactUsService().openContactUsActivity(view.getContext());
     }
 
     public void signUpClick(View view) {
         new EmailAndPasswordAuthService(this).process();
-    }
-
-    public void googleLoginClick(View view) {
-        switch (view.getId()) {
-            case R.id.google_sign_in_button:
-                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-                startActivityForResult(signInIntent, Constants.GOOGLE_SIGN_IN);
-                break;
-        }
     }
 
     public void skipLoginClick(View view) {
