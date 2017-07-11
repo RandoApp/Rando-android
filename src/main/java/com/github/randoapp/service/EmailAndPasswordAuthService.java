@@ -55,7 +55,6 @@ public class EmailAndPasswordAuthService extends BaseAuthService {
                 String errorMessage = error != null ? error.getMessage() : "Error";
                 Toast.makeText(activity, errorMessage, Toast.LENGTH_LONG).show();
             }
-
         });
 
     }

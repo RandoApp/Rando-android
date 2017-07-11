@@ -30,11 +30,12 @@ public class GoogleAuthService extends BaseAuthService {
             String familyName = acct.getFamilyName();
             String userId = acct.getId();
             String token = acct.getIdToken();
-            API.google(email, userId, familyName, new NetworkResultListener() {
+            API.google(email, token, familyName, new NetworkResultListener() {
                 @Override
                 public void onOk() {
                     Preferences.setAccount(acct.getEmail());
-                    Toast.makeText(activity.getBaseContext(), "Google Signed in with email:" + email, Toast.LENGTH_LONG).show();
+                    Preferences.setAccount(email);
+                    done();
                 }
 
                 @Override
@@ -42,12 +43,8 @@ public class GoogleAuthService extends BaseAuthService {
                     Toast.makeText(activity.getBaseContext(), "Google Signed out.", Toast.LENGTH_LONG).show();
                 }
             });
-//            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
-//            updateUI(true);
         } else {
-            // Signed out, show unauthenticated UI.
-//            updateUI(false);
-            Toast.makeText(activity.getBaseContext(), "Google Signed out.", Toast.LENGTH_LONG).show();
+            Toast.makeText(activity.getBaseContext(), "Sorry, Google sign in failed", Toast.LENGTH_LONG).show();
         }
     }
 }
