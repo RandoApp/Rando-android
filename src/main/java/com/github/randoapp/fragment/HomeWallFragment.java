@@ -1,7 +1,6 @@
 package com.github.randoapp.fragment;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.github.randoapp.CameraActivity10;
 import com.github.randoapp.CameraActivity16;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
@@ -63,12 +61,7 @@ public class HomeWallFragment extends Fragment {
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent;
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                    intent = new Intent(rootView.getContext(), CameraActivity10.class);
-                } else {
-                    intent = new Intent(rootView.getContext(), CameraActivity16.class);
-                }
+                Intent intent = new Intent(rootView.getContext(), CameraActivity16.class);
                 startActivityForResult(intent, Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE);
             }
         });

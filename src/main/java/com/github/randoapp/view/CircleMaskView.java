@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -64,11 +63,7 @@ public class CircleMaskView extends View {
     private Bitmap initPaints(int size, int center, int radius) {
         Bitmap bitmap;
 
-        if (Build.VERSION.SDK_INT >= 14) {
-            bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ALPHA_8);
-        } else {
-            bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
-        }
+        bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ALPHA_8);
 
         Paint eraser = new Paint();
         eraser.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
@@ -91,11 +86,8 @@ public class CircleMaskView extends View {
         Paint black = new Paint();
         black.setColor(Color.BLACK);
 
-        Paint bitmapPaint = null;
-        if (Build.VERSION.SDK_INT >= 14) {
-            bitmapPaint = new Paint();
-            bitmapPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-        }
+        Paint bitmapPaint = new Paint();
+        bitmapPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
 
         int margin = getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left);
         int radius = center - margin;

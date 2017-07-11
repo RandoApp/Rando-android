@@ -110,7 +110,6 @@ ext {
 
 dependencies {
     compile project(':modules/volley')
-    compile project(':modules/cameraview/library')
     compile project(':modules/CameraKit-Android/camerakit')
     compile project(':modules/CircleMenu/cmlibrary')
 

@@ -42,7 +42,7 @@ public class LocationHelper {
     }
 
     public void updateLocationAsync(){
-        if ( Build.VERSION.SDK_INT >= 23 &&
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return  ;
@@ -105,7 +105,7 @@ public class LocationHelper {
      * Stop updates from the Location Service.
      */
     public void killLocationServices() {
-        if ( Build.VERSION.SDK_INT >= 23 &&
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return  ;

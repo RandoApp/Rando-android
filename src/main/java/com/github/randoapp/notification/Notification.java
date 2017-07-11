@@ -17,17 +17,11 @@ import com.github.randoapp.log.Log;
 
 public class Notification {
 
-    private static final int NOTIFICATION_MIN_API_LEVEL = 11;
     private static final int LED_MS_TO_BE_ON = 3000;
     private static final int LED_MS_TO_BE_OFF = 3000;
 
     public static void show(Context context, String title, String text) {
         Log.d(Notification.class, "Show with following params: title -> " + title + " text -> " + text);
-
-        if (android.os.Build.VERSION.SDK_INT < NOTIFICATION_MIN_API_LEVEL) {
-            Log.i(Notification.class, "Cannot show notification, because API level less than notification min api level");
-            return;
-        }
 
         NotificationCompat.Builder notificationBuilder =
             new NotificationCompat.Builder(context)

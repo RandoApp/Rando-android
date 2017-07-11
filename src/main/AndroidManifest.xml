@@ -2,13 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.github.randoapp"
-    android:versionCode="84"
-    android:versionName="1.1.4">
+    android:versionCode="85"
+    android:versionName="1.1.5">
 
     <uses-sdk
-        android:minSdkVersion="11"
-        android:targetSdkVersion="25"
-        tools:overrideLibrary="com.evernote.android.job, net.vrallev.android.cat, com.flurgle.camerakit, com.hitomi.cmlibrary" />
+        android:minSdkVersion="16"
+        android:targetSdkVersion="25" />
 
     <application
         android:name=".App"
@@ -27,18 +26,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".CameraActivity10"
-            android:configChanges="orientation"
-            android:label="@string/take_picture_screen_label"
-            android:screenOrientation="portrait"
-            android:theme="@style/RandoThemeFullScreen" />
-        <activity
-            android:name=".CameraActivity16"
-            android:configChanges="orientation"
-            android:label="@string/take_picture_screen_label"
-            android:screenOrientation="portrait"
-            android:theme="@style/RandoThemeFullScreen" />
         <activity
             android:name=".ImageReviewUploadActivity"
             android:configChanges="orientation"
@@ -59,12 +46,6 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/app_id" />
 
-        <service
-            android:name=".upload.UploadServiceLegacy"
-            android:enabled="true"
-            android:icon="@drawable/ic_launcher"
-            android:label="@string/upload_service_name"
-            android:process=":upload_process" />
         <service android:name=".service.RandoFirebaseInstanceIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
