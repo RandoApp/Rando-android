@@ -43,7 +43,7 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 11
+        minSdkVersion 16
         targetSdkVersion 25
         testApplicationId 'com.github.randoapp.test'
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
@@ -102,7 +102,7 @@ tasks.coveralls {
 ext {
     compileSdkVersion = 25
     buildToolsVersion = "25.0.2"
-    minSdkVersion = 9
+    minSdkVersion = 16
     targetSdkVersion = 25
     supportLibraryVersion = "25+"
     firebaseLibraryVersion = "10.0.1"
