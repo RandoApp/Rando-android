@@ -104,7 +104,7 @@
     <string name="rando_received">You have received new Rando</string>
 
     <!-- Permission strings Start -->
-    <string name="permission_positive_button">Ok</string>
+    <string name="permission_positive_button">OK</string>
     <string name="location_needed_title">Location Access</string>
     <string name="location_needed_message">Tagging Rando with your rough location requires access this device\'s location</string>
     <string name="camera_needed_title">Camera Access</string>
@@ -124,7 +124,7 @@
 
     <string name="rando_excluded">Excluded from exchange</string>
     <string name="rando_excluded_text">This Rando was excluded from exchange. This happens for one of the following reasons:\n - duplicated;\n - offensive;\n - boring (e.g. too dark);\n - other reason.</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
 
     <string name="share_subject">Share Rando 4Me</string>
     <string name="share_text">I\'ve received amazing photo via Rando4Me: </string>
