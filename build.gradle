@@ -73,7 +73,7 @@ android {
         debug {
             debuggable true
             minifyEnabled false
-            testCoverageEnabled false
+            testCoverageEnabled true
             buildConfigField "String", "RANDO_HOST", '"dev.rando4.me"'
             buildConfigField "String", "RANDO_API_HOST", '"dev.api.rando4.me"'
             buildConfigField "String", "RANDO_REPORTS_ACRA_DB", '"acra-rando4me-dev"'
@@ -87,6 +87,10 @@ android {
             buildConfigField "String", "RANDO_API_HOST", '"api.rando4.me"'
             buildConfigField "String", "RANDO_REPORTS_ACRA_DB", '"acra-rando4me"'
         }
+    }
+
+    lintOptions {
+        abortOnError false
     }
 }
 
