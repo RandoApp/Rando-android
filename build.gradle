@@ -5,12 +5,12 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.+'
         classpath 'com.google.gms:google-services:3.0.0'
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
+        classpath 'com.dicedmelon.gradle:jacoco-android:0.1.2'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
     }
 }
 apply plugin: 'com.android.application'
-apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: 'jacoco-android'
 
 def reportsUserLocal = reportsUser
 def reportsPasswordLocal = reportsPassword
@@ -88,15 +88,6 @@ android {
             buildConfigField "String", "RANDO_REPORTS_ACRA_DB", '"acra-rando4me"'
         }
     }
-}
-
-coveralls {
-    jacocoReportPath = "${buildDir}/reports/coverage/debug/report.xml"
-}
-
-tasks.coveralls {
-    dependsOn 'connectedAndroidTest'
-    onlyIf { System.env.'CI' }
 }
 
 ext {
