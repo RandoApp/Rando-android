@@ -1,1 +1,1 @@
-include 'modules/volley', 'modules/cameraview/library', 'modules/CameraKit-Android/camerakit', 'modules/CircleMenu/cmlibrary'
+include 'modules/volley', 'modules/CameraKit-Android/camerakit', 'modules/CircleMenu/cmlibrary'

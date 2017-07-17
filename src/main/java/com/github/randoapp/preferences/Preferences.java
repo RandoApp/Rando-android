@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 
+import com.flurgle.camerakit.CameraKit;
 import com.github.randoapp.App;
-import com.google.android.cameraview.CameraView;
 
 import java.util.Date;
 
@@ -139,8 +139,8 @@ public class Preferences {
     //Selected Camera Facing
     public static int getCameraFacing() {
         synchronized (monitor) {
-            int facing = getSharedPreferences().getInt(CAMERA_FACING, CameraView.FACING_BACK);
-            return facing == CameraView.FACING_BACK ? CameraView.FACING_BACK : CameraView.FACING_FRONT;
+            int facing = getSharedPreferences().getInt(CAMERA_FACING, CameraKit.Constants.FACING_BACK);
+            return facing == CameraKit.Constants.FACING_BACK ? CameraKit.Constants.FACING_BACK : CameraKit.Constants.FACING_FRONT;
         }
     }
 
@@ -165,7 +165,7 @@ public class Preferences {
     //Camera Flash Mode
     public static int getCameraFlashMode() {
         synchronized (monitor) {
-            return getSharedPreferences().getInt(CAMERA_FLASH_MODE, CameraView.FLASH_OFF);
+            return getSharedPreferences().getInt(CAMERA_FLASH_MODE, CameraKit.Constants.FLASH_OFF);
         }
     }
 

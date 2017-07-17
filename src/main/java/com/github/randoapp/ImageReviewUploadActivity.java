@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.FragmentActivity;
@@ -71,12 +70,7 @@ public class ImageReviewUploadActivity extends FragmentActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            intent = new Intent(this, CameraActivity10.class);
-        } else {
-            intent = new Intent(this, CameraActivity16.class);
-        }
+        Intent intent = new Intent(this, CameraActivity16.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
         finish();
