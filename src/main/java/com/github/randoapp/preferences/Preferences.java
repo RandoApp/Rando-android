@@ -37,12 +37,12 @@ public class Preferences {
 
     public static void setAuthToken(String token) {
         if (token != null) {
-            getSharedPreferences().edit().putString(AUTH_TOKEN, token).commit();
+            getSharedPreferences().edit().putString(AUTH_TOKEN, token).apply();
         }
     }
 
     public static void removeAuthToken() {
-        getSharedPreferences().edit().remove(AUTH_TOKEN).commit();
+        getSharedPreferences().edit().remove(AUTH_TOKEN).apply();
     }
 
 
@@ -52,12 +52,12 @@ public class Preferences {
 
     public static void setAccount(String token) {
         if (token != null) {
-            getSharedPreferences().edit().putString(ACCOUNT, token).commit();
+            getSharedPreferences().edit().putString(ACCOUNT, token).apply();
         }
     }
 
     public static void removeAccount() {
-        getSharedPreferences().edit().remove(ACCOUNT).commit();
+        getSharedPreferences().edit().remove(ACCOUNT).apply();
     }
 
     public static Location getLocation() {
@@ -71,14 +71,14 @@ public class Preferences {
 
     public static void setLocation(Location location) {
         if (location != null) {
-            getSharedPreferences().edit().putString(LONGITUDE_PARAM, String.valueOf(location.getLongitude())).commit();
-            getSharedPreferences().edit().putString(LATITUDE_PARAM, String.valueOf(location.getLatitude())).commit();
+            getSharedPreferences().edit().putString(LONGITUDE_PARAM, String.valueOf(location.getLongitude())).apply();
+            getSharedPreferences().edit().putString(LATITUDE_PARAM, String.valueOf(location.getLatitude())).apply();
         }
     }
 
     public static void removeLocation() {
-        getSharedPreferences().edit().remove(LATITUDE_PARAM).commit();
-        getSharedPreferences().edit().remove(LONGITUDE_PARAM).commit();
+        getSharedPreferences().edit().remove(LATITUDE_PARAM).apply();
+        getSharedPreferences().edit().remove(LONGITUDE_PARAM).apply();
     }
 
     public static boolean isTrainingFragmentShown() {
@@ -88,15 +88,15 @@ public class Preferences {
     }
 
     public static void setTrainingFragmentShown(int i) {
-        getSharedPreferences().edit().putInt(TRAINING_FRAGMENT_SHOWN, i).commit();
+        getSharedPreferences().edit().putInt(TRAINING_FRAGMENT_SHOWN, i).apply();
     }
 
     public static void removeTrainingFragmentShown() {
-        getSharedPreferences().edit().remove(TRAINING_FRAGMENT_SHOWN).commit();
+        getSharedPreferences().edit().remove(TRAINING_FRAGMENT_SHOWN).apply();
     }
 
     public static void setBanResetAt(long resetAt) {
-        getSharedPreferences().edit().putLong(BAN_RESET_AT, resetAt).commit();
+        getSharedPreferences().edit().putLong(BAN_RESET_AT, resetAt).apply();
     }
 
     public static long getBanResetAt() {
@@ -113,13 +113,13 @@ public class Preferences {
 
     public static void setFirebaseInstanceId(String token) {
         if (token != null) {
-            getSharedPreferences().edit().putString(FIREBASE_INSTANCE_ID, token).commit();
+            getSharedPreferences().edit().putString(FIREBASE_INSTANCE_ID, token).apply();
         }
     }
 
     //UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE
     public static void removeUpdatePlayServicesDateShown() {
-        getSharedPreferences().edit().remove(UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE).commit();
+        getSharedPreferences().edit().remove(UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE).apply();
     }
 
     public static Date getUpdatePlayServicesDateShown() {
@@ -128,12 +128,12 @@ public class Preferences {
 
     public static void setUpdatePlayServicesDateShown(Date time) {
         if (time != null) {
-            getSharedPreferences().edit().putLong(UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE, time.getTime()).commit();
+            getSharedPreferences().edit().putLong(UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE, time.getTime()).apply();
         }
     }
 
     public static void removeFirebaseInstanceId() {
-        getSharedPreferences().edit().remove(FIREBASE_INSTANCE_ID).commit();
+        getSharedPreferences().edit().remove(FIREBASE_INSTANCE_ID).apply();
     }
 
     //Selected Camera Facing
@@ -146,7 +146,7 @@ public class Preferences {
 
     public static void setCameraFacing(int cameraFacing) {
         synchronized (monitor) {
-            getSharedPreferences().edit().putInt(CAMERA_FACING, cameraFacing).commit();
+            getSharedPreferences().edit().putInt(CAMERA_FACING, cameraFacing).apply();
         }
     }
 
@@ -158,7 +158,7 @@ public class Preferences {
 
     public static void setCameraGrid(boolean cameraGrid) {
         synchronized (monitor) {
-            getSharedPreferences().edit().putBoolean(CAMERA_GRID, cameraGrid).commit();
+            getSharedPreferences().edit().putBoolean(CAMERA_GRID, cameraGrid).apply();
         }
     }
 
@@ -171,13 +171,13 @@ public class Preferences {
 
     public static void setCameraFlashMode(int cameraFacing) {
         synchronized (monitor) {
-            getSharedPreferences().edit().putInt(CAMERA_FLASH_MODE, cameraFacing).commit();
+            getSharedPreferences().edit().putInt(CAMERA_FLASH_MODE, cameraFacing).apply();
         }
     }
 
     public static void removeCameraFlashMode() {
         synchronized (monitor) {
-            getSharedPreferences().edit().remove(CAMERA_FLASH_MODE).commit();
+            getSharedPreferences().edit().remove(CAMERA_FLASH_MODE).apply();
         }
     }
 
@@ -189,7 +189,7 @@ public class Preferences {
 
     public static void setEnableVibrate(boolean cameraGrid) {
         synchronized (monitor) {
-            getSharedPreferences().edit().putBoolean(ENABLE_VIBRATE, cameraGrid).commit();
+            getSharedPreferences().edit().putBoolean(ENABLE_VIBRATE, cameraGrid).apply();
         }
     }
 

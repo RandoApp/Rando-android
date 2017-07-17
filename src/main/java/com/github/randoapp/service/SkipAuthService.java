@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.provider.Settings;
 import android.widget.Toast;
 
-import com.github.randoapp.App;
 import com.github.randoapp.api.API;
 import com.github.randoapp.api.listeners.NetworkResultListener;
 import com.github.randoapp.util.Analytics;
@@ -36,7 +35,7 @@ public class SkipAuthService extends BaseAuthService {
     }
 
     private String createTemproryId() {
-        return Settings.Secure.getString(App.context.getContentResolver(),
+        return Settings.Secure.getString(activity.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
     }
 }
