@@ -42,10 +42,6 @@ public class App extends Application {
         }
     }
 
-    public static App getInstance(Context context) {
-        return (App) context.getApplicationContext();
-    }
-
     private void startServices() {
         JobManager.create(this).addJobCreator(new UploadJobCreator());
         if (RandoDAO.getNextRandoToUpload() != null) {

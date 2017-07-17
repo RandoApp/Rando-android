@@ -33,8 +33,8 @@
     <color name="edittext_background">#ffdddddd</color>
     <color name="edittext_background_valid">#ff1ad334</color>
     <color name="edittext_background_invalid">#ffe93229</color>
-    <color name="white_button_background_normal">#ffffffff</color>
-    <color name="white_button_background_pressed">#ffdddddd</color>
+    <color name="white_button_background_normal">#fffefefe</color>
+    <color name="white_button_background_pressed">#ffeeeeee</color>
     <color name="light_gray_button_background_normal">#fff1f1f1</color>
     <color name="light_gray_button_text">#ff8f8f8f</color>
     <color name="capture_button_background_normal">#fff87b00</color>

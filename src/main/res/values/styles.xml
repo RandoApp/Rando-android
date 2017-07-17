@@ -3,6 +3,9 @@
     <!-- Base application theme. -->
     <style name="RandoTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowNoTitle">true</item>
+        <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
+        <item name="colorControlHighlight">@color/white_button_background_pressed</item>
+        <item name="colorAccent">@color/white_button_background_normal</item>
     </style>
 
     <style name="SignInEditText">

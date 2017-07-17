@@ -21,8 +21,10 @@
                 android:id="@+id/google_sign_in_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="65dp"
-                android:layout_marginTop="28dp" />
+                android:layout_marginBottom="45dp"
+                android:layout_marginTop="28dp"
+                android:textSize = "20sp"
+                android:theme="@style/RandoTheme"/>
 
             <TextView
                 android:id="@+id/textViewEmail"
@@ -30,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/email"
                 android:textColor="@android:color/black"
-                android:textSize="28dp" />
+                android:textSize="28sp" />
 
             <EditText
                 android:id="@+id/emailEditText"
@@ -40,7 +42,7 @@
                 android:imeOptions="actionDone"
                 android:inputType="textEmailAddress"
                 android:textColor="@android:color/black"
-                android:textSize="28dp" />
+                android:textSize="28sp" />
 
             <TextView
                 android:id="@+id/textViewPassword"
@@ -48,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/password"
                 android:textColor="@android:color/black"
-                android:textSize="28dp" />
+                android:textSize="28sp" />
 
             <EditText
                 android:id="@+id/passwordEditText"
@@ -58,21 +60,20 @@
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
                 android:textColor="@android:color/black"
-                android:textSize="28dp" />
+                android:textSize="28sp" />
 
             <Button
                 android:id="@+id/signupButton"
                 android:layout_width="match_parent"
                 android:layout_height="62dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
                 android:layout_marginBottom="30dp"
-                android:layout_marginTop="14dp"
-                android:background="@drawable/signup_button_background"
+                android:layout_marginTop="20dp"
                 android:onClick="signUpClick"
                 android:text="@string/signup"
+                android:drawableStart="@drawable/ic_launcher"
+                android:drawableLeft="@drawable/ic_launcher"
                 android:textColor="@android:color/black"
-                android:textSize="18dp" />
+                android:textSize="18sp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
