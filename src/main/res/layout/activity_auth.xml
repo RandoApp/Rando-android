@@ -70,8 +70,8 @@
                 android:layout_marginTop="20dp"
                 android:onClick="signUpClick"
                 android:text="@string/signup"
-                android:drawableStart="@drawable/ic_launcher"
-                android:drawableLeft="@drawable/ic_launcher"
+                android:drawableStart="@drawable/ic_rando_logo_24dp"
+                android:drawableLeft="@drawable/ic_rando_logo_24dp"
                 android:textColor="@android:color/black"
                 android:textSize="18sp" />
 
