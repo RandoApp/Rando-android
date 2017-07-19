@@ -42,7 +42,9 @@
                 android:imeOptions="actionDone"
                 android:inputType="textEmailAddress"
                 android:textColor="@android:color/black"
-                android:textSize="28sp" />
+                android:textSize="28sp"
+                android:backgroundTint="@color/black"
+                android:cursorVisible="false"/>
 
             <TextView
                 android:id="@+id/textViewPassword"
@@ -60,7 +62,9 @@
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
                 android:textColor="@android:color/black"
-                android:textSize="28sp" />
+                android:textSize="28sp"
+                android:backgroundTint="@color/black"
+                android:cursorVisible="false"/>
 
             <Button
                 android:id="@+id/signupButton"
@@ -92,7 +96,7 @@
                     android:textColor="@color/skip_link" />
 
                 <TextView
-                    android:id="@+id/contactUsButton"
+                    android:id="@+id/textViewContactUsLink"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
