@@ -12,6 +12,7 @@ import com.github.randoapp.util.RandoUtil;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class RandoUtilTest {
     }
 
 
+    @Test
     public void testAreRandoListsEqual() throws Exception {
         List<Rando> randos1 = RandoTestHelper.getNRandomRandos(3, Rando.Status.OUT);
         List<Rando> randos2 = new ArrayList<Rando>();
@@ -50,6 +52,7 @@ public class RandoUtilTest {
         assertThat("Lists are not equal", RandoUtil.areRandoListsEqual(randos1, randos2), is(true));
     }
 
+    @Test
     public void testAreRandoListsNotEqualBySize() throws Exception {
         List<Rando> randos1 = RandoTestHelper.getNRandomRandos(4, Rando.Status.OUT);
         List<Rando> randos2 = RandoTestHelper.getNRandomRandos(3, Rando.Status.OUT);
@@ -57,6 +60,7 @@ public class RandoUtilTest {
         assertThat("Lists are not equal", RandoUtil.areRandoListsEqual(randos1, randos2), is(false));
     }
 
+    @Test
     public void testAreRandoListsNotEqualByContent() throws Exception {
         List<Rando> randos1 = RandoTestHelper.getNRandomRandos(3, Rando.Status.OUT);
         List<Rando> randos2 = RandoTestHelper.getNRandomRandos(3, Rando.Status.IN);
