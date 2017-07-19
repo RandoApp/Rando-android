@@ -47,6 +47,7 @@ public class AuthActivity extends AppCompatActivity {
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         setContentView(R.layout.activity_auth);
         emailText = (EditText) this.findViewById(R.id.emailEditText);
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         initGoogleButton();
         if ((boolean) getIntent().getExtras().get(Constants.LOGOUT_ACTIVITY)) {
             fullLogout();
@@ -72,6 +73,7 @@ public class AuthActivity extends AppCompatActivity {
         findViewById(R.id.google_sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Analytics.logLoginGoogle(firebaseAnalytics);
                 Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
                 startActivityForResult(signInIntent, Constants.GOOGLE_SIGN_IN);
             }

@@ -398,33 +398,6 @@ public class RandoDAO {
     }
 
     /**
-     * @return count of all randos instances found in DB by status
-     */
-    public static synchronized int countAllRandosByStatus(final Context context, Rando.Status status) {
-        Cursor cursor = getDB(context).query(RandoDBHelper.RandoTable.NAME,
-                RandoDBHelper.RandoTable.ALL_COLUMNS, RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS
-                        + " = '" + status.name() + "'", null, null, null, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE + " DESC", null);
-        int count = cursor.getCount();
-        cursor.close();
-        return count;
-    }
-
-    /**
-     * @return coint all incoming rando instances found in DB
-     */
-    public static synchronized int countAllInRandos(final Context context) {
-        return countAllRandosByStatus(context, Rando.Status.IN);
-
-    }
-
-    /**
-     * @return count all outgoing rando instances found in DB
-     */
-    public static synchronized int countAllOutRandos(final Context context) {
-        return countAllRandosByStatus(context, Rando.Status.OUT);
-    }
-
-    /**
      * Counts randos amount in DB
      *
      * @return randos amount in DB

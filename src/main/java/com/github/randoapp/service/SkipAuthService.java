@@ -36,7 +36,6 @@ public class SkipAuthService extends BaseAuthService {
     }
 
     private String createTemproryId() {
-        return Settings.Secure.getString(activity.getBaseContext().getContentResolver(),
-                Settings.Secure.ANDROID_ID);
+        return Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 }

@@ -32,7 +32,7 @@ public class PreferencesTest {
     @Before
     public void setUp() throws Exception {
         context = InstrumentationRegistry.getTargetContext();
-        context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE).edit().clear().commit();
+        context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE).edit().clear().apply();
     }
 
     //Auth Token Tests

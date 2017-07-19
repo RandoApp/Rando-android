@@ -31,53 +31,70 @@ public class Preferences {
     private static Object monitor = new Object();
 
     public static String getAuthToken(Context context) {
-        return getSharedPreferences(context).getString(AUTH_TOKEN, AUTH_TOKEN_DEFAULT_VALUE);
+        synchronized (monitor) {
+            return getSharedPreferences(context).getString(AUTH_TOKEN, AUTH_TOKEN_DEFAULT_VALUE);
+        }
     }
 
     public static void setAuthToken(Context context, String token) {
         if (token != null) {
-            getSharedPreferences(context).edit().putString(AUTH_TOKEN, token).commit();
+            synchronized (monitor) {
+                getSharedPreferences(context).edit().putString(AUTH_TOKEN, token).apply();
+            }
         }
     }
 
     public static void removeAuthToken(Context context) {
-        getSharedPreferences(context).edit().remove(AUTH_TOKEN).commit();
+        synchronized (monitor) {
+            getSharedPreferences(context).edit().remove(AUTH_TOKEN).apply();
+        }
     }
 
 
     public static String getAccount(Context context) {
-        return getSharedPreferences(context).getString(ACCOUNT, ACCOUNT_DEFAULT_VALUE);
+        synchronized (monitor) {
+            return getSharedPreferences(context).getString(ACCOUNT, ACCOUNT_DEFAULT_VALUE);
+        }
     }
 
     public static void setAccount(Context context, String token) {
         if (token != null) {
-            getSharedPreferences(context).edit().putString(ACCOUNT, token).commit();
+            synchronized (monitor) {
+                getSharedPreferences(context).edit().putString(ACCOUNT, token).apply();
+            }
         }
     }
 
     public static void removeAccount(Context context) {
-        getSharedPreferences(context).edit().remove(ACCOUNT).commit();
+        synchronized (monitor) {
+            getSharedPreferences(context).edit().remove(ACCOUNT).apply();
+        }
     }
 
     public static Location getLocation(Context context) {
-        double lat = Double.valueOf(getSharedPreferences(context).getString(LATITUDE_PARAM, "0"));
-        double lon = Double.valueOf(getSharedPreferences(context).getString(LONGITUDE_PARAM, "0"));
         Location location = new Location(LOCATION);
-        location.setLatitude(lat);
-        location.setLongitude(lon);
+        synchronized (monitor) {
+            double lat = Double.valueOf(getSharedPreferences(context).getString(LATITUDE_PARAM, "0"));
+            double lon = Double.valueOf(getSharedPreferences(context).getString(LONGITUDE_PARAM, "0"));
+            location.setLatitude(lat);
+            location.setLongitude(lon);
+        }
         return location;
     }
 
     public static void setLocation(Context context, Location location) {
         if (location != null) {
-            getSharedPreferences(context).edit().putString(LONGITUDE_PARAM, String.valueOf(location.getLongitude())).commit();
-            getSharedPreferences(context).edit().putString(LATITUDE_PARAM, String.valueOf(location.getLatitude())).commit();
+            synchronized (monitor) {
+                getSharedPreferences(context).edit().putString(LONGITUDE_PARAM, String.valueOf(location.getLongitude())).apply();
+                getSharedPreferences(context).edit().putString(LATITUDE_PARAM, String.valueOf(location.getLatitude())).apply();
+            }
         }
     }
 
     public static void removeLocation(Context context) {
-        getSharedPreferences(context).edit().remove(LATITUDE_PARAM).commit();
-        getSharedPreferences(context).edit().remove(LONGITUDE_PARAM).commit();
+        synchronized (monitor) {
+            getSharedPreferences(context).edit().remove(LONGITUDE_PARAM).apply();
+        }
     }
 
     public static boolean isTrainingFragmentShown() {
@@ -87,55 +104,75 @@ public class Preferences {
     }
 
     public static void setTrainingFragmentShown(Context context, int i) {
-        getSharedPreferences(context).edit().putInt(TRAINING_FRAGMENT_SHOWN, i).commit();
+        synchronized (monitor) {
+            getSharedPreferences(context).edit().putInt(TRAINING_FRAGMENT_SHOWN, i).apply();
+        }
     }
 
     public static void removeTrainingFragmentShown(Context context) {
-        getSharedPreferences(context).edit().remove(TRAINING_FRAGMENT_SHOWN).commit();
+        synchronized (monitor) {
+            getSharedPreferences(context).edit().remove(TRAINING_FRAGMENT_SHOWN).apply();
+        }
     }
 
     public static void setBanResetAt(Context context, long resetAt) {
-        getSharedPreferences(context).edit().putLong(BAN_RESET_AT, resetAt).commit();
+        synchronized (monitor) {
+            getSharedPreferences(context).edit().putLong(BAN_RESET_AT, resetAt).apply();
+        }
     }
 
     public static long getBanResetAt(Context context) {
-        return getSharedPreferences(context).getLong(BAN_RESET_AT, 0L);
+        synchronized (monitor) {
+            return getSharedPreferences(context).getLong(BAN_RESET_AT, 0L);
+        }
     }
 
     private static SharedPreferences getSharedPreferences(Context context) {
-        return context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE | Context.MODE_MULTI_PROCESS);
+        synchronized (monitor) {
+            return context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE | Context.MODE_MULTI_PROCESS);
+        }
     }
 
     public static String getFirebaseInstanceId(Context context) {
-        return getSharedPreferences(context).getString(FIREBASE_INSTANCE_ID, FIREBASE_INSTANCE_ID_DEFAULT_VALUE);
+        synchronized (monitor) {
+            return getSharedPreferences(context).getString(FIREBASE_INSTANCE_ID, FIREBASE_INSTANCE_ID_DEFAULT_VALUE);
+        }
     }
 
     public static void setFirebaseInstanceId(Context context, String token) {
         if (token != null) {
-            getSharedPreferences(context).edit().putString(FIREBASE_INSTANCE_ID, token).commit();
+            synchronized (monitor) {
+                getSharedPreferences(context).edit().putString(FIREBASE_INSTANCE_ID, token).apply();
+            }
         }
     }
 
-    //UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE
     public static void removeUpdatePlayServicesDateShown(Context context) {
-        getSharedPreferences(context).edit().remove(UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE).commit();
+        synchronized (monitor) {
+            getSharedPreferences(context).edit().remove(UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE).apply();
+        }
     }
 
     public static Date getUpdatePlayServicesDateShown(Context context) {
-        return new Date(getSharedPreferences(context).getLong(UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE, 0L));
+        synchronized (monitor) {
+            return new Date(getSharedPreferences(context).getLong(UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE, 0L));
+        }
     }
 
     public static void setUpdatePlayServicesDateShown(Context context, Date time) {
         if (time != null) {
-            getSharedPreferences(context).edit().putLong(UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE, time.getTime()).commit();
+            synchronized (monitor) {
+                getSharedPreferences(context).edit().putLong(UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE, time.getTime()).apply();
+            }
         }
     }
 
     public static void removeFirebaseInstanceId(Context context) {
-        getSharedPreferences(context).edit().remove(FIREBASE_INSTANCE_ID).commit();
+        synchronized (monitor) {
+            getSharedPreferences(context).edit().remove(FIREBASE_INSTANCE_ID).apply();
+        }
     }
 
-    //Selected Camera Facing
     public static int getCameraFacing(Context context) {
         synchronized (monitor) {
             int facing = getSharedPreferences(context).getInt(CAMERA_FACING, CameraKit.Constants.FACING_BACK);
@@ -145,7 +182,7 @@ public class Preferences {
 
     public static void setCameraFacing(Context context, int cameraFacing) {
         synchronized (monitor) {
-            getSharedPreferences(context).edit().putInt(CAMERA_FACING, cameraFacing).commit();
+            getSharedPreferences(context).edit().putInt(CAMERA_FACING, cameraFacing).apply();
         }
     }
 
@@ -157,11 +194,10 @@ public class Preferences {
 
     public static void setCameraGrid(Context context, boolean cameraGrid) {
         synchronized (monitor) {
-            getSharedPreferences(context).edit().putBoolean(CAMERA_GRID, cameraGrid).commit();
+            getSharedPreferences(context).edit().putBoolean(CAMERA_GRID, cameraGrid).apply();
         }
     }
 
-    //Camera Flash Mode
     public static int getCameraFlashMode(Context context) {
         synchronized (monitor) {
             return getSharedPreferences(context).getInt(CAMERA_FLASH_MODE, CameraKit.Constants.FLASH_OFF);
@@ -170,13 +206,13 @@ public class Preferences {
 
     public static void setCameraFlashMode(Context context, int cameraFacing) {
         synchronized (monitor) {
-            getSharedPreferences(context).edit().putInt(CAMERA_FLASH_MODE, cameraFacing).commit();
+            getSharedPreferences(context).edit().putInt(CAMERA_FLASH_MODE, cameraFacing).apply();
         }
     }
 
     public static void removeCameraFlashMode(Context context) {
         synchronized (monitor) {
-            getSharedPreferences(context).edit().remove(CAMERA_FLASH_MODE).commit();
+            getSharedPreferences(context).edit().remove(CAMERA_FLASH_MODE).apply();
         }
     }
 
@@ -188,7 +224,7 @@ public class Preferences {
 
     public static void setEnableVibrate(Context context, boolean cameraGrid) {
         synchronized (monitor) {
-            getSharedPreferences(context).edit().putBoolean(ENABLE_VIBRATE, cameraGrid).commit();
+            getSharedPreferences(context).edit().putBoolean(ENABLE_VIBRATE, cameraGrid).apply();
         }
     }
 
