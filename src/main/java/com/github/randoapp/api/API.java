@@ -1,6 +1,6 @@
 package com.github.randoapp.api;
 
-import android.accounts.AuthenticatorException;
+import android.content.Context;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
@@ -10,12 +10,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
+import com.github.randoapp.api.beans.Error;
 import com.github.randoapp.api.beans.User;
 import com.github.randoapp.api.callback.OnFetchUser;
-import com.github.randoapp.api.exception.ForbiddenException;
 import com.github.randoapp.api.listeners.ErrorResponseListener;
 import com.github.randoapp.api.listeners.NetworkResultListener;
 import com.github.randoapp.api.listeners.UploadRandoListener;
@@ -81,18 +80,18 @@ public class API {
 
     protected static final String PROTOCOL_CHARSET = "utf-8";
 
-    public static void signup(final String email, final String password, final NetworkResultListener resultListener) {
+    public static void signup(final String email, final String password, final Context context, final NetworkResultListener resultListener) {
         Map<String, String> params = new HashMap<>();
         params.put(SIGNUP_EMAIL_PARAM, email);
         params.put(SIGNUP_PASSWORD_PARAM, password);
-        params.put(FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
+        params.put(FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId(context));
 
-        VolleySingleton.getInstance().getRequestQueue().add(new JsonObjectRequest(Request.Method.POST, SIGNUP_URL, new JSONObject(params), new Response.Listener<JSONObject>() {
+        VolleySingleton.getInstance(context).getRequestQueue().add(new JsonObjectRequest(Request.Method.POST, SIGNUP_URL, new JSONObject(params), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     String authToken = response.getString(Constants.AUTH_TOKEN_PARAM);
-                    Preferences.setAuthToken(authToken);
+                    Preferences.setAuthToken(context, authToken);
                 } catch (JSONException e) {
                     Log.e(API.class, "Parse signup response failed", e);
                 }
@@ -112,19 +111,19 @@ public class API {
         }));
     }
 
-    public static void google(String email, String token, String familyName, final NetworkResultListener resultListener) {
+    public static void google(String email, String token, String familyName, final Context context, final NetworkResultListener resultListener) {
         Map<String, String> params = new HashMap<>();
         params.put(GOOGLE_EMAIL_PARAM, email);
         params.put(GOOGLE_TOKEN_PARAM, token);
         params.put(GOOGLE_FAMILY_NAME_PARAM, familyName);
-        params.put(FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
+        params.put(FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId(context));
 
-        VolleySingleton.getInstance().getRequestQueue().add(new JsonObjectRequest(Request.Method.POST, GOOGLE_URL, new JSONObject(params), new Response.Listener<JSONObject>() {
+        VolleySingleton.getInstance(context).getRequestQueue().add(new JsonObjectRequest(Request.Method.POST, GOOGLE_URL, new JSONObject(params), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     String authToken = response.getString(Constants.AUTH_TOKEN_PARAM);
-                    Preferences.setAuthToken(authToken);
+                    Preferences.setAuthToken(context, authToken);
                 } catch (JSONException e) {
                     Log.e(API.class, "Parse google login response failed", e);
                 }
@@ -143,17 +142,17 @@ public class API {
         }));
     }
 
-    public static void anonymous(String uuid, final NetworkResultListener resultListener) {
+    public static void anonymous(String uuid, final Context context, final NetworkResultListener resultListener) {
         Map<String, String> params = new HashMap<>();
         params.put(ANONYMOUS_ID_PARAM, uuid);
-        params.put(FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId());
+        params.put(FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId(context));
 
-        VolleySingleton.getInstance().getRequestQueue().add(new JsonObjectRequest(Request.Method.POST, ANONYMOUS_URL, new JSONObject(params), new Response.Listener<JSONObject>() {
+        VolleySingleton.getInstance(context).getRequestQueue().add(new JsonObjectRequest(Request.Method.POST, ANONYMOUS_URL, new JSONObject(params), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     String authToken = response.getString(Constants.AUTH_TOKEN_PARAM);
-                    Preferences.setAuthToken(authToken);
+                    Preferences.setAuthToken(context, authToken);
                 } catch (JSONException e) {
                     Log.e(API.class, "Parse anonymous login response failed", e);
                 }
@@ -172,7 +171,7 @@ public class API {
         }));
     }
 
-    public static void logout(final NetworkResultListener resultListener) {
+    public static void logout(final Context context, final NetworkResultListener resultListener) {
         BackgroundPreprocessedRequest request = new BackgroundPreprocessedRequest(Request.Method.POST, LOGOUT_URL, null, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -190,40 +189,40 @@ public class API {
             }
         });
 
-        request.setHeaders(getHeaders());
+        request.setHeaders(getHeaders(context));
         request.setRetryPolicy(new DefaultRetryPolicy(API_CONNECTION_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
-        VolleySingleton.getInstance().getRequestQueue().add(request);
+        VolleySingleton.getInstance(context).getRequestQueue().add(request);
     }
 
-    public static void syncUserAsync(final Response.Listener<JSONObject> syncListener, ErrorResponseListener errorResponseListener) {
+    public static void syncUserAsync(final Context context, final Response.Listener<JSONObject> syncListener, ErrorResponseListener errorResponseListener) {
         Log.d(API.class, "API.syncUserAsync");
-        BackgroundPreprocessedRequest request = new BackgroundPreprocessedRequest(Request.Method.GET, FETCH_USER_URL, null, new UserFetchResultListener(new OnFetchUser() {
+        BackgroundPreprocessedRequest request = new BackgroundPreprocessedRequest(Request.Method.GET, FETCH_USER_URL, null, new UserFetchResultListener(context, new OnFetchUser() {
             @Override
             public void onFetch(User user) {
                 Log.d(API.class, "Fetched ", user.toString(), " user. and procesing it in background thread.");
-                List<Rando> dbRandos = RandoDAO.getAllRandos();
+                List<Rando> dbRandos = RandoDAO.getAllRandos(context);
                 int totalUserRandos = user.randosIn.size() + user.randosOut.size();
                 if (totalUserRandos != dbRandos.size()
                         || !(dbRandos.containsAll(user.randosIn)
                         && dbRandos.containsAll(user.randosOut))) {
-                    RandoDAO.clearRandos();
-                    RandoDAO.insertRandos(user.randosIn);
-                    RandoDAO.insertRandos(user.randosOut);
-                    Notification.sendSyncNotification(totalUserRandos, UPDATED);
+                    RandoDAO.clearRandos(context);
+                    RandoDAO.insertRandos(context, user.randosIn);
+                    RandoDAO.insertRandos(context, user.randosOut);
+                    Notification.sendSyncNotification(context, totalUserRandos, UPDATED);
                 } else {
-                    Notification.sendSyncNotification(totalUserRandos, NOT_UPDATED);
+                    Notification.sendSyncNotification(context, totalUserRandos, NOT_UPDATED);
                 }
             }
         }), syncListener, errorResponseListener);
-        request.setHeaders(getHeaders());
+        request.setHeaders(getHeaders(context));
 
-        VolleySingleton.getInstance().getRequestQueue().add(request);
+        VolleySingleton.getInstance(context).getRequestQueue().add(request);
     }
 
-    public static void uploadImage(final RandoUpload randoUpload, final UploadRandoListener uploadListener, final Response.ErrorListener errorListener) {
+    public static void uploadImage(final RandoUpload randoUpload, final Context context, final UploadRandoListener uploadListener, final Response.ErrorListener errorListener) {
 
-        VolleyMultipartRequest uploadMultipart = new VolleyMultipartRequest(UPLOAD_RANDO_URL, getHeaders(), new Response.Listener<NetworkResponse>() {
+        VolleyMultipartRequest uploadMultipart = new VolleyMultipartRequest(UPLOAD_RANDO_URL, getHeaders(context), new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
                 Log.d(API.class, "Rando Uploaded Successfully:", randoUpload.toString());
@@ -262,10 +261,10 @@ public class API {
         };
         uploadMultipart.setRetryPolicy(new DefaultRetryPolicy(UPLOAD_CONNECTION_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
-        VolleySingleton.getInstance().getRequestQueue().add(uploadMultipart);
+        VolleySingleton.getInstance(context).getRequestQueue().add(uploadMultipart);
     }
 
-    public static void delete(final String randoId, final NetworkResultListener deleteRandoListener) throws Exception {
+    public static void delete(final String randoId, final Context context, final NetworkResultListener deleteRandoListener) throws Exception {
         Log.d(API.class, "Deleting Rando:", randoId);
         BackgroundPreprocessedRequest request = new BackgroundPreprocessedRequest(Request.Method.POST, DELETE_URL + randoId, null, null, new Response.Listener<JSONObject>() {
             @Override
@@ -289,13 +288,13 @@ public class API {
             }
         });
 
-        request.setHeaders(getHeaders());
+        request.setHeaders(getHeaders(context));
         request.setRetryPolicy(new DefaultRetryPolicy(API_CONNECTION_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
-        VolleySingleton.getInstance().getRequestQueue().add(request);
+        VolleySingleton.getInstance(context).getRequestQueue().add(request);
     }
 
-    public static void report(final String randoId, final NetworkResultListener reportRandoListener) throws Exception {
+    public static void report(final String randoId, final Context context, final NetworkResultListener reportRandoListener) throws Exception {
         Log.d(API.class, "Reporting Rando:", randoId);
         BackgroundPreprocessedRequest request = new BackgroundPreprocessedRequest(Request.Method.POST, REPORT_URL + randoId, null, null, new Response.Listener<JSONObject>() {
             @Override
@@ -319,26 +318,26 @@ public class API {
             }
         });
 
-        request.setHeaders(getHeaders());
+        request.setHeaders(getHeaders(context));
         request.setRetryPolicy(new DefaultRetryPolicy(API_CONNECTION_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
-        VolleySingleton.getInstance().getRequestQueue().add(request);
+        VolleySingleton.getInstance(context).getRequestQueue().add(request);
     }
 
-    private static Map<String, String> getHeaders() {
+    private static Map<String, String> getHeaders(Context context) {
         Map<String, String> headers = new HashMap<>(2);
-        headers.put(AUTHORIZATION_HEADER, "Token " + Preferences.getAuthToken());
-        if (!Preferences.getFirebaseInstanceId().isEmpty()) {
-            headers.put(FIREBASE_INSTANCE_ID_HEADER, Preferences.getFirebaseInstanceId());
+        headers.put(AUTHORIZATION_HEADER, "Token " + Preferences.getAuthToken(context));
+        if (!Preferences.getFirebaseInstanceId(context).isEmpty()) {
+            headers.put(FIREBASE_INSTANCE_ID_HEADER, Preferences.getFirebaseInstanceId(context));
         }
         return headers;
     }
 
-    private static Exception processServerError(JSONObject json) {
+    private static Error processServerError(JSONObject json) {
         try {
             switch (json.getInt(ERROR_CODE_PARAM)) {
                 case UNAUTHORIZED_CODE:
-                    return new AuthenticatorException(App.context.getResources().getString(R.string.error_400));
+                    return new Error().setCode(R.string.error_400);
                 case FORBIDDEN_CODE: {
                     String resetTime = "";
                     try {
@@ -351,11 +350,11 @@ public class API {
                     } catch (Exception e) {
                         Log.w(API.class, "Error when try build ban message for user: ", e.getMessage());
                     }
-                    return new ForbiddenException(App.context.getResources().getString(R.string.error_411) + " " + resetTime);
+                    return new Error().setCode(R.string.error_411).setMessage(resetTime);
                 }
                 default: {
                     //TODO: implement all code handling in switch and replace server "message" with default value.
-                    return new Exception(json.getString("message"));
+                    return new Error().setMessage(json.getString("message"));
                 }
             }
         } catch (JSONException exc) {
@@ -363,15 +362,15 @@ public class API {
         }
     }
 
-    private static Exception processError(Exception exc) {
+    private static Error processError(Exception exc) {
         //We don't want to log Connectivity exceptions
         if (exc instanceof UnknownHostException
                 || exc instanceof ConnectException) {
-            return new Exception(App.context.getResources().getString(R.string.error_no_network));
+            return new Error().setCode(R.string.error_no_network);
         }
         FirebaseCrash.report(new Exception(exc));
         Log.e(API.class, "processError method", exc);
-        return new Exception(App.context.getResources().getString(R.string.error_unknown_err));
+        return new Error().setCode(R.string.error_unknown_err);
     }
 
     public static Response<JSONObject> parseNetworkResponse(NetworkResponse response) {

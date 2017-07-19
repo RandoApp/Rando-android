@@ -7,10 +7,10 @@ import android.widget.Toast;
 
 import com.github.randoapp.R;
 import com.github.randoapp.api.API;
+import com.github.randoapp.api.beans.Error;
 import com.github.randoapp.api.listeners.NetworkResultListener;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.Analytics;
-import com.github.randoapp.view.Progress;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class EmailAndPasswordAuthService extends BaseAuthService {
@@ -41,18 +41,18 @@ public class EmailAndPasswordAuthService extends BaseAuthService {
 
         showLoginProgress();
 
-        API.signup(email, password, new NetworkResultListener() {
+        API.signup(email, password, activity.getBaseContext(), new NetworkResultListener() {
 
             @Override
             public void onOk() {
-                Preferences.setAccount(email);
+                Preferences.setAccount(activity.getBaseContext(), email);
                 done();
             }
 
             @Override
-            public void onError(Exception error) {
+            public void onError(Error error) {
                 hideLoginProgress();
-                String errorMessage = error != null ? error.getMessage() : "Error";
+                String errorMessage = error != null ? error.buildMessage(activity.getBaseContext()) : "Error";
                 Toast.makeText(activity, errorMessage, Toast.LENGTH_LONG).show();
             }
         });

@@ -10,7 +10,7 @@ public class RandoFirebaseInstanceIdService extends FirebaseInstanceIdService {
     @Override
     public void onTokenRefresh() {
         super.onTokenRefresh();
-        Log.d(RandoFirebaseInstanceIdService.class,  "Firebase ID Updated: " + FirebaseInstanceId.getInstance().getToken());
-        Preferences.setFirebaseInstanceId(FirebaseInstanceId.getInstance().getToken());
+        Log.d(RandoFirebaseInstanceIdService.class, "Firebase ID Updated: " + FirebaseInstanceId.getInstance().getToken());
+        Preferences.setFirebaseInstanceId(getBaseContext(), FirebaseInstanceId.getInstance().getToken());
     }
 }

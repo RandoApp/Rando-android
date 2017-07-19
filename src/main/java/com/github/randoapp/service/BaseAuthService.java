@@ -36,13 +36,13 @@ public abstract class BaseAuthService {
         clearDBForChangeAccount();
 
         showFetchUserProgress();
-        API.syncUserAsync(new Response.Listener<JSONObject>() {
+        API.syncUserAsync(activity.getBaseContext(), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 hideFetchUserProgress();
                 startMainActivity();
             }
-        }, new ErrorResponseListener() {
+        }, new ErrorResponseListener(activity.getBaseContext()) {
             @Override
             public void onErrorResponse(VolleyError e) {
                 hideFetchUserProgress();
@@ -64,8 +64,8 @@ public abstract class BaseAuthService {
     }
 
     private void clearDBForChangeAccount() {
-        RandoDAO.clearRandos();
-        RandoDAO.clearRandoToUpload();
+        RandoDAO.clearRandos(activity.getBaseContext());
+        RandoDAO.clearRandoToUpload(activity.getBaseContext());
     }
 
     private void startMainActivity() {

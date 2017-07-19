@@ -140,6 +140,7 @@ public class Constants {
 
     public static final int GOOGLE_SIGN_IN = 801;
 
+    public static final String LOGOUT_ACTIVITY = "LOGOUT";
     public static final int LOGOUT_ACTIVITY_RESULT = 901;
 
     public static final String PUSH_NOTIFICATION_LANDED = "landed";
