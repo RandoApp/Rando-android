@@ -25,13 +25,10 @@ public class GoogleAuthService extends BaseAuthService {
     private void handleGoogleSignInResult(GoogleSignInResult result) {
         Log.d(MainActivity.class, "handleGoogleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
-            // Signed in successfully, show authenticated UI.
             final GoogleSignInAccount acct = result.getSignInAccount();
             final String email = acct.getEmail();
-            String familyName = acct.getFamilyName();
-            String userId = acct.getId();
             String token = acct.getIdToken();
-            API.google(email, token, familyName, activity.getBaseContext(), new NetworkResultListener() {
+            API.google(email, token, activity.getBaseContext(), new NetworkResultListener() {
                 @Override
                 public void onOk() {
                     Preferences.setAccount(activity.getBaseContext(), acct.getEmail());

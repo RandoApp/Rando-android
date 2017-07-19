@@ -58,7 +58,6 @@ import static com.github.randoapp.Constants.FIREBASE_INSTANCE_ID_HEADER;
 import static com.github.randoapp.Constants.FIREBASE_INSTANCE_ID_PARAM;
 import static com.github.randoapp.Constants.FORBIDDEN_CODE;
 import static com.github.randoapp.Constants.GOOGLE_EMAIL_PARAM;
-import static com.github.randoapp.Constants.GOOGLE_FAMILY_NAME_PARAM;
 import static com.github.randoapp.Constants.GOOGLE_TOKEN_PARAM;
 import static com.github.randoapp.Constants.GOOGLE_URL;
 import static com.github.randoapp.Constants.IMAGE_MIME_TYPE;
@@ -111,11 +110,10 @@ public class API {
         }));
     }
 
-    public static void google(String email, String token, String familyName, final Context context, final NetworkResultListener resultListener) {
+    public static void google(String email, String token, final Context context, final NetworkResultListener resultListener) {
         Map<String, String> params = new HashMap<>();
         params.put(GOOGLE_EMAIL_PARAM, email);
         params.put(GOOGLE_TOKEN_PARAM, token);
-        params.put(GOOGLE_FAMILY_NAME_PARAM, familyName);
         params.put(FIREBASE_INSTANCE_ID_PARAM, Preferences.getFirebaseInstanceId(context));
 
         VolleySingleton.getInstance(context).getRequestQueue().add(new JsonObjectRequest(Request.Method.POST, GOOGLE_URL, new JSONObject(params), new Response.Listener<JSONObject>() {
