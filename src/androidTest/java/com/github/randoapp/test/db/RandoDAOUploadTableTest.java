@@ -23,8 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SmallTest
 public class RandoDAOUploadTableTest {
 
-    Context context;
-
+    private Context context;
 
     @Before
     public void setUp() throws Exception {

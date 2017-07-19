@@ -32,7 +32,7 @@ import static org.hamcrest.Matchers.greaterThan;
 @SmallTest
 public class RandoDAOTest {
 
-    Context context;
+    private Context context;
 
     @Before
     public void setUp() throws Exception {

@@ -27,7 +27,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @SmallTest
 public class PreferencesTest {
 
-    Context context;
+    private Context context;
 
     @Before
     public void setUp() throws Exception {

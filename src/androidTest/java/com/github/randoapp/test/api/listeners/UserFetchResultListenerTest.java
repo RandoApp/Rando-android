@@ -28,7 +28,7 @@ import static org.mockito.Mockito.verify;
 @SmallTest
 public class UserFetchResultListenerTest {
 
-    Context context;
+    private Context context;
 
     @Before
     public void setUp() throws Exception {

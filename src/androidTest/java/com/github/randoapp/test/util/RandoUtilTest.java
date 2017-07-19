@@ -25,7 +25,7 @@ import static org.hamcrest.core.Is.is;
 @SmallTest
 public class RandoUtilTest {
 
-    Context context;
+    private Context context;
 
     @Before
     public void setUp() {

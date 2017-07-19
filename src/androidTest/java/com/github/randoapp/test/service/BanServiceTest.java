@@ -19,7 +19,7 @@ import static org.hamcrest.core.Is.is;
 @SmallTest
 public class BanServiceTest {
 
-    Context context;
+    private Context context;
 
     @Before
     public void setUp() throws Exception {
