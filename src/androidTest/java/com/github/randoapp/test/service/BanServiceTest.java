@@ -117,7 +117,7 @@ public class BanServiceTest {
 
     @Test
     public void shouldPutNothingToPropertiesWhenMessageContains0ResetTime() throws Exception {
-        assertThat("Reset time is not equal", Preferences.getBanResetAt(), is(0L));
+        assertThat("Reset time is not equal", Preferences.getBanResetAt(context), is(0L));
 
         BanService banService = new BanService();
         banService.processForbiddenRequest(context, "Forbidden. Reset: 0");

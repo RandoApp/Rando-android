@@ -1,13 +1,18 @@
 package com.github.randoapp.test.util;
 
-import android.test.AndroidTestCase;
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
-import com.github.randoapp.api.beans.User;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
-import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.test.db.RandoTestHelper;
 import com.github.randoapp.util.RandoUtil;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,20 +20,23 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-public class RandoUtilTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+@SmallTest
+public class RandoUtilTest {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        RandoDAO.clearRandos();
-        RandoDAO.clearRandoToUpload();
+    Context context;
+
+    @Before
+    protected void setUp() {
+        context = InstrumentationRegistry.getTargetContext();
+        RandoDAO.clearRandos(context);
+        RandoDAO.clearRandoToUpload(context);
     }
 
-    @Override
+    @After
     protected void tearDown() throws Exception {
-        super.tearDown();
-        RandoDAO.clearRandos();
-        RandoDAO.clearRandoToUpload();
+        RandoDAO.clearRandos(context);
+        RandoDAO.clearRandoToUpload(context);
     }
 
 
