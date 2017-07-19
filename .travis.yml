@@ -7,9 +7,9 @@ group: edge
 env:
   matrix:
     #- ANDROID_API=24 ANDROID_ABI=armeabi-v7a
-    - ANDROID_API=22 ANDROID_ABI=google_apis/armeabi-v7a NEED_UPLOAD_APK=true
-    - ANDROID_API=19 ANDROID_ABI=google_apis/armeabi-v7a
-    - ANDROID_API=16 ANDROID_ABI=google_apis/armeabi-v7a
+    - ANDROID_API=22 ANDROID_ABI=armeabi-v7a NEED_UPLOAD_APK=true
+    - ANDROID_API=19 ANDROID_ABI=armeabi-v7a
+    - ANDROID_API=16 ANDROID_ABI=armeabi-v7a
   global:
     - secure: Kq5NpWlyXvAvzZ5UUwAxtooG7Cwtdnzh1fhCNqE2Lx2441w9aEGntd5+ffCCTCF4orRHlFIbqfE4/D1YlH6cJtP9hW37SPI8swe3r6Zyfjftakbe3ld72bVfq0f2zx5T4zln63jppMs+XxKNYjg8UswC+9C8Vi2LeJdPUC/Zdzs=
     - secure: X6INcg26b1Bm48QDfDDhLnbRJm5tOffr+AWVcXkgaSbYybqPvYQmSLX7ai1ArCzDgTYqz12tUTVLgrgMlsXkQGFj41hoD+IEtO9zJOmHdtwUDkkh4yVvNwoJ7TTT/N7wL7ZAU556khWy76sS7/biv4iPohCy//R91LWki2d1240=
@@ -28,7 +28,7 @@ android:
     - extra-android-m2repository
     - extra-google-m2repository
     - android-$ANDROID_API
-    - sys-img-armeabi-v7a-google_apis-$ANDROID_API
+    - sys-img-armeabi-v7a--$ANDROID_API
   licenses:
     - 'android-sdk-preview-license-.+'
     - 'android-sdk-license-.+'
@@ -92,7 +92,7 @@ install:
   #- sdkmanager --uninstall "build-tools;21.1.2"
 # Create and start emulator
   # For a full list of android targets, run "android list targets"
-  - android list targets
+  #- android list targets
   #- android list sdk -a -e
   - echo no | android create avd --force -n test -t android-$ANDROID_API --abi $ANDROID_ABI
   - emulator -memory 1536 -avd test -no-window &
