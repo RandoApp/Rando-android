@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import com.github.randoapp.MainActivity;
 import com.github.randoapp.api.API;
+import com.github.randoapp.api.beans.Error;
 import com.github.randoapp.api.listeners.NetworkResultListener;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
@@ -30,16 +31,16 @@ public class GoogleAuthService extends BaseAuthService {
             String familyName = acct.getFamilyName();
             String userId = acct.getId();
             String token = acct.getIdToken();
-            API.google(email, token, familyName, new NetworkResultListener() {
+            API.google(email, token, familyName, activity.getBaseContext(), new NetworkResultListener() {
                 @Override
                 public void onOk() {
-                    Preferences.setAccount(acct.getEmail());
-                    Preferences.setAccount(email);
+                    Preferences.setAccount(activity.getBaseContext(), acct.getEmail());
+                    Preferences.setAccount(activity.getBaseContext(), email);
                     done();
                 }
 
                 @Override
-                public void onError(Exception error) {
+                public void onError(Error error) {
                     Toast.makeText(activity.getBaseContext(), "Google Signed out.", Toast.LENGTH_LONG).show();
                 }
             });

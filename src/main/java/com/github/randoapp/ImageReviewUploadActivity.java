@@ -84,16 +84,16 @@ public class ImageReviewUploadActivity extends FragmentActivity {
                 return;
             }
 
-            if (Preferences.getEnableVibrate()
+            if (Preferences.getEnableVibrate(getBaseContext())
                     && ContextCompat.checkSelfPermission(v.getContext(), android.Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
                 ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(50);
             }
 
             uploadButton.setEnabled(false);
             Analytics.logUploadRando(mFirebaseAnalytics);
-            Location location = Preferences.getLocation();
+            Location location = Preferences.getLocation(getBaseContext());
             RandoUpload randoUpload = new RandoUpload(originalPicFileName, location.getLatitude(), location.getLongitude(), new Date());
-            RandoDAO.addToUpload(randoUpload);
+            RandoDAO.addToUpload(getBaseContext(), randoUpload);
 
             UploadJobScheduler.scheduleUpload(getApplicationContext());
 
