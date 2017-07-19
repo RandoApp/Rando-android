@@ -154,6 +154,7 @@ public class AuthActivity extends AppCompatActivity {
             Progress.hide();
         } catch (Exception e) {
             Log.w(AuthActivity.class, "Logout failed: ", e.getMessage());
+            Progress.hide();
         }
     }
 
