@@ -27,14 +27,14 @@ public class RandoUtilTest {
     Context context;
 
     @Before
-    protected void setUp() {
+    public void setUp() {
         context = InstrumentationRegistry.getTargetContext();
         RandoDAO.clearRandos(context);
         RandoDAO.clearRandoToUpload(context);
     }
 
     @After
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         RandoDAO.clearRandos(context);
         RandoDAO.clearRandoToUpload(context);
     }
