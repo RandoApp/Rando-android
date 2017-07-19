@@ -94,6 +94,7 @@ public class Preferences {
     public static void removeLocation(Context context) {
         synchronized (monitor) {
             getSharedPreferences(context).edit().remove(LONGITUDE_PARAM).apply();
+            getSharedPreferences(context).edit().remove(LATITUDE_PARAM).apply();
         }
     }
 

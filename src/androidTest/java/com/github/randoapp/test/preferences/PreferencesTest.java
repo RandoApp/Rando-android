@@ -130,12 +130,9 @@ public class PreferencesTest {
         Preferences.setLocation(context, location);
         Preferences.removeLocation(context);
 
-        lat = 0.0;
-        lon = 0.0;
-
         assertThat(Preferences.getLocation(context), notNullValue());
-        assertThat(Preferences.getLocation(context).getLatitude(), is(lat));
-        assertThat(Preferences.getLocation(context).getLongitude(), is(lon));
+        assertThat(Preferences.getLocation(context).getLatitude(), is(0.0));
+        assertThat(Preferences.getLocation(context).getLongitude(), is(0.0));
     }
 
     //This test should pass untill we implement Training logic
