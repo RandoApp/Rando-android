@@ -1,6 +1,4 @@
 <resources>
-
-    <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="bon_appetit_button_size">100dp</dimen>
@@ -54,10 +52,6 @@
     <dimen name="ic_home_margin_top">7dp</dimen>
     <dimen name="ic_home_margin_right">7dp</dimen>
 
-    <!-- Added to resolve compilation error after switching from v7 support to v4 support -->
-    <!-- Default height of an action bar. -->
-    <dimen name="abc_action_bar_default_height">48dip</dimen>
-
     <dimen name="general_button_min_height">40.0dip</dimen>
 
     <dimen name="help_icon_size">25dp</dimen>
@@ -65,7 +59,7 @@
     <dimen name="focus_marker_size">55dp</dimen>
 
     <dimen name="ban_label_height">60dp</dimen>
-    <dimen name="ban_label_font_size">16dp</dimen>
+    <dimen name="ban_label_font_size">16sp</dimen>
 
 </resources>
 

@@ -1,46 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/rando_pair_padding_bottom"
     android:tag="rando_item_layout">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <ViewSwitcher
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:tag="rando_placeholder">
+        android:paddingBottom="@dimen/rando_padding_portrait_column_bottom"
+        android:paddingLeft="@dimen/rando_padding_portrait_column_left"
+        android:paddingRight="@dimen/rando_padding_portrait_column_right"
+        android:paddingTop="@dimen/rando_padding_portrait_column_top"
+        android:tag="viewSwitcher">
 
-        <ViewSwitcher
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/rando_padding_portrait_column_bottom"
-            android:paddingLeft="@dimen/rando_padding_portrait_column_left"
-            android:paddingRight="@dimen/rando_padding_portrait_column_right"
-            android:paddingTop="@dimen/rando_padding_portrait_column_top"
-            android:tag="viewSwitcher">
+            android:layout_height="match_parent">
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            <com.makeramen.roundedimageview.RoundedImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_centerVertical="true"
                 android:tag="image"
                 app:riv_oval="true" />
-            </FrameLayout>
+        </FrameLayout>
 
-            <FrameLayout
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.makeramen.roundedimageview.RoundedImageView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:tag="map"
-                    app:riv_oval="true" />
-            </FrameLayout>
-        </ViewSwitcher>
-    </LinearLayout>
+                android:layout_height="match_parent"
+                android:tag="map"
+                app:riv_oval="true" />
+        </FrameLayout>
+    </ViewSwitcher>
 </RelativeLayout>

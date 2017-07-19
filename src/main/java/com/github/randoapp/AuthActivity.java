@@ -16,6 +16,7 @@ import com.github.randoapp.service.EmailAndPasswordAuthService;
 import com.github.randoapp.service.GoogleAuthService;
 import com.github.randoapp.service.SkipAuthService;
 import com.github.randoapp.util.AccountUtil;
+import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.PermissionUtils;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -24,6 +25,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import static com.github.randoapp.Constants.CONTACTS_PERMISSION_REQUEST_CODE;
 
@@ -32,12 +34,14 @@ public class AuthActivity extends AppCompatActivity {
     private EditText emailText;
     private boolean requestAccountsOnFirstLoad = true;
     private GoogleApiClient googleApiClient;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
         emailText = (EditText) this.findViewById(R.id.emailEditText);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         initGoogleButton();
     }
 
@@ -60,6 +64,7 @@ public class AuthActivity extends AppCompatActivity {
         findViewById(R.id.google_sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Analytics.logLoginGoogle(mFirebaseAnalytics);
                 Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
                 startActivityForResult(signInIntent, Constants.GOOGLE_SIGN_IN);
             }

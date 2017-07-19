@@ -4,7 +4,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.+'
-        classpath 'com.google.gms:google-services:3.0.0'
+        classpath 'com.google.gms:google-services:3.1.0'
         classpath 'com.dicedmelon.gradle:jacoco-android:0.1.2'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
     }
@@ -100,7 +100,7 @@ ext {
     minSdkVersion = 16
     targetSdkVersion = 25
     supportLibraryVersion = "25+"
-    firebaseLibraryVersion = "10.0.1"
+    firebaseLibraryVersion = "11.0.2"
 }
 
 dependencies {
@@ -118,13 +118,14 @@ dependencies {
     compile "com.google.firebase:firebase-messaging:$firebaseLibraryVersion"
     compile "com.google.firebase:firebase-crash:$firebaseLibraryVersion"
 
-    compile 'com.evernote:android-job:1.1.8'
+    compile 'com.evernote:android-job:1.1.11'
     compile "com.android.support:exifinterface:$supportLibraryVersion"
 
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
     androidTestCompile "com.android.support:support-annotations:$supportLibraryVersion"
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
+    androidTestCompile("com.android.support.test.espresso:espresso-intents:2.2.2")
     androidTestCompile 'com.squareup:javawriter:2.1.1'
     androidTestCompile 'javax.annotation:javax.annotation-api:1.2'
     androidTestCompile 'javax.inject:javax.inject:1'
