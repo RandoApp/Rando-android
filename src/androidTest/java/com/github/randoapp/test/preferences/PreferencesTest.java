@@ -6,7 +6,6 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.github.randoapp.App;
 import com.github.randoapp.preferences.Preferences;
 
 import org.junit.Before;
@@ -26,12 +25,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 @SmallTest
-public class PreferencesTest{
+public class PreferencesTest {
+
+    private Context context;
 
     @Before
     public void setUp() throws Exception {
-        App.context = InstrumentationRegistry.getTargetContext();
-        App.context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE).edit().clear().apply();
+        context = InstrumentationRegistry.getTargetContext();
+        context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE).edit().clear().apply();
     }
 
     //Auth Token Tests
@@ -39,37 +40,37 @@ public class PreferencesTest{
     public void testGetAuthToken() {
         String value = UUID.randomUUID().toString();
 
-        Preferences.setAuthToken(value);
+        Preferences.setAuthToken(context, value);
 
-        assertThat(Preferences.getAuthToken(), is(value));
+        assertThat(Preferences.getAuthToken(context), is(value));
     }
 
     @Test
     public void testSetEmptyAuthTokenReturnEmptyTokenOnGet() {
         String value = "";
 
-        Preferences.setAuthToken(value);
+        Preferences.setAuthToken(context, value);
 
-        assertThat(Preferences.getAuthToken(), is(value));
+        assertThat(Preferences.getAuthToken(context), is(value));
     }
 
     @Test
     public void testGetAuthTokenAsNull() {
-        Preferences.setAuthToken(null);
+        Preferences.setAuthToken(context, null);
 
-        assertThat(Preferences.getAuthToken(), is(AUTH_TOKEN_DEFAULT_VALUE));
+        assertThat(Preferences.getAuthToken(context), is(AUTH_TOKEN_DEFAULT_VALUE));
     }
 
     @Test
     public void testRemoveAuthToken() {
         String value = UUID.randomUUID().toString();
 
-        Preferences.setAuthToken(value);
-        assertThat(Preferences.getAuthToken(), is(value));
+        Preferences.setAuthToken(context, value);
+        assertThat(Preferences.getAuthToken(context), is(value));
 
-        Preferences.removeAuthToken();
+        Preferences.removeAuthToken(context);
 
-        assertThat(Preferences.getAuthToken(), is(AUTH_TOKEN_DEFAULT_VALUE));
+        assertThat(Preferences.getAuthToken(context), is(AUTH_TOKEN_DEFAULT_VALUE));
     }
 
     // Location tests
@@ -83,10 +84,10 @@ public class PreferencesTest{
         location.setLongitude(lon);
         location.setLatitude(lat);
 
-        Preferences.setLocation(location);
-        assertThat(Preferences.getLocation(), notNullValue());
-        assertThat(Preferences.getLocation().getLatitude(), is(lat));
-        assertThat(Preferences.getLocation().getLongitude(), is(lon));
+        Preferences.setLocation(context, location);
+        assertThat(Preferences.getLocation(context), notNullValue());
+        assertThat(Preferences.getLocation(context).getLatitude(), is(lat));
+        assertThat(Preferences.getLocation(context).getLongitude(), is(lon));
     }
 
     @Test
@@ -98,23 +99,23 @@ public class PreferencesTest{
         location.setLongitude(lon);
         location.setLatitude(lat);
 
-        Preferences.setLocation(location);
+        Preferences.setLocation(context, location);
 
-        assertThat(Preferences.getLocation(), notNullValue());
-        assertThat(Preferences.getLocation().getLatitude(), is(lat));
-        assertThat(Preferences.getLocation().getLongitude(), is(lon));
+        assertThat(Preferences.getLocation(context), notNullValue());
+        assertThat(Preferences.getLocation(context).getLatitude(), is(lat));
+        assertThat(Preferences.getLocation(context).getLongitude(), is(lon));
     }
 
     @Test
     public void testGetLocationSetAsNull() {
-        Preferences.setLocation(null);
+        Preferences.setLocation(context, null);
 
         double lat = 0.0;
         double lon = 0.0;
 
-        assertThat(Preferences.getLocation(), notNullValue());
-        assertThat(Preferences.getLocation().getLatitude(), is(lat));
-        assertThat(Preferences.getLocation().getLongitude(), is(lon));
+        assertThat(Preferences.getLocation(context), notNullValue());
+        assertThat(Preferences.getLocation(context).getLatitude(), is(lat));
+        assertThat(Preferences.getLocation(context).getLongitude(), is(lon));
     }
 
     @Test
@@ -126,28 +127,25 @@ public class PreferencesTest{
         location.setLongitude(lon);
         location.setLatitude(lat);
 
-        Preferences.setLocation(location);
-        Preferences.removeLocation();
+        Preferences.setLocation(context, location);
+        Preferences.removeLocation(context);
 
-        lat = 0.0;
-        lon = 0.0;
-
-        assertThat(Preferences.getLocation(), notNullValue());
-        assertThat(Preferences.getLocation().getLatitude(), is(lat));
-        assertThat(Preferences.getLocation().getLongitude(), is(lon));
+        assertThat(Preferences.getLocation(context), notNullValue());
+        assertThat(Preferences.getLocation(context).getLatitude(), is(0.0));
+        assertThat(Preferences.getLocation(context).getLongitude(), is(0.0));
     }
 
     //This test should pass untill we implement Training logic
     @Test
     public void testTrainingShownIsTrue() {
         assertThat(Preferences.isTrainingFragmentShown(), is(true));
-        Preferences.removeTrainingFragmentShown();
+        Preferences.removeTrainingFragmentShown(context);
         assertThat(Preferences.isTrainingFragmentShown(), is(true));
-        Preferences.setTrainingFragmentShown(0);
+        Preferences.setTrainingFragmentShown(context, 0);
         assertThat(Preferences.isTrainingFragmentShown(), is(true));
-        Preferences.setTrainingFragmentShown(1);
+        Preferences.setTrainingFragmentShown(context, 1);
         assertThat(Preferences.isTrainingFragmentShown(), is(true));
-        Preferences.removeTrainingFragmentShown();
+        Preferences.removeTrainingFragmentShown(context);
         assertThat(Preferences.isTrainingFragmentShown(), is(true));
     }
 
@@ -156,37 +154,37 @@ public class PreferencesTest{
     public void testGetAccount() {
         String value = UUID.randomUUID().toString();
 
-        Preferences.setAccount(value);
+        Preferences.setAccount(context, value);
 
-        assertThat(Preferences.getAccount(), is(value));
+        assertThat(Preferences.getAccount(context), is(value));
     }
 
     @Test
     public void testSetEmptyAccountReturnEmptyTokenOnGet() {
         String value = "";
 
-        Preferences.setAccount(value);
+        Preferences.setAccount(context, value);
 
-        assertThat(Preferences.getAccount(), is(value));
+        assertThat(Preferences.getAccount(context), is(value));
     }
 
     @Test
     public void testGetAccountAsNull() {
-        Preferences.setAccount(null);
+        Preferences.setAccount(context, null);
 
-        assertThat(Preferences.getAccount(), is(ACCOUNT_DEFAULT_VALUE));
+        assertThat(Preferences.getAccount(context), is(ACCOUNT_DEFAULT_VALUE));
     }
 
     @Test
     public void testRemoveAccount() {
         String value = UUID.randomUUID().toString();
 
-        Preferences.setAccount(value);
-        assertThat(Preferences.getAccount(), is(value));
+        Preferences.setAccount(context, value);
+        assertThat(Preferences.getAccount(context), is(value));
 
-        Preferences.removeAccount();
+        Preferences.removeAccount(context);
 
-        assertThat(Preferences.getAccount(), is(ACCOUNT_DEFAULT_VALUE));
+        assertThat(Preferences.getAccount(context), is(ACCOUNT_DEFAULT_VALUE));
     }
 
     //FirebaseInstanceId Tests
@@ -194,36 +192,36 @@ public class PreferencesTest{
     public void shouldSetAndGetFirebaseInstanceId() {
         String value = UUID.randomUUID().toString();
 
-        Preferences.setFirebaseInstanceId(value);
+        Preferences.setFirebaseInstanceId(context, value);
 
-        assertThat(Preferences.getFirebaseInstanceId(), is(value));
+        assertThat(Preferences.getFirebaseInstanceId(context), is(value));
     }
 
     @Test
     public void shouldSetEmptyFirebaseInstanceIdAndReturnEmptyFirebaseInstanceIdOnGet() {
         String value = "";
 
-        Preferences.setFirebaseInstanceId(value);
+        Preferences.setFirebaseInstanceId(context, value);
 
-        assertThat(Preferences.getFirebaseInstanceId(), is(value));
+        assertThat(Preferences.getFirebaseInstanceId(context), is(value));
     }
 
     @Test
     public void shouldGetDefaultFirebaseInstanceIdWhenSetAsNull() {
-        Preferences.setFirebaseInstanceId(null);
+        Preferences.setFirebaseInstanceId(context, null);
 
-        assertThat(Preferences.getFirebaseInstanceId(), is(AUTH_TOKEN_DEFAULT_VALUE));
+        assertThat(Preferences.getFirebaseInstanceId(context), is(AUTH_TOKEN_DEFAULT_VALUE));
     }
 
     @Test
     public void shouldRemoveFirebaseInstanceId() {
         String value = UUID.randomUUID().toString();
 
-        Preferences.setFirebaseInstanceId(value);
-        assertThat(Preferences.getFirebaseInstanceId(), is(value));
+        Preferences.setFirebaseInstanceId(context, value);
+        assertThat(Preferences.getFirebaseInstanceId(context), is(value));
 
-        Preferences.removeFirebaseInstanceId();
+        Preferences.removeFirebaseInstanceId(context);
 
-        assertThat(Preferences.getFirebaseInstanceId(), is(AUTH_TOKEN_DEFAULT_VALUE));
+        assertThat(Preferences.getFirebaseInstanceId(context), is(AUTH_TOKEN_DEFAULT_VALUE));
     }
 }

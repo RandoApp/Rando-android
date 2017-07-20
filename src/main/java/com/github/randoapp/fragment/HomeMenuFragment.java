@@ -17,25 +17,19 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.randoapp.AuthActivity;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
-import com.github.randoapp.api.API;
-import com.github.randoapp.api.listeners.NetworkResultListener;
-import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.service.BanService;
 import com.github.randoapp.service.ContactUsService;
-import com.github.randoapp.util.Analytics;
-import com.github.randoapp.view.Progress;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
 import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
 
 public class HomeMenuFragment extends Fragment {
 
     private TextView accountName;
-    private FirebaseAnalytics mFirebaseAnalytics;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -53,24 +47,13 @@ public class HomeMenuFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View rootView;
         rootView = inflater.inflate(R.layout.home_left_menu, container, false);
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
 
         rootView.findViewById(R.id.logoutButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Analytics.logLogout(mFirebaseAnalytics);
-                Progress.show(getActivity().getResources().getString(R.string.logout_progress), getActivity());
-                API.logout(new NetworkResultListener() {
-                    @Override
-                    public void onOk() {
-                        doLogout();
-                    }
-
-                    @Override
-                    public void onError(Exception error) {
-                        doLogout();
-                    }
-                });
+                Intent intent = new Intent(getActivity(), AuthActivity.class);
+                intent.putExtra(Constants.LOGOUT_ACTIVITY, true);
+                startActivity(intent);
             }
         });
 
@@ -91,11 +74,11 @@ public class HomeMenuFragment extends Fragment {
         });
 
         CheckBox enablebleVibrate = (CheckBox) rootView.findViewById(R.id.enable_vibrate);
-        enablebleVibrate.setChecked(Preferences.getEnableVibrate());
+        enablebleVibrate.setChecked(Preferences.getEnableVibrate(getContext()));
         enablebleVibrate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Preferences.setEnableVibrate(isChecked);
+                Preferences.setEnableVibrate(getContext(), isChecked);
             }
         });
 
@@ -103,21 +86,6 @@ public class HomeMenuFragment extends Fragment {
         initVersion(rootView);
         initHelp(rootView);
         return rootView;
-    }
-
-    private void doLogout() {
-        try {
-            Preferences.removeAuthToken();
-            Preferences.removeAccount();
-            Preferences.removeLocation();
-            RandoDAO.clearRandos();
-            RandoDAO.clearRandoToUpload();
-            Intent intent = new Intent(Constants.LOGOUT_BROADCAST_EVENT);
-            getContext().sendBroadcast(intent);
-            Progress.hide();
-        } catch (Exception e) {
-            Log.w(HomeMenuFragment.class, "Logout failed: ", e.getMessage());
-        }
     }
 
     @Override
@@ -152,7 +120,7 @@ public class HomeMenuFragment extends Fragment {
     }
 
     private void initAccountName() {
-        accountName.setText(getActivity().getString(R.string.account) + " " + Preferences.getAccount());
+        accountName.setText(getActivity().getString(R.string.account) + " " + Preferences.getAccount(getContext()));
     }
 
     private void initHelp(View rootView) {

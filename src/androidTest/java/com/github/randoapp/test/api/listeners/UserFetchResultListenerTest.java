@@ -1,13 +1,16 @@
 package com.github.randoapp.test.api.listeners;
 
-import android.support.test.runner.AndroidJUnit4;
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.github.randoapp.api.beans.User;
 import com.github.randoapp.api.callback.OnFetchUser;
 import com.github.randoapp.api.listeners.UserFetchResultListener;
 import com.github.randoapp.test.api.APITestHelper;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.internal.matchers.InstanceOf;
@@ -25,10 +28,17 @@ import static org.mockito.Mockito.verify;
 @SmallTest
 public class UserFetchResultListenerTest {
 
+    private Context context;
+
+    @Before
+    public void setUp() throws Exception {
+        context = InstrumentationRegistry.getTargetContext();
+    }
+
     @Test
     public void testFetchUserInRandosParsing() throws Exception {
         OnFetchUser onFetchUseMock = spy(new OnFetchUserAssertions());
-        new UserFetchResultListener(onFetchUseMock).onResponse(APITestHelper.getUserFetchJSONObject());
+        new UserFetchResultListener(context, onFetchUseMock).onResponse(APITestHelper.getUserFetchJSONObject());
         verify(onFetchUseMock, times(1)).onFetch((User) argThat(new InstanceOf(User.class)));
     }
 

@@ -58,7 +58,7 @@ public class MainActivity extends FragmentActivity {
                     break;
                 case AUTH_FAILURE_BROADCAST_EVENT:
                 case LOGOUT_BROADCAST_EVENT:
-                    Preferences.removeAuthToken();
+                    Preferences.removeAuthToken(getBaseContext());
                     break;
                 case AUTH_SUCCCESS_BROADCAST_EVENT:
                     break;
@@ -79,8 +79,9 @@ public class MainActivity extends FragmentActivity {
     };
 
     private void startAuthActivity() {
-        Intent intent = new Intent(MainActivity.this, AuthActivity.class);
-        startActivityForResult(intent, Constants.LOGOUT_ACTIVITY_RESULT);
+        Intent intent = new Intent(this, AuthActivity.class);
+        intent.putExtra(Constants.LOGOUT_ACTIVITY, true);
+        startActivity(intent);
     }
 
     @Override
@@ -99,7 +100,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private boolean isNotAuthorized() {
-        return Preferences.getAuthToken().isEmpty();
+        return Preferences.getAuthToken(getBaseContext()).isEmpty();
     }
 
     @Override
@@ -144,8 +145,8 @@ public class MainActivity extends FragmentActivity {
             ACRA.getErrorReporter().removeCustomData("PlayServicesProblem");
             if ((status == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED && GooglePlayServicesUtil.isGPSVersionLowerThanRequired(getPackageManager()))
                     || (status != ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED && googleApiAvailability.isUserResolvableError(status)
-                    && (TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - Preferences.getUpdatePlayServicesDateShown().getTime()) > 15))) {
-                Preferences.setUpdatePlayServicesDateShown(new Date());
+                    && (TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - Preferences.getUpdatePlayServicesDateShown(getBaseContext()).getTime()) > 15))) {
+                Preferences.setUpdatePlayServicesDateShown(getBaseContext(), new Date());
                 googleApiAvailability.getErrorDialog(this, status, UPDATE_PLAY_SERVICES_REQUEST_CODE).show();
             }
 
@@ -163,7 +164,7 @@ public class MainActivity extends FragmentActivity {
                             new AlertDialog.Builder(this).setTitle(R.string.storage_needed_title).setMessage(R.string.storage_needed_message).setPositiveButton(R.string.permission_positive_button, null).create().show();
                         }
                     } else {
-                        API.syncUserAsync(null, null);
+                        API.syncUserAsync(getBaseContext(), null, null);
                     }
                     break;
                 case CONTACTS_PERMISSION_REQUEST_CODE:
@@ -193,7 +194,7 @@ public class MainActivity extends FragmentActivity {
         } else if (requestCode == UPDATE_PLAY_SERVICES_REQUEST_CODE) {
             int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
             if (status != ConnectionResult.SUCCESS && status != playServicesStatus) {
-                Preferences.removeUpdatePlayServicesDateShown();
+                Preferences.removeUpdatePlayServicesDateShown(getBaseContext());
             }
         }
 

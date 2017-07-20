@@ -12,7 +12,7 @@ import com.github.randoapp.preferences.Preferences;
 
 public class ContactUsService {
 
-    public void openContactUsActivity(Context context) {
+    public void openContactUsActivity(final Context context) {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
 
         String versionName = "";
@@ -25,7 +25,7 @@ public class ContactUsService {
 
         String email = context.getString(R.string.contact_us_email);
         String subject = String.format(context.getString(R.string.contact_us_subject), versionName);
-        String body = String.format(context.getString(R.string.contact_us_body), Preferences.getAccount());
+        String body = String.format(context.getString(R.string.contact_us_body), Preferences.getAccount(context));
 
         String uriText = "mailto:" + Uri.encode(email) +
                 "?subject=" + Uri.encode(subject) +

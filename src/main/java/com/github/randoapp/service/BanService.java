@@ -1,5 +1,6 @@
 package com.github.randoapp.service;
 
+import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -40,10 +41,10 @@ public class BanService {
         return 0L;
     }
 
-    public void processForbiddenRequest(String message) {
+    public void processForbiddenRequest(final Context context, String message) {
         long resetBanAt = parseResetTimeInBanMessage(message);
         if (resetBanAt > 0L) {
-            Preferences.setBanResetAt(resetBanAt);
+            Preferences.setBanResetAt(context, resetBanAt);
         }
     }
 
@@ -52,7 +53,7 @@ public class BanService {
             return;
         }
 
-        long banResetAt = Preferences.getBanResetAt();
+        long banResetAt = Preferences.getBanResetAt(banView.getContext());
         if (banResetAt > 0 && !isPermanentBan(banResetAt) && !isSuspendUploadAlreadySetup(banView)) {
             showSuspendUpload(banView, banResetAt);
         } else if (isPermanentBan(banResetAt)) {

@@ -1,5 +1,7 @@
 package com.github.randoapp.test.service;
 
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -17,9 +19,16 @@ import static org.hamcrest.core.Is.is;
 @SmallTest
 public class BanServiceTest {
 
+    private Context context;
+
+    @Before
+    public void setUp() throws Exception {
+        context = InstrumentationRegistry.getTargetContext();
+    }
+
     @Before
     public void resetPreferences() {
-        Preferences.setBanResetAt(0L);
+        Preferences.setBanResetAt(context, 0L);
     }
 
     @Test
@@ -88,31 +97,31 @@ public class BanServiceTest {
 
     @Test
     public void shouldPutResetTimeToProperties() throws Exception {
-        assertThat("Reset time is not equal", Preferences.getBanResetAt(), is(0L));
+        assertThat("Reset time is not equal", Preferences.getBanResetAt(context), is(0L));
 
         BanService banService = new BanService();
-        banService.processForbiddenRequest("Forbidden. Reset: 1234567890");
+        banService.processForbiddenRequest(context, "Forbidden. Reset: 1234567890");
 
-        assertThat("Reset time is not equal", Preferences.getBanResetAt(), is(1234567890L));
+        assertThat("Reset time is not equal", Preferences.getBanResetAt(context), is(1234567890L));
     }
 
     @Test
     public void shouldPutNothingToPropertiesWhenMessageIsNull() throws Exception {
-        assertThat("Reset time is not equal", Preferences.getBanResetAt(), is(0L));
+        assertThat("Reset time is not equal", Preferences.getBanResetAt(context), is(0L));
 
         BanService banService = new BanService();
-        banService.processForbiddenRequest(null);
+        banService.processForbiddenRequest(context, null);
 
-        assertThat("Reset time is not equal", Preferences.getBanResetAt(), is(0L));
+        assertThat("Reset time is not equal", Preferences.getBanResetAt(context), is(0L));
     }
 
     @Test
     public void shouldPutNothingToPropertiesWhenMessageContains0ResetTime() throws Exception {
-        assertThat("Reset time is not equal", Preferences.getBanResetAt(), is(0L));
+        assertThat("Reset time is not equal", Preferences.getBanResetAt(context), is(0L));
 
         BanService banService = new BanService();
-        banService.processForbiddenRequest("Forbidden. Reset: 0");
+        banService.processForbiddenRequest(context, "Forbidden. Reset: 0");
 
-        assertThat("Reset time is not equal", Preferences.getBanResetAt(), is(0L));
+        assertThat("Reset time is not equal", Preferences.getBanResetAt(context), is(0L));
     }
 }

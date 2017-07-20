@@ -36,7 +36,7 @@ public class RandoMessagingService extends FirebaseMessagingService {
                     notificationTextResId = R.string.rando_landed;
                 }
                 if (rando != null) {
-                    RandoDAO.createOrUpdateRandoCheckingByRandoId(rando);
+                    RandoDAO.createOrUpdateRandoCheckingByRandoId(getBaseContext(), rando);
                     Notification.show(this, getResources().getString(R.string.app_name), getResources().getString(notificationTextResId));
                     Log.d(RandoMessagingService.class, "Inserting/Updating newly Received Rando" + rando.toString());
                 }

@@ -74,7 +74,6 @@ public class Constants {
     public static final String SIGNUP_PASSWORD_PARAM = "password";
     public static final String GOOGLE_EMAIL_PARAM = "email";
     public static final String GOOGLE_TOKEN_PARAM = "token";
-    public static final String GOOGLE_FAMILY_NAME_PARAM = "family_name";
     public static final String ANONYMOUS_ID_PARAM = "id";
     public static final String IMAGE_URL_PARAM = "imageURL";
     public static final String IMAGE_URL_SIZES_PARAM = "imageSizeURL";
@@ -140,6 +139,7 @@ public class Constants {
 
     public static final int GOOGLE_SIGN_IN = 801;
 
+    public static final String LOGOUT_ACTIVITY = "LOGOUT";
     public static final int LOGOUT_ACTIVITY_RESULT = 901;
 
     public static final String PUSH_NOTIFICATION_LANDED = "landed";

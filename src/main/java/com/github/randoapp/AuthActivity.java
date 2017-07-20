@@ -9,8 +9,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.github.randoapp.fragment.HomeMenuFragment;
+import com.github.randoapp.api.API;
+import com.github.randoapp.api.beans.Error;
+import com.github.randoapp.api.listeners.NetworkResultListener;
+import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.log.Log;
+import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.service.ContactUsService;
 import com.github.randoapp.service.EmailAndPasswordAuthService;
 import com.github.randoapp.service.GoogleAuthService;
@@ -18,6 +22,7 @@ import com.github.randoapp.service.SkipAuthService;
 import com.github.randoapp.util.AccountUtil;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.PermissionUtils;
+import com.github.randoapp.view.Progress;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -34,15 +39,19 @@ public class AuthActivity extends AppCompatActivity {
     private EditText emailText;
     private boolean requestAccountsOnFirstLoad = true;
     private GoogleApiClient googleApiClient;
-    private FirebaseAnalytics mFirebaseAnalytics;
+    private FirebaseAnalytics firebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         setContentView(R.layout.activity_auth);
         emailText = (EditText) this.findViewById(R.id.emailEditText);
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         initGoogleButton();
+        if ((boolean) getIntent().getExtras().get(Constants.LOGOUT_ACTIVITY)) {
+            fullLogout();
+        }
     }
 
     private void initGoogleButton() {
@@ -64,7 +73,7 @@ public class AuthActivity extends AppCompatActivity {
         findViewById(R.id.google_sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Analytics.logLoginGoogle(mFirebaseAnalytics);
+                Analytics.logLoginGoogle(firebaseAnalytics);
                 Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
                 startActivityForResult(signInIntent, Constants.GOOGLE_SIGN_IN);
             }
@@ -94,7 +103,6 @@ public class AuthActivity extends AppCompatActivity {
         setEmailFromFirstAccount();
     }
 
-    //Results from Google+ auth permission request activity:
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -108,21 +116,49 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     private void setEmailFromFirstAccount() {
-        String[] accounts = AccountUtil.getAccountNames();
+        String[] accounts = AccountUtil.getAccountNames(getBaseContext());
         if (accounts.length > 0) {
             emailText.setText(accounts[0]);
         }
     }
 
-    private void logoutGoogle() {
+    private void fullLogout() {
         try {
-            revokeAccess();
+            Analytics.logLogout(firebaseAnalytics);
+            Progress.show(getString(R.string.logout_progress), this);
+            API.logout(getBaseContext(), new NetworkResultListener() {
+                @Override
+                public void onOk() {
+                    logout();
+                }
+
+                @Override
+                public void onError(Error error) {
+                    logout();
+                }
+            });
+
         } catch (Exception e) {
-            Log.w(HomeMenuFragment.class, "Logout Google. ignored exception from GoogleAuthUtil.invalidateToken: ", e.getMessage());
+            Log.w(AuthActivity.class, "Logout failed: ", e.getMessage());
         }
     }
 
-    private void revokeAccess() {
+    private void logout() {
+        try {
+            Preferences.removeAuthToken(getBaseContext());
+            Preferences.removeAccount(getBaseContext());
+            Preferences.removeLocation(getBaseContext());
+            RandoDAO.clearRandos(getBaseContext());
+            RandoDAO.clearRandoToUpload(getBaseContext());
+            logoutGoogle();
+            Progress.hide();
+        } catch (Exception e) {
+            Log.w(AuthActivity.class, "Logout failed: ", e.getMessage());
+            Progress.hide();
+        }
+    }
+
+    private void logoutGoogle() {
         Auth.GoogleSignInApi.revokeAccess(googleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override

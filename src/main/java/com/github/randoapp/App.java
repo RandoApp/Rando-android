@@ -29,22 +29,19 @@ import org.acra.sender.HttpSender;
 )
 public class App extends Application {
 
-    public static Context context;
-
     @Override
     public void onCreate() {
         super.onCreate();
-        context = getApplicationContext();
         startServices();
         if (!FirebaseApp.getApps(this).isEmpty()) {
-            Preferences.setFirebaseInstanceId(FirebaseInstanceId.getInstance().getToken());
+            Preferences.setFirebaseInstanceId(getBaseContext(), FirebaseInstanceId.getInstance().getToken());
             Log.i(App.class, "Firebase ID: " + FirebaseInstanceId.getInstance().getToken());
         }
     }
 
     private void startServices() {
         JobManager.create(this).addJobCreator(new UploadJobCreator());
-        if (RandoDAO.getNextRandoToUpload() != null) {
+        if (RandoDAO.getNextRandoToUpload(getBaseContext()) != null) {
             UploadJobScheduler.scheduleUpload(getApplicationContext());
         }
     }
