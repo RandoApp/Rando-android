@@ -50,6 +50,9 @@ public class AuthActivity extends AppCompatActivity {
         emailText = (EditText) this.findViewById(R.id.emailEditText);
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         initGoogleButton();
+        if ((boolean) getIntent().getExtras().get(Constants.LOGOUT_ACTIVITY)) {
+            fullLogout();
+        }
     }
 
     private void initGoogleButton() {
@@ -63,6 +66,7 @@ public class AuthActivity extends AppCompatActivity {
                     @Override
                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
                         if (ConnectionResult.CANCELED == connectionResult.getErrorCode()) {
+                            //Just skip Update Google Play services dialog
                             return;
                         }
                         Toast.makeText(getBaseContext(), "Google Signin failed with code: " + connectionResult.getErrorCode(), Toast.LENGTH_LONG).show();
@@ -72,21 +76,13 @@ public class AuthActivity extends AppCompatActivity {
                     @Override
                     public void onConnected(@Nullable Bundle bundle) {
                         if ((boolean) getIntent().getExtras().get(Constants.LOGOUT_ACTIVITY)) {
-                            fullLogout();
+                            logoutGoogle();
                         }
                     }
 
                     @Override
                     public void onConnectionSuspended(int i) {
 
-                    }
-                })
-                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        if ((boolean) getIntent().getExtras().get(Constants.LOGOUT_ACTIVITY)) {
-                            fullLogout();
-                        }
                     }
                 })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
@@ -172,7 +168,6 @@ public class AuthActivity extends AppCompatActivity {
             Preferences.removeLocation(getBaseContext());
             RandoDAO.clearRandos(getBaseContext());
             RandoDAO.clearRandoToUpload(getBaseContext());
-            logoutGoogle();
         } catch (Exception e) {
             Log.w(AuthActivity.class, "Logout failed: ", e.getMessage());
         } finally {
