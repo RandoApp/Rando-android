@@ -6,8 +6,6 @@ import android.location.Location;
 
 import com.flurgle.camerakit.CameraKit;
 
-import java.util.Date;
-
 import static com.github.randoapp.Constants.ACCOUNT;
 import static com.github.randoapp.Constants.AUTH_TOKEN;
 import static com.github.randoapp.Constants.BAN_RESET_AT;
@@ -21,7 +19,6 @@ import static com.github.randoapp.Constants.LOCATION;
 import static com.github.randoapp.Constants.LONGITUDE_PARAM;
 import static com.github.randoapp.Constants.PREFERENCES_FILE_NAME;
 import static com.github.randoapp.Constants.TRAINING_FRAGMENT_SHOWN;
-import static com.github.randoapp.Constants.UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE;
 
 public class Preferences {
     public static final String AUTH_TOKEN_DEFAULT_VALUE = "";
@@ -144,26 +141,6 @@ public class Preferences {
         if (token != null) {
             synchronized (monitor) {
                 getSharedPreferences(context).edit().putString(FIREBASE_INSTANCE_ID, token).apply();
-            }
-        }
-    }
-
-    public static void removeUpdatePlayServicesDateShown(Context context) {
-        synchronized (monitor) {
-            getSharedPreferences(context).edit().remove(UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE).apply();
-        }
-    }
-
-    public static Date getUpdatePlayServicesDateShown(Context context) {
-        synchronized (monitor) {
-            return new Date(getSharedPreferences(context).getLong(UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE, 0L));
-        }
-    }
-
-    public static void setUpdatePlayServicesDateShown(Context context, Date time) {
-        if (time != null) {
-            synchronized (monitor) {
-                getSharedPreferences(context).edit().putLong(UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE, time.getTime()).apply();
             }
         }
     }

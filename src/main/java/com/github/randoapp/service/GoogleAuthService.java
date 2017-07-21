@@ -1,6 +1,7 @@
 package com.github.randoapp.service;
 
 import android.app.Activity;
+import android.content.Context;
 import android.widget.Toast;
 
 import com.github.randoapp.MainActivity;
@@ -9,8 +10,19 @@ import com.github.randoapp.api.beans.Error;
 import com.github.randoapp.api.listeners.NetworkResultListener;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
+import com.github.randoapp.util.GooglePlayServicesUtil;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.firebase.crash.FirebaseCrash;
+
+import org.acra.ACRA;
+
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
+import static com.github.randoapp.Constants.UPDATE_PLAY_SERVICES_REQUEST_CODE;
 
 public class GoogleAuthService extends BaseAuthService {
 
