@@ -23,7 +23,7 @@ public class GoogleAuthService extends BaseAuthService {
     }
 
     private void handleGoogleSignInResult(GoogleSignInResult result) {
-        Log.d(MainActivity.class, "handleGoogleSignInResult:" + result.isSuccess());
+        Log.d(GoogleAuthService.class, "handleGoogleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             final GoogleSignInAccount acct = result.getSignInAccount();
             final String email = acct.getEmail();

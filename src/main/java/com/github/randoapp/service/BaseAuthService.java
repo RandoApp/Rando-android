@@ -70,6 +70,7 @@ public abstract class BaseAuthService {
 
     private void startMainActivity() {
         Intent intent = new Intent(activity, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         activity.startActivity(intent);
     }
 

@@ -52,6 +52,7 @@ public class HomeMenuFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), AuthActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra(Constants.LOGOUT_ACTIVITY, true);
                 startActivity(intent);
             }
