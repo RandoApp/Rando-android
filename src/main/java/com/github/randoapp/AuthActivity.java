@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
@@ -64,7 +65,24 @@ public class AuthActivity extends AppCompatActivity {
                 .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        Toast.makeText(getBaseContext(), "Google Signin failed", Toast.LENGTH_LONG).show();
+                        if (ConnectionResult.CANCELED == connectionResult.getErrorCode()) {
+                            //Just skip Update Google Play services dialog
+                            return;
+                        }
+                        Toast.makeText(getBaseContext(), "Google Signin failed with code: " + connectionResult.getErrorCode(), Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                    @Override
+                    public void onConnected(@Nullable Bundle bundle) {
+                        if ((boolean) getIntent().getExtras().get(Constants.LOGOUT_ACTIVITY)) {
+                            logoutGoogle();
+                        }
+                    }
+
+                    @Override
+                    public void onConnectionSuspended(int i) {
+
                     }
                 })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
@@ -150,16 +168,15 @@ public class AuthActivity extends AppCompatActivity {
             Preferences.removeLocation(getBaseContext());
             RandoDAO.clearRandos(getBaseContext());
             RandoDAO.clearRandoToUpload(getBaseContext());
-            logoutGoogle();
-            Progress.hide();
         } catch (Exception e) {
             Log.w(AuthActivity.class, "Logout failed: ", e.getMessage());
+        } finally {
             Progress.hide();
         }
     }
 
     private void logoutGoogle() {
-        Auth.GoogleSignInApi.revokeAccess(googleApiClient).setResultCallback(
+        Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status status) {

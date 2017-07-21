@@ -20,15 +20,6 @@ import com.github.randoapp.fragment.HomeWallFragment;
 import com.github.randoapp.fragment.MissingStoragePermissionFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
-import com.github.randoapp.util.GooglePlayServicesUtil;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.firebase.crash.FirebaseCrash;
-
-import org.acra.ACRA;
-
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 import static com.github.randoapp.Constants.AUTH_FAILURE_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.AUTH_SUCCCESS_BROADCAST_EVENT;
@@ -38,11 +29,9 @@ import static com.github.randoapp.Constants.LOGOUT_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.STORAGE_PERMISSION_REQUEST_CODE;
 import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.UPDATED;
-import static com.github.randoapp.Constants.UPDATE_PLAY_SERVICES_REQUEST_CODE;
 
 public class MainActivity extends FragmentActivity {
 
-    private int playServicesStatus;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -113,7 +102,6 @@ public class MainActivity extends FragmentActivity {
     protected void onPostResume() {
         super.onPostResume();
         registerReceivers();
-        showUpdatePlayServicesDialogIfNecessary();
 
         if (isNotAuthorized()) {
             startAuthActivity();
@@ -124,7 +112,6 @@ public class MainActivity extends FragmentActivity {
         if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName()) == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
         }
-
     }
 
     private void registerReceivers() {
@@ -134,25 +121,6 @@ public class MainActivity extends FragmentActivity {
         registerReceiver(receiver, new IntentFilter(LOGOUT_BROADCAST_EVENT));
     }
 
-    private void showUpdatePlayServicesDialogIfNecessary() {
-        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
-        int status = googleApiAvailability.isGooglePlayServicesAvailable(this);
-        if (status != ConnectionResult.SUCCESS) {
-            FirebaseCrash.log("PlayServicesProblem. Status: " + googleApiAvailability.getErrorString(status));
-            //Double reporting since FirebaseCrash depends on PlayServices
-            ACRA.getErrorReporter().putCustomData("PlayServicesProblem", googleApiAvailability.getErrorString(status));
-            ACRA.getErrorReporter().handleSilentException(null);
-            ACRA.getErrorReporter().removeCustomData("PlayServicesProblem");
-            if ((status == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED && GooglePlayServicesUtil.isGPSVersionLowerThanRequired(getPackageManager()))
-                    || (status != ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED && googleApiAvailability.isUserResolvableError(status)
-                    && (TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - Preferences.getUpdatePlayServicesDateShown(getBaseContext()).getTime()) > 15))) {
-                Preferences.setUpdatePlayServicesDateShown(getBaseContext(), new Date());
-                googleApiAvailability.getErrorDialog(this, status, UPDATE_PLAY_SERVICES_REQUEST_CODE).show();
-            }
-
-            playServicesStatus = status;
-        }
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -191,13 +159,7 @@ public class MainActivity extends FragmentActivity {
 
             Fragment fragment = getFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.main_screen, fragment, fragment.getClass().getName()).commit();
-        } else if (requestCode == UPDATE_PLAY_SERVICES_REQUEST_CODE) {
-            int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
-            if (status != ConnectionResult.SUCCESS && status != playServicesStatus) {
-                Preferences.removeUpdatePlayServicesDateShown(getBaseContext());
-            }
         }
-
     }
 
 }
