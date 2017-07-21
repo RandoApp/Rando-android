@@ -16,7 +16,7 @@ import com.github.randoapp.log.Log;
 
 public class ErrorResponseListener implements Response.ErrorListener {
 
-    Context context;
+    private Context context;
 
     private ErrorResponseListener() {
         
