@@ -41,6 +41,7 @@ public class AuthActivity extends AppCompatActivity {
     private boolean requestAccountsOnFirstLoad = true;
     private GoogleApiClient googleApiClient;
     private FirebaseAnalytics firebaseAnalytics;
+    private Progress authProgress = new Progress(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +93,10 @@ public class AuthActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Analytics.logLoginGoogle(firebaseAnalytics);
+                if (authProgress != null) {
+                    authProgress.show(getString(R.string.login_progress));
+                }
+
                 Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
                 startActivityForResult(signInIntent, Constants.GOOGLE_SIGN_IN);
             }
@@ -103,11 +108,11 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     public void signUpClick(View view) {
-        new EmailAndPasswordAuthService(this).process();
+        new EmailAndPasswordAuthService(this, authProgress).process();
     }
 
     public void skipLoginClick(View view) {
-        new SkipAuthService(this).process();
+        new SkipAuthService(this, authProgress).process();
     }
 
     @Override
@@ -129,7 +134,7 @@ public class AuthActivity extends AppCompatActivity {
             logoutGoogle();
         } else if (requestCode == Constants.GOOGLE_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            new GoogleAuthService(this).process(result);
+            new GoogleAuthService(this, authProgress).process(result);
         }
     }
 
@@ -140,15 +145,13 @@ public class AuthActivity extends AppCompatActivity {
         }
     }
 
-    private Progress logoutProgress;
 
     private void fullLogout() {
         try {
             Analytics.logLogout(firebaseAnalytics);
-            if (logoutProgress == null) {
-                logoutProgress = new Progress(this);
+            if (authProgress != null) {
+                authProgress.show(getString(R.string.logout_progress));
             }
-            logoutProgress.show(getString(R.string.logout_progress), this);
             API.logout(getBaseContext(), new NetworkResultListener() {
                 @Override
                 public void onOk() {
@@ -176,8 +179,8 @@ public class AuthActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.w(AuthActivity.class, "Logout failed: ", e.getMessage());
         } finally {
-            if (logoutProgress != null) {
-                logoutProgress.hide();
+            if (authProgress != null) {
+                authProgress.hide();
             }
         }
     }

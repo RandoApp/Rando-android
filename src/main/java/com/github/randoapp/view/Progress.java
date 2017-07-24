@@ -8,6 +8,7 @@ public class Progress {
 
     private ProgressDialog progress;
     private Activity activity;
+    private boolean isShowing = false;
 
     private Progress() {
 
@@ -17,18 +18,27 @@ public class Progress {
         this.activity = activity;
     }
 
-    public void show(String message, Activity activity) {
+    public void show(String message) {
         if (progress != null) {
             progress.setMessage(message);
+            show();
         } else {
             progress = new ProgressDialog(activity, AlertDialog.THEME_HOLO_DARK);
             progress.setCanceledOnTouchOutside(false);
             progress.setMessage(message);
+            show();
+        }
+    }
+
+    private void show() {
+        if (!isShowing) {
             progress.show();
+            isShowing = true;
         }
     }
 
     public void hide() {
+        isShowing = false;
         if (progress != null) {
             progress.hide();
         }

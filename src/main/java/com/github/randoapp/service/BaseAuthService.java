@@ -23,9 +23,9 @@ public abstract class BaseAuthService {
     protected Activity activity;
     protected Progress progress;
 
-    public BaseAuthService(Activity activity) {
+    public BaseAuthService(Activity activity, Progress progress) {
         this.activity = activity;
-        this.progress = new Progress(activity);
+        this.progress = progress;
     }
 
     public void done() {
@@ -72,11 +72,11 @@ public abstract class BaseAuthService {
     }
 
     public void showLoginProgress() {
-        this.progress.show(activity.getString(R.string.login_progress), activity);
+        this.progress.show(activity.getString(R.string.login_progress));
     }
 
     public void showFetchUserProgress() {
-        this.progress.show(activity.getString(R.string.loading_user_progress), activity);
+        this.progress.show(activity.getString(R.string.loading_user_progress));
     }
 
     public void hideProgress() {

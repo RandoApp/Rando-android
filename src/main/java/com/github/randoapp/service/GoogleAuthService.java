@@ -8,13 +8,14 @@ import com.github.randoapp.api.beans.Error;
 import com.github.randoapp.api.listeners.NetworkResultListener;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
+import com.github.randoapp.view.Progress;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 
 public class GoogleAuthService extends BaseAuthService {
 
-    public GoogleAuthService(Activity activity) {
-        super(activity);
+    public GoogleAuthService(Activity activity, Progress progress) {
+        super(activity, progress);
     }
 
     public void process(GoogleSignInResult result) {
