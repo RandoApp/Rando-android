@@ -140,10 +140,15 @@ public class AuthActivity extends AppCompatActivity {
         }
     }
 
+    private Progress logoutProgress;
+
     private void fullLogout() {
         try {
             Analytics.logLogout(firebaseAnalytics);
-            Progress.show(getString(R.string.logout_progress), this);
+            if (logoutProgress == null) {
+                logoutProgress = new Progress(this);
+            }
+            logoutProgress.show(getString(R.string.logout_progress), this);
             API.logout(getBaseContext(), new NetworkResultListener() {
                 @Override
                 public void onOk() {
@@ -171,7 +176,9 @@ public class AuthActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.w(AuthActivity.class, "Logout failed: ", e.getMessage());
         } finally {
-            Progress.hide();
+            if (logoutProgress != null) {
+                logoutProgress.hide();
+            }
         }
     }
 

@@ -21,9 +21,11 @@ import org.json.JSONObject;
 public abstract class BaseAuthService {
 
     protected Activity activity;
+    protected Progress progress;
 
     public BaseAuthService(Activity activity) {
         this.activity = activity;
+        this.progress = new Progress(activity);
     }
 
     public void done() {
@@ -70,15 +72,15 @@ public abstract class BaseAuthService {
     }
 
     public void showLoginProgress() {
-        Progress.show(activity.getString(R.string.login_progress), activity);
+        this.progress.show(activity.getString(R.string.login_progress), activity);
     }
 
     public void showFetchUserProgress() {
-        Progress.show(activity.getString(R.string.loading_user_progress), activity);
+        this.progress.show(activity.getString(R.string.loading_user_progress), activity);
     }
 
     public void hideProgress() {
-        Progress.hide();
+        this.progress.hide();
     }
 
 }

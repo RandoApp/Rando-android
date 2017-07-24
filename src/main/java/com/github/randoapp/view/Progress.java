@@ -6,9 +6,18 @@ import android.app.ProgressDialog;
 
 public class Progress {
 
-    private static ProgressDialog progress;
+    private ProgressDialog progress;
+    private Activity activity;
 
-    public static void show(String message, Activity activity) {
+    private Progress() {
+
+    }
+
+    public Progress(Activity activity) {
+        this.activity = activity;
+    }
+
+    public void show(String message, Activity activity) {
         if (progress != null) {
             progress.setMessage(message);
         } else {
@@ -19,7 +28,7 @@ public class Progress {
         }
     }
 
-    public static void hide() {
+    public void hide() {
         if (progress != null) {
             progress.hide();
         }
