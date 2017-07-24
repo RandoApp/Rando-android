@@ -22,6 +22,7 @@ public class GoogleAuthService extends BaseAuthService {
     }
 
     private void handleGoogleSignInResult(GoogleSignInResult result) {
+        showLoginProgress();
         Log.d(GoogleAuthService.class, "handleGoogleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             final GoogleSignInAccount acct = result.getSignInAccount();
@@ -37,6 +38,7 @@ public class GoogleAuthService extends BaseAuthService {
 
                 @Override
                 public void onError(Error error) {
+                    hideProgress();
                     Toast.makeText(activity.getBaseContext(), "Google Signed out.", Toast.LENGTH_LONG).show();
                 }
             });

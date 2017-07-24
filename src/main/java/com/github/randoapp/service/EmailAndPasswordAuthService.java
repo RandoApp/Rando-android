@@ -51,7 +51,7 @@ public class EmailAndPasswordAuthService extends BaseAuthService {
 
             @Override
             public void onError(Error error) {
-                hideLoginProgress();
+                hideProgress();
                 String errorMessage = error != null ? error.buildMessage(activity.getBaseContext()) : "Error";
                 Toast.makeText(activity, errorMessage, Toast.LENGTH_LONG).show();
             }

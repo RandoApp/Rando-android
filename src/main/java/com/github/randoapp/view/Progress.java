@@ -10,12 +10,13 @@ public class Progress {
 
     public static void show(String message, Activity activity) {
         if (progress != null) {
-            progress.hide();
+            progress.setMessage(message);
+        } else {
+            progress = new ProgressDialog(activity, AlertDialog.THEME_HOLO_DARK);
+            progress.setCanceledOnTouchOutside(false);
+            progress.setMessage(message);
+            progress.show();
         }
-        progress = new ProgressDialog(activity, AlertDialog.THEME_HOLO_DARK);
-        progress.setCanceledOnTouchOutside(false);
-        progress.setMessage(message);
-        progress.show();
     }
 
     public static void hide() {
