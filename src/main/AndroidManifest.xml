@@ -59,7 +59,8 @@
             android:name=".AuthActivity"
             android:configChanges="orientation"
             android:label="@string/auth_acitvity_label"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/RandoThemeAuth"/>
 
         <meta-data
             android:name="com.google.android.gms.version"
