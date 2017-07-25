@@ -11,6 +11,7 @@ import com.github.randoapp.api.beans.Error;
 import com.github.randoapp.api.listeners.NetworkResultListener;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.Analytics;
+import com.github.randoapp.view.Progress;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class EmailAndPasswordAuthService extends BaseAuthService {
@@ -18,8 +19,8 @@ public class EmailAndPasswordAuthService extends BaseAuthService {
     private EditText emailText;
     private EditText passwordText;
 
-    public EmailAndPasswordAuthService(Activity activity) {
-        super(activity);
+    public EmailAndPasswordAuthService(Activity activity, Progress progress) {
+        super(activity, progress);
         this.emailText = (EditText) activity.findViewById(R.id.emailEditText);
         this.passwordText = (EditText) activity.findViewById(R.id.passwordEditText);
     }
@@ -51,7 +52,7 @@ public class EmailAndPasswordAuthService extends BaseAuthService {
 
             @Override
             public void onError(Error error) {
-                hideLoginProgress();
+                hideProgress();
                 String errorMessage = error != null ? error.buildMessage(activity.getBaseContext()) : "Error";
                 Toast.makeText(activity, errorMessage, Toast.LENGTH_LONG).show();
             }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -41,6 +42,7 @@ public class AuthActivity extends AppCompatActivity {
     private boolean requestAccountsOnFirstLoad = true;
     private GoogleApiClient googleApiClient;
     private FirebaseAnalytics firebaseAnalytics;
+    private Progress authProgress = new Progress(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +94,10 @@ public class AuthActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Analytics.logLoginGoogle(firebaseAnalytics);
+                if (authProgress != null) {
+                    authProgress.show(getString(R.string.login_progress));
+                }
+
                 Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
                 startActivityForResult(signInIntent, Constants.GOOGLE_SIGN_IN);
             }
@@ -103,11 +109,11 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     public void signUpClick(View view) {
-        new EmailAndPasswordAuthService(this).process();
+        new EmailAndPasswordAuthService(this, authProgress).process();
     }
 
     public void skipLoginClick(View view) {
-        new SkipAuthService(this).process();
+        new SkipAuthService(this, authProgress).process();
     }
 
     @Override
@@ -129,8 +135,18 @@ public class AuthActivity extends AppCompatActivity {
             logoutGoogle();
         } else if (requestCode == Constants.GOOGLE_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            new GoogleAuthService(this).process(result);
+            new GoogleAuthService(this, authProgress).process(result);
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            this.finishAffinity();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private void setEmailFromFirstAccount() {
@@ -140,10 +156,13 @@ public class AuthActivity extends AppCompatActivity {
         }
     }
 
+
     private void fullLogout() {
         try {
             Analytics.logLogout(firebaseAnalytics);
-            Progress.show(getString(R.string.logout_progress), this);
+            if (authProgress != null) {
+                authProgress.show(getString(R.string.logout_progress));
+            }
             API.logout(getBaseContext(), new NetworkResultListener() {
                 @Override
                 public void onOk() {
@@ -171,7 +190,9 @@ public class AuthActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.w(AuthActivity.class, "Logout failed: ", e.getMessage());
         } finally {
-            Progress.hide();
+            if (authProgress != null) {
+                authProgress.hide();
+            }
         }
     }
 

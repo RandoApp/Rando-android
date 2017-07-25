@@ -1,8 +1,6 @@
 package com.github.randoapp.service;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
@@ -16,22 +14,21 @@ import com.github.randoapp.R;
 import com.github.randoapp.api.API;
 import com.github.randoapp.api.listeners.ErrorResponseListener;
 import com.github.randoapp.db.RandoDAO;
+import com.github.randoapp.view.Progress;
 
 import org.json.JSONObject;
 
 public abstract class BaseAuthService {
 
     protected Activity activity;
-    private ProgressDialog loginProgress;
-    private ProgressDialog fetchUserProgress;
+    protected Progress progress;
 
-    public BaseAuthService(Activity activity) {
+    public BaseAuthService(Activity activity, Progress progress) {
         this.activity = activity;
+        this.progress = progress;
     }
 
     public void done() {
-        hideLoginProgress();
-
         hideSoftKeyboard();
         clearDBForChangeAccount();
 
@@ -39,13 +36,13 @@ public abstract class BaseAuthService {
         API.syncUserAsync(activity.getBaseContext(), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                hideFetchUserProgress();
+                hideProgress();
                 startMainActivity();
             }
         }, new ErrorResponseListener(activity.getBaseContext()) {
             @Override
             public void onErrorResponse(VolleyError e) {
-                hideFetchUserProgress();
+                hideProgress();
                 Toast.makeText(activity, "Cannot fetch user. Pull up to force sync", Toast.LENGTH_LONG).show();
                 startMainActivity();
             }
@@ -75,37 +72,15 @@ public abstract class BaseAuthService {
     }
 
     public void showLoginProgress() {
-        if (loginProgress != null) {
-            hideLoginProgress();
-        }
-
-        loginProgress = new ProgressDialog(activity, AlertDialog.THEME_HOLO_DARK);
-        loginProgress.setCanceledOnTouchOutside(false);
-        loginProgress.setMessage(activity.getString(R.string.login_progress));
-        loginProgress.show();
-    }
-
-    public void hideLoginProgress() {
-        if (loginProgress != null) {
-            loginProgress.hide();
-        }
+        this.progress.show(activity.getString(R.string.login_progress));
     }
 
     public void showFetchUserProgress() {
-        if (fetchUserProgress != null) {
-            hideFetchUserProgress();
-        }
-
-        fetchUserProgress = new ProgressDialog(activity, AlertDialog.THEME_HOLO_DARK);
-        fetchUserProgress.setCanceledOnTouchOutside(false);
-        fetchUserProgress.setMessage(activity.getString(R.string.loading_user_progress));
-        fetchUserProgress.show();
+        this.progress.show(activity.getString(R.string.loading_user_progress));
     }
 
-    public void hideFetchUserProgress() {
-        if (fetchUserProgress != null) {
-            fetchUserProgress.hide();
-        }
+    public void hideProgress() {
+        this.progress.hide();
     }
 
 }

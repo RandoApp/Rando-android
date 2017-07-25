@@ -6,19 +6,39 @@ import android.app.ProgressDialog;
 
 public class Progress {
 
-    private static ProgressDialog progress;
+    private ProgressDialog progress;
+    private Activity activity;
+    private boolean isShowing = false;
 
-    public static void show(String message, Activity activity) {
-        if (progress != null) {
-            progress.hide();
-        }
-        progress = new ProgressDialog(activity, AlertDialog.THEME_HOLO_DARK);
-        progress.setCanceledOnTouchOutside(false);
-        progress.setMessage(message);
-        progress.show();
+    private Progress() {
+
     }
 
-    public static void hide() {
+    public Progress(Activity activity) {
+        this.activity = activity;
+    }
+
+    public void show(String message) {
+        if (progress != null) {
+            progress.setMessage(message);
+            show();
+        } else {
+            progress = new ProgressDialog(activity, AlertDialog.THEME_HOLO_DARK);
+            progress.setCanceledOnTouchOutside(false);
+            progress.setMessage(message);
+            show();
+        }
+    }
+
+    private void show() {
+        if (!isShowing) {
+            progress.show();
+            isShowing = true;
+        }
+    }
+
+    public void hide() {
+        isShowing = false;
         if (progress != null) {
             progress.hide();
         }

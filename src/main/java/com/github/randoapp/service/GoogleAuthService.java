@@ -8,13 +8,14 @@ import com.github.randoapp.api.beans.Error;
 import com.github.randoapp.api.listeners.NetworkResultListener;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
+import com.github.randoapp.view.Progress;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 
 public class GoogleAuthService extends BaseAuthService {
 
-    public GoogleAuthService(Activity activity) {
-        super(activity);
+    public GoogleAuthService(Activity activity, Progress progress) {
+        super(activity, progress);
     }
 
     public void process(GoogleSignInResult result) {
@@ -22,6 +23,7 @@ public class GoogleAuthService extends BaseAuthService {
     }
 
     private void handleGoogleSignInResult(GoogleSignInResult result) {
+        showLoginProgress();
         Log.d(GoogleAuthService.class, "handleGoogleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             final GoogleSignInAccount acct = result.getSignInAccount();
@@ -37,6 +39,7 @@ public class GoogleAuthService extends BaseAuthService {
 
                 @Override
                 public void onError(Error error) {
+                    hideProgress();
                     Toast.makeText(activity.getBaseContext(), "Google Signed out.", Toast.LENGTH_LONG).show();
                 }
             });
