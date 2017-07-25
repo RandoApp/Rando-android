@@ -3,18 +3,10 @@
 <resources>
     <color name="black">#000000</color>
 
-    <color name="auth_button">#006DCC</color>
+    <color name="skip_link">#006DCC</color>
     <color name="auth_text">#FFFFFF</color>
-    <color name="auth_input_text">#000000</color>
 
-    <color name="error_background">#FFFF00</color>
-    <color name="error_font">#FF0000</color>
-    <color name="album_background">#AA0045</color>
     <color name="back_button_background">#393939</color>
-
-    <color name="takepicture_bottom_panel_background">#16181a</color>
-
-    <color name="overscroll">#33b5e5</color>
 
     <color name="empty_home_message">#BB000000</color>
     <color name="empty_home_message_shadow">#CCCCCC</color>
@@ -26,14 +18,13 @@
     <color name="rando_light_grey">#ff8f8f8f</color>
     <color name="rando_pairing_green">#ff1ea45e</color>
     <color name="rando_red_error">#ff8f2921</color>
-    <color name="general_text_grey">#ff8f8f8f</color>
     <color name="button_text">#ff5a5a5a</color>
     <color name="overview_info_text">#ffc7c7c7</color>
     <color name="edittext_background">#ffdddddd</color>
     <color name="edittext_background_valid">#ff1ad334</color>
     <color name="edittext_background_invalid">#ffe93229</color>
-    <color name="white_button_background_normal">#ffffffff</color>
-    <color name="white_button_background_pressed">#ffdddddd</color>
+    <color name="white_button_background_normal">#fffefefe</color>
+    <color name="white_button_background_pressed">#ffeeeeee</color>
     <color name="light_gray_button_background_normal">#fff1f1f1</color>
     <color name="light_gray_button_text">#ff8f8f8f</color>
     <color name="capture_button_background_normal">#fff87b00</color>
@@ -57,5 +48,11 @@
     <color name="delete_menu_button_color">#000000</color>
     <color name="share_menu_button_color">#13aa61</color>
     <color name="report_menu_button_color">#e93229</color>
+
+    <color name="vertical_line_separator">#ffdddddd</color>
+    <color name="permanent_ban_label">#dde93229</color>
+    <color name="suspend_upload_label">#aa15aa2a</color>
+
+    <color name="ban_contact_us_pressed">#ddbf2a22</color>
 
 </resources>

@@ -123,7 +123,7 @@ public class CameraActivity16 extends Activity {
 
         focusMarker = (FocusMarkerLayout) findViewById(R.id.focusMarker);
 
-        cameraView.setFlash(Preferences.getCameraFlashMode());
+        cameraView.setFlash(Preferences.getCameraFlashMode(getBaseContext()));
 
         //Log.d(CameraActivity16.class, leftRightMargin + " " + topBottomMargin + " " + cameraView.getAspectRatio() + " ");
 
@@ -148,7 +148,7 @@ public class CameraActivity16 extends Activity {
             RelativeLayout.LayoutParams cameraSwitchButtonLayoutParams = (RelativeLayout.LayoutParams) cameraSwitchButton.getLayoutParams();
             cameraSwitchButtonLayoutParams.setMargins(buttonsSideMargin, 0, 0, getResources().getDimensionPixelSize(R.dimen.switch_camera_margin_bottom));
             cameraSwitchButton.setLayoutParams(cameraSwitchButtonLayoutParams);
-            mCurrentFacing = Preferences.getCameraFacing();
+            mCurrentFacing = Preferences.getCameraFacing(getBaseContext());
             cameraView.setFacing(mCurrentFacing);
             cameraSwitchButton.setImageResource(CAMERA_FACING_ICONS.get(mCurrentFacing));
             cameraSwitchButton.setVisibility(View.VISIBLE);
@@ -169,13 +169,13 @@ public class CameraActivity16 extends Activity {
                         enableButtons(false);
                         cameraView.setFacing(facing);
                         mCurrentFacing = facing;
-                        Preferences.setCameraFacing(facing);
+                        Preferences.setCameraFacing(getBaseContext(), facing);
                     }
                 }
             });
         }
         circleMaskView = (CircleMaskView) findViewById(R.id.circle_mask);
-        circleMaskView.setDrawGrid(Preferences.getCameraGrid());
+        circleMaskView.setDrawGrid(Preferences.getCameraGrid(getBaseContext()));
         circleMaskView.setOnTouchListener(
                 new View.OnTouchListener() {
                     @Override
@@ -206,7 +206,7 @@ public class CameraActivity16 extends Activity {
             @Override
             public void onClick(View v) {
                 circleMaskView.setDrawGrid(!circleMaskView.isDrawGrid());
-                Preferences.setCameraGrid(circleMaskView.isDrawGrid());
+                Preferences.setCameraGrid(getBaseContext(), circleMaskView.isDrawGrid());
                 CameraActivity16.OnAnimationEnd onAnimationEnd = new CameraActivity16.OnAnimationEnd() {
                     @Override
                     public void onEnd() {
@@ -389,7 +389,7 @@ public class CameraActivity16 extends Activity {
             stopCropTask();
             enableButtons(false);
             cameraView.captureImage();
-            if (Preferences.getEnableVibrate()
+            if (Preferences.getEnableVibrate(getBaseContext())
                     && ContextCompat.checkSelfPermission(v.getContext(), android.Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
                 ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(50);
             }

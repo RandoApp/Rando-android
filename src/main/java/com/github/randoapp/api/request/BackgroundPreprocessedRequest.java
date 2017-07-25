@@ -9,13 +9,13 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
-public class BackgroundPreprocessRequest extends JsonObjectRequest {
+public class BackgroundPreprocessedRequest extends JsonObjectRequest {
 
     private Map<String, String> mHeaders;
     private Response.Listener<JSONObject> mBackgroundListener;
     private Response.Listener<JSONObject> mListener;
 
-    public BackgroundPreprocessRequest(int method, String url, JSONObject jsonRequest, Response.Listener<JSONObject> backgroundListener, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+    public BackgroundPreprocessedRequest(int method, String url, JSONObject jsonRequest, Response.Listener<JSONObject> backgroundListener, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         super(method, url, jsonRequest, listener, errorListener);
         this.mListener = listener;
         this.mBackgroundListener = backgroundListener;

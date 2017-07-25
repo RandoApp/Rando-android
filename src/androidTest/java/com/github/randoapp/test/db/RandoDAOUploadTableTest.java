@@ -1,5 +1,7 @@
 package com.github.randoapp.test.db;
 
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -21,19 +23,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SmallTest
 public class RandoDAOUploadTableTest {
 
+    private Context context;
+
     @Before
     public void setUp() throws Exception {
-        RandoDAO.clearRandoToUpload();
+        context = InstrumentationRegistry.getTargetContext();
+        RandoDAO.clearRandoToUpload(context);
     }
 
     @After
     public void tearDown() throws Exception {
-        RandoDAO.clearRandoToUpload();
+        RandoDAO.clearRandoToUpload(context);
     }
 
     @Test
     public void shouldReturnNullWhenUploadTableIsEmpty() {
-        assertThat(RandoDAO.getNextRandoToUpload()).isNull();
+        assertThat(RandoDAO.getNextRandoToUpload(context)).isNull();
     }
 
     @Test
@@ -41,9 +46,9 @@ public class RandoDAOUploadTableTest {
         RandoUpload randoUpload = new RandoUpload();
         randoUpload.date = new Date();
         randoUpload.lastTry = new Date(System.currentTimeMillis());
-        addToUpload(randoUpload);
+        addToUpload(context, randoUpload);
 
-        assertThat(RandoDAO.getNextRandoToUpload()).isNull();
+        assertThat(RandoDAO.getNextRandoToUpload(context)).isNull();
     }
 
     @Test
@@ -51,11 +56,11 @@ public class RandoDAOUploadTableTest {
         RandoUpload randoUpload = new RandoUpload();
         randoUpload.date = new Date();
         randoUpload.file = "/dd/d/d/";
-        randoUpload.lastTry = new Date(System.currentTimeMillis()- Constants.UPLOAD_RETRY_TIMEOUT - 10000);
-        addToUpload(randoUpload);
+        randoUpload.lastTry = new Date(System.currentTimeMillis() - Constants.UPLOAD_RETRY_TIMEOUT - 10000);
+        addToUpload(context, randoUpload);
 
-        assertThat(RandoDAO.getAllRandosToUpload("ASC")).isNotNull().hasSize(1);
-        assertThat(RandoDAO.getNextRandoToUpload()).isNotNull().isEqualToComparingFieldByField(randoUpload);
+        assertThat(RandoDAO.getAllRandosToUpload(context, "ASC")).isNotNull().hasSize(1);
+        assertThat(RandoDAO.getNextRandoToUpload(context)).isNotNull().isEqualToComparingFieldByField(randoUpload);
     }
 
     @Test
@@ -63,16 +68,16 @@ public class RandoDAOUploadTableTest {
         RandoUpload randoUpload = new RandoUpload();
         randoUpload.date = new Date();
         randoUpload.file = "/dd/d/d/";
-        randoUpload.lastTry = new Date(System.currentTimeMillis()- Constants.UPLOAD_RETRY_TIMEOUT - 1000);
-        randoUpload = addToUpload(randoUpload);
+        randoUpload.lastTry = new Date(System.currentTimeMillis() - Constants.UPLOAD_RETRY_TIMEOUT - 1000);
+        randoUpload = addToUpload(context, randoUpload);
 
         RandoUpload randoUpload1 = new RandoUpload();
         randoUpload1.date = new Date(randoUpload.date.getTime() - 1000);
         randoUpload1.file = "/dd/d/dd/";
-        randoUpload1.lastTry = new Date(System.currentTimeMillis()- Constants.UPLOAD_RETRY_TIMEOUT - 1000);
-        randoUpload1 = addToUpload(randoUpload1);
+        randoUpload1.lastTry = new Date(System.currentTimeMillis() - Constants.UPLOAD_RETRY_TIMEOUT - 1000);
+        randoUpload1 = addToUpload(context, randoUpload1);
 
-        assertThat(RandoDAO.getAllRandosToUpload("ASC")).isNotNull().hasSize(2);
-        assertThat(RandoDAO.getNextRandoToUpload()).isNotNull().isEqualToComparingFieldByField(randoUpload1);
+        assertThat(RandoDAO.getAllRandosToUpload(context, "ASC")).isNotNull().hasSize(2);
+        assertThat(RandoDAO.getNextRandoToUpload(context)).isNotNull().isEqualToComparingFieldByField(randoUpload1);
     }
 }

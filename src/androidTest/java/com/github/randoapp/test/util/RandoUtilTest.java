@@ -1,13 +1,19 @@
 package com.github.randoapp.test.util;
 
-import android.test.AndroidTestCase;
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
-import com.github.randoapp.api.beans.User;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
-import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.test.db.RandoTestHelper;
 import com.github.randoapp.util.RandoUtil;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,23 +21,27 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-public class RandoUtilTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+@SmallTest
+public class RandoUtilTest {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        RandoDAO.clearRandos();
-        RandoDAO.clearRandoToUpload();
+    private Context context;
+
+    @Before
+    public void setUp() {
+        context = InstrumentationRegistry.getTargetContext();
+        RandoDAO.clearRandos(context);
+        RandoDAO.clearRandoToUpload(context);
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        RandoDAO.clearRandos();
-        RandoDAO.clearRandoToUpload();
+    @After
+    public void tearDown() throws Exception {
+        RandoDAO.clearRandos(context);
+        RandoDAO.clearRandoToUpload(context);
     }
 
 
+    @Test
     public void testAreRandoListsEqual() throws Exception {
         List<Rando> randos1 = RandoTestHelper.getNRandomRandos(3, Rando.Status.OUT);
         List<Rando> randos2 = new ArrayList<Rando>();
@@ -42,6 +52,7 @@ public class RandoUtilTest extends AndroidTestCase {
         assertThat("Lists are not equal", RandoUtil.areRandoListsEqual(randos1, randos2), is(true));
     }
 
+    @Test
     public void testAreRandoListsNotEqualBySize() throws Exception {
         List<Rando> randos1 = RandoTestHelper.getNRandomRandos(4, Rando.Status.OUT);
         List<Rando> randos2 = RandoTestHelper.getNRandomRandos(3, Rando.Status.OUT);
@@ -49,6 +60,7 @@ public class RandoUtilTest extends AndroidTestCase {
         assertThat("Lists are not equal", RandoUtil.areRandoListsEqual(randos1, randos2), is(false));
     }
 
+    @Test
     public void testAreRandoListsNotEqualByContent() throws Exception {
         List<Rando> randos1 = RandoTestHelper.getNRandomRandos(3, Rando.Status.OUT);
         List<Rando> randos2 = RandoTestHelper.getNRandomRandos(3, Rando.Status.IN);

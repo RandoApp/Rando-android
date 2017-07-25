@@ -88,7 +88,7 @@ public class HomeListFragment extends Fragment {
 
         final ListView listView = (ListView) rootView.findViewById(R.id.listView);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
-        randoPairsAdapter = new RandoListAdapter(isStranger, mFirebaseAnalytics);
+        randoPairsAdapter = new RandoListAdapter(getContext(), isStranger, mFirebaseAnalytics);
         listView.setAdapter(randoPairsAdapter);
 
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
@@ -97,18 +97,18 @@ public class HomeListFragment extends Fragment {
             public void onRefresh() {
                 Analytics.logForceSync(mFirebaseAnalytics);
                 if (NetworkUtil.isOnline(getContext())) {
-                    API.syncUserAsync(new Response.Listener<JSONObject>() {
+                    API.syncUserAsync(getContext(), new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             swipeRefreshLayout.setRefreshing(false);
                         }
-                    }, new ErrorResponseListener() {
+                    }, new ErrorResponseListener(getContext()) {
                         @Override
                         public void onErrorResponse(VolleyError e) {
                             swipeRefreshLayout.setRefreshing(false);
                         }
                     });
-                    if (RandoDAO.getNextRandoToUpload() != null) {
+                    if (RandoDAO.getNextRandoToUpload(getContext()) != null) {
                         UploadJobScheduler.scheduleUpload(getContext());
                     }
                 } else {
@@ -149,12 +149,12 @@ public class HomeListFragment extends Fragment {
                 public void onClick(View v) {
                     swipeRefreshLayout.setRefreshing(true);
                     if (NetworkUtil.isOnline(getContext())) {
-                        API.syncUserAsync(new Response.Listener<JSONObject>() {
+                        API.syncUserAsync(getContext(), new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
                                 swipeRefreshLayout.setRefreshing(false);
                             }
-                        }, new ErrorResponseListener() {
+                        }, new ErrorResponseListener(getContext()) {
                             @Override
                             public void onErrorResponse(VolleyError e) {
                                 swipeRefreshLayout.setRefreshing(false);

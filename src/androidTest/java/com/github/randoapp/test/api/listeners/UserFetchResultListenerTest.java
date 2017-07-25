@@ -1,13 +1,18 @@
 package com.github.randoapp.test.api.listeners;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.github.randoapp.api.beans.User;
 import com.github.randoapp.api.callback.OnFetchUser;
 import com.github.randoapp.api.listeners.UserFetchResultListener;
 import com.github.randoapp.test.api.APITestHelper;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.internal.matchers.InstanceOf;
 
 import java.util.Date;
@@ -19,16 +24,25 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class UserFetchResultListenerTest  extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+@SmallTest
+public class UserFetchResultListenerTest {
 
-    @SmallTest
-    public void testFetchUserInRandosParsing() throws Exception {
-        OnFetchUser onFetchUseMock = spy(new OnFetchUserAssertions());
-        new UserFetchResultListener(onFetchUseMock).onResponse(APITestHelper.getUserFetchJSONObject());
-        verify(onFetchUseMock, times(1)).onFetch((User)argThat(new InstanceOf(User.class)));
+    private Context context;
+
+    @Before
+    public void setUp() throws Exception {
+        context = InstrumentationRegistry.getTargetContext();
     }
 
-    public class OnFetchUserAssertions implements OnFetchUser{
+    @Test
+    public void testFetchUserInRandosParsing() throws Exception {
+        OnFetchUser onFetchUseMock = spy(new OnFetchUserAssertions());
+        new UserFetchResultListener(context, onFetchUseMock).onResponse(APITestHelper.getUserFetchJSONObject());
+        verify(onFetchUseMock, times(1)).onFetch((User) argThat(new InstanceOf(User.class)));
+    }
+
+    public class OnFetchUserAssertions implements OnFetchUser {
         @Override
         public void onFetch(User user) {
             //User parsed correctly

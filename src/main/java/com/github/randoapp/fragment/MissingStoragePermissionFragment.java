@@ -33,7 +33,7 @@ public class MissingStoragePermissionFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (requestStorageOnStart){
+        if (requestStorageOnStart) {
             PermissionUtils.checkAndRequestMissingPermissions(getActivity(), Constants.STORAGE_PERMISSION_REQUEST_CODE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
             requestStorageOnStart = false;
         }

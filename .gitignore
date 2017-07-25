@@ -1,5 +1,6 @@
 #File with secrets:
 gradle.properties
+google-services.json
 
 # built application files
 *.apk

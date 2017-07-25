@@ -41,11 +41,11 @@ public class LocationHelper {
         this.context = context;
     }
 
-    public void updateLocationAsync(){
-        if ( Build.VERSION.SDK_INT >= 23 &&
-                ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return  ;
+    public void updateLocationAsync() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
         }
 
         //setup the location manager
@@ -58,7 +58,7 @@ public class LocationHelper {
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 30000, 10, locationListener);
         }
         //setup a callback for when the GPS gets a lock and we receive data
-        if (locationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)){
+        if (locationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 10, locationListener);
         }
 
@@ -82,7 +82,7 @@ public class LocationHelper {
 
         //called when the location service reports a change in location
         public void onLocationChanged(Location location) {
-            Preferences.setLocation(location);
+            Preferences.setLocation(context, location);
             //now we have our location we can stop the service from sending updates
             //comment out this line if you want the service to continue updating the users location
             killLocationServices();
@@ -105,13 +105,13 @@ public class LocationHelper {
      * Stop updates from the Location Service.
      */
     public void killLocationServices() {
-        if ( Build.VERSION.SDK_INT >= 23 &&
-                ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return  ;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
         }
 
-        if (locationManager!=null && locationListener != null) {
+        if (locationManager != null && locationListener != null) {
             locationManager.removeUpdates(locationListener);
         }
 
