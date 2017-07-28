@@ -12,6 +12,11 @@
 
     <string name="take_picture_screen_label">Take Picture</string>
 
+    <string name="photo_upload_failed">"Upload Failed. Please check you connection and try again."</string>
+    <string name="failed_to_set_bon_appetit_for_rando">"Bon Appetit Failed. Please check you internet connection and try again."</string>
+    <string name="auth_acitvity_label">You are not authorized. Please, signin or signup.</string>
+
+
     <string name="email_should_be">You have error in email</string>
     <string name="password_should_be">Password can not be empty</string>
     <string name="no_google_account">No account available. Please add an account to the phone first</string>
@@ -29,7 +34,15 @@
     <string name="report">Yes, report</string>
     <string name="report_rando_confirm">Do you want to report user and delete this rando?</string>
     <string name="rando_reported">User has been reported</string>
+    <string name="contact_support">Contact\nSupport</string>
+    <string name="report_off">Report OFF</string>
+    <string name="report_message">Report</string>
+
+    <string name="login_progress">Login…</string>
+    <string name="loading_user_progress">Loading user data…</string>
+
     <string name="report_rando">Report inappropriate content</string>
+
     <string name="loading_progress">Loading…</string>
     <string name="logout_progress">Logout…</string>
     <string name="uploading_progress">To be uploaded</string>
@@ -76,7 +89,7 @@
     <string name="rando_received">You have received new Rando</string>
 
     <!-- Permission strings Start -->
-    <string name="permission_positive_button">Ok</string>
+    <string name="permission_positive_button">OK</string>
     <string name="location_needed_title">Location Access</string>
     <string name="location_needed_message">Tagging Rando with your rough location requires access this device\'s location</string>
     <string name="storage_needed_title">Storage Access</string>
@@ -94,13 +107,17 @@
 
     <string name="rando_excluded">Excluded from exchange</string>
     <string name="rando_excluded_text">This Rando was excluded from exchange. This happens for one of the following reasons:\n - duplicated;\n - offensive;\n - boring (e.g. too dark);\n - other reason.</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
 
     <string name="share_subject">Share Rando 4Me</string>
     <string name="share_text">I\'ve received amazing photo via Rando4Me: </string>
 
     <string name="contact_us_email">randoapp.me@gmail.com</string>
     <string name="contact_us_subject">Question about Rando 4Me (%1$s)</string>
-    <string name="contact_us_body">"Hi Rando 4Me Team, \n\nI'm using Rando 4Me and my account is: %1$s\nI have following question:\n\nThanks\n"</string>
+    <string name="contact_us_body">"Hi Rando 4Me Team, \n\nI'm using Rando 4Me and my account is: %1$s\nI have following question:\n\n"</string>
 
+    <string name="permanent_ban">Your account has been banned</string>
+    <string name="upload_suspend">Resume suspended upload in </string>
+
+    <string name="server_client_id">295176137476-vte4eakbm0k8kb86tfol3oljgtk6r7to.apps.googleusercontent.com</string>
 </resources>

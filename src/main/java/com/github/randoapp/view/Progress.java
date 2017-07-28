@@ -4,34 +4,44 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 
-import com.github.randoapp.App;
-import com.github.randoapp.MainActivity;
-import com.github.randoapp.R;
-
 public class Progress {
 
-    private static ProgressDialog progress;
+    private ProgressDialog progress;
+    private Activity activity;
+    private boolean isShowing = false;
 
-    public static void show(String message, Activity activity) {
+    private Progress() {
+
+    }
+
+    public Progress(Activity activity) {
+        this.activity = activity;
+    }
+
+    public void show(String message) {
+        if (progress != null) {
+            progress.setMessage(message);
+            show();
+        } else {
+            progress = new ProgressDialog(activity, AlertDialog.THEME_HOLO_DARK);
+            progress.setCanceledOnTouchOutside(false);
+            progress.setMessage(message);
+            show();
+        }
+    }
+
+    private void show() {
+        if (!isShowing) {
+            progress.show();
+            isShowing = true;
+        }
+    }
+
+    public void hide() {
+        isShowing = false;
         if (progress != null) {
             progress.hide();
         }
-        progress = new ProgressDialog(activity, AlertDialog.THEME_HOLO_DARK);
-        progress.setMessage(message);
-        progress.show();
     }
 
-    public static void show(String message) {
-        show(message, MainActivity.activity);
-    }
-
-    public static void hide() {
-        if (progress != null) {
-            progress.hide();
-        }
-    }
-
-    public static void showLoading() {
-        show(App.context.getResources().getString(R.string.loading_progress));
-    }
 }

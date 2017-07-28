@@ -16,6 +16,7 @@ import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.db.model.RandoUpload;
 import com.github.randoapp.log.Log;
+import com.github.randoapp.service.BanService;
 import com.github.randoapp.util.FileUtil;
 import com.github.randoapp.util.NetworkUtil;
 
@@ -41,11 +42,11 @@ public class UploadJob extends Job {
         }
 
         RandoUpload randoUpload;
-        while ((randoUpload = RandoDAO.getNextRandoToUpload()) != null){
+        while ((randoUpload = RandoDAO.getNextRandoToUpload(getContext())) != null) {
             upload(randoUpload);
         }
 
-        if (RandoDAO.countAllRandosToUpload() > 0){
+        if (RandoDAO.countAllRandosToUpload(getContext()) > 0) {
             return Result.RESCHEDULE;
         } else {
             return Result.SUCCESS;
@@ -58,18 +59,18 @@ public class UploadJob extends Job {
         long pastFromLastTry = new Date().getTime() - randoToUpload.lastTry.getTime();
         if (pastFromLastTry >= Constants.UPLOAD_RETRY_TIMEOUT) {
             randoToUpload.lastTry = new Date();
-            RandoDAO.updateRandoToUpload(randoToUpload);
+            RandoDAO.updateRandoToUpload(getContext(), randoToUpload);
             Log.d(UploadJob.class, "Starting Upload:", randoToUpload.toString());
-            API.uploadImage(randoToUpload, new UploadRandoListener() {
+            API.uploadImage(randoToUpload, getContext(), new UploadRandoListener() {
                 @Override
                 public void onUpload(Rando rando) {
                     Log.d(UploadJob.class, rando.toString());
                     if (rando != null) {
-                        RandoDAO.createRando(rando);
+                        RandoDAO.createRando(getContext(), rando);
                     }
                     Log.d(UploadJob.class, "Delete rando", randoToUpload.toString());
                     FileUtil.removeFileIfExist(randoToUpload.file);
-                    RandoDAO.deleteRandoToUploadById(randoToUpload.id);
+                    RandoDAO.deleteRandoToUploadById(getContext(), randoToUpload.id);
                     Intent intent = new Intent(Constants.UPLOAD_SERVICE_BROADCAST_EVENT);
                     UploadJob.this.getContext().sendBroadcast(intent);
                     resultFuture.put(Result.SUCCESS);
@@ -104,7 +105,10 @@ public class UploadJob extends Job {
                             } else if (networkResponse.statusCode == 400) {
                                 errorMessage = message + " Wrong Request when uploading Rando: " + randoToUpload.toString();
                                 FileUtil.removeFileIfExist(randoToUpload.file);
-                                RandoDAO.deleteRandoToUploadById(randoToUpload.id);
+                                RandoDAO.deleteRandoToUploadById(getContext(), randoToUpload.id);
+                            } else if (networkResponse.statusCode == 403) {
+                                BanService banService = new BanService();
+                                banService.processForbiddenRequest(getContext(), message);
                             } else if (networkResponse.statusCode == 500) {
                                 errorMessage = message + " Something is getting wrong";
                             }

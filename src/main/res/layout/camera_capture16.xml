@@ -16,7 +16,9 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/camera"
         android:layout_alignLeft="@+id/camera"
+        android:layout_alignStart="@+id/camera"
         android:layout_alignRight="@+id/camera"
+        android:layout_alignEnd="@+id/camera"
         android:layout_alignTop="@+id/camera" />
 
     <com.github.randoapp.view.CircleMaskView
@@ -45,14 +47,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="18dp"
-        android:background="@drawable/ic_close_gray_36dp"/>
+        android:background="@drawable/ic_arrow_back_gray_32dp"/>
 
     <ImageView
         android:id="@+id/grid_button"
+        android:tag="grid_button"
         android:layout_width="@dimen/switch_camera_button_size"
         android:layout_height="@dimen/switch_camera_button_size"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_marginBottom="@dimen/switch_camera_margin_bottom"
         android:layout_marginRight="@dimen/camera_button_margin_left"
         android:background="@drawable/switch_camera_background"
@@ -61,6 +65,7 @@
 
     <ImageView
         android:id="@+id/camera_switch_button"
+        android:tag="camera_switch_button"
         android:layout_width="@dimen/switch_camera_button_size"
         android:layout_height="@dimen/switch_camera_button_size"
         android:layout_alignParentBottom="true"
@@ -72,10 +77,11 @@
 
     <ImageView
         android:id="@+id/capture_button"
+        android:tag="capture_button"
         android:layout_width="@dimen/rando_button_size"
         android:layout_height="@dimen/rando_button_size"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
         android:layout_marginBottom="@dimen/camera_button_margin_bottom"
         android:background="@drawable/capture_image_background"
         android:scaleType="center"

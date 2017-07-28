@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.FragmentActivity;
@@ -64,13 +63,14 @@ public class ImageReviewUploadActivity extends FragmentActivity {
     }
 
     @Override
+    protected void onPostResume() {
+        super.onPostResume();
+    }
+
+
+    @Override
     public void onBackPressed() {
-        Intent intent;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            intent = new Intent(this, CameraActivity10.class);
-        } else {
-            intent = new Intent(this, CameraActivity16.class);
-        }
+        Intent intent = new Intent(this, CameraActivity16.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
         finish();
@@ -84,16 +84,16 @@ public class ImageReviewUploadActivity extends FragmentActivity {
                 return;
             }
 
-            if (Preferences.getEnableVibrate()
+            if (Preferences.getEnableVibrate(getBaseContext())
                     && ContextCompat.checkSelfPermission(v.getContext(), android.Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
                 ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(50);
             }
 
             uploadButton.setEnabled(false);
             Analytics.logUploadRando(mFirebaseAnalytics);
-            Location location = Preferences.getLocation();
+            Location location = Preferences.getLocation(getBaseContext());
             RandoUpload randoUpload = new RandoUpload(originalPicFileName, location.getLatitude(), location.getLongitude(), new Date());
-            RandoDAO.addToUpload(randoUpload);
+            RandoDAO.addToUpload(getBaseContext(), randoUpload);
 
             UploadJobScheduler.scheduleUpload(getApplicationContext());
 

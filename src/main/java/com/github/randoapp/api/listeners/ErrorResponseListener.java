@@ -1,5 +1,6 @@
 package com.github.randoapp.api.listeners;
 
+import android.content.Context;
 import android.content.Intent;
 
 import com.android.volley.AuthFailureError;
@@ -10,11 +11,22 @@ import com.android.volley.Response;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
-import com.github.randoapp.App;
 import com.github.randoapp.Constants;
 import com.github.randoapp.log.Log;
 
 public class ErrorResponseListener implements Response.ErrorListener {
+
+    private Context context;
+
+    private ErrorResponseListener() {
+        
+    }
+
+    public ErrorResponseListener(Context context) {
+        super();
+        this.context = context;
+    }
+
     @Override
     public void onErrorResponse(VolleyError e) {
         if (e.networkResponse != null)
@@ -26,7 +38,7 @@ public class ErrorResponseListener implements Response.ErrorListener {
         // For ServerError 5xx, you can do retry or handle accordingly.
         if (e instanceof AuthFailureError) {
             Intent intent = new Intent(Constants.AUTH_FAILURE_BROADCAST_EVENT);
-            App.context.sendBroadcast(intent);
+            context.sendBroadcast(intent);
             Log.d(ErrorResponseListener.class, "AuthFailureError: ", e.getStackTrace().toString());
         } else if (e instanceof NetworkError) {
         } else if (e instanceof ServerError) {

@@ -1,5 +1,7 @@
 package com.github.randoapp.api.listeners;
 
+import android.content.Context;
+
 import com.android.volley.Response;
 import com.github.randoapp.api.beans.User;
 import com.github.randoapp.api.callback.OnFetchUser;
@@ -21,9 +23,15 @@ import static com.github.randoapp.Constants.OUT_RANDOS_PARAM;
 
 public class UserFetchResultListener implements Response.Listener<JSONObject> {
     private OnFetchUser listener;
+    private Context context;
 
-    public UserFetchResultListener(final OnFetchUser listener) {
+    private UserFetchResultListener() {
+        super();
+    }
+
+    public UserFetchResultListener(final Context context, final OnFetchUser listener) {
         this.listener = listener;
+        this.context = context;
     }
 
     @Override
@@ -33,7 +41,7 @@ public class UserFetchResultListener implements Response.Listener<JSONObject> {
             User fetchedUser = new User();
 
             fetchedUser.email = response.getString(EMAIL_PARAM);
-            Preferences.setAccount(fetchedUser.email);
+            Preferences.setAccount(this.context, fetchedUser.email);
 
             JSONArray jsonInRandos = response.getJSONArray(IN_RANDOS_PARAM);
             JSONArray jsonOutRandos = response.getJSONArray(OUT_RANDOS_PARAM);
