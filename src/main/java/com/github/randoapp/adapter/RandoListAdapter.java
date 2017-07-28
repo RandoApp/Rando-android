@@ -247,7 +247,7 @@ public class RandoListAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 recycleCircleMenu(holder);
-                if (holder.ratingMenu !=null){
+                if (holder.ratingMenu != null) {
                     return;
                 }
                 holder.ratingMenu = new CircleMenu(v.getContext());
@@ -271,11 +271,11 @@ public class RandoListAdapter extends BaseAdapter {
                             public void onMenuSelected(int index) {
                                 switch (index) {
                                     case 0:
-                                        Analytics.logRateRandoDown(mFirebaseAnalytics);
+                                        Analytics.logRateRandoDown(firebaseAnalytics);
                                         rateRando(holder, -1);
                                         break;
                                     case 1:
-                                        Analytics.logRateRandoUp(mFirebaseAnalytics);
+                                        Analytics.logRateRandoUp(firebaseAnalytics);
                                         rateRando(holder, 1);
                                         break;
                                     default:
@@ -506,17 +506,18 @@ public class RandoListAdapter extends BaseAdapter {
     }
 
     private void rateRando(final ViewHolder holder, final int rating) {
-        Analytics.logShareRando(mFirebaseAnalytics);
-        API.rate(holder.rando.randoId, rating, new NetworkResultListener() {
+        Analytics.logShareRando(firebaseAnalytics);
+        API.rate(holder.rando.randoId, holder.randoItemLayout.getContext(), rating, new NetworkResultListener() {
             @Override
             public void onOk() {
-                holder.rateButton.setImageResource(rating == 1 ? R.drawable.ic_thumb_up_green_24dp: R.drawable.ic_thumb_down_red_24dp);
+                holder.rateButton.setImageResource(rating == 1 ? R.drawable.ic_thumb_up_green_24dp : R.drawable.ic_thumb_down_red_24dp);
             }
 
             @Override
-            public void onError() {
+            public void onError(Error error) {
 
             }
+
         });
     }
 
@@ -578,12 +579,13 @@ public class RandoListAdapter extends BaseAdapter {
         holder.rando = null;
     }
 
-    private void recycleCircleMenu(ViewHolder holder){
+    private void recycleCircleMenu(ViewHolder holder) {
         if (holder.circleMenu != null) {
             holder.randoItemLayout.removeView(holder.circleMenu);
             holder.circleMenu = null;
         }
     }
+
     private void recycleViewSwitcher(ViewSwitcher viewSwitcher) {
         //disable animation for immediately and undetectable switching to zero child:
         viewSwitcher.clearAnimation();
