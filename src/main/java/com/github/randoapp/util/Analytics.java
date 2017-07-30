@@ -22,6 +22,7 @@ public class Analytics {
     private static String SWITCH_CAMERA_TO_FRONT = "switch_camera_to_front";
     private static String SWITCH_CAMERA_TO_BACK = "switch_camera_to_back";
     private static String RATE_RANDO_UP = "rate_rando_up";
+    private static String RATE_RANDO_NORMAL = "rate_rando_normal";
     private static String RATE_RANDO_DOWN = "rate_rando_down";
 
     //unwanted rando events
@@ -109,11 +110,15 @@ public class Analytics {
         analytics.logEvent(SWITCH_CAMERA_TO_BACK, null);
     }
 
-    public static void logRateRandoUp(FirebaseAnalytics analytics) {
+    public static void logRateRandoGood(FirebaseAnalytics analytics) {
         analytics.logEvent(RATE_RANDO_UP, null);
     }
 
-    public static void logRateRandoDown(FirebaseAnalytics analytics) {
+    public static void logRateRandoNormal(FirebaseAnalytics analytics) {
+        analytics.logEvent(RATE_RANDO_NORMAL, null);
+    }
+
+    public static void logRateRandoBad(FirebaseAnalytics analytics) {
         analytics.logEvent(RATE_RANDO_DOWN, null);
     }
 

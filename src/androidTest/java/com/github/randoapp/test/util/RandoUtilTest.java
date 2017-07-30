@@ -39,32 +39,4 @@ public class RandoUtilTest {
         RandoDAO.clearRandos(context);
         RandoDAO.clearRandoToUpload(context);
     }
-
-
-    @Test
-    public void testAreRandoListsEqual() throws Exception {
-        List<Rando> randos1 = RandoTestHelper.getNRandomRandos(3, Rando.Status.OUT);
-        List<Rando> randos2 = new ArrayList<Rando>();
-        for (Rando rando : randos1) {
-            randos2.add(new Rando(rando));
-        }
-
-        assertThat("Lists are not equal", RandoUtil.areRandoListsEqual(randos1, randos2), is(true));
-    }
-
-    @Test
-    public void testAreRandoListsNotEqualBySize() throws Exception {
-        List<Rando> randos1 = RandoTestHelper.getNRandomRandos(4, Rando.Status.OUT);
-        List<Rando> randos2 = RandoTestHelper.getNRandomRandos(3, Rando.Status.OUT);
-
-        assertThat("Lists are not equal", RandoUtil.areRandoListsEqual(randos1, randos2), is(false));
-    }
-
-    @Test
-    public void testAreRandoListsNotEqualByContent() throws Exception {
-        List<Rando> randos1 = RandoTestHelper.getNRandomRandos(3, Rando.Status.OUT);
-        List<Rando> randos2 = RandoTestHelper.getNRandomRandos(3, Rando.Status.IN);
-
-        assertThat("Lists are not equal", RandoUtil.areRandoListsEqual(randos1, randos2), is(false));
-    }
 }

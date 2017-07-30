@@ -33,7 +33,6 @@ public class Constants {
 
     public static final long LOCATION_DETECT_TIMEOUT = 5 * 60 * 1000; //in milliseconds
 
-    public static final String ERROR = "error";
     public static final int UNAUTHORIZED_CODE = 400;
     public static final int FORBIDDEN_CODE = 411;
 
@@ -47,14 +46,10 @@ public class Constants {
     public static final String SERVER_HOST = BuildConfig.RANDO_HOST;
     public static final String SERVER_API_URL = "https://" + SERVER_API_HOST;
     public static final String SERVER_URL = "https://" + SERVER_HOST;
-    public static final int ESTABLISH_CONNECTION_TIMEOUT = 5 * 60 * 1000;
     public static final int UPLOAD_CONNECTION_TIMEOUT = (int) TimeUnit.MINUTES.toMillis(10);
     public static final int API_CONNECTION_TIMEOUT = (int) TimeUnit.MINUTES.toMillis(2);
 
     public static final int UPLOAD_RETRY_TIMEOUT = 5 * 60 * 1000;
-
-    public static final int UPLOAD_SERVICE_ATTEMPTS_FAIL = 5;
-    public static final long UPLOAD_SERVICE_SHORT_PAUSE = 5 * 1000;
 
     //Shared Preferences
     public static final String PREFERENCES_FILE_NAME = "rando.prefs";

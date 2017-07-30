@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -177,16 +176,13 @@ public class RandoListAdapter extends BaseAdapter {
             public boolean onLongClick(View v) {
                 if (holder.circleMenu == null && !holder.rando.isUnwanted()) {
                     RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) (imageSize * 0.9), (int) (imageSize * 0.9));
-                    layoutParams.setMargins(v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left),
-                            v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
-                            v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right),
-                            v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));
-                    layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+                    layoutParams.topMargin = (int) (imageSize * 0.05);
+                    layoutParams.leftMargin = (int) (imageSize * 0.05);
 
-                    holder.circleMenu = new CircleMenu(holder.randoItemLayout.getContext());
+                    holder.circleMenu = new CircleMenu(v.getContext());
                     holder.randoItemLayout.addView(holder.circleMenu, layoutParams);
 
-                    Resources res = holder.circleMenu.getResources();
+                    Resources res = v.getResources();
                     holder.circleMenu.setMainMenu(res.getColor(R.color.menu_button_color), R.drawable.ic_close_white_24dp, R.drawable.ic_close_white_24dp);
                     if (!holder.rando.toUpload) {
                         holder.circleMenu.addSubMenu(res.getColor(R.color.share_menu_button_color), R.drawable.ic_share_white_24dp);
@@ -251,31 +247,31 @@ public class RandoListAdapter extends BaseAdapter {
                     return;
                 }
                 holder.ratingMenu = new CircleMenu(v.getContext());
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) (imageSize * 0.6), (int) (imageSize * 0.6));
-                /*layoutParams.setMargins(v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left),
-                        v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
-                        v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right),
-                        v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));*/
-                //layoutParams.setMargins(-20,-20,-20,-20);
-                layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) (imageSize * 0.9), (int) (imageSize * 0.9));
+                layoutParams.leftMargin = (int) (imageSize * 0.05);
+                layoutParams.topMargin = (int) (imageSize * 0.05);
                 holder.randoItemLayout.addView(holder.ratingMenu, layoutParams);
 
 
-                Resources res = holder.ratingMenu.getResources();
-                holder.ratingMenu.setBackgroundColor(Color.BLACK);
+                Resources res = v.getResources();
                 holder.ratingMenu.setMainMenu(res.getColor(R.color.menu_button_color), R.drawable.ic_close_white_24dp, R.drawable.ic_close_white_24dp)
-                        .addSubMenu(res.getColor(R.color.report_menu_button_color), R.drawable.ic_thumb_down_white_24dp)
+                        .addSubMenu(res.getColor(R.color.yellow_button_background_normal), R.drawable.ic_thumbs_up_down_white_24dp)
                         .addSubMenu(res.getColor(R.color.share_menu_button_color), R.drawable.ic_thumb_up_white_24dp)
+                        .addSubMenu(res.getColor(R.color.report_menu_button_color), R.drawable.ic_thumb_down_white_24dp)
                         .setOnMenuSelectedListener(new OnMenuSelectedListener() {
                             @Override
                             public void onMenuSelected(int index) {
                                 switch (index) {
                                     case 0:
-                                        Analytics.logRateRandoDown(firebaseAnalytics);
-                                        rateRando(holder, -1);
+                                        Analytics.logRateRandoNormal(firebaseAnalytics);
+                                        rateRando(holder, 2);
                                         break;
                                     case 1:
-                                        Analytics.logRateRandoUp(firebaseAnalytics);
+                                        Analytics.logRateRandoGood(firebaseAnalytics);
+                                        rateRando(holder, 3);
+                                        break;
+                                    case 2:
+                                        Analytics.logRateRandoBad(firebaseAnalytics);
                                         rateRando(holder, 1);
                                         break;
                                     default:
@@ -510,7 +506,7 @@ public class RandoListAdapter extends BaseAdapter {
         API.rate(holder.rando.randoId, holder.randoItemLayout.getContext(), rating, new NetworkResultListener() {
             @Override
             public void onOk() {
-                holder.rateButton.setImageResource(rating == 1 ? R.drawable.ic_thumb_up_green_24dp : R.drawable.ic_thumb_down_red_24dp);
+                holder.rateButton.setImageResource(rating == 3 ? R.drawable.ic_thumb_up_green_24dp : R.drawable.ic_thumb_down_red_24dp);
             }
 
             @Override

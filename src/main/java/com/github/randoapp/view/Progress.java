@@ -10,10 +10,6 @@ public class Progress {
     private Activity activity;
     private boolean isShowing = false;
 
-    private Progress() {
-
-    }
-
     public Progress(Activity activity) {
         this.activity = activity;
     }

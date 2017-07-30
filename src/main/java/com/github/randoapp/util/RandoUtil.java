@@ -32,10 +32,6 @@ public class RandoUtil {
         return urls.small;
     }
 
-    public static boolean areRandoListsEqual(List<Rando> newRandos, List<Rando> oldRandos) {
-        return (oldRandos.size() == newRandos.size() && oldRandos.containsAll(newRandos));
-    }
-
     public static Rando parseRando(String jsonRandoString, Rando.Status status) {
         try {
             return parseRando(new JSONObject(jsonRandoString), status);

@@ -23,6 +23,7 @@ public class Rando implements Serializable {
     public UrlSize mapURLSize = new UrlSize();
     public Status status;
     public String detected;
+    public int rating;
 
     public boolean toUpload = false;
 
@@ -30,15 +31,16 @@ public class Rando implements Serializable {
     }
 
     public Rando(Rando rando) {
-        rando.id = id;
-        rando.randoId = randoId;
-        rando.imageURL = imageURL;
-        rando.imageURLSize = imageURLSize;
-        rando.date = date;
-        rando.mapURL = mapURL;
-        rando.mapURLSize = mapURLSize;
-        rando.status = status;
-        rando.detected = detected;
+        this.id = rando.id;
+        this.randoId = rando.randoId;
+        this.imageURL = rando.imageURL;
+        this.imageURLSize = rando.imageURLSize;
+        this.date = rando.date;
+        this.mapURL = rando.mapURL;
+        this.mapURLSize = rando.mapURLSize;
+        this.status = rando.status;
+        this.detected = rando.detected;
+        this.rating = rando.rating;
     }
 
     public boolean isUnwanted() {
