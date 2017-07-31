@@ -296,11 +296,8 @@ public class RandoListAdapter extends BaseAdapter {
                 }).openMenu();
                 holder.image.setAlpha(0.25f);
                 holder.map.setAlpha(0.25f);
-
-                return;
             }
         });
-
     }
 
     private void deleteRando(final ViewHolder holder) {
