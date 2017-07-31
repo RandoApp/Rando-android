@@ -37,6 +37,7 @@ import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
+import com.github.randoapp.notification.Notification;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.BitmapUtil;
 import com.github.randoapp.util.NetworkUtil;
@@ -508,7 +509,7 @@ public class RandoListAdapter extends BaseAdapter {
 
             @Override
             public void onError(Error error) {
-
+                Toast.makeText(holder.randoItemLayout.getContext(), "Error setting rating. Please check internet connection.", Toast.LENGTH_LONG).show();
             }
 
         });

@@ -92,7 +92,9 @@ public class Rando implements Serializable {
                 ", mapURL='" + mapURL + '\'' +
                 ", mapURLSize=" + mapURLSize +
                 ", status=" + status +
-                ", detected=" + detected +
+                ", detected='" + detected + '\'' +
+                ", rating=" + rating +
+                ", toUpload=" + toUpload +
                 '}';
     }
 
