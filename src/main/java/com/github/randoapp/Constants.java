@@ -80,6 +80,7 @@ public class Constants {
     public static final String MAP_URL_PARAM = "mapURL";
     public static final String CREATION_PARAM = "creation";
     public static final String DETECTED_PARAM = "detected";
+    public static final String RATING_PARAM = "rating";
     public static final String RANDO_PARAM = "rando";
     public static final String IN_RANDOS_PARAM = "in";
     public static final String OUT_RANDOS_PARAM = "out";

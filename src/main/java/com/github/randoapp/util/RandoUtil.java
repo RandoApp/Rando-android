@@ -19,6 +19,7 @@ import static com.github.randoapp.Constants.MAP_URL_PARAM;
 import static com.github.randoapp.Constants.MAP_URL_SIZES_PARAM;
 import static com.github.randoapp.Constants.MEDIUM_PARAM;
 import static com.github.randoapp.Constants.RANDO_ID_PARAM;
+import static com.github.randoapp.Constants.RATING_PARAM;
 import static com.github.randoapp.Constants.SMALL_PARAM;
 
 public class RandoUtil {
@@ -62,6 +63,10 @@ public class RandoUtil {
         if (jsonRando.has(DETECTED_PARAM)){
             JSONArray detected = jsonRando.getJSONArray(DETECTED_PARAM);
             rando.detected = detected.join(",");
+        }
+
+        if (jsonRando.has(RATING_PARAM)){
+            rando.rating = jsonRando.getInt(RATING_PARAM);
         }
         return rando;
     }
