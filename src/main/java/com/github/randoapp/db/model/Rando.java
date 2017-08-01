@@ -191,7 +191,7 @@ public class Rando implements Serializable {
     }
 
     public boolean isMapEmpty() {
-        return TextUtils.isEmpty(mapURLSize.large) && TextUtils.isEmpty(mapURLSize.medium) && TextUtils.isEmpty(mapURLSize.small);
+        return mapURLSize == null || (TextUtils.isEmpty(mapURLSize.large) && TextUtils.isEmpty(mapURLSize.medium) && TextUtils.isEmpty(mapURLSize.small));
     }
 
     public static class DateComparator implements Comparator<Rando> {

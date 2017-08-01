@@ -53,14 +53,14 @@ public class RandoTestHelper {
 
         Rando = new Rando();
         Rando.randoId = UUID.randomUUID().toString();
-        Rando.imageURL = "blaURL";
-        Rando.imageURLSize.small = "blaURL";
-        Rando.imageURLSize.medium = "blaURL";
-        Rando.imageURLSize.large = "blaURL";
-        Rando.mapURL = "blaFile";
-        Rando.mapURLSize.small = "blaURL";
-        Rando.mapURLSize.medium = "blaURL";
-        Rando.mapURLSize.large = "blaURL";
+        Rando.imageURL = "imageURL";
+        Rando.imageURLSize.small = "imageURLSmall";
+        Rando.imageURLSize.medium = "imageURLMedium";
+        Rando.imageURLSize.large = "imageURLLarge";
+        Rando.mapURL = "mapURLe";
+        Rando.mapURLSize.small = "mapURLSmall";
+        Rando.mapURLSize.medium = "mapURLMedium";
+        Rando.mapURLSize.large = "mapURLLarge";
         Rando.date = userDate;
         Rando.status = status;
 
