@@ -40,7 +40,6 @@ import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.BitmapUtil;
 import com.github.randoapp.util.NetworkUtil;
-import com.github.randoapp.util.RandoUtil;
 import com.github.randoapp.view.RoundProgress;
 import com.github.randoapp.view.UnwantedRandoView;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -643,11 +642,11 @@ public class RandoListAdapter extends BaseAdapter {
             return;
         }
 
-        loadImage(context, holder, RandoUtil.getUrlByImageSize(imageSize, rando.imageURLSize), Priority.HIGH);
+        loadImage(context, holder, rando.getBestImageUrlBySize(imageSize), Priority.HIGH);
         if (rando.isMapEmpty()) {
             holder.map.setImageResource(R.drawable.flat_map_for_vec);
         } else {
-            loadMapImage(context, holder, RandoUtil.getUrlByImageSize(imageSize, rando.mapURLSize), Priority.LOW);
+            loadMapImage(context, holder, rando.getBestMapUrlBySize(imageSize), Priority.LOW);
         }
     }
 

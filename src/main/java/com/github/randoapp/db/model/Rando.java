@@ -2,6 +2,7 @@ package com.github.randoapp.db.model;
 
 import android.text.TextUtils;
 
+import com.github.randoapp.Constants;
 import com.github.randoapp.log.Log;
 
 import org.json.JSONArray;
@@ -47,7 +48,7 @@ public class Rando implements Serializable {
     }
 
     public boolean isUnwanted() {
-        return detected != null && detected.contains("unwanted");
+        return detected != null && detected.contains("\"unwanted\"");
     }
 
     public static Rando fromJSON(String jsonRandoString, Rando.Status status) {
@@ -138,6 +139,25 @@ public class Rando implements Serializable {
                 ", toUpload=" + toUpload +
                 '}';
     }
+
+    public String getBestImageUrlBySize(int size) {
+        return getBestUrlBySize(size, imageURLSize);
+    }
+
+    public String getBestMapUrlBySize(int size) {
+        return getBestUrlBySize(size, mapURLSize);
+    }
+
+    private String getBestUrlBySize(int imageSize, Rando.UrlSize urls) {
+        if (imageSize >= Constants.SIZE_LARGE) {
+            return urls.large;
+        } else if (imageSize >= Constants.SIZE_MEDIUM) {
+            return urls.medium;
+        }
+        return urls.small;
+    }
+
+
 
     public class UrlSize implements Serializable {
         public String small;

@@ -89,7 +89,7 @@ public class RandoFromJsonTest {
     }
 
     @Test
-    public void shouldBuildOutRandoFromJsonWithSingleDeprecatedAndNoRating(){
+    public void shouldBuildOutRandoFromJsonWithSingleDetectedAndNoRating(){
 
         String json = readFileFromPath("rando_detected_single.json");
         assertThat(json).isNotNull().isNotEmpty();
@@ -117,7 +117,7 @@ public class RandoFromJsonTest {
     }
 
     @Test
-    public void shouldBuildOutRandoFromJsonWithDeprecatedListAndNoRating(){
+    public void shouldBuildOutRandoFromJsonWithDetectedListAndNoRating(){
 
         String json = readFileFromPath("rando_detected_list.json");
         assertThat(json).isNotNull().isNotEmpty();

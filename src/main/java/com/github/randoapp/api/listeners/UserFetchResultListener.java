@@ -8,7 +8,6 @@ import com.github.randoapp.api.callback.OnFetchUser;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
-import com.github.randoapp.util.RandoUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,17 +45,17 @@ public class UserFetchResultListener implements Response.Listener<JSONObject> {
             JSONArray jsonInRandos = response.getJSONArray(IN_RANDOS_PARAM);
             JSONArray jsonOutRandos = response.getJSONArray(OUT_RANDOS_PARAM);
 
-            List<Rando> inRandos = new ArrayList<Rando>(jsonInRandos.length());
-            List<Rando> outRandos = new ArrayList<Rando>(jsonOutRandos.length());
+            List<Rando> inRandos = new ArrayList<>(jsonInRandos.length());
+            List<Rando> outRandos = new ArrayList<>(jsonOutRandos.length());
 
             fetchedUser.randosIn = inRandos;
             fetchedUser.randosOut = outRandos;
 
             for (int i = 0; i < jsonInRandos.length(); i++) {
-                inRandos.add(RandoUtil.parseRando(jsonInRandos.getJSONObject(i), Rando.Status.IN));
+                inRandos.add(Rando.fromJSON(jsonInRandos.getJSONObject(i), Rando.Status.IN));
             }
             for (int i = 0; i < jsonOutRandos.length(); i++) {
-                outRandos.add(RandoUtil.parseRando(jsonOutRandos.getJSONObject(i), Rando.Status.OUT));
+                outRandos.add(Rando.fromJSON(jsonOutRandos.getJSONObject(i), Rando.Status.OUT));
             }
             listener.onFetch(fetchedUser);
 

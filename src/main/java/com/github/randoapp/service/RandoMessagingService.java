@@ -8,7 +8,6 @@ import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.notification.Notification;
-import com.github.randoapp.util.RandoUtil;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -29,10 +28,10 @@ public class RandoMessagingService extends FirebaseMessagingService {
                 Rando rando = null;
                 int notificationTextResId = 0;
                 if (Constants.PUSH_NOTIFICATION_RECEIVED.equals(notificationType)) {
-                    rando = RandoUtil.parseRando(randoString, Rando.Status.IN);
+                    rando = Rando.fromJSON(randoString, Rando.Status.IN);
                     notificationTextResId = R.string.rando_received;
                 } else if (Constants.PUSH_NOTIFICATION_LANDED.equals(notificationType)) {
-                    rando = RandoUtil.parseRando(randoString, Rando.Status.OUT);
+                    rando = Rando.fromJSON(randoString, Rando.Status.OUT);
                     notificationTextResId = R.string.rando_landed;
                 }
                 if (rando != null) {

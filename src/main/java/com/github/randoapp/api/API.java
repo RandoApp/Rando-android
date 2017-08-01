@@ -29,7 +29,6 @@ import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.notification.Notification;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.FileUtil;
-import com.github.randoapp.util.RandoUtil;
 import com.google.firebase.crash.FirebaseCrash;
 
 import org.json.JSONException;
@@ -227,12 +226,7 @@ public class API {
                 Log.d(API.class, "Rando Uploaded Successfully:", randoUpload.toString());
                 String resultResponse = new String(response.data);
                 if (uploadListener != null) {
-                    try {
-                        JSONObject result = new JSONObject(resultResponse);
-                        uploadListener.onUpload(RandoUtil.parseRando(result, Rando.Status.OUT));
-                    } catch (JSONException e) {
-                        Log.e(API.class, "Parse uploaded failed", e);
-                    }
+                    uploadListener.onUpload(Rando.fromJSON(resultResponse, Rando.Status.OUT));
                 }
             }
         }, errorListener) {
@@ -325,7 +319,7 @@ public class API {
 
     public static void rate(final String randoId, final Context context, final int rating, final NetworkResultListener reportRandoListener) {
         Log.d(API.class, "Rate Rando:", randoId);
-        BackgroundPreprocessedRequest request = new BackgroundPreprocessedRequest(Request.Method.POST, RATE_URL + randoId+"?rating="+rating, null, null, new Response.Listener<JSONObject>() {
+        BackgroundPreprocessedRequest request = new BackgroundPreprocessedRequest(Request.Method.POST, RATE_URL + randoId + "?rating=" + rating, null, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
