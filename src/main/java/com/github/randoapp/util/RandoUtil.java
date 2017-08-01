@@ -8,7 +8,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
-import java.util.List;
 
 import static com.github.randoapp.Constants.CREATION_PARAM;
 import static com.github.randoapp.Constants.DETECTED_PARAM;

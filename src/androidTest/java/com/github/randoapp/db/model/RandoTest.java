@@ -1,9 +1,13 @@
-package com.github.randoapp.test.db;
+package com.github.randoapp.db.model;
 
-import com.github.randoapp.db.model.Rando;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
+
+import com.github.randoapp.test.db.RandoTestHelper;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Collections;
 import java.util.Date;
@@ -12,10 +16,12 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+@RunWith(AndroidJUnit4.class)
+@SmallTest
 public class RandoTest  {
 
     @Test
-    public void testDateEqual() {
+    public void shouldReturnTrueFromComparatorWhenDatesEqual() {
         Date date = new Date();
         Rando rando1 = RandoTestHelper.getRandomRando(Rando.Status.IN);
         Rando rando2 = RandoTestHelper.getRandomRando(Rando.Status.IN);
@@ -54,4 +60,5 @@ public class RandoTest  {
         Collections.sort(randos, new Rando.DateComparator());
         RandoTestHelper.checkListNaturalOrder(randos);
     }
+
 }
