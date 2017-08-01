@@ -103,7 +103,7 @@ public class RandoFromJsonTest {
         assertThat(rando.status).isEqualTo(Rando.Status.OUT);
         assertThat(rando.id).isEqualTo(0);
         assertThat(rando.rating).isEqualTo(0);
-        assertThat(rando.detected).isEqualTo("detected");
+        assertThat(rando.detected).isEqualTo("\"unwanted\"");
 
         assertThat(rando.imageURLSize).isNotNull();
         assertThat(rando.imageURLSize.large).isEqualTo("IMAGE_URL_LARGE");
@@ -131,7 +131,7 @@ public class RandoFromJsonTest {
         assertThat(rando.status).isEqualTo(Rando.Status.OUT);
         assertThat(rando.id).isEqualTo(0);
         assertThat(rando.rating).isEqualTo(0);
-        assertThat(rando.detected).isEqualTo("detected,blabla");
+        assertThat(rando.detected).isEqualTo("\"unwanted\",\"blabla\"");
 
         assertThat(rando.imageURLSize).isNotNull();
         assertThat(rando.imageURLSize.large).isEqualTo("IMAGE_URL_LARGE");
