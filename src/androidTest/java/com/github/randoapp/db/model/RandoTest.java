@@ -5,8 +5,6 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.github.randoapp.Constants;
 import com.github.randoapp.test.db.RandoTestHelper;
-import com.google.dexmaker.dx.rop.cst.Constant;
-
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
