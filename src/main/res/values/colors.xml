@@ -6,9 +6,6 @@
     <color name="skip_link">#006DCC</color>
     <color name="auth_text">#FFFFFF</color>
 
-    <color name="back_button_background">#393939</color>
-
-
     <color name="empty_home_message">#BB000000</color>
     <color name="empty_home_message_shadow">#CCCCCC</color>
 
