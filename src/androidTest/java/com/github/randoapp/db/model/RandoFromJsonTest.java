@@ -143,4 +143,88 @@ public class RandoFromJsonTest {
         assertThat(rando.mapURLSize.medium).isEqualTo("MAP_URL_MEDIUM");
         assertThat(rando.mapURLSize.small).isEqualTo("MAP_URL_SMALL");
     }
+
+    @Test
+    public void shouldBuildOutRandoFromJsonWithDetectedListIsEmpty(){
+
+        String json = readFileFromPath("rando_detected_empty.json");
+        assertThat(json).isNotNull().isNotEmpty();
+        Rando rando = Rando.fromJSON(json, Rando.Status.OUT);
+
+        assertThat(rando).isNotNull();
+        assertThat(rando.date).isEqualTo(new Date(1460143246286L));
+        assertThat(rando.imageURL).isEqualTo("IMAGE_URL");
+        assertThat(rando.mapURL).isEqualTo("MAP_URL");
+        assertThat(rando.randoId).isEqualTo("62187b3b661732e3c8f0468f2824aebae04ab6d967");
+        assertThat(rando.status).isEqualTo(Rando.Status.OUT);
+        assertThat(rando.id).isEqualTo(0);
+        assertThat(rando.rating).isEqualTo(0);
+        assertThat(rando.detected).isEqualTo("");
+
+        assertThat(rando.imageURLSize).isNotNull();
+        assertThat(rando.imageURLSize.large).isEqualTo("IMAGE_URL_LARGE");
+        assertThat(rando.imageURLSize.medium).isEqualTo("IMAGE_URL_MEDIUM");
+        assertThat(rando.imageURLSize.small).isEqualTo("IMAGE_URL_SMALL");
+
+        assertThat(rando.mapURLSize).isNotNull();
+        assertThat(rando.mapURLSize.large).isEqualTo("MAP_URL_LARGE");
+        assertThat(rando.mapURLSize.medium).isEqualTo("MAP_URL_MEDIUM");
+        assertThat(rando.mapURLSize.small).isEqualTo("MAP_URL_SMALL");
+    }
+
+    @Test
+    public void shouldBuildOutRandoFromJsonWithRating0(){
+
+        String json = readFileFromPath("rando_rating_0.json");
+        assertThat(json).isNotNull().isNotEmpty();
+        Rando rando = Rando.fromJSON(json, Rando.Status.OUT);
+
+        assertThat(rando).isNotNull();
+        assertThat(rando.date).isEqualTo(new Date(1460143246286L));
+        assertThat(rando.imageURL).isEqualTo("IMAGE_URL");
+        assertThat(rando.mapURL).isEqualTo("MAP_URL");
+        assertThat(rando.randoId).isEqualTo("62187b3b661732e3c8f0468f2824aebae04ab6d967");
+        assertThat(rando.status).isEqualTo(Rando.Status.OUT);
+        assertThat(rando.id).isEqualTo(0);
+        assertThat(rando.rating).isEqualTo(0);
+        assertThat(rando.detected).isEqualTo("");
+
+        assertThat(rando.imageURLSize).isNotNull();
+        assertThat(rando.imageURLSize.large).isEqualTo("IMAGE_URL_LARGE");
+        assertThat(rando.imageURLSize.medium).isEqualTo("IMAGE_URL_MEDIUM");
+        assertThat(rando.imageURLSize.small).isEqualTo("IMAGE_URL_SMALL");
+
+        assertThat(rando.mapURLSize).isNotNull();
+        assertThat(rando.mapURLSize.large).isEqualTo("MAP_URL_LARGE");
+        assertThat(rando.mapURLSize.medium).isEqualTo("MAP_URL_MEDIUM");
+        assertThat(rando.mapURLSize.small).isEqualTo("MAP_URL_SMALL");
+    }
+
+    @Test
+    public void shouldBuildOutRandoFromJsonWithRating2(){
+
+        String json = readFileFromPath("rando_rating_2.json");
+        assertThat(json).isNotNull().isNotEmpty();
+        Rando rando = Rando.fromJSON(json, Rando.Status.OUT);
+
+        assertThat(rando).isNotNull();
+        assertThat(rando.date).isEqualTo(new Date(1460143246286L));
+        assertThat(rando.imageURL).isEqualTo("IMAGE_URL");
+        assertThat(rando.mapURL).isEqualTo("MAP_URL");
+        assertThat(rando.randoId).isEqualTo("62187b3b661732e3c8f0468f2824aebae04ab6d967");
+        assertThat(rando.status).isEqualTo(Rando.Status.OUT);
+        assertThat(rando.id).isEqualTo(0);
+        assertThat(rando.rating).isEqualTo(2);
+        assertThat(rando.detected).isEqualTo("");
+
+        assertThat(rando.imageURLSize).isNotNull();
+        assertThat(rando.imageURLSize.large).isEqualTo("IMAGE_URL_LARGE");
+        assertThat(rando.imageURLSize.medium).isEqualTo("IMAGE_URL_MEDIUM");
+        assertThat(rando.imageURLSize.small).isEqualTo("IMAGE_URL_SMALL");
+
+        assertThat(rando.mapURLSize).isNotNull();
+        assertThat(rando.mapURLSize.large).isEqualTo("MAP_URL_LARGE");
+        assertThat(rando.mapURLSize.medium).isEqualTo("MAP_URL_MEDIUM");
+        assertThat(rando.mapURLSize.small).isEqualTo("MAP_URL_SMALL");
+    }
 }
