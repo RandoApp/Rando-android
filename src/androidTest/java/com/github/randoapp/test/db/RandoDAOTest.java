@@ -115,7 +115,7 @@ public class RandoDAOTest {
     public void testReturnOrder() throws SQLException {
         insertNRandomRandoPairs(55);
         List<Rando> randos = RandoDAO.getAllRandos(context);
-        RandoTestHelper.checkListNaturalOrder(randos);
+        RandoTestHelper.assertListNaturalOrder(randos);
 
     }
 

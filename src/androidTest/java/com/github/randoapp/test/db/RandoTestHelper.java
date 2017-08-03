@@ -67,7 +67,7 @@ public class RandoTestHelper {
         return Rando;
     }
 
-    public static void checkListNaturalOrder(List<Rando> randos) {
+    public static void assertListNaturalOrder(List<Rando> randos) {
         Rando prevPair = null;
         for (Rando Rando : randos) {
             if (prevPair != null) {
