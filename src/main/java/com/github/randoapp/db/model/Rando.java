@@ -44,9 +44,6 @@ public class Rando implements Serializable {
 
     public boolean toUpload = false;
 
-    public Rando() {
-    }
-
     public boolean isUnwanted() {
         return detected != null && detected.contains("\"unwanted\"");
     }

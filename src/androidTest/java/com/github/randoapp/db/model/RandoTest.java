@@ -234,12 +234,4 @@ public class RandoTest {
         assertThat(rando.getBestMapUrlBySize(Constants.SIZE_SMALL)).isEqualTo("mapURLSmall");
         assertThat(rando.getBestMapUrlBySize(Constants.SIZE_SMALL-100)).isEqualTo("mapURLSmall");
     }
-
-    /* ==Equals and hash code==*/
-
-    @Test
-    public void shouldFollowEqualsContract() {
-       /* EqualsVerifier.forClass(Rando.class)
-                .verify();*/
-    }
 }
