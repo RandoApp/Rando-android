@@ -458,7 +458,7 @@ public class RandoDAO {
             rando.mapURLSize.large = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_MAP_URL_LARGE));
             rando.status = Rando.Status.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS)));
             rando.detected = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_DETECTED));
-
+            rando.rating = cursor.getInt(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_RATING));
             return rando;
         }
     }
@@ -486,6 +486,7 @@ public class RandoDAO {
         if (rando.detected != null) {
             values.put(RandoDBHelper.RandoTable.COLUMN_DETECTED, rando.detected);
         }
+        values.put(RandoDBHelper.RandoTable.COLUMN_RATING, rando.rating);
 
         return values;
     }

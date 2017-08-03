@@ -122,6 +122,7 @@ public class RandoListAdapter extends BaseAdapter {
 
         recycle(holder);
         holder.rando = randos.get(position);
+        setRatingIcon(holder);
         loadImages(convertView.getContext(), holder, holder.rando);
 
         if (holder.rando.isUnwanted()) {
@@ -502,7 +503,11 @@ public class RandoListAdapter extends BaseAdapter {
         API.rate(holder.rando.randoId, holder.randoItemLayout.getContext(), rating, new NetworkResultListener() {
             @Override
             public void onOk() {
-                holder.rateButton.setImageResource(rating == 3 ? R.drawable.ic_thumb_up_green_24dp : R.drawable.ic_thumb_down_red_24dp);
+                Rando rando = RandoDAO.getRandoById(holder.randoItemLayout.getContext(), holder.rando.id);
+                rando.rating = rating;
+                RandoDAO.updateRando(holder.randoItemLayout.getContext(), rando);
+                holder.rando = rando;
+                setRatingIcon(holder);
             }
 
             @Override
@@ -511,6 +516,24 @@ public class RandoListAdapter extends BaseAdapter {
             }
 
         });
+    }
+
+    private void setRatingIcon(ViewHolder holder) {
+
+        switch (holder.rando.rating) {
+            case 1:
+                holder.rateButton.setImageResource(R.drawable.ic_thumb_down_red_24dp);
+                break;
+            case 2:
+                holder.rateButton.setImageResource(R.drawable.ic_thumbs_up_down_white_24dp);
+                break;
+            case 3:
+                holder.rateButton.setImageResource(R.drawable.ic_thumb_up_green_24dp);
+                break;
+            default:
+                holder.rateButton.setImageResource(R.drawable.ic_thumb_up_gray_24dp);
+                break;
+        }
     }
 
     private void shareRando(final ViewHolder holder) {

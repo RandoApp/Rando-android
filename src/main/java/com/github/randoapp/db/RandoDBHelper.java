@@ -8,7 +8,7 @@ import android.util.Log;
 
 public class RandoDBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 12;
     private static final String DATABASE_NAME = "rando.db";
 
     private static RandoDBHelper helperInstance;
