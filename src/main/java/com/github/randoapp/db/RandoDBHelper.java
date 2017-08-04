@@ -141,10 +141,6 @@ public class RandoDBHelper extends SQLiteOpenHelper {
 
         public static final String COLUMN_RANDO_STATUS = "RANDO_STATUS";
 
-        public static final String[] ALL_COLUMNS = {
-                COLUMN_ID, COLUMN_USER_RANDO_ID, COLUMN_USER_RANDO_URL, COLUMN_USER_RANDO_URL_SMALL, COLUMN_USER_RANDO_URL_MEDIUM,
-                COLUMN_USER_RANDO_URL_LARGE, COLUMN_USER_RANDO_DATE, COLUMN_USER_MAP_URL, COLUMN_USER_MAP_URL_SMALL, COLUMN_USER_MAP_URL_MEDIUM, COLUMN_USER_MAP_URL_LARGE, COLUMN_RANDO_STATUS, COLUMN_DETECTED};
-
         public static final String CREATE_TABLE_SQL = "CREATE TABLE " + RandoTable.NAME +
                 " (" + COLUMN_ID + " integer primary key autoincrement, " +
                 COLUMN_USER_RANDO_ID + " text," +
@@ -158,7 +154,7 @@ public class RandoDBHelper extends SQLiteOpenHelper {
                 COLUMN_USER_MAP_URL_MEDIUM + " text," +
                 COLUMN_USER_MAP_URL_LARGE + " text," +
                 COLUMN_RANDO_STATUS + " text," +
-                COLUMN_RATING + " integer DEFAULT 0," +
+                COLUMN_RATING + " integer," +
                 COLUMN_DETECTED + " text" +
                 ");";
     }

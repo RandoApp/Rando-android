@@ -63,6 +63,7 @@ public class RandoTestHelper {
         Rando.mapURLSize.large = "mapURLLarge";
         Rando.date = userDate;
         Rando.status = status;
+        Rando.rating = random.nextInt(4);
 
         return Rando;
     }

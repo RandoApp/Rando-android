@@ -194,7 +194,7 @@ public class RandoDAO {
 
     public static synchronized Rando getRandoById(final Context context, long id) {
         Cursor cursor = getDB(context).query(RandoDBHelper.RandoTable.NAME,
-                RandoDBHelper.RandoTable.ALL_COLUMNS, RandoDBHelper.RandoTable.COLUMN_ID + " = " + id, null,
+                null, RandoDBHelper.RandoTable.COLUMN_ID + " = " + id, null,
                 null, null, null);
         cursor.moveToFirst();
         Rando newRando = cursorToRando(cursor);
@@ -211,7 +211,7 @@ public class RandoDAO {
 
     public static synchronized Rando getRandoByRandoId(final Context context, String randoId) {
         Cursor cursor = getDB(context).query(RandoDBHelper.RandoTable.NAME,
-                RandoDBHelper.RandoTable.ALL_COLUMNS, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_ID + " = '" + randoId + "'", null,
+                null, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_ID + " = '" + randoId + "'", null,
                 null, null, null);
         cursor.moveToFirst();
         Rando rando = cursorToRando(cursor);
@@ -324,7 +324,7 @@ public class RandoDAO {
         List<Rando> randos = new LinkedList<>();
 
         Cursor cursor = getDB(context).query(RandoDBHelper.RandoTable.NAME,
-                RandoDBHelper.RandoTable.ALL_COLUMNS, null, null, null, null, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE + " DESC", null);
+                null, null, null, null, null, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE + " DESC", null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -344,7 +344,7 @@ public class RandoDAO {
         List<Rando> randos = new LinkedList<>();
 
         Cursor cursor = getDB(context).query(RandoDBHelper.RandoTable.NAME,
-                RandoDBHelper.RandoTable.ALL_COLUMNS, RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS
+                null, RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS
                         + " = '" + status.name() + "'", null, null, null, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE + " DESC", null);
 
         cursor.moveToFirst();
@@ -404,7 +404,7 @@ public class RandoDAO {
      */
     public static synchronized int getRandosNumber(final Context context) {
         Cursor cursor = getDB(context).query(RandoDBHelper.RandoTable.NAME,
-                RandoDBHelper.RandoTable.ALL_COLUMNS, null, null, null, null, null);
+                null, null, null, null, null, null);
         int result = cursor.getCount();
         cursor.close();
         return result;

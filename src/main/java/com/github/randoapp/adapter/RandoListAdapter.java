@@ -239,65 +239,67 @@ public class RandoListAdapter extends BaseAdapter {
         holder.image.setOnLongClickListener(onLongClickListener);
         holder.map.setOnLongClickListener(onLongClickListener);
 
-        holder.rateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                recycleCircleMenu(holder);
-                if (holder.ratingMenu != null) {
-                    return;
-                }
-                holder.ratingMenu = new CircleMenu(v.getContext());
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) (imageSize * 0.9), (int) (imageSize * 0.9));
-                layoutParams.leftMargin = (int) (imageSize * 0.05);
-                layoutParams.topMargin = (int) (imageSize * 0.05);
-                holder.randoItemLayout.addView(holder.ratingMenu, layoutParams);
+        if (true) {
+            holder.rateButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    recycleCircleMenu(holder);
+                    if (holder.ratingMenu != null) {
+                        return;
+                    }
+                    holder.ratingMenu = new CircleMenu(v.getContext());
+                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) (imageSize * 0.9), (int) (imageSize * 0.9));
+                    layoutParams.leftMargin = (int) (imageSize * 0.05);
+                    layoutParams.topMargin = (int) (imageSize * 0.05);
+                    holder.randoItemLayout.addView(holder.ratingMenu, layoutParams);
 
 
-                Resources res = v.getResources();
-                holder.ratingMenu.setMainMenu(res.getColor(R.color.menu_button_color), R.drawable.ic_close_white_24dp, R.drawable.ic_close_white_24dp)
-                        .addSubMenu(res.getColor(R.color.yellow_button_background_normal), R.drawable.ic_thumbs_up_down_white_24dp)
-                        .addSubMenu(res.getColor(R.color.share_menu_button_color), R.drawable.ic_thumb_up_white_24dp)
-                        .addSubMenu(res.getColor(R.color.report_menu_button_color), R.drawable.ic_thumb_down_white_24dp)
-                        .setOnMenuSelectedListener(new OnMenuSelectedListener() {
-                            @Override
-                            public void onMenuSelected(int index) {
-                                switch (index) {
-                                    case 0:
-                                        Analytics.logRateRandoNormal(firebaseAnalytics);
-                                        rateRando(holder, 2);
-                                        break;
-                                    case 1:
-                                        Analytics.logRateRandoGood(firebaseAnalytics);
-                                        rateRando(holder, 3);
-                                        break;
-                                    case 2:
-                                        Analytics.logRateRandoBad(firebaseAnalytics);
-                                        rateRando(holder, 1);
-                                        break;
-                                    default:
-                                        break;
+                    Resources res = v.getResources();
+                    holder.ratingMenu.setMainMenu(res.getColor(R.color.menu_button_color), R.drawable.ic_close_white_24dp, R.drawable.ic_close_white_24dp)
+                            .addSubMenu(res.getColor(R.color.yellow_button_background_normal), R.drawable.ic_thumbs_up_down_white_24dp)
+                            .addSubMenu(res.getColor(R.color.share_menu_button_color), R.drawable.ic_thumb_up_white_24dp)
+                            .addSubMenu(res.getColor(R.color.report_menu_button_color), R.drawable.ic_thumb_down_white_24dp)
+                            .setOnMenuSelectedListener(new OnMenuSelectedListener() {
+                                @Override
+                                public void onMenuSelected(int index) {
+                                    switch (index) {
+                                        case 0:
+                                            Analytics.logRateRandoNormal(firebaseAnalytics);
+                                            rateRando(holder, 2);
+                                            break;
+                                        case 1:
+                                            Analytics.logRateRandoGood(firebaseAnalytics);
+                                            rateRando(holder, 3);
+                                            break;
+                                        case 2:
+                                            Analytics.logRateRandoBad(firebaseAnalytics);
+                                            rateRando(holder, 1);
+                                            break;
+                                        default:
+                                            break;
+                                    }
                                 }
-                            }
 
-                        }).setOnMenuStatusChangeListener(new OnMenuStatusChangeListener() {
+                            }).setOnMenuStatusChangeListener(new OnMenuStatusChangeListener() {
 
-                    @Override
-                    public void onMenuOpened() {
-                        //do nothing
-                    }
+                        @Override
+                        public void onMenuOpened() {
+                            //do nothing
+                        }
 
-                    @Override
-                    public void onMenuClosed() {
-                        holder.randoItemLayout.removeView(holder.ratingMenu);
-                        holder.ratingMenu = null;
-                        holder.image.setAlpha(1f);
-                        holder.map.setAlpha(1f);
-                    }
-                }).openMenu();
-                holder.image.setAlpha(0.25f);
-                holder.map.setAlpha(0.25f);
-            }
-        });
+                        @Override
+                        public void onMenuClosed() {
+                            holder.randoItemLayout.removeView(holder.ratingMenu);
+                            holder.ratingMenu = null;
+                            holder.image.setAlpha(1f);
+                            holder.map.setAlpha(1f);
+                        }
+                    }).openMenu();
+                    holder.image.setAlpha(0.25f);
+                    holder.map.setAlpha(0.25f);
+                }
+            });
+        }
     }
 
     private void deleteRando(final ViewHolder holder) {
@@ -503,8 +505,9 @@ public class RandoListAdapter extends BaseAdapter {
         API.rate(holder.rando.randoId, holder.randoItemLayout.getContext(), rating, new NetworkResultListener() {
             @Override
             public void onOk() {
-                Rando rando = RandoDAO.getRandoById(holder.randoItemLayout.getContext(), holder.rando.id);
+                Rando rando = RandoDAO.getRandoByRandoId(holder.randoItemLayout.getContext(), holder.rando.randoId);
                 rando.rating = rating;
+                holder.rando.rating = rating;
                 RandoDAO.updateRando(holder.randoItemLayout.getContext(), rando);
                 holder.rando = rando;
                 setRatingIcon(holder);
