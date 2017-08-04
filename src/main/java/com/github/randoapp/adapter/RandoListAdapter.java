@@ -239,7 +239,7 @@ public class RandoListAdapter extends BaseAdapter {
         holder.image.setOnLongClickListener(onLongClickListener);
         holder.map.setOnLongClickListener(onLongClickListener);
 
-        if (true) {
+        if (isStranger) {
             holder.rateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -528,7 +528,7 @@ public class RandoListAdapter extends BaseAdapter {
                 holder.rateButton.setImageResource(R.drawable.ic_thumb_down_red_24dp);
                 break;
             case 2:
-                holder.rateButton.setImageResource(R.drawable.ic_thumbs_up_down_white_24dp);
+                holder.rateButton.setImageResource(R.drawable.ic_thumbs_up_down_yellow_24dp);
                 break;
             case 3:
                 holder.rateButton.setImageResource(R.drawable.ic_thumb_up_green_24dp);
