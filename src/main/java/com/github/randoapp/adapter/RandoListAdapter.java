@@ -500,14 +500,14 @@ public class RandoListAdapter extends BaseAdapter {
         };
     }
 
-    private void rateRando(final ViewHolder holder, final int rating) {
+    private void rateRando(final ViewHolder holder, final int newRating) {
         Analytics.logShareRando(firebaseAnalytics);
-        API.rate(holder.rando.randoId, holder.randoItemLayout.getContext(), rating, new NetworkResultListener() {
+        API.rate(holder.rando.randoId, holder.randoItemLayout.getContext(), newRating, new NetworkResultListener() {
             @Override
             public void onOk() {
                 Rando rando = RandoDAO.getRandoByRandoId(holder.randoItemLayout.getContext(), holder.rando.randoId);
-                rando.rating = rating;
-                holder.rando.rating = rating;
+                rando.rating = newRating;
+                holder.rando.rating = newRating;
                 RandoDAO.updateRando(holder.randoItemLayout.getContext(), rando);
                 holder.rando = rando;
                 setRatingIcon(holder);
