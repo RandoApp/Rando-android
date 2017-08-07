@@ -106,8 +106,8 @@ install:
   - echo "googleAppId=\"$GOOGLE_APP_ID\"" >> gradle.properties
   - echo "googleApiKey=\"$GOOGLE_API_KEY\"" >> gradle.properties
   # Create fabric.properties key and secret
-  - echo "apiKey=CRASHLITICS_KEY" > fabric.properties
-  - echo "apiSecret=\"CRASHLITICS_SECRET\"" >> fabric.properties
+  - echo "apiKey=\"$CRASHLITICS_KEY\"" > fabric.properties
+  - echo "apiSecret=\"$CRASHLITICS_SECRET\"" >> fabric.properties
   #Download rando.keystore:
   - lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "get rando.keystore; ; bye";
   - mv rando.keystore $HOME/.android/
