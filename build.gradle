@@ -17,7 +17,6 @@ apply plugin: 'io.fabric'
 
 def reportsUserLocal = reportsUser
 def reportsPasswordLocal = reportsPassword
-def crashlyticsApiKeyLocal = crashlyticsApiKey
 
 repositories {
     jcenter()
@@ -82,7 +81,6 @@ android {
             testCoverageEnabled true
             buildConfigField "String", "RANDO_HOST", '"dev.rando4.me"'
             buildConfigField "String", "RANDO_API_HOST", '"dev.api.rando4.me"'
-            buildConfigField "String", "RANDO_REPORTS_ACRA_DB", '"acra-rando4me-dev"'
         }
         release {
             proguardFiles.add(file("proguard-rules.pro"))
@@ -91,7 +89,6 @@ android {
             testCoverageEnabled false
             buildConfigField "String", "RANDO_HOST", '"rando4.me"'
             buildConfigField "String", "RANDO_API_HOST", '"api.rando4.me"'
-            buildConfigField "String", "RANDO_REPORTS_ACRA_DB", '"acra-rando4me"'
         }
     }
 
