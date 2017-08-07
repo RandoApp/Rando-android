@@ -15,9 +15,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'jacoco-android'
 apply plugin: 'io.fabric'
 
-def reportsUserLocal = reportsUser
-def reportsPasswordLocal = reportsPassword
-
 repositories {
     jcenter()
     maven { url 'https://maven.fabric.io/public' }
@@ -51,10 +48,6 @@ android {
         targetSdkVersion 25
         testApplicationId 'com.github.randoapp.test'
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
-
-        buildConfigField "String", "RANDO_REPORTS_USER", reportsUserLocal
-        buildConfigField "String", "RANDO_REPORTS_PASSWORD", reportsPasswordLocal
-        manifestPlaceholders = [crashliticsApiKey: "crashlyticsApiKeyLocal"]
     }
 
     packagingOptions {
