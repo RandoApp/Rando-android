@@ -57,7 +57,7 @@ public class RandoTest {
     public void testDateSortability() {
         List<Rando> randos = RandoTestHelper.getNRandomRandos(100, Rando.Status.IN);
         Collections.sort(randos, new Rando.DateComparator());
-        RandoTestHelper.assertListNaturalOrder(randos);
+        assertThat(randos).isSortedAccordingTo(new Rando.DateComparator());
     }
 
     /* ==Detected == */

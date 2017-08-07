@@ -115,7 +115,7 @@ public class RandoDAOTest {
     public void testReturnOrder() throws SQLException {
         insertNRandomRandoPairs(55);
         List<Rando> randos = RandoDAO.getAllRandos(context);
-        RandoTestHelper.assertListNaturalOrder(randos);
+        org.assertj.core.api.Assertions.assertThat(randos).isSortedAccordingTo(new Rando.DateComparator());
 
     }
 
