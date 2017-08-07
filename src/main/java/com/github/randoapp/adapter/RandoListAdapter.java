@@ -525,16 +525,20 @@ public class RandoListAdapter extends BaseAdapter {
 
         switch (holder.rando.rating) {
             case 1:
-                holder.rateButton.setImageResource(R.drawable.ic_thumb_down_red_24dp);
+                holder.rateButton.setImageResource(R.drawable.ic_thumb_down_white_24dp);
+                holder.rateButton.setBackgroundResource(R.drawable.round_button_red_background);
                 break;
             case 2:
-                holder.rateButton.setImageResource(R.drawable.ic_thumbs_up_down_yellow_24dp);
+                holder.rateButton.setImageResource(R.drawable.ic_thumbs_up_down_white_24dp);
+                holder.rateButton.setBackgroundResource(R.drawable.round_button_blue_background);
                 break;
             case 3:
-                holder.rateButton.setImageResource(R.drawable.ic_thumb_up_green_24dp);
+                holder.rateButton.setImageResource(R.drawable.ic_thumb_up_white_24dp);
+                holder.rateButton.setBackgroundResource(R.drawable.round_button_green_background);
                 break;
             default:
-                holder.rateButton.setImageResource(R.drawable.ic_thumb_up_gray_24dp);
+                holder.rateButton.setImageResource(R.drawable.ic_thumb_up_white_24dp);
+                holder.rateButton.setBackgroundResource(R.drawable.round_button_blue_background);
                 break;
         }
     }
