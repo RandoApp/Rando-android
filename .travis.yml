@@ -103,8 +103,6 @@ install:
   # Create gradle.properties with secret stroke password:
   - cd ${CI_HOME}
   - echo "keyStorePassword=$KEY_STROKE_PASSWORD" > gradle.properties
-  - echo "reportsUser=\"$REPORTS_USER\"" >> gradle.properties
-  - echo "reportsPassword=\"$REPORTS_PASSWORD\"" >> gradle.properties
   - echo "googleAppId=\"$GOOGLE_APP_ID\"" >> gradle.properties
   - echo "googleApiKey=\"$GOOGLE_API_KEY\"" >> gradle.properties
   # Create fabric.properties key and secret
