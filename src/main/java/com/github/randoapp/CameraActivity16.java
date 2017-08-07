@@ -30,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.flurgle.camerakit.AspectRatio;
 import com.flurgle.camerakit.CameraKit;
 import com.flurgle.camerakit.CameraListener;
@@ -48,6 +49,8 @@ import com.github.randoapp.view.FocusMarkerLayout;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.File;
+
+import io.fabric.sdk.android.Fabric;
 
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_CAMERA_PERMISSION_REQUIRED;
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
@@ -115,6 +118,7 @@ public class CameraActivity16 extends Activity {
         setContentView(R.layout.camera_capture16);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        Fabric.with(this, new Crashlytics());
 
         cameraView = (CameraView) findViewById(R.id.camera);
         cameraView.setCameraListener(mCallback);

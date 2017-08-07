@@ -5,22 +5,17 @@
     <string name="password">Password:</string>
     <string name="signup">Sign in | Sign up</string>
     <string name="skip">Skip…</string>
-    <string name="anonymous">Anonymous</string>
+    <string name="back">Back</string>
 
-    <string name="empty_home_message">No pictures yet.\n Take your first picture and deliver it.</string>
     <string name="missing_storage_permission_message">Device Storage access permission is required to take, download and view Randos. Application won\'t run without this permission.</string>
 
     <string name="take_picture_screen_label">Take Picture</string>
 
-    <string name="photo_upload_failed">"Upload Failed. Please check you connection and try again."</string>
-    <string name="failed_to_set_bon_appetit_for_rando">"Bon Appetit Failed. Please check you internet connection and try again."</string>
     <string name="auth_acitvity_label">You are not authorized. Please, signin or signup.</string>
 
 
     <string name="email_should_be">You have error in email</string>
     <string name="password_should_be">Password can not be empty</string>
-    <string name="no_google_account">No account available. Please add an account to the phone first</string>
-    <string name="select_account">Chooise account</string>
 
     <string name="error_unknown_err">Oops, Something wrong…</string>
     <string name="error_no_network">Please check your Internet connection or try again later.</string>
@@ -34,16 +29,12 @@
     <string name="report">Yes, report</string>
     <string name="report_rando_confirm">Do you want to report user and delete this rando?</string>
     <string name="rando_reported">User has been reported</string>
-    <string name="contact_support">Contact\nSupport</string>
-    <string name="report_off">Report OFF</string>
-    <string name="report_message">Report</string>
 
     <string name="login_progress">Login…</string>
     <string name="loading_user_progress">Loading user data…</string>
 
     <string name="report_rando">Report inappropriate content</string>
 
-    <string name="loading_progress">Loading…</string>
     <string name="logout_progress">Logout…</string>
     <string name="uploading_progress">To be uploaded</string>
     <string name="tap_to_update">Tap to update randos</string>
@@ -53,8 +44,6 @@
 
     <string name="error_400">You are not authorized. Please, signup.</string>
     <string name="error_411">You are temporarily blocked, because of big amount of images sent in a row. Please, try again later:</string>
-
-    <string name="upload_service_name">Rando 4Me Upload Service</string>
 
     <string name="crash_toast_text">Device issue detected. Report has been sent to developers. We are working on resolution. Thank you.</string>
 
@@ -78,9 +67,6 @@
 
     <string name="help_guide_title">How to use</string>
     <!-- Help Resources End -->
-
-    <!-- Update Play Services Dialog Resources Start -->
-    <!-- Update Play Services Dialog Resources End -->
 
     <string name="sync_nothing_new">Nothing new</string>
     <string name="sync_randos_updated">Randos are updated</string>

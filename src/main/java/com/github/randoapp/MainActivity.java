@@ -15,11 +15,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.github.randoapp.api.API;
 import com.github.randoapp.fragment.HomeWallFragment;
 import com.github.randoapp.fragment.MissingStoragePermissionFragment;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
+
+import io.fabric.sdk.android.Fabric;
 
 import static com.github.randoapp.Constants.AUTH_FAILURE_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.AUTH_SUCCCESS_BROADCAST_EVENT;
@@ -77,6 +80,7 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Fabric.with(this, new Crashlytics());
     }
 
     private Fragment getFragment() {

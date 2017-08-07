@@ -10,6 +10,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.crashlytics.android.Crashlytics;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.api.beans.Error;
@@ -29,7 +30,6 @@ import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.notification.Notification;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.FileUtil;
-import com.google.firebase.crash.FirebaseCrash;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -391,7 +391,7 @@ public class API {
                 || exc instanceof ConnectException) {
             return new Error().setCode(R.string.error_no_network);
         }
-        FirebaseCrash.report(new Exception(exc));
+        Crashlytics.logException(exc);
         Log.e(API.class, "processError method", exc);
         return new Error().setCode(R.string.error_unknown_err);
     }

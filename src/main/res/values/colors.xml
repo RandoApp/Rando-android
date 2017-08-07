@@ -17,14 +17,8 @@
     <color name="rando_red_error">#ff8f2921</color>
     <color name="button_text">#ff5a5a5a</color>
 
-    <color name="overview_info_text">#ffc7c7c7</color>
-    <color name="edittext_background">#ffdddddd</color>
-    <color name="edittext_background_valid">#ff1ad334</color>
-    <color name="edittext_background_invalid">#ffe93229</color>
     <color name="white_button_background_normal">#fffefefe</color>
     <color name="white_button_background_pressed">#ffeeeeee</color>
-    <color name="light_gray_button_background_normal">#fff1f1f1</color>
-    <color name="light_gray_button_text">#ff8f8f8f</color>
     <color name="capture_button_background_normal">#fff87b00</color>
     <color name="capture_button_background_pressed">#ffdc6f00</color>
     <color name="capture_button_background_disabled">#fffaa24b</color>

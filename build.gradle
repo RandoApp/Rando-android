@@ -1,22 +1,27 @@
 buildscript {
     repositories {
         jcenter()
+        maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.+'
         classpath 'com.google.gms:google-services:3.1.0'
         classpath 'com.dicedmelon.gradle:jacoco-android:0.1.2'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
 apply plugin: 'com.android.application'
 apply plugin: 'jacoco-android'
+apply plugin: 'io.fabric'
 
 def reportsUserLocal = reportsUser
 def reportsPasswordLocal = reportsPassword
+def crashlyticsApiKeyLocal = crashlyticsApiKey
 
 repositories {
     jcenter()
+    maven { url 'https://maven.fabric.io/public' }
 }
 
 allprojects {
@@ -50,6 +55,7 @@ android {
 
         buildConfigField "String", "RANDO_REPORTS_USER", reportsUserLocal
         buildConfigField "String", "RANDO_REPORTS_PASSWORD", reportsPasswordLocal
+        manifestPlaceholders = [crashliticsApiKey: "crashlyticsApiKeyLocal"]
     }
 
     packagingOptions {
@@ -110,16 +116,18 @@ dependencies {
 
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile 'com.makeramen:roundedimageview:2.3.+'
-    compile 'ch.acra:acra:4.9.2'
 
     compile "com.google.android.gms:play-services-auth:$firebaseLibraryVersion"
 
     compile "com.google.firebase:firebase-core:$firebaseLibraryVersion"
     compile "com.google.firebase:firebase-messaging:$firebaseLibraryVersion"
-    compile "com.google.firebase:firebase-crash:$firebaseLibraryVersion"
 
     compile 'com.evernote:android-job:1.1.11'
     compile "com.android.support:exifinterface:$supportLibraryVersion"
+
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+        transitive = true;
+    }
 
     testCompile 'junit:junit:4.12'
 
