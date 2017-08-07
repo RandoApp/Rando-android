@@ -12,7 +12,6 @@ env:
     - ANDROID_API=16 ANDROID_ABI=armeabi-v7a
   global:
     - secure: Kq5NpWlyXvAvzZ5UUwAxtooG7Cwtdnzh1fhCNqE2Lx2441w9aEGntd5+ffCCTCF4orRHlFIbqfE4/D1YlH6cJtP9hW37SPI8swe3r6Zyfjftakbe3ld72bVfq0f2zx5T4zln63jppMs+XxKNYjg8UswC+9C8Vi2LeJdPUC/Zdzs=
-    - secure: X6INcg26b1Bm48QDfDDhLnbRJm5tOffr+AWVcXkgaSbYybqPvYQmSLX7ai1ArCzDgTYqz12tUTVLgrgMlsXkQGFj41hoD+IEtO9zJOmHdtwUDkkh4yVvNwoJ7TTT/N7wL7ZAU556khWy76sS7/biv4iPohCy//R91LWki2d1240=
     - secure: IjasoSr9pGo8xks18EVz7Oj8EtoJnOf3cac1T563CRHtGNHVOHjGxvTJKITNYGtRnBHDJKeTa5avz30UQc2xwBpCutBkigV2+Op5KWkMTmzftXOOwwJ1ofw8jNo7dgAWkwvm3io5juIwJsqCuqd6+xJIb44tlN109GLhqAKvfzU=
     - secure: Cd4d2sNECC+yLA1k7RRA23UHp6mvOmx8+bOs94NtRvesPWL8hzE6zx/ilNABa7cUyRwYJOpDrrrQj9Z6eUTS4NHvBqeqXaRhhIKXZ5IrkTYh7LZjloFhd0WRk+CPlHWYGiLjoVoMXowmaU2h0ycRnNtmBs4XuZDvO/Wv4T5k9Bk=
 
