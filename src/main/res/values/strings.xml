@@ -73,6 +73,9 @@
 
     <string name="rando_landed">Your Rando has landed</string>
     <string name="rando_received">You have received new Rando</string>
+    <string name="rando_liked">Hooray! You Rando was liked.</string>
+    <string name="rando_rated">You Rando was rated</string>
+    <string name="rando_disliked">Oh no, your rando was disliked.</string>
 
     <!-- Permission strings Start -->
     <string name="permission_positive_button">OK</string>

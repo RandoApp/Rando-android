@@ -35,7 +35,7 @@
 
     <color name="menu_button_color">#cccccc</color>
     <color name="delete_menu_button_color">#000000</color>
-    <color name="share_menu_button_color">#13aa61</color>
+    <color name="share_menu_button_color">#33B262</color>
     <color name="report_menu_button_color">#e93229</color>
 
     <color name="vertical_line_separator">#ffdddddd</color>

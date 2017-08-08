@@ -105,6 +105,7 @@ install:
   - echo "keyStorePassword=$KEY_STROKE_PASSWORD" > gradle.properties
   - echo "googleAppId=\"$GOOGLE_APP_ID\"" >> gradle.properties
   - echo "googleApiKey=\"$GOOGLE_API_KEY\"" >> gradle.properties
+  - echo "org.gradle.jvmargs=-Xmx1536M" >> gradle.properties
   # Create fabric.properties key and secret
   - echo "apiKey=$CRASHLITICS_KEY" > fabric.properties
   - echo "apiSecret=$CRASHLITICS_SECRET" >> fabric.properties
