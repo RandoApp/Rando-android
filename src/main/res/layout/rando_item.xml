@@ -40,12 +40,12 @@
     </ViewSwitcher>
 
     <ImageButton
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="15dp"
-        android:background="@null"
-        android:src="@drawable/ic_thumb_up_gray_24dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/round_button_grey_background"
+        android:src="@drawable/ic_thumb_up_white_24dp"
         android:tag="rating" />
 </RelativeLayout>

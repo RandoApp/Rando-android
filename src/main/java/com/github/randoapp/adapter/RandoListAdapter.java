@@ -174,6 +174,7 @@ public class RandoListAdapter extends BaseAdapter {
         View.OnLongClickListener onLongClickListener = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                recycleRatingMenu(holder);
                 if (holder.circleMenu == null && !holder.rando.isUnwanted()) {
                     RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) (imageSize * 0.9), (int) (imageSize * 0.9));
                     layoutParams.topMargin = (int) (imageSize * 0.05);
@@ -224,8 +225,10 @@ public class RandoListAdapter extends BaseAdapter {
                         @Override
                         public void onMenuClosed() {
                             recycleCircleMenu(holder);
-                            holder.image.setAlpha(1f);
-                            holder.map.setAlpha(1f);
+                            if (holder.ratingMenu == null) {
+                                holder.image.setAlpha(1f);
+                                holder.map.setAlpha(1f);
+                            }
                         }
 
                     });
@@ -256,9 +259,9 @@ public class RandoListAdapter extends BaseAdapter {
 
                     Resources res = v.getResources();
                     holder.ratingMenu.setMainMenu(res.getColor(R.color.menu_button_color), R.drawable.ic_close_white_24dp, R.drawable.ic_close_white_24dp)
-                            .addSubMenu(res.getColor(R.color.yellow_button_background_normal), R.drawable.ic_thumbs_up_down_white_24dp)
-                            .addSubMenu(res.getColor(R.color.share_menu_button_color), R.drawable.ic_thumb_up_white_24dp)
-                            .addSubMenu(res.getColor(R.color.report_menu_button_color), R.drawable.ic_thumb_down_white_24dp)
+                            .addSubMenu(res.getColor(R.color.thumbs_up_down_button_background), R.drawable.ic_thumbs_up_down_white_24dp)
+                            .addSubMenu(res.getColor(R.color.thumbs_up_button_background), R.drawable.ic_thumb_up_white_24dp)
+                            .addSubMenu(res.getColor(R.color.thumbs_down_button_background), R.drawable.ic_thumb_down_white_24dp)
                             .setOnMenuSelectedListener(new OnMenuSelectedListener() {
                                 @Override
                                 public void onMenuSelected(int index) {
@@ -289,10 +292,11 @@ public class RandoListAdapter extends BaseAdapter {
 
                         @Override
                         public void onMenuClosed() {
-                            holder.randoItemLayout.removeView(holder.ratingMenu);
-                            holder.ratingMenu = null;
-                            holder.image.setAlpha(1f);
-                            holder.map.setAlpha(1f);
+                            recycleRatingMenu(holder);
+                            if (holder.circleMenu == null) {
+                                holder.image.setAlpha(1f);
+                                holder.map.setAlpha(1f);
+                            }
                         }
                     }).openMenu();
                     holder.image.setAlpha(0.25f);
@@ -538,7 +542,7 @@ public class RandoListAdapter extends BaseAdapter {
                 break;
             default:
                 holder.rateButton.setImageResource(R.drawable.ic_thumb_up_white_24dp);
-                holder.rateButton.setBackgroundResource(R.drawable.round_button_blue_background);
+                holder.rateButton.setBackgroundResource(R.drawable.round_button_grey_background);
                 break;
         }
     }
@@ -572,13 +576,7 @@ public class RandoListAdapter extends BaseAdapter {
         showSpinner(holder, false);
 
         recycleCircleMenu(holder);
-
-        if (holder.ratingMenu != null) {
-            holder.randoItemLayout.removeView(holder.ratingMenu);
-            holder.ratingMenu = null;
-        }
-
-        holder.rateButton.setImageResource(R.drawable.ic_thumb_up_gray_24dp);
+        recycleRatingMenu(holder);
 
         if (holder.unwantedRandoView != null) {
             holder.unwantedRandoView.clearAnimation();
@@ -603,8 +601,17 @@ public class RandoListAdapter extends BaseAdapter {
 
     private void recycleCircleMenu(ViewHolder holder) {
         if (holder.circleMenu != null) {
+            holder.circleMenu.closeMenu();
             holder.randoItemLayout.removeView(holder.circleMenu);
             holder.circleMenu = null;
+        }
+    }
+
+    private void recycleRatingMenu(ViewHolder holder) {
+        if (holder.ratingMenu != null) {
+            holder.ratingMenu.closeMenu();
+            holder.randoItemLayout.removeView(holder.ratingMenu);
+            holder.ratingMenu = null;
         }
     }
 

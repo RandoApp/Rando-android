@@ -44,4 +44,8 @@
 
     <color name="ban_contact_us_pressed">#ddbf2a22</color>
 
+    <color name="thumbs_up_button_background">#33B262</color>
+    <color name="thumbs_up_down_button_background">#4D83B2</color>
+    <color name="thumbs_down_button_background">#e93229</color>
+
 </resources>
