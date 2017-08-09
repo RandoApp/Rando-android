@@ -35,19 +35,21 @@ public class RandoMessagingService extends FirebaseMessagingService {
                     notificationTextResId = R.string.rando_landed;
                 } else if (Constants.PUSH_NOTIFICATION_RATED.equals(notificationType)) {
                     rando = Rando.fromJSON(randoString, Rando.Status.OUT);
-                    switch (rando.rating){
-                        case 3:
-                            notificationTextResId = R.string.rando_liked;
-                            break;
-                        case 2:
-                            notificationTextResId = R.string.rando_rated;
-                            break;
-                        case 1:
-                            notificationTextResId = R.string.rando_disliked;
-                            break;
-                        default:
-                            notificationTextResId = R.string.rando_rated;
-                            break;
+                    if (rando != null) {
+                        switch (rando.rating) {
+                            case 3:
+                                notificationTextResId = R.string.rando_liked;
+                                break;
+                            case 2:
+                                notificationTextResId = R.string.rando_rated;
+                                break;
+                            case 1:
+                                notificationTextResId = R.string.rando_disliked;
+                                break;
+                            default:
+                                notificationTextResId = R.string.rando_rated;
+                                break;
+                        }
                     }
 
                 }
