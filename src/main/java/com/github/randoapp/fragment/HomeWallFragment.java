@@ -13,6 +13,7 @@ import com.github.randoapp.CameraActivity16;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.adapter.HomePagerAdapter;
+import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.util.Analytics;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -24,7 +25,14 @@ public class HomeWallFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.home, container, false);
         ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.colums_pager);
-        viewPager.setAdapter(new HomePagerAdapter(getChildFragmentManager()));
+        Bundle extras = getActivity().getIntent().getExtras();
+        Rando scrollToRando = null;
+        if (extras != null) {
+            scrollToRando = (Rando) extras.getSerializable(Constants.RANDO_PARAM);
+        }
+        HomePagerAdapter homePagerAdapter = new HomePagerAdapter(getChildFragmentManager());
+        homePagerAdapter.setScrollToRando(scrollToRando);
+        viewPager.setAdapter(homePagerAdapter);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -55,7 +63,11 @@ public class HomeWallFragment extends Fragment {
                 //not needed
             }
         });
-        viewPager.setCurrentItem(1);
+        if (scrollToRando != null && scrollToRando.status == Rando.Status.OUT) {
+            viewPager.setCurrentItem(2);
+        } else {
+            viewPager.setCurrentItem(1);
+        }
         ImageView takePictureButton = (ImageView) rootView.findViewById(R.id.camera_button);
         takePictureButton.setEnabled(true);
         takePictureButton.setOnClickListener(new View.OnClickListener() {

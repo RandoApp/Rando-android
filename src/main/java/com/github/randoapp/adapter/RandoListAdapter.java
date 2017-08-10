@@ -148,6 +148,18 @@ public class RandoListAdapter extends BaseAdapter {
         return convertView;
     }
 
+    public int getPositionOfRando(Rando rando) {
+        if (rando == null) {
+            return 0;
+        }
+        for (int i = 0; i < randos.size(); i++) {
+            if (randos.get(i).randoId.equals(rando.randoId)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
     private ViewHolder createHolder(View convertView) {
         ViewHolder holder = new ViewHolder();
 
