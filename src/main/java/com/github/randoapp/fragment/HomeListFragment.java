@@ -97,14 +97,7 @@ public class HomeListFragment extends Fragment {
         listView.setAdapter(randoPairsAdapter);
 
         if (scrollToRando != null) {
-            final int updatedRandoIndex = randoPairsAdapter.getPositionOfRando(scrollToRando);
-            listView.setSelection(updatedRandoIndex > 3 ? updatedRandoIndex -3 : 0);
-            listView.post(new Runnable() {
-                @Override
-                public void run() {
-                    listView.smoothScrollToPosition(updatedRandoIndex);
-                }
-            });
+            listView.setSelection(randoPairsAdapter.getPositionOfRando(scrollToRando));
         }
 
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
