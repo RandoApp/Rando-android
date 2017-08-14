@@ -21,14 +21,14 @@ public class SkipAuthService extends BaseAuthService {
         Analytics.logLoginSkip(FirebaseAnalytics.getInstance(activity));
         showLoginProgress();
         String uuid = createTemproryId();
-        API.anonymous(uuid, activity.getBaseContext(), new NetworkResultListener() {
+        API.anonymous(uuid, activity.getBaseContext(), new NetworkResultListener(activity.getBaseContext()) {
             @Override
             public void onOk() {
                 done();
             }
 
             @Override
-            public void onError(Error error) {
+            public void onFail(Error error) {
                 hideProgress();
                 String errorMessage = error != null ? error.buildMessage(activity.getBaseContext()) : "Error";
                 Toast.makeText(activity, errorMessage, Toast.LENGTH_LONG).show();
