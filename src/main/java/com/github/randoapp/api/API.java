@@ -30,7 +30,6 @@ import com.github.randoapp.notification.Notification;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.FileUtil;
 import com.github.randoapp.util.RandoUtil;
-import com.google.firebase.crash.FirebaseCrash;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -262,7 +261,7 @@ public class API {
         VolleySingleton.getInstance(context).getRequestQueue().add(uploadMultipart);
     }
 
-    public static void delete(final String randoId, final Context context, final NetworkResultListener deleteRandoListener) throws Exception {
+    public static void delete(final String randoId, final Context context, final NetworkResultListener resultListener) throws Exception {
         Log.d(API.class, "Deleting Rando:", randoId);
         BackgroundPreprocessedRequest request = new BackgroundPreprocessedRequest(Request.Method.POST, DELETE_URL + randoId, null, null, new Response.Listener<JSONObject>() {
             @Override
@@ -271,18 +270,21 @@ public class API {
                     if ("delete".equals(response.getString("command")) &&
                             "done".equals(response.getString("result"))) {
                         Log.d(API.class, "Deleted Rando:", randoId);
-                        deleteRandoListener.onOk();
+                        resultListener.onOk();
                     }
                 } catch (JSONException e) {
                     Log.e(API.class, "Error Deleting Rando", e);
-                    deleteRandoListener.onError(null);
+                    resultListener.onError(null);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(API.class, "Error Deleting Rando", error);
-                deleteRandoListener.onError(null);
+                Response<JSONObject> resp = parseNetworkResponse(error.networkResponse);
+                if (resultListener != null) {
+                    resultListener.onError(processServerError(resp.result));
+                }
             }
         });
 
@@ -292,7 +294,7 @@ public class API {
         VolleySingleton.getInstance(context).getRequestQueue().add(request);
     }
 
-    public static void report(final String randoId, final Context context, final NetworkResultListener reportRandoListener) throws Exception {
+    public static void report(final String randoId, final Context context, final NetworkResultListener resultListener) throws Exception {
         Log.d(API.class, "Reporting Rando:", randoId);
         BackgroundPreprocessedRequest request = new BackgroundPreprocessedRequest(Request.Method.POST, REPORT_URL + randoId, null, null, new Response.Listener<JSONObject>() {
             @Override
@@ -301,18 +303,21 @@ public class API {
                     if ("report".equals(response.getString("command")) &&
                             "done".equals(response.getString("result"))) {
                         Log.d(API.class, "Reported Rando:", randoId);
-                        reportRandoListener.onOk();
+                        resultListener.onOk();
                     }
                 } catch (JSONException e) {
                     Log.e(API.class, "Error Reporting Rando", e);
-                    reportRandoListener.onError(null);
+                    resultListener.onError(null);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(API.class, "Error Reporting Rando", error);
-                reportRandoListener.onError(null);
+                Response<JSONObject> resp = parseNetworkResponse(error.networkResponse);
+                if (resultListener != null) {
+                    resultListener.onError(processServerError(resp.result));
+                }
             }
         });
 
@@ -321,6 +326,7 @@ public class API {
 
         VolleySingleton.getInstance(context).getRequestQueue().add(request);
     }
+
 
     private static Map<String, String> getHeaders(Context context) {
         Map<String, String> headers = new HashMap<>(2);
@@ -366,7 +372,6 @@ public class API {
                 || exc instanceof ConnectException) {
             return new Error().setCode(R.string.error_no_network);
         }
-        FirebaseCrash.report(new Exception(exc));
         Log.e(API.class, "processError method", exc);
         return new Error().setCode(R.string.error_unknown_err);
     }

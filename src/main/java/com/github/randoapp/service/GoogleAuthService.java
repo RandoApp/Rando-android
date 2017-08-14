@@ -29,7 +29,7 @@ public class GoogleAuthService extends BaseAuthService {
             final GoogleSignInAccount acct = result.getSignInAccount();
             final String email = acct.getEmail();
             String token = acct.getIdToken();
-            API.google(email, token, activity.getBaseContext(), new NetworkResultListener() {
+            API.google(email, token, activity.getBaseContext(), new NetworkResultListener(activity.getBaseContext()) {
                 @Override
                 public void onOk() {
                     Preferences.setAccount(activity.getBaseContext(), acct.getEmail());
@@ -38,7 +38,7 @@ public class GoogleAuthService extends BaseAuthService {
                 }
 
                 @Override
-                public void onError(Error error) {
+                public void onFail(Error error) {
                     hideProgress();
                     Toast.makeText(activity.getBaseContext(), "Google Signed out.", Toast.LENGTH_LONG).show();
                 }
