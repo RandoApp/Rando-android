@@ -55,7 +55,6 @@ import static com.github.randoapp.Constants.ERROR_CODE_PARAM;
 import static com.github.randoapp.Constants.FETCH_USER_URL;
 import static com.github.randoapp.Constants.FIREBASE_INSTANCE_ID_HEADER;
 import static com.github.randoapp.Constants.FIREBASE_INSTANCE_ID_PARAM;
-import static com.github.randoapp.Constants.FORBIDDEN_CODE;
 import static com.github.randoapp.Constants.GOOGLE_EMAIL_PARAM;
 import static com.github.randoapp.Constants.GOOGLE_TOKEN_PARAM;
 import static com.github.randoapp.Constants.GOOGLE_URL;
@@ -69,7 +68,6 @@ import static com.github.randoapp.Constants.REPORT_URL;
 import static com.github.randoapp.Constants.SIGNUP_EMAIL_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_PASSWORD_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_URL;
-import static com.github.randoapp.Constants.UNAUTHORIZED_CODE;
 import static com.github.randoapp.Constants.UPDATED;
 import static com.github.randoapp.Constants.UPLOAD_CONNECTION_TIMEOUT;
 import static com.github.randoapp.Constants.UPLOAD_RANDO_URL;
@@ -338,11 +336,15 @@ public class API {
     }
 
     private static Error processServerError(JSONObject json) {
+        if (json == null) {
+            return new Error().setCode(R.string.error_no_network);
+        }
+
         try {
             switch (json.getInt(ERROR_CODE_PARAM)) {
-                case UNAUTHORIZED_CODE:
+                case Constants.UNAUTHORIZED_CODE:
                     return new Error().setCode(R.string.error_400);
-                case FORBIDDEN_CODE: {
+                case Constants.FORBIDDEN_CODE: {
                     String resetTime = "";
                     try {
                         String message = json.getString("message");
@@ -377,6 +379,10 @@ public class API {
     }
 
     public static Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+        if (response == null || response.data == null) {
+            return Response.error(new ParseError(new Exception("Unknown error or no network")));
+        }
+
         try {
             String jsonString = new String(response.data,
                     HttpHeaderParser.parseCharset(response.headers, PROTOCOL_CHARSET));
