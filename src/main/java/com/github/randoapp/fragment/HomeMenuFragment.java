@@ -114,12 +114,10 @@ public class HomeMenuFragment extends Fragment {
 
         }
         String version = "";
-        String code = "";
         if (info != null) {
             version = info.versionName;
-            code = String.valueOf(info.versionCode);
         }
-        versionText.setText(versionText.getText() + " " + version + ":" + code);
+        versionText.setText(versionText.getText() + " " + version);
     }
 
     private void initAccountName() {
