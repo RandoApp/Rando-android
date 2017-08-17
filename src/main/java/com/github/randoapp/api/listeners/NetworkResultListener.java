@@ -10,7 +10,7 @@ import com.github.randoapp.api.beans.Error;
 
 public abstract class NetworkResultListener {
 
-    Context context;
+    protected Context context;
 
     public NetworkResultListener(Context context) {
         this.context = context;
