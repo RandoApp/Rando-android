@@ -42,7 +42,7 @@ public class EmailAndPasswordAuthService extends BaseAuthService {
 
         showLoginProgress();
 
-        API.signup(email, password, activity.getBaseContext(), new NetworkResultListener() {
+        API.signup(email, password, activity.getBaseContext(), new NetworkResultListener(activity.getBaseContext()) {
 
             @Override
             public void onOk() {
@@ -51,7 +51,7 @@ public class EmailAndPasswordAuthService extends BaseAuthService {
             }
 
             @Override
-            public void onError(Error error) {
+            public void onFail(Error error) {
                 hideProgress();
                 String errorMessage = error != null ? error.buildMessage(activity.getBaseContext()) : "Error";
                 Toast.makeText(activity, errorMessage, Toast.LENGTH_LONG).show();
