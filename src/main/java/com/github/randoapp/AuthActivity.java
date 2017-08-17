@@ -140,7 +140,7 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK
                 && event.getRepeatCount() == 0) {
             this.finishAffinity();
@@ -163,7 +163,7 @@ public class AuthActivity extends AppCompatActivity {
             if (authProgress != null) {
                 authProgress.show(getString(R.string.logout_progress));
             }
-            API.logout(getBaseContext(), new NetworkResultListener() {
+            API.logout(getBaseContext(), new NetworkResultListener(getBaseContext()) {
                 @Override
                 public void onOk() {
                     logout();
@@ -171,6 +171,11 @@ public class AuthActivity extends AppCompatActivity {
 
                 @Override
                 public void onError(Error error) {
+                    this.onFail(error);
+                }
+
+                @Override
+                public void onFail(Error error) {
                     logout();
                 }
             });

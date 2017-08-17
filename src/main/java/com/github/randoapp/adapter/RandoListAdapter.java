@@ -257,7 +257,7 @@ public class RandoListAdapter extends BaseAdapter {
                     }
                     try {
                         showSpinner(holder, true);
-                        API.delete(holder.rando.randoId, holder.randoItemLayout.getContext(), new NetworkResultListener() {
+                        API.delete(holder.rando.randoId, holder.randoItemLayout.getContext(), new NetworkResultListener(context) {
                             @Override
                             public void onOk() {
                                 RandoDAO.deleteRandoByRandoId(holder.randoItemLayout.getContext(), holder.rando.randoId);
@@ -268,7 +268,7 @@ public class RandoListAdapter extends BaseAdapter {
                             }
 
                             @Override
-                            public void onError(Error error) {
+                            protected void onFail(Error error) {
                                 makeText(holder.randoItemLayout.getContext(), R.string.error_unknown_err,
                                         Toast.LENGTH_LONG).show();
                                 showSpinner(holder, false);
@@ -297,7 +297,7 @@ public class RandoListAdapter extends BaseAdapter {
                 public void onClick(DialogInterface dialog, int id) {
                     try {
                         showSpinner(holder, true);
-                        API.report(holder.rando.randoId, holder.randoItemLayout.getContext(), new NetworkResultListener() {
+                        API.report(holder.rando.randoId, holder.randoItemLayout.getContext(), new NetworkResultListener(context) {
                             @Override
                             public void onOk() {
                                 RandoDAO.deleteRandoByRandoId(holder.randoItemLayout.getContext(), holder.rando.randoId);
@@ -308,7 +308,7 @@ public class RandoListAdapter extends BaseAdapter {
                             }
 
                             @Override
-                            public void onError(Error error) {
+                            protected void onFail(Error error) {
                                 makeText(holder.randoItemLayout.getContext(), R.string.error_unknown_err,
                                         Toast.LENGTH_LONG).show();
                                 showSpinner(holder, false);
@@ -374,7 +374,7 @@ public class RandoListAdapter extends BaseAdapter {
                             Analytics.logDeleteUnwantedRandoDialog(firebaseAnalytics);
                             try {
                                 showSpinner(holder, true);
-                                API.delete(holder.rando.randoId, v.getContext(), new NetworkResultListener() {
+                                API.delete(holder.rando.randoId, v.getContext(), new NetworkResultListener(context) {
                                     @Override
                                     public void onOk() {
                                         RandoDAO.deleteRandoByRandoId(v.getContext(), holder.rando.randoId);
@@ -385,7 +385,7 @@ public class RandoListAdapter extends BaseAdapter {
                                     }
 
                                     @Override
-                                    public void onError(Error error) {
+                                    protected void onFail(Error error) {
                                         makeText(v.getContext(), R.string.error_unknown_err,
                                                 Toast.LENGTH_LONG).show();
                                         showSpinner(holder, false);
