@@ -55,7 +55,6 @@ import static com.github.randoapp.Constants.ERROR_CODE_PARAM;
 import static com.github.randoapp.Constants.FETCH_USER_URL;
 import static com.github.randoapp.Constants.FIREBASE_INSTANCE_ID_HEADER;
 import static com.github.randoapp.Constants.FIREBASE_INSTANCE_ID_PARAM;
-import static com.github.randoapp.Constants.FORBIDDEN_CODE;
 import static com.github.randoapp.Constants.GOOGLE_EMAIL_PARAM;
 import static com.github.randoapp.Constants.GOOGLE_TOKEN_PARAM;
 import static com.github.randoapp.Constants.GOOGLE_URL;
@@ -70,7 +69,6 @@ import static com.github.randoapp.Constants.REPORT_URL;
 import static com.github.randoapp.Constants.SIGNUP_EMAIL_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_PASSWORD_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_URL;
-import static com.github.randoapp.Constants.UNAUTHORIZED_CODE;
 import static com.github.randoapp.Constants.UPDATED;
 import static com.github.randoapp.Constants.UPLOAD_CONNECTION_TIMEOUT;
 import static com.github.randoapp.Constants.UPLOAD_RANDO_URL;
@@ -257,7 +255,7 @@ public class API {
         VolleySingleton.getInstance(context).getRequestQueue().add(uploadMultipart);
     }
 
-    public static void delete(final String randoId, final Context context, final NetworkResultListener deleteRandoListener) throws Exception {
+    public static void delete(final String randoId, final Context context, final NetworkResultListener resultListener) throws Exception {
         Log.d(API.class, "Deleting Rando:", randoId);
         BackgroundPreprocessedRequest request = new BackgroundPreprocessedRequest(Request.Method.POST, DELETE_URL + randoId, null, null, new Response.Listener<JSONObject>() {
             @Override
@@ -266,18 +264,21 @@ public class API {
                     if ("delete".equals(response.getString("command")) &&
                             "done".equals(response.getString("result"))) {
                         Log.d(API.class, "Deleted Rando:", randoId);
-                        deleteRandoListener.onOk();
+                        resultListener.onOk();
                     }
                 } catch (JSONException e) {
                     Log.e(API.class, "Error Deleting Rando", e);
-                    deleteRandoListener.onError(null);
+                    resultListener.onError(null);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(API.class, "Error Deleting Rando", error);
-                deleteRandoListener.onError(null);
+                Response<JSONObject> resp = parseNetworkResponse(error.networkResponse);
+                if (resultListener != null) {
+                    resultListener.onError(processServerError(resp.result));
+                }
             }
         });
 
@@ -287,7 +288,7 @@ public class API {
         VolleySingleton.getInstance(context).getRequestQueue().add(request);
     }
 
-    public static void report(final String randoId, final Context context, final NetworkResultListener reportRandoListener) throws Exception {
+    public static void report(final String randoId, final Context context, final NetworkResultListener resultListener) throws Exception {
         Log.d(API.class, "Reporting Rando:", randoId);
         BackgroundPreprocessedRequest request = new BackgroundPreprocessedRequest(Request.Method.POST, REPORT_URL + randoId, null, null, new Response.Listener<JSONObject>() {
             @Override
@@ -296,18 +297,21 @@ public class API {
                     if ("report".equals(response.getString("command")) &&
                             "done".equals(response.getString("result"))) {
                         Log.d(API.class, "Reported Rando:", randoId);
-                        reportRandoListener.onOk();
+                        resultListener.onOk();
                     }
                 } catch (JSONException e) {
                     Log.e(API.class, "Error Reporting Rando", e);
-                    reportRandoListener.onError(null);
+                    resultListener.onError(null);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(API.class, "Error Reporting Rando", error);
-                reportRandoListener.onError(null);
+                Response<JSONObject> resp = parseNetworkResponse(error.networkResponse);
+                if (resultListener != null) {
+                    resultListener.onError(processServerError(resp.result));
+                }
             }
         });
 
@@ -357,11 +361,15 @@ public class API {
     }
 
     private static Error processServerError(JSONObject json) {
+        if (json == null) {
+            return new Error().setCode(R.string.error_no_network);
+        }
+
         try {
             switch (json.getInt(ERROR_CODE_PARAM)) {
-                case UNAUTHORIZED_CODE:
+                case Constants.UNAUTHORIZED_CODE:
                     return new Error().setCode(R.string.error_400);
-                case FORBIDDEN_CODE: {
+                case Constants.FORBIDDEN_CODE: {
                     String resetTime = "";
                     try {
                         String message = json.getString("message");
@@ -397,6 +405,10 @@ public class API {
     }
 
     public static Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+        if (response == null || response.data == null) {
+            return Response.error(new ParseError(new Exception("Unknown error or no network")));
+        }
+
         try {
             String jsonString = new String(response.data,
                     HttpHeaderParser.parseCharset(response.headers, PROTOCOL_CHARSET));
