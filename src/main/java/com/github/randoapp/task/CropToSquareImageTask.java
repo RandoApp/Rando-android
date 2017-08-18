@@ -74,7 +74,9 @@ public class CropToSquareImageTask implements Runnable {
         }
 
         File file = saveBitmap(resultedBitmap);
-        bitmap.get().recycle();
+        if (bitmap.get()!= null) {
+            bitmap.get().recycle();
+        }
         bitmap.clear();
         bitmap = null;
         resultedBitmap.recycle();
