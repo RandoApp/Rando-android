@@ -48,7 +48,6 @@ public class HomeListFragment extends Fragment {
     private FirebaseAnalytics mFirebaseAnalytics;
 
     private Rando scrollToRando;
-    private ListView listView;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -91,7 +90,7 @@ public class HomeListFragment extends Fragment {
             icHome.setVisibility(View.VISIBLE);
         }
 
-        listView = (ListView) rootView.findViewById(R.id.listView);
+        ListView listView = (ListView) rootView.findViewById(R.id.listView);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
         randoPairsAdapter = new RandoListAdapter(getContext(), isStranger, mFirebaseAnalytics);
         listView.setAdapter(randoPairsAdapter);
