@@ -129,8 +129,6 @@ public class CameraActivity16 extends Activity {
 
         cameraView.setFlash(Preferences.getCameraFlashMode(getBaseContext()));
 
-        //Log.d(CameraActivity16.class, leftRightMargin + " " + topBottomMargin + " " + cameraView.getAspectRatio() + " ");
-
         captureButton = (ImageView) findViewById(R.id.capture_button);
         captureButton.setOnClickListener(new CameraActivity16.CaptureButtonListener());
         enableButtons(false);

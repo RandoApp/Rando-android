@@ -130,8 +130,7 @@ public class RandoListAdapter extends BaseAdapter {
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
             layoutParams.setMargins(convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left),
                     convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
-                    convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right),
-                    convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));
+                    convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right), 0);
             //insert Unwanted view at index 1, right after "view_switcher"
             holder.randoItemLayout.addView(unwantedRandoView, 1, layoutParams);
             holder.unwantedRandoView = unwantedRandoView;
@@ -188,14 +187,14 @@ public class RandoListAdapter extends BaseAdapter {
             public boolean onLongClick(View v) {
                 recycleRatingMenu(holder);
                 if (holder.circleMenu == null && !holder.rando.isUnwanted()) {
+                    Resources res = v.getResources();
                     RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) (imageSize * 0.9), (int) (imageSize * 0.9));
-                    layoutParams.topMargin = (int) (imageSize * 0.05);
-                    layoutParams.leftMargin = (int) (imageSize * 0.05);
+                    layoutParams.topMargin = (int) (imageSize * 0.05) + res.getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top);
+                    layoutParams.leftMargin = (int) (imageSize * 0.05) + res.getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left);
 
                     holder.circleMenu = new CircleMenu(v.getContext());
                     holder.randoItemLayout.addView(holder.circleMenu, layoutParams);
 
-                    Resources res = v.getResources();
                     holder.circleMenu.setMainMenu(res.getColor(R.color.menu_button_color), R.drawable.ic_close_white_24dp, R.drawable.ic_close_white_24dp);
                     if (!holder.rando.toUpload) {
                         holder.circleMenu.addSubMenu(res.getColor(R.color.share_menu_button_color), R.drawable.ic_share_white_24dp);
@@ -263,13 +262,12 @@ public class RandoListAdapter extends BaseAdapter {
                         return;
                     }
                     holder.ratingMenu = new CircleMenu(v.getContext());
+                    Resources res = v.getResources();
                     RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) (imageSize * 0.9), (int) (imageSize * 0.9));
-                    layoutParams.leftMargin = (int) (imageSize * 0.05);
-                    layoutParams.topMargin = (int) (imageSize * 0.05);
+                    layoutParams.topMargin = (int) (imageSize * 0.05) + res.getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top);
+                    layoutParams.leftMargin = (int) (imageSize * 0.05) + res.getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left);
                     holder.randoItemLayout.addView(holder.ratingMenu, layoutParams);
 
-
-                    Resources res = v.getResources();
                     holder.ratingMenu.setMainMenu(res.getColor(R.color.menu_button_color), R.drawable.ic_close_white_24dp, R.drawable.ic_close_white_24dp)
                             .addSubMenu(res.getColor(R.color.thumbs_up_down_button_background), R.drawable.ic_thumbs_up_down_white_24dp)
                             .addSubMenu(res.getColor(R.color.thumbs_up_button_background), R.drawable.ic_thumb_up_white_24dp)
@@ -280,14 +278,17 @@ public class RandoListAdapter extends BaseAdapter {
                                     switch (index) {
                                         case 0:
                                             Analytics.logRateRandoNormal(firebaseAnalytics);
+                                            holder.rando.rating = 2;
                                             rateRando(holder, 2);
                                             break;
                                         case 1:
                                             Analytics.logRateRandoGood(firebaseAnalytics);
+                                            holder.rando.rating = 3;
                                             rateRando(holder, 3);
                                             break;
                                         case 2:
                                             Analytics.logRateRandoBad(firebaseAnalytics);
+                                            holder.rando.rating = 1;
                                             rateRando(holder, 1);
                                             break;
                                         default:
@@ -304,6 +305,7 @@ public class RandoListAdapter extends BaseAdapter {
 
                         @Override
                         public void onMenuClosed() {
+                            setRatingIcon(holder);
                             recycleRatingMenu(holder);
                             if (holder.circleMenu == null) {
                                 holder.image.setAlpha(1f);
@@ -481,6 +483,16 @@ public class RandoListAdapter extends BaseAdapter {
 
                 } else {
                     if (holder.animationInProgress) return;
+                    if (holder.circleMenu !=null) {
+                        holder.circleMenu.closeMenu();
+                        //recycleCircleMenu(holder);
+                        return;
+                    }
+                    if (holder.ratingMenu!=null) {
+                        holder.ratingMenu.closeMenu();
+                        //recycleRatingMenu(holder);
+                        return;
+                    }
                     if (isStranger) {
                         Analytics.logTapStrangerRando(firebaseAnalytics);
                     } else {
@@ -518,7 +530,7 @@ public class RandoListAdapter extends BaseAdapter {
 
     private void rateRando(final ViewHolder holder, final int newRating) {
         Analytics.logShareRando(firebaseAnalytics);
-        API.rate(holder.rando.randoId, holder.randoItemLayout.getContext(), newRating, new NetworkResultListener() {
+        API.rate(holder.rando.randoId, holder.randoItemLayout.getContext(), newRating, new NetworkResultListener(context) {
             @Override
             public void onOk() {
                 Rando rando = RandoDAO.getRandoByRandoId(holder.randoItemLayout.getContext(), holder.rando.randoId);
@@ -534,25 +546,40 @@ public class RandoListAdapter extends BaseAdapter {
                 makeText(holder.randoItemLayout.getContext(), "Error setting rating. Please check internet connection.", Toast.LENGTH_LONG).show();
             }
 
+            @Override
+            protected void onFail(Error error) {
+                makeText(holder.randoItemLayout.getContext(), R.string.error_unknown_err,
+                        Toast.LENGTH_LONG).show();
+                showSpinner(holder, false);
+            }
+
         });
     }
 
     private void setRatingIcon(ViewHolder holder) {
 
         switch (holder.rando.rating) {
+            case 0:
+                if(!isStranger)
+                    holder.rateButton.setVisibility(View.GONE);
+                break;
             case 1:
+                holder.rateButton.setVisibility(View.VISIBLE);
                 holder.rateButton.setImageResource(R.drawable.ic_thumb_down_white_24dp);
                 holder.rateButton.setBackgroundResource(R.drawable.round_button_red_background);
                 break;
             case 2:
+                holder.rateButton.setVisibility(View.VISIBLE);
                 holder.rateButton.setImageResource(R.drawable.ic_thumbs_up_down_white_24dp);
                 holder.rateButton.setBackgroundResource(R.drawable.round_button_blue_background);
                 break;
             case 3:
+                holder.rateButton.setVisibility(View.VISIBLE);
                 holder.rateButton.setImageResource(R.drawable.ic_thumb_up_white_24dp);
                 holder.rateButton.setBackgroundResource(R.drawable.round_button_green_background);
                 break;
             default:
+                holder.rateButton.setVisibility(View.VISIBLE);
                 holder.rateButton.setImageResource(R.drawable.ic_thumb_up_white_24dp);
                 holder.rateButton.setBackgroundResource(R.drawable.round_button_grey_background);
                 break;
