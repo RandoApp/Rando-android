@@ -220,18 +220,6 @@ public class RandoDAO {
     }
 
     /**
-     * Deletes rando instance from DB.
-     *
-     * @param rando Rando to delete
-     */
-    public static synchronized void deleteRando(final Context context, Rando rando) {
-        long id = rando.id;
-        getDB(context).delete(RandoDBHelper.RandoTable.NAME, RandoDBHelper.RandoTable.COLUMN_ID
-                + " = " + id, null);
-        Log.i(RandoDAO.class, "Rando deleted with id: ", String.valueOf(id));
-    }
-
-    /**
      * Deletes rando instance from DB by randoId.
      *
      * @param randoId randoId
@@ -251,25 +239,6 @@ public class RandoDAO {
     }
 
     /**
-     * clear rando pairs Table in DB.
-     */
-    public static synchronized void clearInRandos(final Context context) {
-        getDB(context).delete(RandoDBHelper.RandoTable.NAME, RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS
-                + " = '" + Rando.Status.IN.name() + "'", null);
-        Log.i(RandoDAO.class, "Randos table cleared");
-    }
-
-    /**
-     * clear rando pairs Table in DB.
-     */
-    public static synchronized void clearOutRandos(final Context context) {
-        getDB(context).delete(RandoDBHelper.RandoTable.NAME, RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS
-                + " = '" + Rando.Status.OUT.name() + "'", null);
-        Log.i(RandoDAO.class, "Randos table cleared");
-    }
-
-
-    /**
      * Updates rando instance from DB.
      *
      * @param rando Rando to update
@@ -281,40 +250,6 @@ public class RandoDAO {
 
         getDB(context).update(RandoDBHelper.RandoTable.NAME, values, RandoDBHelper.RandoTable.COLUMN_ID + " = " + id, null);
         Log.w(RandoDAO.class, "Rando updated with id: ", String.valueOf(id));
-    }
-
-    public static synchronized List<Rando> getAllRandos(final Context context, boolean includeRandosFromUpload) {
-        List<Rando> randos = new ArrayList<Rando>();
-
-        List<RandoUpload> randosToUpload = getAllRandosToUpload(context, "DESC");
-        for (RandoUpload randoUpload : randosToUpload) {
-            Rando rando = new Rando();
-            if (includeRandosFromUpload) {
-                rando.randoId = String.valueOf(randoUpload.id);
-                rando.date = randoUpload.date;
-                rando.imageURL = randoUpload.file;
-                rando.imageURLSize.small = randoUpload.file;
-                rando.imageURLSize.medium = randoUpload.file;
-                rando.imageURLSize.large = randoUpload.file;
-            }
-            randos.add(rando);
-        }
-        List<Rando> dbRandos = getAllRandos(context);
-        randos.addAll(dbRandos);
-        Log.i(RandoDAO.class, "Size:", String.valueOf(dbRandos.size()), "include=", String.valueOf(includeRandosFromUpload));
-        return randos;
-    }
-
-    public static synchronized int countAllRandosNumber(final Context context) {
-        return getRandosNumber(context) + getRandosToUploadNumber(context);
-    }
-
-    public static synchronized int getRandosToUploadNumber(final Context context) {
-        Cursor cursor = getDB(context).query(RandoDBHelper.RandoUploadTable.NAME,
-                RandoDBHelper.RandoUploadTable.ALL_COLUMNS, null, null, null, null, null);
-        int result = cursor.getCount();
-        cursor.close();
-        return result;
     }
 
     /**
@@ -363,14 +298,6 @@ public class RandoDAO {
      */
     public static synchronized List<Rando> getAllInRandos(final Context context) {
         return getAllRandosByStatus(context, Rando.Status.IN);
-
-    }
-
-    /**
-     * @return all outgoing rando instances found in DB
-     */
-    public static synchronized List<Rando> getAllOutRandos(final Context context) {
-        return getAllRandosByStatus(context, Rando.Status.OUT);
 
     }
 

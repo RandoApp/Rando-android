@@ -581,7 +581,7 @@ public class RandoListAdapter extends BaseAdapter {
             default:
                 holder.rateButton.setVisibility(View.VISIBLE);
                 holder.rateButton.setImageResource(R.drawable.ic_thumb_up_white_24dp);
-                holder.rateButton.setBackgroundResource(R.drawable.round_button_grey_background);
+                holder.rateButton.setBackgroundResource(R.drawable.round_button_grey);
                 break;
         }
     }
