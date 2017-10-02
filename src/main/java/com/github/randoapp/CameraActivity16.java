@@ -169,7 +169,7 @@ public class CameraActivity16 extends Activity {
                             facing = CameraKit.Constants.FACING_FRONT;
                             Analytics.logSwitchCameraToFront(mFirebaseAnalytics);
                         }
-                        imageViewAnimatedChange(cameraSwitchButton, CAMERA_FACING_ICONS.get(facing), 0, null);
+                        cameraSwitchButton.flipView(CAMERA_FACING_ICONS.get(facing), 0, null);
                         enableButtons(false);
                         cameraView.setFacing(facing);
                         mCurrentFacing = facing;
@@ -218,9 +218,9 @@ public class CameraActivity16 extends Activity {
                     }
                 };
                 if (circleMaskView.isDrawGrid()) {
-                    imageViewAnimatedChange(gridButton, R.drawable.ic_grid_on_white_24dp, R.drawable.switch_camera_background, onAnimationEnd);
+                    gridButton.flipView(R.drawable.ic_grid_on_white_24dp, R.drawable.switch_camera_background, onAnimationEnd);
                 } else {
-                    imageViewAnimatedChange(gridButton, R.drawable.ic_grid_off_white_24dp, R.drawable.camera_action_button_background_off, onAnimationEnd);
+                    gridButton.flipView(R.drawable.ic_grid_off_white_24dp, R.drawable.camera_action_button_background_off, onAnimationEnd);
                 }
             }
         });
@@ -406,50 +406,6 @@ public class CameraActivity16 extends Activity {
             mCropTask.cancel();
         }
         mCropTask = null;
-    }
-
-    private void imageViewAnimatedChange(final ImageView v, final int imageResource, final int backgroundResource, final OnAnimationEnd onAnimationEnd) {
-        final Animation anim_out = leftToRightAnimation[0];
-        final Animation anim_in = leftToRightAnimation[1];
-        anim_out.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                //Do nothing
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-                //Do nothing
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                v.setImageResource(imageResource);
-                if (backgroundResource > 0) {
-                    v.setBackgroundResource(backgroundResource);
-                }
-                anim_in.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-                        //Do nothing
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-                        //Do nothing
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        if (onAnimationEnd != null) {
-                            onAnimationEnd.onEnd();
-                        }
-                    }
-                });
-                v.startAnimation(anim_in);
-            }
-        });
-        v.startAnimation(anim_out);
     }
 
     private CameraListener mCallback

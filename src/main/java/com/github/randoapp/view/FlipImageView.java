@@ -13,7 +13,7 @@ import com.github.randoapp.animation.OnAnimationEnd;
 
 public class FlipImageView extends AppCompatImageView {
 
-    private Animation[] leftToRightAnimation = AnimationFactory.flipAnimation(getWidth(), AnimationFactory.FlipDirection.LEFT_RIGHT, 150, null);
+    private Animation[] leftToRightAnimation;
 
     public FlipImageView(Context context) {
         super(context);
@@ -25,6 +25,13 @@ public class FlipImageView extends AppCompatImageView {
 
     public FlipImageView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        leftToRightAnimation = AnimationFactory.flipAnimation(w, AnimationFactory.FlipDirection.LEFT_RIGHT, 150, null);
     }
 
     public void flipView(final int imageResource, final int backgroundResource, final OnAnimationEnd onAnimationEnd) {

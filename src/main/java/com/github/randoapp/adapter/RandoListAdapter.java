@@ -40,6 +40,7 @@ import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.BitmapUtil;
 import com.github.randoapp.util.NetworkUtil;
+import com.github.randoapp.view.FlipImageView;
 import com.github.randoapp.view.RoundProgress;
 import com.github.randoapp.view.UnwantedRandoView;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -122,7 +123,7 @@ public class RandoListAdapter extends BaseAdapter {
 
         recycle(holder);
         holder.rando = randos.get(position);
-        setRatingIcon(holder);
+        setRatingIcon(holder, false);
         loadImages(convertView.getContext(), holder, holder.rando);
 
         if (holder.rando.isUnwanted()) {
@@ -172,7 +173,7 @@ public class RandoListAdapter extends BaseAdapter {
         ViewSwitcher.LayoutParams randoImagesLayout = new ViewSwitcher.LayoutParams(imageSize, imageSize);
         holder.image.setLayoutParams(randoImagesLayout);
         holder.map.setLayoutParams(randoImagesLayout);
-        holder.rateButton = (ImageView) convertView.findViewWithTag("rating");
+        holder.rateButton = (FlipImageView) convertView.findViewWithTag("rating");
 
         convertView.setTag(holder);
         return holder;
@@ -275,25 +276,37 @@ public class RandoListAdapter extends BaseAdapter {
                             .setOnMenuSelectedListener(new OnMenuSelectedListener() {
                                 @Override
                                 public void onMenuSelected(int index) {
+                                    boolean isRatingChanged = false;
                                     switch (index) {
                                         case 0:
                                             Analytics.logRateRandoNormal(firebaseAnalytics);
-                                            holder.rando.rating = 2;
-                                            rateRando(holder, 2);
+                                            isRatingChanged = 2 != holder.rando.rating;
+                                            if (isRatingChanged) {
+                                                holder.rando.rating = 2;
+                                                rateRando(holder, 2);
+                                            }
                                             break;
                                         case 1:
                                             Analytics.logRateRandoGood(firebaseAnalytics);
-                                            holder.rando.rating = 3;
-                                            rateRando(holder, 3);
+                                            isRatingChanged = 3 != holder.rando.rating;
+                                            if (isRatingChanged) {
+                                                holder.rando.rating = 3;
+                                                rateRando(holder, 3);
+                                            }
                                             break;
                                         case 2:
                                             Analytics.logRateRandoBad(firebaseAnalytics);
-                                            holder.rando.rating = 1;
-                                            rateRando(holder, 1);
+                                            isRatingChanged = 1 != holder.rando.rating;
+                                            if (isRatingChanged) {
+                                                holder.rando.rating = 1;
+                                                rateRando(holder, 1);
+                                            }
                                             break;
                                         default:
                                             break;
                                     }
+
+                                    setRatingIcon(holder, isRatingChanged);
                                 }
 
                             }).setOnMenuStatusChangeListener(new OnMenuStatusChangeListener() {
@@ -305,7 +318,6 @@ public class RandoListAdapter extends BaseAdapter {
 
                         @Override
                         public void onMenuClosed() {
-                            setRatingIcon(holder);
                             recycleRatingMenu(holder);
                             if (holder.circleMenu == null) {
                                 holder.image.setAlpha(1f);
@@ -483,14 +495,12 @@ public class RandoListAdapter extends BaseAdapter {
 
                 } else {
                     if (holder.animationInProgress) return;
-                    if (holder.circleMenu !=null) {
+                    if (holder.circleMenu != null) {
                         holder.circleMenu.closeMenu();
-                        //recycleCircleMenu(holder);
                         return;
                     }
-                    if (holder.ratingMenu!=null) {
+                    if (holder.ratingMenu != null) {
                         holder.ratingMenu.closeMenu();
-                        //recycleRatingMenu(holder);
                         return;
                     }
                     if (isStranger) {
@@ -538,7 +548,7 @@ public class RandoListAdapter extends BaseAdapter {
                 holder.rando.rating = newRating;
                 RandoDAO.updateRando(holder.randoItemLayout.getContext(), rando);
                 holder.rando = rando;
-                setRatingIcon(holder);
+                setRatingIcon(holder, false);
             }
 
             @Override
@@ -556,27 +566,38 @@ public class RandoListAdapter extends BaseAdapter {
         });
     }
 
-    private void setRatingIcon(ViewHolder holder) {
-
+    private void setRatingIcon(ViewHolder holder, boolean doAnimation) {
         switch (holder.rando.rating) {
             case 0:
-                if(!isStranger)
+                if (!isStranger)
                     holder.rateButton.setVisibility(View.GONE);
                 break;
             case 1:
                 holder.rateButton.setVisibility(View.VISIBLE);
-                holder.rateButton.setImageResource(R.drawable.ic_thumb_down_white_24dp);
-                holder.rateButton.setBackgroundResource(R.drawable.round_button_red_background);
+                if (doAnimation) {
+                    holder.rateButton.flipView(R.drawable.ic_thumb_down_white_24dp, R.drawable.round_button_red_background, null);
+                } else {
+                    holder.rateButton.setImageResource(R.drawable.ic_thumb_down_white_24dp);
+                    holder.rateButton.setBackgroundResource(R.drawable.round_button_red_background);
+                }
                 break;
             case 2:
                 holder.rateButton.setVisibility(View.VISIBLE);
-                holder.rateButton.setImageResource(R.drawable.ic_thumbs_up_down_white_24dp);
-                holder.rateButton.setBackgroundResource(R.drawable.round_button_blue_background);
+                if (doAnimation) {
+                    holder.rateButton.flipView(R.drawable.ic_thumbs_up_down_white_24dp, R.drawable.round_button_blue_background, null);
+                } else {
+                    holder.rateButton.setImageResource(R.drawable.ic_thumbs_up_down_white_24dp);
+                    holder.rateButton.setBackgroundResource(R.drawable.round_button_blue_background);
+                }
                 break;
             case 3:
                 holder.rateButton.setVisibility(View.VISIBLE);
-                holder.rateButton.setImageResource(R.drawable.ic_thumb_up_white_24dp);
-                holder.rateButton.setBackgroundResource(R.drawable.round_button_green_background);
+                if (doAnimation) {
+                    holder.rateButton.flipView(R.drawable.ic_thumb_up_white_24dp, R.drawable.round_button_green_background, null);
+                } else {
+                    holder.rateButton.setImageResource(R.drawable.ic_thumb_up_white_24dp);
+                    holder.rateButton.setBackgroundResource(R.drawable.round_button_green_background);
+                }
                 break;
             default:
                 holder.rateButton.setVisibility(View.VISIBLE);
@@ -826,7 +847,7 @@ public class RandoListAdapter extends BaseAdapter {
         public boolean isMap;
 
         public CircleMenu circleMenu;
-        public ImageView rateButton;
+        public FlipImageView rateButton;
         public CircleMenu ratingMenu;
 
         public ProgressBar spinner;

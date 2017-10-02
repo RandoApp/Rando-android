@@ -38,7 +38,7 @@
         </FrameLayout>
     </ViewSwitcher>
 
-    <ImageButton
+    <com.github.randoapp.view.FlipImageView
         android:layout_width="44dp"
         android:layout_height="44dp"
         android:layout_alignParentBottom="true"
@@ -46,6 +46,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="100dp"
+        android:scaleType="center"
         android:background="@drawable/round_button_grey"
         android:src="@drawable/ic_thumb_up_white_24dp"
         android:tag="rating" />
