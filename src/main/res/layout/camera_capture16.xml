@@ -50,7 +50,7 @@
         android:layout_margin="18dp"
         android:background="@drawable/ic_arrow_back_gray_32dp"/>
 
-    <ImageView
+    <com.github.randoapp.view.FlipImageView
         android:id="@+id/grid_button"
         android:tag="grid_button"
         android:layout_width="@dimen/switch_camera_button_size"
@@ -64,7 +64,7 @@
         android:scaleType="center"
         android:src="@drawable/ic_grid_on_white_24dp"/>
 
-    <ImageView
+    <com.github.randoapp.view.FlipImageView
         android:id="@+id/camera_switch_button"
         android:tag="camera_switch_button"
         android:layout_width="@dimen/switch_camera_button_size"
