@@ -35,7 +35,13 @@ public class RandoUtilTest {
         RandoDAO.createRando(context, mockedRando);
 
         boolean isRatedFirstTime = RandoUtil.isRatedFirstTime(mockedRando.randoId, context);
-        assertThat("Rando detected as first time rated", isRatedFirstTime, is(true));
+        assertThat("Rando does not detected as first time rated", isRatedFirstTime, is(true));
+    }
+
+    @Test
+    public void shouldReturnTrueWhenRandoDoesNotExistInDB() throws Exception {
+        boolean isRatedFirstTime = RandoUtil.isRatedFirstTime("123", context);
+        assertThat("Rando does not detected as first time rated when rando does not exist in db", isRatedFirstTime, is(true));
     }
 
     @Test
@@ -58,12 +64,6 @@ public class RandoUtilTest {
     public void shouldReturnFalseWhenContextIsNull() throws Exception {
         boolean isRatedFirstTime = RandoUtil.isRatedFirstTime(null, context);
         assertThat("Rando detected as first time rated when context is null", isRatedFirstTime, is(false));
-    }
-
-    @Test
-    public void shouldReturnFalseWhenRandoDoesNotExistInDB() throws Exception {
-        boolean isRatedFirstTime = RandoUtil.isRatedFirstTime("123", context);
-        assertThat("Rando detected as first time rated when rando does not exist in db", isRatedFirstTime, is(false));
     }
 
 }

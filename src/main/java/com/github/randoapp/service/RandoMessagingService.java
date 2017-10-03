@@ -22,8 +22,12 @@ public class RandoMessagingService extends FirebaseMessagingService {
         Log.d(RandoMessagingService.class, "Firebase From: " + remoteMessage.getFrom() + "Firebase Notification Message Body: " + remoteMessage.getData().toString());
 
         Map<String, String> data = remoteMessage.getData();
+        processMessage(data);
+    }
+
+    public void processMessage(Map<String, String> data) {
         if (data != null) {
-            String notificationType = data.get("notificationType");
+            String notificationType = data.get(Constants.NOTIFICATION_TYPE_PARAM);
             String randoString = data.get(Constants.RANDO_PARAM);
             if (notificationType != null && randoString != null) {
                 Rando rando = null;
@@ -55,9 +59,10 @@ public class RandoMessagingService extends FirebaseMessagingService {
 
                 }
                 if (rando != null) {
+                    boolean shouldSendNotification = RandoUtil.isRatedFirstTime(rando.randoId, getBaseContext());
                     RandoDAO.createOrUpdateRandoCheckingByRandoId(getBaseContext(), rando);
                     Log.d(RandoMessagingService.class, "Inserting/Updating newly Received Rando" + rando.toString());
-                    if (RandoUtil.isRatedFirstTime(rando.randoId, getBaseContext())) {
+                    if (shouldSendNotification) {
                         Notification.show(this, getResources().getString(R.string.app_name), getResources().getString(notificationTextResId), rando);
                     }
                 }
@@ -66,6 +71,4 @@ public class RandoMessagingService extends FirebaseMessagingService {
             sendBroadcast(intent);
         }
     }
-
-
 }
