@@ -8,6 +8,7 @@ import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.notification.Notification;
+import com.github.randoapp.util.RandoUtil;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -55,12 +56,16 @@ public class RandoMessagingService extends FirebaseMessagingService {
                 }
                 if (rando != null) {
                     RandoDAO.createOrUpdateRandoCheckingByRandoId(getBaseContext(), rando);
-                    Notification.show(this, getResources().getString(R.string.app_name), getResources().getString(notificationTextResId), rando);
                     Log.d(RandoMessagingService.class, "Inserting/Updating newly Received Rando" + rando.toString());
+                    if (RandoUtil.isRatedFirstTime(rando.randoId, getBaseContext())) {
+                        Notification.show(this, getResources().getString(R.string.app_name), getResources().getString(notificationTextResId), rando);
+                    }
                 }
             }
             Intent intent = new Intent(Constants.UPLOAD_SERVICE_BROADCAST_EVENT);
             sendBroadcast(intent);
         }
     }
+
+
 }
