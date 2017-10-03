@@ -9,7 +9,6 @@ import com.github.randoapp.Constants;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.RandoUpload;
 
-import org.hamcrest.MatcherAssert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +19,6 @@ import java.util.Date;
 import static com.github.randoapp.db.RandoDAO.addToUpload;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.hamcrest.CoreMatchers.is;
 
 @RunWith(AndroidJUnit4.class)
 @SmallTest
@@ -131,11 +129,11 @@ public class RandoDAOUploadTableTest {
     }
 
     @Test
-    public void testUpdateToUploadSuccessful() {
+    public void shouldUpdateToUploadSuccessful() {
         addToUpload(context, new RandoUpload("/path/to/file1", 13.33, 14.44, new Date()));
 
         RandoUpload randoUpload = RandoDAO.getAllRandosToUpload(context, "DESC").get(0);
-        MatcherAssert.assertThat("Last try is not a default value", randoUpload.lastTry.getTime(), is(0l));
+        assertThat(randoUpload.lastTry.getTime()).isEqualTo(0l);
 
         Date now = new Date();
         randoUpload.lastTry = now;
@@ -143,6 +141,6 @@ public class RandoDAOUploadTableTest {
 
         RandoUpload randoUploadAfterUpdate = RandoDAO.getAllRandosToUpload(context, "DESC").get(0);
 
-        MatcherAssert.assertThat("Unsuccessful update lastTry field", randoUploadAfterUpdate.lastTry.getTime(), is(now.getTime()));
+        assertThat(randoUploadAfterUpdate.lastTry.getTime()).isEqualTo(now.getTime());
     }
 }
