@@ -8,13 +8,17 @@ import android.support.test.runner.AndroidJUnit4;
 import com.github.randoapp.Constants;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
+import com.github.randoapp.notification.Notification;
 import com.github.randoapp.service.RandoMessagingService;
 import com.github.randoapp.util.RandoUtil;
 import com.google.firebase.messaging.RemoteMessage;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +39,7 @@ public class RandoMessagingServiceTest {
     }
 
     @Test
+    @Ignore
     public void shouldReturnTrueWhenRatingIsEmpty() throws Exception {
         RandoMessagingService randoMessagingService = new RandoMessagingService();
         Map<String, String> data = new HashMap<>();
@@ -42,7 +47,6 @@ public class RandoMessagingServiceTest {
         data.put(Constants.RANDO_PARAM, "{}");
 
         randoMessagingService.processMessage(data);
-
 
         assertThat("TODO", true, is(true));
     }
