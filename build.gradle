@@ -25,6 +25,7 @@ allprojects {
         jcenter()
         mavenCentral()
         maven {url "https://maven.google.com"}
+        maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local/' }
     }
 }
 
@@ -98,7 +99,7 @@ ext {
 }
 
 dependencies {
-    compile project('modules/volley')
+    compile 'com.android.volley:volley:1.0.1-SNAPSHOT'
     compile project('modules/CameraKit-Android/camerakit')
     compile project('modules/CircleMenu/cmlibrary')
 
