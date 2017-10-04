@@ -1,14 +1,11 @@
 package com.github.randoapp.test.service;
 
-import android.content.Context;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.github.randoapp.Constants;
 import com.github.randoapp.service.RandoMessagingService;
 
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,13 +19,6 @@ import static org.hamcrest.core.Is.is;
 @RunWith(AndroidJUnit4.class)
 @SmallTest
 public class RandoMessagingServiceTest {
-
-    private Context context;
-
-    @Before
-    public void setUp() throws Exception {
-        context = InstrumentationRegistry.getTargetContext();
-    }
 
     @Test
     @Ignore
