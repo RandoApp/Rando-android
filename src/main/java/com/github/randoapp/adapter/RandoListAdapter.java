@@ -567,48 +567,50 @@ public class RandoListAdapter extends BaseAdapter {
     }
 
     private void setRatingIcon(ViewHolder holder, boolean doAnimation) {
-        switch (holder.rando.rating) {
-            case 0:
-                if (!isStranger) {
-                    holder.rateButton.setVisibility(View.GONE);
-                } else {
-                    holder.rateButton.setVisibility(View.VISIBLE);
-                    holder.rateButton.setImageResource(R.drawable.ic_thumb_up_white_24dp);
-                    holder.rateButton.setBackgroundResource(R.drawable.round_button_grey);
-                }
-                break;
-            case 1:
-                holder.rateButton.setVisibility(View.VISIBLE);
-                if (doAnimation) {
-                    holder.rateButton.flipView(R.drawable.ic_thumb_down_white_24dp, R.drawable.round_button_red, null);
-                } else {
-                    holder.rateButton.setImageResource(R.drawable.ic_thumb_down_white_24dp);
-                    holder.rateButton.setBackgroundResource(R.drawable.round_button_red);
-                }
-                break;
-            case 2:
-                holder.rateButton.setVisibility(View.VISIBLE);
-                if (doAnimation) {
-                    holder.rateButton.flipView(R.drawable.ic_thumbs_up_down_white_24dp, R.drawable.round_button_blue, null);
-                } else {
-                    holder.rateButton.setImageResource(R.drawable.ic_thumbs_up_down_white_24dp);
-                    holder.rateButton.setBackgroundResource(R.drawable.round_button_blue);
-                }
-                break;
-            case 3:
-                holder.rateButton.setVisibility(View.VISIBLE);
-                if (doAnimation) {
-                    holder.rateButton.flipView(R.drawable.ic_thumb_up_white_24dp, R.drawable.round_button_green, null);
-                } else {
-                    holder.rateButton.setImageResource(R.drawable.ic_thumb_up_white_24dp);
-                    holder.rateButton.setBackgroundResource(R.drawable.round_button_green);
-                }
-                break;
-            default:
+
+        if (holder.rando.rating == null || holder.rando.rating == 0) {
+            if (!isStranger) {
+                holder.rateButton.setVisibility(View.GONE);
+            } else {
                 holder.rateButton.setVisibility(View.VISIBLE);
                 holder.rateButton.setImageResource(R.drawable.ic_thumb_up_white_24dp);
                 holder.rateButton.setBackgroundResource(R.drawable.round_button_grey);
-                break;
+            }
+        } else {
+            switch (holder.rando.rating) {
+                case 1:
+                    holder.rateButton.setVisibility(View.VISIBLE);
+                    if (doAnimation) {
+                        holder.rateButton.flipView(R.drawable.ic_thumb_down_white_24dp, R.drawable.round_button_red, null);
+                    } else {
+                        holder.rateButton.setImageResource(R.drawable.ic_thumb_down_white_24dp);
+                        holder.rateButton.setBackgroundResource(R.drawable.round_button_red);
+                    }
+                    break;
+                case 2:
+                    holder.rateButton.setVisibility(View.VISIBLE);
+                    if (doAnimation) {
+                        holder.rateButton.flipView(R.drawable.ic_thumbs_up_down_white_24dp, R.drawable.round_button_blue, null);
+                    } else {
+                        holder.rateButton.setImageResource(R.drawable.ic_thumbs_up_down_white_24dp);
+                        holder.rateButton.setBackgroundResource(R.drawable.round_button_blue);
+                    }
+                    break;
+                case 3:
+                    holder.rateButton.setVisibility(View.VISIBLE);
+                    if (doAnimation) {
+                        holder.rateButton.flipView(R.drawable.ic_thumb_up_white_24dp, R.drawable.round_button_green, null);
+                    } else {
+                        holder.rateButton.setImageResource(R.drawable.ic_thumb_up_white_24dp);
+                        holder.rateButton.setBackgroundResource(R.drawable.round_button_green);
+                    }
+                    break;
+                default:
+                    holder.rateButton.setVisibility(View.VISIBLE);
+                    holder.rateButton.setImageResource(R.drawable.ic_thumb_up_white_24dp);
+                    holder.rateButton.setBackgroundResource(R.drawable.round_button_grey);
+                    break;
+            }
         }
     }
 
