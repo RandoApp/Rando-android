@@ -8,6 +8,7 @@ import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.notification.Notification;
+import com.github.randoapp.util.RandoUtil;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -21,8 +22,12 @@ public class RandoMessagingService extends FirebaseMessagingService {
         Log.d(RandoMessagingService.class, "Firebase From: " + remoteMessage.getFrom() + "Firebase Notification Message Body: " + remoteMessage.getData().toString());
 
         Map<String, String> data = remoteMessage.getData();
+        processMessage(data);
+    }
+
+    public void processMessage(Map<String, String> data) {
         if (data != null) {
-            String notificationType = data.get("notificationType");
+            String notificationType = data.get(Constants.NOTIFICATION_TYPE_PARAM);
             String randoString = data.get(Constants.RANDO_PARAM);
             if (notificationType != null && randoString != null) {
                 Rando rando = null;
@@ -54,9 +59,12 @@ public class RandoMessagingService extends FirebaseMessagingService {
 
                 }
                 if (rando != null) {
+                    boolean shouldSendNotification = RandoUtil.isRatedFirstTime(rando.randoId, getBaseContext());
                     RandoDAO.createOrUpdateRandoCheckingByRandoId(getBaseContext(), rando);
-                    Notification.show(this, getResources().getString(R.string.app_name), getResources().getString(notificationTextResId), rando);
                     Log.d(RandoMessagingService.class, "Inserting/Updating newly Received Rando" + rando.toString());
+                    if (shouldSendNotification) {
+                        Notification.show(this, getResources().getString(R.string.app_name), getResources().getString(notificationTextResId), rando);
+                    }
                 }
             }
             Intent intent = new Intent(Constants.UPLOAD_SERVICE_BROADCAST_EVENT);

@@ -82,6 +82,7 @@ public class Constants {
     public static final String DETECTED_PARAM = "detected";
     public static final String RATING_PARAM = "rating";
     public static final String RANDO_PARAM = "rando";
+    public static final String NOTIFICATION_TYPE_PARAM = "notificationType";
     public static final String IN_RANDOS_PARAM = "in";
     public static final String OUT_RANDOS_PARAM = "out";
     public static final String EMAIL_PARAM = "email";
@@ -144,6 +145,7 @@ public class Constants {
     public static final String PUSH_NOTIFICATION_RATED = "rated";
 
     public static final String TO_UPLOAD_RANDO_ID = "randoIdToUpload";
+
 
 }
 
