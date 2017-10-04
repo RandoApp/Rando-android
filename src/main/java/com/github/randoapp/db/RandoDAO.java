@@ -413,7 +413,9 @@ public class RandoDAO {
         if (rando.detected != null) {
             values.put(RandoDBHelper.RandoTable.COLUMN_DETECTED, rando.detected);
         }
-        values.put(RandoDBHelper.RandoTable.COLUMN_RATING, rando.rating);
+        if (rando.rating != null) {
+            values.put(RandoDBHelper.RandoTable.COLUMN_RATING, rando.rating);
+        }
 
         return values;
     }

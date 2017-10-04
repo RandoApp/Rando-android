@@ -154,7 +154,7 @@ public class RandoDBHelper extends SQLiteOpenHelper {
                 COLUMN_USER_MAP_URL_MEDIUM + " text," +
                 COLUMN_USER_MAP_URL_LARGE + " text," +
                 COLUMN_RANDO_STATUS + " text," +
-                COLUMN_RATING + " integer," +
+                COLUMN_RATING + " integer DEFAULT 0," +
                 COLUMN_DETECTED + " text" +
                 ");";
     }

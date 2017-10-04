@@ -569,8 +569,13 @@ public class RandoListAdapter extends BaseAdapter {
     private void setRatingIcon(ViewHolder holder, boolean doAnimation) {
         switch (holder.rando.rating) {
             case 0:
-                if (!isStranger)
+                if (!isStranger) {
                     holder.rateButton.setVisibility(View.GONE);
+                } else {
+                    holder.rateButton.setVisibility(View.VISIBLE);
+                    holder.rateButton.setImageResource(R.drawable.ic_thumb_up_white_24dp);
+                    holder.rateButton.setBackgroundResource(R.drawable.round_button_grey);
+                }
                 break;
             case 1:
                 holder.rateButton.setVisibility(View.VISIBLE);

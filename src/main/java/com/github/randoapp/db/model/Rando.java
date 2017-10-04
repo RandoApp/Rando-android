@@ -40,7 +40,7 @@ public class Rando implements Serializable {
     public UrlSize mapURLSize = new UrlSize();
     public Status status;
     public String detected;
-    public int rating;
+    public Integer rating;
 
     public boolean toUpload = false;
 
