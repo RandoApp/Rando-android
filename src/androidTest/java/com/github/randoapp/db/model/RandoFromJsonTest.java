@@ -47,7 +47,7 @@ public class RandoFromJsonTest {
         assertThat(rando.status).isEqualTo(Rando.Status.IN);
         assertThat(rando.id).isEqualTo(0);
         assertThat(rando.detected).isNull();
-        assertThat(rando.rating).isEqualTo(0);
+        assertThat(rando.rating).isNull();
 
         assertThat(rando.imageURLSize).isNotNull();
         assertThat(rando.imageURLSize.large).isEqualTo("IMAGE_URL_LARGE");
@@ -75,7 +75,7 @@ public class RandoFromJsonTest {
         assertThat(rando.status).isEqualTo(Rando.Status.OUT);
         assertThat(rando.id).isEqualTo(0);
         assertThat(rando.detected).isNull();
-        assertThat(rando.rating).isEqualTo(0);
+        assertThat(rando.rating).isNull();
 
         assertThat(rando.imageURLSize).isNotNull();
         assertThat(rando.imageURLSize.large).isEqualTo("IMAGE_URL_LARGE");
@@ -102,7 +102,7 @@ public class RandoFromJsonTest {
         assertThat(rando.randoId).isEqualTo("62187b3b661732e3c8f0468f2824aebae04ab6d967");
         assertThat(rando.status).isEqualTo(Rando.Status.OUT);
         assertThat(rando.id).isEqualTo(0);
-        assertThat(rando.rating).isEqualTo(0);
+        assertThat(rando.rating).isNull();
         assertThat(rando.detected).isEqualTo("\"unwanted\"");
 
         assertThat(rando.imageURLSize).isNotNull();
@@ -130,7 +130,7 @@ public class RandoFromJsonTest {
         assertThat(rando.randoId).isEqualTo("62187b3b661732e3c8f0468f2824aebae04ab6d967");
         assertThat(rando.status).isEqualTo(Rando.Status.OUT);
         assertThat(rando.id).isEqualTo(0);
-        assertThat(rando.rating).isEqualTo(0);
+        assertThat(rando.rating).isNull();
         assertThat(rando.detected).isEqualTo("\"unwanted\",\"blabla\"");
 
         assertThat(rando.imageURLSize).isNotNull();
@@ -158,7 +158,7 @@ public class RandoFromJsonTest {
         assertThat(rando.randoId).isEqualTo("62187b3b661732e3c8f0468f2824aebae04ab6d967");
         assertThat(rando.status).isEqualTo(Rando.Status.OUT);
         assertThat(rando.id).isEqualTo(0);
-        assertThat(rando.rating).isEqualTo(0);
+        assertThat(rando.rating).isNull();
         assertThat(rando.detected).isEqualTo("");
 
         assertThat(rando.imageURLSize).isNotNull();
