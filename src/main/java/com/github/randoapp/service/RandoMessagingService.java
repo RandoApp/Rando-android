@@ -31,6 +31,7 @@ public class RandoMessagingService extends FirebaseMessagingService {
             String randoString = data.get(Constants.RANDO_PARAM);
             if (notificationType != null && randoString != null) {
                 Rando rando = null;
+                boolean shouldSendNotification = true;
                 int notificationTextResId = 0;
                 if (Constants.PUSH_NOTIFICATION_RECEIVED.equals(notificationType)) {
                     rando = Rando.fromJSON(randoString, Rando.Status.IN);
@@ -55,11 +56,11 @@ public class RandoMessagingService extends FirebaseMessagingService {
                                 notificationTextResId = R.string.rando_rated;
                                 break;
                         }
+                        shouldSendNotification = RandoUtil.isRatedFirstTime(rando.randoId, getBaseContext());
                     }
 
                 }
                 if (rando != null) {
-                    boolean shouldSendNotification = RandoUtil.isRatedFirstTime(rando.randoId, getBaseContext());
                     RandoDAO.createOrUpdateRandoCheckingByRandoId(getBaseContext(), rando);
                     Log.d(RandoMessagingService.class, "Inserting/Updating newly Received Rando" + rando.toString());
                     if (shouldSendNotification) {
