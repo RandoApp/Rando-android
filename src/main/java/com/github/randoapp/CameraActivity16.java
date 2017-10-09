@@ -30,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.flurgle.camerakit.AspectRatio;
 import com.flurgle.camerakit.CameraKit;
 import com.flurgle.camerakit.CameraListener;
@@ -37,6 +38,7 @@ import com.flurgle.camerakit.CameraView;
 import com.flurgle.camerakit.Facing;
 import com.flurgle.camerakit.Size;
 import com.github.randoapp.animation.AnimationFactory;
+import com.github.randoapp.animation.OnAnimationEnd;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.task.CropToSquareImageTask;
@@ -44,10 +46,13 @@ import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.LocationHelper;
 import com.github.randoapp.util.PermissionUtils;
 import com.github.randoapp.view.CircleMaskView;
+import com.github.randoapp.view.FlipImageView;
 import com.github.randoapp.view.FocusMarkerLayout;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.File;
+
+import io.fabric.sdk.android.Fabric;
 
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_CAMERA_PERMISSION_REQUIRED;
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
@@ -90,8 +95,8 @@ public class CameraActivity16 extends Activity {
     private int mCameraViewleftRightMargin = 0;
     private int mCameraViewtopBottomMargin = 0;
     private ImageView captureButton;
-    private ImageView cameraSwitchButton;
-    private ImageView gridButton;
+    private FlipImageView cameraSwitchButton;
+    private FlipImageView gridButton;
     private LinearLayout progressBar;
     private Handler mBackgroundHandler;
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -115,6 +120,7 @@ public class CameraActivity16 extends Activity {
         setContentView(R.layout.camera_capture16);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        Fabric.with(this, new Crashlytics());
 
         cameraView = (CameraView) findViewById(R.id.camera);
         cameraView.setCameraListener(mCallback);
@@ -124,8 +130,6 @@ public class CameraActivity16 extends Activity {
         focusMarker = (FocusMarkerLayout) findViewById(R.id.focusMarker);
 
         cameraView.setFlash(Preferences.getCameraFlashMode(getBaseContext()));
-
-        //Log.d(CameraActivity16.class, leftRightMargin + " " + topBottomMargin + " " + cameraView.getAspectRatio() + " ");
 
         captureButton = (ImageView) findViewById(R.id.capture_button);
         captureButton.setOnClickListener(new CameraActivity16.CaptureButtonListener());
@@ -144,7 +148,7 @@ public class CameraActivity16 extends Activity {
         int buttonsSideMargin = (displayMetrics.widthPixels - getResources().getDimensionPixelSize(R.dimen.rando_button_size)) / 4 - getResources().getDimensionPixelSize(R.dimen.switch_camera_button_size) / 2;
         leftToRightAnimation = AnimationFactory.flipAnimation(getResources().getDimensionPixelSize(R.dimen.switch_camera_button_size), AnimationFactory.FlipDirection.LEFT_RIGHT, 150, null);
         if (Camera.getNumberOfCameras() > 1) {
-            cameraSwitchButton = (ImageView) findViewById(R.id.camera_switch_button);
+            cameraSwitchButton = (FlipImageView) findViewById(R.id.camera_switch_button);
             RelativeLayout.LayoutParams cameraSwitchButtonLayoutParams = (RelativeLayout.LayoutParams) cameraSwitchButton.getLayoutParams();
             cameraSwitchButtonLayoutParams.setMargins(buttonsSideMargin, 0, 0, getResources().getDimensionPixelSize(R.dimen.switch_camera_margin_bottom));
             cameraSwitchButton.setLayoutParams(cameraSwitchButtonLayoutParams);
@@ -165,7 +169,7 @@ public class CameraActivity16 extends Activity {
                             facing = CameraKit.Constants.FACING_FRONT;
                             Analytics.logSwitchCameraToFront(mFirebaseAnalytics);
                         }
-                        imageViewAnimatedChange(cameraSwitchButton, CAMERA_FACING_ICONS.get(facing), 0, null);
+                        cameraSwitchButton.flipView(CAMERA_FACING_ICONS.get(facing), 0, null);
                         enableButtons(false);
                         cameraView.setFacing(facing);
                         mCurrentFacing = facing;
@@ -198,7 +202,7 @@ public class CameraActivity16 extends Activity {
                     }
                 }
         );
-        gridButton = (ImageView) findViewById(R.id.grid_button);
+        gridButton = (FlipImageView) findViewById(R.id.grid_button);
         RelativeLayout.LayoutParams gridButtonLayoutParams = (RelativeLayout.LayoutParams) gridButton.getLayoutParams();
         gridButtonLayoutParams.setMargins(0, 0, buttonsSideMargin, getResources().getDimensionPixelSize(R.dimen.switch_camera_margin_bottom));
         gridButton.setLayoutParams(gridButtonLayoutParams);
@@ -207,16 +211,16 @@ public class CameraActivity16 extends Activity {
             public void onClick(View v) {
                 circleMaskView.setDrawGrid(!circleMaskView.isDrawGrid());
                 Preferences.setCameraGrid(getBaseContext(), circleMaskView.isDrawGrid());
-                CameraActivity16.OnAnimationEnd onAnimationEnd = new CameraActivity16.OnAnimationEnd() {
+                OnAnimationEnd onAnimationEnd = new OnAnimationEnd() {
                     @Override
                     public void onEnd() {
                         circleMaskView.invalidate();
                     }
                 };
                 if (circleMaskView.isDrawGrid()) {
-                    imageViewAnimatedChange(gridButton, R.drawable.ic_grid_on_white_24dp, R.drawable.switch_camera_background, onAnimationEnd);
+                    gridButton.flipView(R.drawable.ic_grid_on_white_24dp, R.drawable.switch_camera_background, onAnimationEnd);
                 } else {
-                    imageViewAnimatedChange(gridButton, R.drawable.ic_grid_off_white_24dp, R.drawable.camera_action_button_background_off, onAnimationEnd);
+                    gridButton.flipView(R.drawable.ic_grid_off_white_24dp, R.drawable.camera_action_button_background_off, onAnimationEnd);
                 }
             }
         });
@@ -404,50 +408,6 @@ public class CameraActivity16 extends Activity {
         mCropTask = null;
     }
 
-    private void imageViewAnimatedChange(final ImageView v, final int imageResource, final int backgroundResource, final CameraActivity16.OnAnimationEnd onAnimationEnd) {
-        final Animation anim_out = leftToRightAnimation[0];
-        final Animation anim_in = leftToRightAnimation[1];
-        anim_out.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                //Do nothing
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-                //Do nothing
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                v.setImageResource(imageResource);
-                if (backgroundResource > 0) {
-                    v.setBackgroundResource(backgroundResource);
-                }
-                anim_in.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-                        //Do nothing
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-                        //Do nothing
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        if (onAnimationEnd != null) {
-                            onAnimationEnd.onEnd();
-                        }
-                    }
-                });
-                v.startAnimation(anim_in);
-            }
-        });
-        v.startAnimation(anim_out);
-    }
-
     private CameraListener mCallback
             = new CameraListener() {
         @Override
@@ -497,10 +457,6 @@ public class CameraActivity16 extends Activity {
             super.onVideoTaken(video);
         }
     };
-
-    private abstract class OnAnimationEnd {
-        public abstract void onEnd();
-    }
 
     private class UnexpectedTerminationHelper {
         private Thread mThread;

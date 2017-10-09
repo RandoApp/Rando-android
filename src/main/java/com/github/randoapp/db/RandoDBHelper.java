@@ -8,7 +8,7 @@ import android.util.Log;
 
 public class RandoDBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 12;
     private static final String DATABASE_NAME = "rando.db";
 
     private static RandoDBHelper helperInstance;
@@ -67,6 +67,10 @@ public class RandoDBHelper extends SQLiteOpenHelper {
         if (oldVersion < 11) {
             upgradeTo11(db);
         }
+
+        if (oldVersion < 12) {
+            upgradeTo12(db);
+        }
     }
 
     @Override
@@ -87,6 +91,11 @@ public class RandoDBHelper extends SQLiteOpenHelper {
         if (!isRandoTableColumnExist(db, RandoTable.COLUMN_RANDO_STATUS)) {
             dropAllAndCreate(db);
         }
+    }
+
+    private void upgradeTo12(SQLiteDatabase db) {
+        Log.d(LOG_TAG, "Upgrading database from prior 12 version");
+        db.execSQL("ALTER TABLE " + RandoTable.NAME + " ADD COLUMN " + RandoTable.COLUMN_RATING + " INTEGER DEFAULT 0");
     }
 
     private void dropAllAndCreate(SQLiteDatabase db) {
@@ -128,12 +137,9 @@ public class RandoDBHelper extends SQLiteOpenHelper {
         public static final String COLUMN_USER_MAP_URL_MEDIUM = "USER_MAP_URL_MEDIUM";
         public static final String COLUMN_USER_MAP_URL_LARGE = "USER_MAP_URL_LARGE";
         public static final String COLUMN_DETECTED = "DETECTED";
+        public static final String COLUMN_RATING = "RATING";
 
         public static final String COLUMN_RANDO_STATUS = "RANDO_STATUS";
-
-        public static final String[] ALL_COLUMNS = {
-                COLUMN_ID, COLUMN_USER_RANDO_ID, COLUMN_USER_RANDO_URL, COLUMN_USER_RANDO_URL_SMALL, COLUMN_USER_RANDO_URL_MEDIUM,
-                COLUMN_USER_RANDO_URL_LARGE, COLUMN_USER_RANDO_DATE, COLUMN_USER_MAP_URL, COLUMN_USER_MAP_URL_SMALL, COLUMN_USER_MAP_URL_MEDIUM, COLUMN_USER_MAP_URL_LARGE, COLUMN_RANDO_STATUS, COLUMN_DETECTED};
 
         public static final String CREATE_TABLE_SQL = "CREATE TABLE " + RandoTable.NAME +
                 " (" + COLUMN_ID + " integer primary key autoincrement, " +
@@ -148,6 +154,7 @@ public class RandoDBHelper extends SQLiteOpenHelper {
                 COLUMN_USER_MAP_URL_MEDIUM + " text," +
                 COLUMN_USER_MAP_URL_LARGE + " text," +
                 COLUMN_RANDO_STATUS + " text," +
+                COLUMN_RATING + " integer DEFAULT 0," +
                 COLUMN_DETECTED + " text" +
                 ");";
     }

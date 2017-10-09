@@ -15,8 +15,7 @@
         android:weightSum="100">
 
         <TextView
-            android:id="@+id/missing_storage_permission_message"
-            android:layout_width="@dimen/empty_home_message_width"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="50"

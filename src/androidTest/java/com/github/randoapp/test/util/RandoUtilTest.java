@@ -7,17 +7,13 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
-import com.github.randoapp.test.db.RandoTestHelper;
 import com.github.randoapp.util.RandoUtil;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import static com.github.randoapp.test.db.RandoTestHelper.getRandomRando;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -28,43 +24,46 @@ public class RandoUtilTest {
     private Context context;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         context = InstrumentationRegistry.getTargetContext();
-        RandoDAO.clearRandos(context);
-        RandoDAO.clearRandoToUpload(context);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        RandoDAO.clearRandos(context);
-        RandoDAO.clearRandoToUpload(context);
-    }
-
-
-    @Test
-    public void testAreRandoListsEqual() throws Exception {
-        List<Rando> randos1 = RandoTestHelper.getNRandomRandos(3, Rando.Status.OUT);
-        List<Rando> randos2 = new ArrayList<Rando>();
-        for (Rando rando : randos1) {
-            randos2.add(new Rando(rando));
-        }
-
-        assertThat("Lists are not equal", RandoUtil.areRandoListsEqual(randos1, randos2), is(true));
     }
 
     @Test
-    public void testAreRandoListsNotEqualBySize() throws Exception {
-        List<Rando> randos1 = RandoTestHelper.getNRandomRandos(4, Rando.Status.OUT);
-        List<Rando> randos2 = RandoTestHelper.getNRandomRandos(3, Rando.Status.OUT);
+    public void shouldReturnTrueWhenRatingIsEmpty() throws Exception {
+        Rando mockedRando = getRandomRando(Rando.Status.OUT);
+        mockedRando.rating = 0;
+        RandoDAO.createRando(context, mockedRando);
 
-        assertThat("Lists are not equal", RandoUtil.areRandoListsEqual(randos1, randos2), is(false));
+        boolean isRatedFirstTime = RandoUtil.isRatedFirstTime(mockedRando.randoId, context);
+        assertThat("Rando does not detected as first time rated", isRatedFirstTime, is(true));
     }
 
     @Test
-    public void testAreRandoListsNotEqualByContent() throws Exception {
-        List<Rando> randos1 = RandoTestHelper.getNRandomRandos(3, Rando.Status.OUT);
-        List<Rando> randos2 = RandoTestHelper.getNRandomRandos(3, Rando.Status.IN);
-
-        assertThat("Lists are not equal", RandoUtil.areRandoListsEqual(randos1, randos2), is(false));
+    public void shouldReturnTrueWhenRandoDoesNotExistInDB() throws Exception {
+        boolean isRatedFirstTime = RandoUtil.isRatedFirstTime("123", context);
+        assertThat("Rando does not detected as first time rated when rando does not exist in db", isRatedFirstTime, is(true));
     }
+
+    @Test
+    public void shouldReturnFalseWhenRatingIsNotEmpty() throws Exception {
+        Rando mockedRando = getRandomRando(Rando.Status.OUT);
+        mockedRando.rating = 3;
+        RandoDAO.createRando(context, mockedRando);
+
+        boolean isRatedFirstTime = RandoUtil.isRatedFirstTime(mockedRando.randoId, context);
+        assertThat("Rando detected as first time rated when rando already rated", isRatedFirstTime, is(false));
+    }
+
+    @Test
+    public void shouldReturnFalseWhenRandoIdIsNull() throws Exception {
+        boolean isRatedFirstTime = RandoUtil.isRatedFirstTime(null, context);
+        assertThat("Rando detected as first time rated when randoId is null", isRatedFirstTime, is(false));
+    }
+
+    @Test
+    public void shouldReturnFalseWhenContextIsNull() throws Exception {
+        boolean isRatedFirstTime = RandoUtil.isRatedFirstTime(null, context);
+        assertThat("Rando detected as first time rated when context is null", isRatedFirstTime, is(false));
+    }
+
 }

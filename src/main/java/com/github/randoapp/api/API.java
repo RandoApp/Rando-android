@@ -10,6 +10,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.crashlytics.android.Crashlytics;
 import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.api.beans.Error;
@@ -29,7 +30,6 @@ import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.notification.Notification;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.FileUtil;
-import com.github.randoapp.util.RandoUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,6 +64,7 @@ import static com.github.randoapp.Constants.LATITUDE_PARAM;
 import static com.github.randoapp.Constants.LOGOUT_URL;
 import static com.github.randoapp.Constants.LONGITUDE_PARAM;
 import static com.github.randoapp.Constants.NOT_UPDATED;
+import static com.github.randoapp.Constants.RATE_URL;
 import static com.github.randoapp.Constants.REPORT_URL;
 import static com.github.randoapp.Constants.SIGNUP_EMAIL_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_PASSWORD_PARAM;
@@ -223,12 +224,7 @@ public class API {
                 Log.d(API.class, "Rando Uploaded Successfully:", randoUpload.toString());
                 String resultResponse = new String(response.data);
                 if (uploadListener != null) {
-                    try {
-                        JSONObject result = new JSONObject(resultResponse);
-                        uploadListener.onUpload(RandoUtil.parseRando(result, Rando.Status.OUT));
-                    } catch (JSONException e) {
-                        Log.e(API.class, "Parse uploaded failed", e);
-                    }
+                    uploadListener.onUpload(Rando.fromJSON(resultResponse, Rando.Status.OUT));
                 }
             }
         }, errorListener) {
@@ -325,6 +321,35 @@ public class API {
         VolleySingleton.getInstance(context).getRequestQueue().add(request);
     }
 
+    public static void rate(final String randoId, final Context context, final int rating, final NetworkResultListener reportRandoListener) {
+        Log.d(API.class, "Rate Rando:", randoId);
+        BackgroundPreprocessedRequest request = new BackgroundPreprocessedRequest(Request.Method.POST, RATE_URL + randoId + "?rating=" + rating, null, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    if ("rate".equals(response.getString("command")) &&
+                            "done".equals(response.getString("result"))) {
+                        Log.d(API.class, "Rated Rando:", randoId);
+                        reportRandoListener.onOk();
+                    }
+                } catch (JSONException e) {
+                    Log.e(API.class, "Error Rating Rando", e);
+                    reportRandoListener.onError(null);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(API.class, "Error Rating Rando", error);
+                reportRandoListener.onError(null);
+            }
+        });
+
+        request.setHeaders(getHeaders(context));
+        request.setRetryPolicy(new DefaultRetryPolicy(API_CONNECTION_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        VolleySingleton.getInstance(context).getRequestQueue().add(request);
+    }
 
     private static Map<String, String> getHeaders(Context context) {
         Map<String, String> headers = new HashMap<>(2);
@@ -374,6 +399,7 @@ public class API {
                 || exc instanceof ConnectException) {
             return new Error().setCode(R.string.error_no_network);
         }
+        Crashlytics.logException(exc);
         Log.e(API.class, "processError method", exc);
         return new Error().setCode(R.string.error_unknown_err);
     }

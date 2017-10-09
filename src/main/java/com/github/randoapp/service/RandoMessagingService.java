@@ -22,23 +22,49 @@ public class RandoMessagingService extends FirebaseMessagingService {
         Log.d(RandoMessagingService.class, "Firebase From: " + remoteMessage.getFrom() + "Firebase Notification Message Body: " + remoteMessage.getData().toString());
 
         Map<String, String> data = remoteMessage.getData();
+        processMessage(data);
+    }
+
+    public void processMessage(Map<String, String> data) {
         if (data != null) {
-            String notificationType = data.get("notificationType");
+            String notificationType = data.get(Constants.NOTIFICATION_TYPE_PARAM);
             String randoString = data.get(Constants.RANDO_PARAM);
             if (notificationType != null && randoString != null) {
                 Rando rando = null;
                 int notificationTextResId = 0;
                 if (Constants.PUSH_NOTIFICATION_RECEIVED.equals(notificationType)) {
-                    rando = RandoUtil.parseRando(randoString, Rando.Status.IN);
+                    rando = Rando.fromJSON(randoString, Rando.Status.IN);
                     notificationTextResId = R.string.rando_received;
                 } else if (Constants.PUSH_NOTIFICATION_LANDED.equals(notificationType)) {
-                    rando = RandoUtil.parseRando(randoString, Rando.Status.OUT);
+                    rando = Rando.fromJSON(randoString, Rando.Status.OUT);
                     notificationTextResId = R.string.rando_landed;
+                } else if (Constants.PUSH_NOTIFICATION_RATED.equals(notificationType)) {
+                    rando = Rando.fromJSON(randoString, Rando.Status.OUT);
+                    if (rando != null) {
+                        switch (rando.rating) {
+                            case 3:
+                                notificationTextResId = R.string.rando_liked;
+                                break;
+                            case 2:
+                                notificationTextResId = R.string.rando_rated;
+                                break;
+                            case 1:
+                                notificationTextResId = R.string.rando_disliked;
+                                break;
+                            default:
+                                notificationTextResId = R.string.rando_rated;
+                                break;
+                        }
+                    }
+
                 }
                 if (rando != null) {
+                    boolean shouldSendNotification = RandoUtil.isRatedFirstTime(rando.randoId, getBaseContext());
                     RandoDAO.createOrUpdateRandoCheckingByRandoId(getBaseContext(), rando);
-                    Notification.show(this, getResources().getString(R.string.app_name), getResources().getString(notificationTextResId));
                     Log.d(RandoMessagingService.class, "Inserting/Updating newly Received Rando" + rando.toString());
+                    if (shouldSendNotification) {
+                        Notification.show(this, getResources().getString(R.string.app_name), getResources().getString(notificationTextResId), rando);
+                    }
                 }
             }
             Intent intent = new Intent(Constants.UPLOAD_SERVICE_BROADCAST_EVENT);

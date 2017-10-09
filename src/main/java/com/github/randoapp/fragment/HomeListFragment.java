@@ -23,6 +23,7 @@ import com.github.randoapp.adapter.RandoListAdapter;
 import com.github.randoapp.api.API;
 import com.github.randoapp.api.listeners.ErrorResponseListener;
 import com.github.randoapp.db.RandoDAO;
+import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.upload.UploadJobScheduler;
 import com.github.randoapp.util.Analytics;
@@ -45,6 +46,8 @@ public class HomeListFragment extends Fragment {
     private boolean isStranger;
     private SwipeRefreshLayout swipeRefreshLayout;
     private FirebaseAnalytics mFirebaseAnalytics;
+
+    private Rando scrollToRando;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -74,6 +77,7 @@ public class HomeListFragment extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             isStranger = bundle.getInt(Constants.PAGE) == 1;
+            scrollToRando = (Rando) bundle.getSerializable(Constants.RANDO_PARAM);
         }
 
         final View rootView;
@@ -86,10 +90,14 @@ public class HomeListFragment extends Fragment {
             icHome.setVisibility(View.VISIBLE);
         }
 
-        final ListView listView = (ListView) rootView.findViewById(R.id.listView);
+        ListView listView = (ListView) rootView.findViewById(R.id.listView);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
         randoPairsAdapter = new RandoListAdapter(getContext(), isStranger, mFirebaseAnalytics);
         listView.setAdapter(randoPairsAdapter);
+
+        if (scrollToRando != null) {
+            listView.setSelection(randoPairsAdapter.getPositionOfRando(scrollToRando));
+        }
 
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

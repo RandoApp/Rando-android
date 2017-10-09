@@ -40,7 +40,7 @@ import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.BitmapUtil;
 import com.github.randoapp.util.NetworkUtil;
-import com.github.randoapp.util.RandoUtil;
+import com.github.randoapp.view.FlipImageView;
 import com.github.randoapp.view.RoundProgress;
 import com.github.randoapp.view.UnwantedRandoView;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -123,6 +123,7 @@ public class RandoListAdapter extends BaseAdapter {
 
         recycle(holder);
         holder.rando = randos.get(position);
+        setRatingIcon(holder, false);
         loadImages(convertView.getContext(), holder, holder.rando);
 
         if (holder.rando.isUnwanted()) {
@@ -130,9 +131,8 @@ public class RandoListAdapter extends BaseAdapter {
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
             layoutParams.setMargins(convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left),
                     convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
-                    convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right),
-                    convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));
-            //insert Unwanted view at index 1, right after "rando_placeholder"
+                    convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right), 0);
+            //insert Unwanted view at index 1, right after "view_switcher"
             holder.randoItemLayout.addView(unwantedRandoView, 1, layoutParams);
             holder.unwantedRandoView = unwantedRandoView;
         } else {
@@ -148,6 +148,18 @@ public class RandoListAdapter extends BaseAdapter {
         return convertView;
     }
 
+    public int getPositionOfRando(Rando rando) {
+        if (rando == null) {
+            return 0;
+        }
+        for (int i = 0; i < randos.size(); i++) {
+            if (randos.get(i).randoId.equals(rando.randoId)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
     private ViewHolder createHolder(View convertView) {
         ViewHolder holder = new ViewHolder();
 
@@ -161,6 +173,7 @@ public class RandoListAdapter extends BaseAdapter {
         ViewSwitcher.LayoutParams randoImagesLayout = new ViewSwitcher.LayoutParams(imageSize, imageSize);
         holder.image.setLayoutParams(randoImagesLayout);
         holder.map.setLayoutParams(randoImagesLayout);
+        holder.rateButton = (FlipImageView) convertView.findViewWithTag("rating");
 
         convertView.setTag(holder);
         return holder;
@@ -173,18 +186,16 @@ public class RandoListAdapter extends BaseAdapter {
         View.OnLongClickListener onLongClickListener = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                recycleRatingMenu(holder);
                 if (holder.circleMenu == null && !holder.rando.isUnwanted()) {
+                    Resources res = v.getResources();
                     RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) (imageSize * 0.9), (int) (imageSize * 0.9));
-                    layoutParams.setMargins(v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left),
-                            v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
-                            v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right),
-                            v.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_bottom));
-                    layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+                    layoutParams.topMargin = (int) (imageSize * 0.05) + res.getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top);
+                    layoutParams.leftMargin = (int) (imageSize * 0.05) + res.getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left);
 
-                    holder.circleMenu = new CircleMenu(holder.randoItemLayout.getContext());
+                    holder.circleMenu = new CircleMenu(v.getContext());
                     holder.randoItemLayout.addView(holder.circleMenu, layoutParams);
 
-                    Resources res = holder.circleMenu.getResources();
                     holder.circleMenu.setMainMenu(res.getColor(R.color.menu_button_color), R.drawable.ic_close_white_24dp, R.drawable.ic_close_white_24dp);
                     if (!holder.rando.toUpload) {
                         holder.circleMenu.addSubMenu(res.getColor(R.color.share_menu_button_color), R.drawable.ic_share_white_24dp);
@@ -216,7 +227,6 @@ public class RandoListAdapter extends BaseAdapter {
                                     break;
                             }
                         }
-
                     }).setOnMenuStatusChangeListener(new OnMenuStatusChangeListener() {
 
                         @Override
@@ -226,10 +236,11 @@ public class RandoListAdapter extends BaseAdapter {
 
                         @Override
                         public void onMenuClosed() {
-                            holder.randoItemLayout.removeView(holder.circleMenu);
-                            holder.circleMenu = null;
-                            holder.image.setAlpha(1f);
-                            holder.map.setAlpha(1f);
+                            recycleCircleMenu(holder);
+                            if (holder.ratingMenu == null) {
+                                holder.image.setAlpha(1f);
+                                holder.map.setAlpha(1f);
+                            }
                         }
 
                     });
@@ -242,6 +253,83 @@ public class RandoListAdapter extends BaseAdapter {
         };
         holder.image.setOnLongClickListener(onLongClickListener);
         holder.map.setOnLongClickListener(onLongClickListener);
+
+        if (isStranger) {
+            holder.rateButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    recycleCircleMenu(holder);
+                    if (holder.ratingMenu != null) {
+                        return;
+                    }
+                    holder.ratingMenu = new CircleMenu(v.getContext());
+                    Resources res = v.getResources();
+                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) (imageSize * 0.9), (int) (imageSize * 0.9));
+                    layoutParams.topMargin = (int) (imageSize * 0.05) + res.getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top);
+                    layoutParams.leftMargin = (int) (imageSize * 0.05) + res.getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left);
+                    holder.randoItemLayout.addView(holder.ratingMenu, layoutParams);
+
+                    holder.ratingMenu.setMainMenu(res.getColor(R.color.menu_button_color), R.drawable.ic_close_white_24dp, R.drawable.ic_close_white_24dp)
+                            .addSubMenu(res.getColor(R.color.thumbs_up_down_button_background), R.drawable.ic_thumbs_up_down_white_24dp)
+                            .addSubMenu(res.getColor(R.color.thumbs_up_button_background), R.drawable.ic_thumb_up_white_24dp)
+                            .addSubMenu(res.getColor(R.color.thumbs_down_button_background), R.drawable.ic_thumb_down_white_24dp)
+                            .setOnMenuSelectedListener(new OnMenuSelectedListener() {
+                                @Override
+                                public void onMenuSelected(int index) {
+                                    boolean isRatingChanged = false;
+                                    switch (index) {
+                                        case 0:
+                                            Analytics.logRateRandoNormal(firebaseAnalytics);
+                                            isRatingChanged = 2 != holder.rando.rating;
+                                            if (isRatingChanged) {
+                                                holder.rando.rating = 2;
+                                                rateRando(holder, 2);
+                                            }
+                                            break;
+                                        case 1:
+                                            Analytics.logRateRandoGood(firebaseAnalytics);
+                                            isRatingChanged = 3 != holder.rando.rating;
+                                            if (isRatingChanged) {
+                                                holder.rando.rating = 3;
+                                                rateRando(holder, 3);
+                                            }
+                                            break;
+                                        case 2:
+                                            Analytics.logRateRandoBad(firebaseAnalytics);
+                                            isRatingChanged = 1 != holder.rando.rating;
+                                            if (isRatingChanged) {
+                                                holder.rando.rating = 1;
+                                                rateRando(holder, 1);
+                                            }
+                                            break;
+                                        default:
+                                            break;
+                                    }
+
+                                    setRatingIcon(holder, isRatingChanged);
+                                }
+
+                            }).setOnMenuStatusChangeListener(new OnMenuStatusChangeListener() {
+
+                        @Override
+                        public void onMenuOpened() {
+                            //do nothing
+                        }
+
+                        @Override
+                        public void onMenuClosed() {
+                            recycleRatingMenu(holder);
+                            if (holder.circleMenu == null) {
+                                holder.image.setAlpha(1f);
+                                holder.map.setAlpha(1f);
+                            }
+                        }
+                    }).openMenu();
+                    holder.image.setAlpha(0.25f);
+                    holder.map.setAlpha(0.25f);
+                }
+            });
+        }
     }
 
     private void deleteRando(final ViewHolder holder) {
@@ -407,6 +495,14 @@ public class RandoListAdapter extends BaseAdapter {
 
                 } else {
                     if (holder.animationInProgress) return;
+                    if (holder.circleMenu != null) {
+                        holder.circleMenu.closeMenu();
+                        return;
+                    }
+                    if (holder.ratingMenu != null) {
+                        holder.ratingMenu.closeMenu();
+                        return;
+                    }
                     if (isStranger) {
                         Analytics.logTapStrangerRando(firebaseAnalytics);
                     } else {
@@ -442,6 +538,82 @@ public class RandoListAdapter extends BaseAdapter {
         };
     }
 
+    private void rateRando(final ViewHolder holder, final int newRating) {
+        Analytics.logShareRando(firebaseAnalytics);
+        API.rate(holder.rando.randoId, holder.randoItemLayout.getContext(), newRating, new NetworkResultListener(context) {
+            @Override
+            public void onOk() {
+                Rando rando = RandoDAO.getRandoByRandoId(holder.randoItemLayout.getContext(), holder.rando.randoId);
+                rando.rating = newRating;
+                holder.rando.rating = newRating;
+                RandoDAO.updateRando(holder.randoItemLayout.getContext(), rando);
+                holder.rando = rando;
+                setRatingIcon(holder, false);
+            }
+
+            @Override
+            public void onError(Error error) {
+                makeText(holder.randoItemLayout.getContext(), "Error setting rating. Please check internet connection.", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            protected void onFail(Error error) {
+                makeText(holder.randoItemLayout.getContext(), R.string.error_unknown_err,
+                        Toast.LENGTH_LONG).show();
+                showSpinner(holder, false);
+            }
+
+        });
+    }
+
+    private void setRatingIcon(ViewHolder holder, boolean doAnimation) {
+
+        if (holder.rando.rating == null || holder.rando.rating == 0) {
+            if (!isStranger) {
+                holder.rateButton.setVisibility(View.GONE);
+            } else {
+                holder.rateButton.setVisibility(View.VISIBLE);
+                holder.rateButton.setImageResource(R.drawable.ic_thumb_up_white_24dp);
+                holder.rateButton.setBackgroundResource(R.drawable.round_button_grey);
+            }
+        } else {
+            switch (holder.rando.rating) {
+                case 1:
+                    holder.rateButton.setVisibility(View.VISIBLE);
+                    if (doAnimation) {
+                        holder.rateButton.flipView(R.drawable.ic_thumb_down_white_24dp, R.drawable.round_button_red, null);
+                    } else {
+                        holder.rateButton.setImageResource(R.drawable.ic_thumb_down_white_24dp);
+                        holder.rateButton.setBackgroundResource(R.drawable.round_button_red);
+                    }
+                    break;
+                case 2:
+                    holder.rateButton.setVisibility(View.VISIBLE);
+                    if (doAnimation) {
+                        holder.rateButton.flipView(R.drawable.ic_thumbs_up_down_white_24dp, R.drawable.round_button_blue, null);
+                    } else {
+                        holder.rateButton.setImageResource(R.drawable.ic_thumbs_up_down_white_24dp);
+                        holder.rateButton.setBackgroundResource(R.drawable.round_button_blue);
+                    }
+                    break;
+                case 3:
+                    holder.rateButton.setVisibility(View.VISIBLE);
+                    if (doAnimation) {
+                        holder.rateButton.flipView(R.drawable.ic_thumb_up_white_24dp, R.drawable.round_button_green, null);
+                    } else {
+                        holder.rateButton.setImageResource(R.drawable.ic_thumb_up_white_24dp);
+                        holder.rateButton.setBackgroundResource(R.drawable.round_button_green);
+                    }
+                    break;
+                default:
+                    holder.rateButton.setVisibility(View.VISIBLE);
+                    holder.rateButton.setImageResource(R.drawable.ic_thumb_up_white_24dp);
+                    holder.rateButton.setBackgroundResource(R.drawable.round_button_grey);
+                    break;
+            }
+        }
+    }
+
     private void shareRando(final ViewHolder holder) {
         Analytics.logShareRando(firebaseAnalytics);
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -470,10 +642,8 @@ public class RandoListAdapter extends BaseAdapter {
         holder.map.setAlpha(1f);
         showSpinner(holder, false);
 
-        if (holder.circleMenu != null) {
-            holder.randoItemLayout.removeView(holder.circleMenu);
-            holder.circleMenu = null;
-        }
+        recycleCircleMenu(holder);
+        recycleRatingMenu(holder);
 
         if (holder.unwantedRandoView != null) {
             holder.unwantedRandoView.clearAnimation();
@@ -494,6 +664,22 @@ public class RandoListAdapter extends BaseAdapter {
         }
 
         holder.rando = null;
+    }
+
+    private void recycleCircleMenu(ViewHolder holder) {
+        if (holder.circleMenu != null) {
+            holder.circleMenu.closeMenu();
+            holder.randoItemLayout.removeView(holder.circleMenu);
+            holder.circleMenu = null;
+        }
+    }
+
+    private void recycleRatingMenu(ViewHolder holder) {
+        if (holder.ratingMenu != null) {
+            holder.ratingMenu.closeMenu();
+            holder.randoItemLayout.removeView(holder.ratingMenu);
+            holder.ratingMenu = null;
+        }
     }
 
     private void recycleViewSwitcher(ViewSwitcher viewSwitcher) {
@@ -560,11 +746,11 @@ public class RandoListAdapter extends BaseAdapter {
             return;
         }
 
-        loadImage(context, holder, RandoUtil.getUrlByImageSize(imageSize, rando.imageURLSize), Priority.HIGH);
+        loadImage(context, holder, rando.getBestImageUrlBySize(imageSize), Priority.HIGH);
         if (rando.isMapEmpty()) {
             holder.map.setImageResource(R.drawable.flat_map_for_vec);
         } else {
-            loadMapImage(context, holder, RandoUtil.getUrlByImageSize(imageSize, rando.mapURLSize), Priority.LOW);
+            loadMapImage(context, holder, rando.getBestMapUrlBySize(imageSize), Priority.LOW);
         }
     }
 
@@ -668,6 +854,8 @@ public class RandoListAdapter extends BaseAdapter {
         public boolean isMap;
 
         public CircleMenu circleMenu;
+        public FlipImageView rateButton;
+        public CircleMenu ratingMenu;
 
         public ProgressBar spinner;
 

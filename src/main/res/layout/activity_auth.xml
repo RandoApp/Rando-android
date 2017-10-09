@@ -43,8 +43,7 @@
                 android:inputType="textEmailAddress"
                 android:textColor="@android:color/black"
                 android:textSize="28sp"
-                android:backgroundTint="@color/black"
-                android:cursorVisible="false"/>
+                android:backgroundTint="@color/black" />
 
             <TextView
                 android:id="@+id/textViewPassword"
@@ -63,8 +62,7 @@
                 android:inputType="textPassword"
                 android:textColor="@android:color/black"
                 android:textSize="28sp"
-                android:backgroundTint="@color/black"
-                android:cursorVisible="false"/>
+                android:backgroundTint="@color/black" />
 
             <Button
                 android:id="@+id/signupButton"

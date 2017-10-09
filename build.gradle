@@ -1,31 +1,30 @@
 buildscript {
     repositories {
         jcenter()
+        maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.+'
         classpath 'com.google.gms:google-services:3.1.0'
         classpath 'com.dicedmelon.gradle:jacoco-android:0.1.2'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
 apply plugin: 'com.android.application'
 apply plugin: 'jacoco-android'
-
-def reportsUserLocal = reportsUser
-def reportsPasswordLocal = reportsPassword
+apply plugin: 'io.fabric'
 
 repositories {
     jcenter()
+    maven { url 'https://maven.fabric.io/public' }
 }
 
 allprojects {
     repositories {
         jcenter()
         mavenCentral()
-        maven {
-            url "https://maven.google.com"
-        }
+        maven {url "https://maven.google.com"}
     }
 }
 
@@ -47,9 +46,6 @@ android {
         targetSdkVersion 25
         testApplicationId 'com.github.randoapp.test'
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
-
-        buildConfigField "String", "RANDO_REPORTS_USER", reportsUserLocal
-        buildConfigField "String", "RANDO_REPORTS_PASSWORD", reportsPasswordLocal
     }
 
     packagingOptions {
@@ -76,7 +72,6 @@ android {
             testCoverageEnabled true
             buildConfigField "String", "RANDO_HOST", '"dev.rando4.me"'
             buildConfigField "String", "RANDO_API_HOST", '"dev.api.rando4.me"'
-            buildConfigField "String", "RANDO_REPORTS_ACRA_DB", '"acra-rando4me-dev"'
         }
         release {
             proguardFiles.add(file("proguard-rules.pro"))
@@ -85,7 +80,6 @@ android {
             testCoverageEnabled false
             buildConfigField "String", "RANDO_HOST", '"rando4.me"'
             buildConfigField "String", "RANDO_API_HOST", '"api.rando4.me"'
-            buildConfigField "String", "RANDO_REPORTS_ACRA_DB", '"acra-rando4me"'
         }
     }
 
@@ -100,43 +94,42 @@ ext {
     minSdkVersion = 16
     targetSdkVersion = 25
     supportLibraryVersion = "25+"
-    firebaseLibraryVersion = "11.0.2"
+    firebaseLibraryVersion = "11.2.2"
 }
 
 dependencies {
-    compile project(':modules/volley')
-    compile project(':modules/CameraKit-Android/camerakit')
-    compile project(':modules/CircleMenu/cmlibrary')
+    compile project('modules/volley')
+    compile project('modules/CameraKit-Android/camerakit')
+    compile project('modules/CircleMenu/cmlibrary')
 
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile 'com.makeramen:roundedimageview:2.3.+'
-    compile 'ch.acra:acra:4.9.2'
 
     compile "com.google.android.gms:play-services-auth:$firebaseLibraryVersion"
 
     compile "com.google.firebase:firebase-core:$firebaseLibraryVersion"
     compile "com.google.firebase:firebase-messaging:$firebaseLibraryVersion"
-    compile "com.google.firebase:firebase-crash:$firebaseLibraryVersion"
 
     compile 'com.evernote:android-job:1.1.11'
     compile "com.android.support:exifinterface:$supportLibraryVersion"
+
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+        transitive = true;
+    }
+
+    testCompile 'junit:junit:4.12'
 
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
     androidTestCompile "com.android.support:support-annotations:$supportLibraryVersion"
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
     androidTestCompile("com.android.support.test.espresso:espresso-intents:2.2.2")
-    androidTestCompile 'com.squareup:javawriter:2.1.1'
     androidTestCompile 'javax.annotation:javax.annotation-api:1.2'
-    androidTestCompile 'javax.inject:javax.inject:1'
-    androidTestCompile 'com.google.code.findbugs:jsr305:1.3.9'
-    androidTestCompile 'com.squareup.dagger:dagger:1.1.0'
-    androidTestCompile 'com.squareup.dagger:dagger-compiler:1.1.0'
     androidTestCompile 'org.mockito:mockito-core:1.9.5'
     androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
     androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
-    androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
     androidTestCompile 'com.squareup.assertj:assertj-android:1.1.1'
+    androidTestCompile group: 'org.apache.commons', name: 'commons-io', version: '1.3.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -2,15 +2,14 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:paddingBottom="@dimen/rando_pair_padding_bottom"
     android:tag="rando_item_layout">
 
     <ViewSwitcher
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/rando_padding_portrait_column_bottom"
         android:paddingLeft="@dimen/rando_padding_portrait_column_left"
         android:paddingRight="@dimen/rando_padding_portrait_column_right"
         android:paddingTop="@dimen/rando_padding_portrait_column_top"
@@ -38,4 +37,17 @@
                 app:riv_oval="true" />
         </FrameLayout>
     </ViewSwitcher>
+
+    <com.github.randoapp.view.FlipImageView
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="100dp"
+        android:scaleType="center"
+        android:background="@drawable/round_button_grey"
+        android:src="@drawable/ic_thumb_up_white_24dp"
+        android:tag="rating" />
 </RelativeLayout>

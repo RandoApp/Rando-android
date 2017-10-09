@@ -1,7 +1,6 @@
 package com.github.randoapp;
 
 import android.app.Application;
-import android.content.Context;
 
 import com.evernote.android.job.JobManager;
 import com.github.randoapp.db.RandoDAO;
@@ -12,21 +11,7 @@ import com.github.randoapp.upload.UploadJobScheduler;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import org.acra.ACRA;
-import org.acra.ReportingInteractionMode;
-import org.acra.annotation.ReportsCrashes;
-import org.acra.sender.HttpSender;
 
-
-@ReportsCrashes(
-        formUri = "https://reports.rando4.me/" + BuildConfig.RANDO_REPORTS_ACRA_DB + "/_design/acra-storage/_update/report",
-        reportType = HttpSender.Type.JSON,
-        httpMethod = HttpSender.Method.PUT,
-        formUriBasicAuthLogin = BuildConfig.RANDO_REPORTS_USER,
-        formUriBasicAuthPassword = BuildConfig.RANDO_REPORTS_PASSWORD,
-        mode = ReportingInteractionMode.TOAST,
-        resToastText = R.string.crash_toast_text
-)
 public class App extends Application {
 
     @Override
@@ -44,11 +29,5 @@ public class App extends Application {
         if (RandoDAO.getNextRandoToUpload(getBaseContext()) != null) {
             UploadJobScheduler.scheduleUpload(getApplicationContext());
         }
-    }
-
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        ACRA.init(this);
     }
 }

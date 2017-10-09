@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.github.randoapp.api.API;
 import com.github.randoapp.api.beans.Error;
 import com.github.randoapp.api.listeners.NetworkResultListener;
@@ -34,6 +35,8 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import io.fabric.sdk.android.Fabric;
+
 import static com.github.randoapp.Constants.CONTACTS_PERMISSION_REQUEST_CODE;
 
 public class AuthActivity extends AppCompatActivity {
@@ -51,6 +54,7 @@ public class AuthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_auth);
         emailText = (EditText) this.findViewById(R.id.emailEditText);
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        Fabric.with(this, new Crashlytics());
         initGoogleButton();
         if ((boolean) getIntent().getExtras().get(Constants.LOGOUT_ACTIVITY)) {
             fullLogout();

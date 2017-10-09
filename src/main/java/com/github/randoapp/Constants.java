@@ -33,7 +33,6 @@ public class Constants {
 
     public static final long LOCATION_DETECT_TIMEOUT = 5 * 60 * 1000; //in milliseconds
 
-    public static final String ERROR = "error";
     public static final int UNAUTHORIZED_CODE = 400;
     public static final int FORBIDDEN_CODE = 411;
 
@@ -47,14 +46,10 @@ public class Constants {
     public static final String SERVER_HOST = BuildConfig.RANDO_HOST;
     public static final String SERVER_API_URL = "https://" + SERVER_API_HOST;
     public static final String SERVER_URL = "https://" + SERVER_HOST;
-    public static final int ESTABLISH_CONNECTION_TIMEOUT = 5 * 60 * 1000;
     public static final int UPLOAD_CONNECTION_TIMEOUT = (int) TimeUnit.MINUTES.toMillis(10);
     public static final int API_CONNECTION_TIMEOUT = (int) TimeUnit.MINUTES.toMillis(2);
 
     public static final int UPLOAD_RETRY_TIMEOUT = 5 * 60 * 1000;
-
-    public static final int UPLOAD_SERVICE_ATTEMPTS_FAIL = 5;
-    public static final long UPLOAD_SERVICE_SHORT_PAUSE = 5 * 1000;
 
     //Shared Preferences
     public static final String PREFERENCES_FILE_NAME = "rando.prefs";
@@ -85,7 +80,9 @@ public class Constants {
     public static final String MAP_URL_PARAM = "mapURL";
     public static final String CREATION_PARAM = "creation";
     public static final String DETECTED_PARAM = "detected";
+    public static final String RATING_PARAM = "rating";
     public static final String RANDO_PARAM = "rando";
+    public static final String NOTIFICATION_TYPE_PARAM = "notificationType";
     public static final String IN_RANDOS_PARAM = "in";
     public static final String OUT_RANDOS_PARAM = "out";
     public static final String EMAIL_PARAM = "email";
@@ -114,6 +111,7 @@ public class Constants {
     public static final String DELETE_URL = SERVER_API_URL + "/delete/";
     public static final String REPORT_URL = SERVER_API_URL + "/report/";
     public static final String SHARE_URL = SERVER_URL + "/s/%s";
+    public static final String RATE_URL = SERVER_API_URL + "/rate/";
 
     public static final String REPORT_BROADCAST = "Report";
 
@@ -144,8 +142,10 @@ public class Constants {
 
     public static final String PUSH_NOTIFICATION_LANDED = "landed";
     public static final String PUSH_NOTIFICATION_RECEIVED = "received";
+    public static final String PUSH_NOTIFICATION_RATED = "rated";
 
     public static final String TO_UPLOAD_RANDO_ID = "randoIdToUpload";
+
 
 }
 

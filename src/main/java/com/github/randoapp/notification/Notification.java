@@ -12,6 +12,7 @@ import android.support.v4.app.NotificationCompat;
 import com.github.randoapp.Constants;
 import com.github.randoapp.MainActivity;
 import com.github.randoapp.R;
+import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 
 public class Notification {
@@ -19,7 +20,7 @@ public class Notification {
     private static final int LED_MS_TO_BE_ON = 3000;
     private static final int LED_MS_TO_BE_OFF = 3000;
 
-    public static void show(Context context, String title, String text) {
+    public static void show(Context context, String title, String text, Rando rando) {
         Log.d(Notification.class, "Show with following params: title -> " + title + " text -> " + text);
 
         NotificationCompat.Builder notificationBuilder =
@@ -32,12 +33,12 @@ public class Notification {
                         .setLights(Color.RED, LED_MS_TO_BE_ON, LED_MS_TO_BE_OFF);
 
         Intent resultIntent = new Intent(context, MainActivity.class);
-        PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        resultIntent.putExtra(Constants.RANDO_PARAM, rando);
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         notificationBuilder.setContentIntent(resultPendingIntent);
-
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-        notificationManager.notify(1, notificationBuilder.build());
+        notificationManager.notify(rando.randoId, 1, notificationBuilder.build());
     }
 
     public static void sendSyncNotification(Context context, int randosNumber, String updateStatus) {

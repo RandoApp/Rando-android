@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import com.crashlytics.android.Crashlytics;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.RandoUpload;
 import com.github.randoapp.preferences.Preferences;
@@ -25,6 +26,8 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.Date;
+
+import io.fabric.sdk.android.Fabric;
 
 import static com.github.randoapp.Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE;
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
@@ -41,6 +44,7 @@ public class ImageReviewUploadActivity extends FragmentActivity {
         setContentView(R.layout.camera_upload);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        Fabric.with(this, new Crashlytics());
 
         RoundedImageView preview = (RoundedImageView) findViewById(R.id.preview);
 

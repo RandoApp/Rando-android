@@ -1,0 +1,18 @@
+{
+  "creation": 1460143246286,
+  "randoId": "62187b3b661732e3c8f0468f2824aebae04ab6d967",
+  "imageURL": "IMAGE_URL",
+  "mapURL": "MAP_URL",
+  "mapSizeURL": {
+    "small": "MAP_URL_SMALL",
+    "medium": "MAP_URL_MEDIUM",
+    "large": "MAP_URL_LARGE"
+  },
+  "imageSizeURL": {
+    "medium": "IMAGE_URL_MEDIUM",
+    "large": "IMAGE_URL_LARGE",
+    "small": "IMAGE_URL_SMALL"
+  },
+  "detected": [],
+  "rating": 0
+}

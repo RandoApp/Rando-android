@@ -5,31 +5,20 @@
     <string name="password">Password:</string>
     <string name="signup">Sign in | Sign up</string>
     <string name="skip">Skip…</string>
-    <string name="action_settings">Settings</string>
-    <string name="anonymous">Anonymous</string>
+    <string name="back">Back</string>
 
-    <string name="empty_home_message">No pictures yet.\n Take your first picture and deliver it.</string>
     <string name="missing_storage_permission_message">Device Storage access permission is required to take, download and view Randos. Application won\'t run without this permission.</string>
 
     <string name="take_picture_screen_label">Take Picture</string>
-    <string name="review_and_upload_picture_screen_label">Review and Upload Picture</string>
-    <string name="photo_upload_ok">Upload Finished Successfully.</string>
 
-    <string name="photo_upload_failed">"Upload Failed. Please check you connection and try again."</string>
-    <string name="failed_to_set_bon_appetit_for_rando">"Bon Appetit Failed. Please check you internet connection and try again."</string>
     <string name="auth_acitvity_label">You are not authorized. Please, signin or signup.</string>
 
 
     <string name="email_should_be">You have error in email</string>
     <string name="password_should_be">Password can not be empty</string>
-    <string name="no_google_account">No account available. Please add an account to the phone first</string>
-    <string name="select_account">Chooise account</string>
 
-    <string name="error_image_too_big">Can not upload image, because image is too big</string>
     <string name="error_unknown_err">Oops, Something wrong…</string>
     <string name="error_no_network">Please check your Internet connection or try again later.</string>
-
-    <string name="get_started">To get started, log in using Facebook</string>
 
     <string name="app_id">833528743343942</string>
 
@@ -40,18 +29,13 @@
     <string name="report">Yes, report</string>
     <string name="report_rando_confirm">Do you want to report user and delete this rando?</string>
     <string name="rando_reported">User has been reported</string>
-    <string name="contact_support">Contact\nSupport</string>
-    <string name="report_off">Report OFF</string>
-    <string name="report_message">Report</string>
 
     <string name="login_progress">Login…</string>
     <string name="loading_user_progress">Loading user data…</string>
 
     <string name="report_rando">Report inappropriate content</string>
 
-    <string name="loading_progress">Loading…</string>
     <string name="logout_progress">Logout…</string>
-    <string name="cropping_progress">Prepairing to Upload…</string>
     <string name="uploading_progress">To be uploaded</string>
     <string name="tap_to_update">Tap to update randos</string>
 
@@ -61,17 +45,11 @@
     <string name="error_400">You are not authorized. Please, signup.</string>
     <string name="error_411">You are temporarily blocked, because of big amount of images sent in a row. Please, try again later:</string>
 
-    <string name="sync_service_name">Rando 4Me Sync Service</string>
-    <string name="upload_service_name">Rando 4Me Upload Service</string>
-
     <string name="crash_toast_text">Device issue detected. Report has been sent to developers. We are working on resolution. Thank you.</string>
-
-    <string name="top_panel_text">Rando 4Me (testing mode)</string>
 
     <string name="no_location_services">No Location Services Enabled</string>
     <string name="enable_location_services">Enable Location Services</string>
     <string name="image_crop_failed">Image convert Failed. Please take pic once again.</string>
-    <string name="camera_init_failed">Sorry, but you cannot use the camera now!</string>
     <string name="close_dialog">Close</string>
 
     <!-- Help Resources Start -->
@@ -90,25 +68,19 @@
     <string name="help_guide_title">How to use</string>
     <!-- Help Resources End -->
 
-    <!-- Update Play Services Dialog Resources Start -->
-    <string name="update_play_services_dialog_title">Google Play Services</string>
-    <string name="update_play_services_dialog_message"></string>
-    <string name="update_play_services_dialog_positive">Install/Update</string>
-    <string name="update_play_services_dialog_negative">Cancel</string>
-    <!-- Update Play Services Dialog Resources End -->
-
     <string name="sync_nothing_new">Nothing new</string>
     <string name="sync_randos_updated">Randos are updated</string>
 
     <string name="rando_landed">Your Rando has landed</string>
     <string name="rando_received">You have received new Rando</string>
+    <string name="rando_liked">Hooray! You Rando was liked.</string>
+    <string name="rando_rated">You Rando was rated</string>
+    <string name="rando_disliked">Oh no, your rando was disliked.</string>
 
     <!-- Permission strings Start -->
     <string name="permission_positive_button">OK</string>
     <string name="location_needed_title">Location Access</string>
     <string name="location_needed_message">Tagging Rando with your rough location requires access this device\'s location</string>
-    <string name="camera_needed_title">Camera Access</string>
-    <string name="camera_needed_message">Taking Randos, requires camera access</string>
     <string name="storage_needed_title">Storage Access</string>
     <string name="storage_needed_message">Receiving and saving Randos requires access photos, media and files on your device. Application will not run without this permission.</string>
     <string name="contact_needed_title">Contacts Access</string>
@@ -128,7 +100,6 @@
 
     <string name="share_subject">Share Rando 4Me</string>
     <string name="share_text">I\'ve received amazing photo via Rando4Me: </string>
-    <string name="cant_share_not_uploaded">Not uploaded yet. Not possible to share. Please try later.</string>
 
     <string name="contact_us_email">randoapp.me@gmail.com</string>
     <string name="contact_us_subject">Question about Rando 4Me (%1$s)</string>
