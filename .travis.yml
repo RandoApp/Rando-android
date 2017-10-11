@@ -25,6 +25,7 @@ android:
     - tools
     - build-tools-26.0.2
     - platform-tools
+    - android-26
     - extra-android-m2repository
     - extra-google-m2repository
     - android-$ANDROID_API
