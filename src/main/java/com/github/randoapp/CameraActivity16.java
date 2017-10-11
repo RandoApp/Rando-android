@@ -31,12 +31,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.flurgle.camerakit.AspectRatio;
-import com.flurgle.camerakit.CameraKit;
-import com.flurgle.camerakit.CameraListener;
-import com.flurgle.camerakit.CameraView;
-import com.flurgle.camerakit.Facing;
-import com.flurgle.camerakit.Size;
 import com.github.randoapp.animation.AnimationFactory;
 import com.github.randoapp.animation.OnAnimationEnd;
 import com.github.randoapp.log.Log;
@@ -49,6 +43,12 @@ import com.github.randoapp.view.CircleMaskView;
 import com.github.randoapp.view.FlipImageView;
 import com.github.randoapp.view.FocusMarkerLayout;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.wonderkiln.camerakit.AspectRatio;
+import com.wonderkiln.camerakit.CameraKit;
+import com.wonderkiln.camerakit.CameraListener;
+import com.wonderkiln.camerakit.CameraView;
+import com.wonderkiln.camerakit.Facing;
+import com.wonderkiln.camerakit.Size;
 
 import java.io.File;
 

@@ -25,6 +25,7 @@ allprojects {
         jcenter()
         mavenCentral()
         maven {url "https://maven.google.com"}
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -99,8 +100,8 @@ ext {
 
 dependencies {
     compile project('modules/volley')
-    compile project('modules/CameraKit-Android/camerakit')
     compile project('modules/CircleMenu/cmlibrary')
+    compile 'com.github.wonderkiln:CameraKit-Android:v0.11.1'
 
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile 'com.makeramen:roundedimageview:2.3.+'

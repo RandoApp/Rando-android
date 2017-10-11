@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <com.flurgle.camerakit.CameraView
+    <com.wonderkiln.camerakit.CameraView
         android:id="@+id/camera"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

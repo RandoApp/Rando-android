@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 
-import com.flurgle.camerakit.CameraKit;
+import com.wonderkiln.camerakit.CameraKit;
 
 import static com.github.randoapp.Constants.ACCOUNT;
 import static com.github.randoapp.Constants.AUTH_TOKEN;
