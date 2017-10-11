@@ -19,8 +19,8 @@ public class UploadJobScheduler {
                 .setRequiresDeviceIdle(false)
                 .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
                 .setRequirementsEnforced(true)
-                .setPersisted(true)
                 .setUpdateCurrent(true)
+                .startNow()
                 .build()
                 .schedule();
     }

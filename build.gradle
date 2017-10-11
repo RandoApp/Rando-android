@@ -29,8 +29,8 @@ allprojects {
 }
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
 
     signingConfigs {
         release {
@@ -43,7 +43,7 @@ android {
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 26
         testApplicationId 'com.github.randoapp.test'
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
@@ -89,11 +89,11 @@ android {
 }
 
 ext {
-    compileSdkVersion = 25
-    buildToolsVersion = "25.0.2"
+    compileSdkVersion = 26
+    buildToolsVersion = "26.0.2"
     minSdkVersion = 16
-    targetSdkVersion = 25
-    supportLibraryVersion = "25+"
+    targetSdkVersion = 26
+    supportLibraryVersion = "26+"
     firebaseLibraryVersion = "11.2.2"
 }
 
@@ -110,7 +110,7 @@ dependencies {
     compile "com.google.firebase:firebase-core:$firebaseLibraryVersion"
     compile "com.google.firebase:firebase-messaging:$firebaseLibraryVersion"
 
-    compile 'com.evernote:android-job:1.1.11'
+    compile 'com.evernote:android-job:1.2.0'
     compile "com.android.support:exifinterface:$supportLibraryVersion"
 
     compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
