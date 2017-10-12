@@ -412,7 +412,12 @@ public class CameraActivity16 extends Activity {
             = new CameraListener() {
         @Override
         public void onCameraOpened() {
-            adjustPreviewSize();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adjustPreviewSize();
+                }
+            });
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -444,7 +449,13 @@ public class CameraActivity16 extends Activity {
             cameraView.stop();
             mCropTask = new CropToSquareImageTask(jpeg, mCurrentFacing == CameraKit.Constants.FACING_FRONT, getBaseContext());
             getBackgroundHandler().post(mCropTask);
-            progressBar.setVisibility(View.VISIBLE);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setVisibility(View.VISIBLE);
+                }
+            });
+
         }
 
         @Override
