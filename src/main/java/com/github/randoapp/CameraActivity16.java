@@ -415,6 +415,7 @@ public class CameraActivity16 extends Activity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+
                     adjustPreviewSize();
                 }
             });

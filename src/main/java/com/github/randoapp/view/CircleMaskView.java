@@ -1,7 +1,6 @@
 package com.github.randoapp.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -75,15 +74,6 @@ public class CircleMaskView extends View {
         }
     }
 
-    private Bitmap initPaints(int size, int center, int radius) {
-        Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ALPHA_8);
-
-        Canvas canvas = new Canvas(bitmap);
-        canvas.drawColor(Color.BLACK);
-        canvas.drawCircle(center, center, radius, eraser);
-        return bitmap;
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -96,19 +86,18 @@ public class CircleMaskView extends View {
         int margin = getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left);
         int radius = center - margin;
 
-        Bitmap bitmap = initPaints(size, center, radius);
+        canvas.drawColor(Color.BLACK);
         if (height > width) {
-            canvas.drawBitmap(bitmap, 0, biggerSize / 2 - center, eraser);
+            canvas.drawCircle(center, biggerSize/2, radius, eraser);
             canvas.drawRect(0, biggerSize / 2 + center, size, biggerSize, black);
             canvas.drawRect(0, 0, size, biggerSize / 2 - center, black);
             if (drawGrid) {
                 initGridLines(canvas, radius, margin, margin + biggerSize / 2 - center);
             }
         } else {
-            canvas.drawBitmap(bitmap, biggerSize / 2 - center, 0, eraser);
+            canvas.drawCircle(biggerSize/2, center, radius, eraser);
             canvas.drawRect(biggerSize / 2 + center, 0, biggerSize, size, black);
             canvas.drawRect(0, 0, biggerSize / 2 - center, size, black);
         }
-        bitmap.recycle();
     }
 }
