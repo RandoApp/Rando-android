@@ -101,7 +101,7 @@ ext {
 dependencies {
     compile 'com.github.RandoApp:volley:master-SNAPSHOT'
     compile 'com.github.RandoApp:CircleMenu:master-SNAPSHOT'
-    compile 'com.github.xp-vit:CameraKit-Android:v0.11.2-patched-SNAPSHOT'
+    compile 'com.github.wonderkiln:CameraKit-Android:v0.11.2'
 
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile 'com.makeramen:roundedimageview:2.3.+'
