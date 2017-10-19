@@ -20,7 +20,6 @@ public class UploadJobScheduler {
                 .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
                 .setRequirementsEnforced(true)
                 .setUpdateCurrent(true)
-                .startNow()
                 .build()
                 .schedule();
     }
