@@ -115,12 +115,9 @@ public class CropToSquareImageTask implements Runnable {
     }
 
     private Bitmap rotate(WeakReference<Bitmap> bitmap, int rotateDegree) {
-        if (rotateDegree != 0 || isFrontCamera) {
+        if (rotateDegree != 0) {
             Matrix matrix = new Matrix();
             matrix.postRotate(rotateDegree);
-            if (isFrontCamera) {
-                matrix.postScale(-1, 1);
-            }
             return Bitmap.createBitmap(bitmap.get(), 0, 0, bitmap.get().getWidth(), bitmap.get().getHeight(), matrix, true);
         } else {
             return bitmap.get();
