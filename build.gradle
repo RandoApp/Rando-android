@@ -99,7 +99,7 @@ ext {
 }
 
 dependencies {
-    compile 'com.github.RandoApp:volley:master-SNAPSHOT'
+    compile project('modules/volley')
     compile 'com.github.RandoApp:CircleMenu:master-SNAPSHOT'
     compile 'com.github.wonderkiln:CameraKit-Android:v0.11.2'
 
