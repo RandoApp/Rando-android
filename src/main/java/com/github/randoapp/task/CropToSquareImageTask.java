@@ -28,13 +28,11 @@ import static com.github.randoapp.Constants.RANDO_PHOTO_PATH;
 public class CropToSquareImageTask implements Runnable {
     private WeakReference<byte[]> data;
     private Context context;
-    private boolean isFrontCamera;
     private AtomicBoolean isCanceled = new AtomicBoolean(false);
 
-    public CropToSquareImageTask(byte[] data, boolean isFrontCamera, Context context) {
+    public CropToSquareImageTask(byte[] data, Context context) {
         this.data = new WeakReference<>(data);
         this.context = context;
-        this.isFrontCamera = isFrontCamera;
     }
 
     private File saveSquareImage() {

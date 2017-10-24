@@ -448,7 +448,7 @@ public class CameraActivity16 extends Activity {
         public void onPictureTaken(byte[] jpeg) {
             Log.d(CameraListener.class, "onPictureTaken " + jpeg.length + "Thread " + Thread.currentThread());
             cameraView.stop();
-            mCropTask = new CropToSquareImageTask(jpeg, mCurrentFacing == CameraKit.Constants.FACING_FRONT, getBaseContext());
+            mCropTask = new CropToSquareImageTask(jpeg, getBaseContext());
             getBackgroundHandler().post(mCropTask);
             runOnUiThread(new Runnable() {
                 @Override
