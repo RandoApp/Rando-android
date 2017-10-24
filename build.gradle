@@ -77,7 +77,7 @@ android {
         release {
             proguardFiles.add(file("proguard-rules.pro"))
             signingConfig signingConfigs.release
-            minifyEnabled true
+            minifyEnabled false
             testCoverageEnabled false
             buildConfigField "String", "RANDO_HOST", '"rando4.me"'
             buildConfigField "String", "RANDO_API_HOST", '"api.rando4.me"'
