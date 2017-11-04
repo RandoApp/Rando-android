@@ -4,10 +4,11 @@ buildscript {
         maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.+'
+        classpath 'com.android.tools.build:gradle:3.0.+'
         classpath 'com.google.gms:google-services:3.1.1'
         classpath 'com.dicedmelon.gradle:jacoco-android:0.1.2'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
         classpath 'io.fabric.tools:gradle:1.+'
     }
 }
@@ -103,9 +104,9 @@ configurations.all {
 }
 
 dependencies {
-    compile project('modules/volley')
-    compile project('modules/CircleMenu/cmlibrary')
-    compile 'com.github.xp-vit:CameraKit-Android:implement-square-image-SNAPSHOT'
+    compile project(':volley')
+    compile project(':CircleMenu')
+    compile project(':CameraKit-Android')
 
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile 'com.makeramen:roundedimageview:2.3.+'
