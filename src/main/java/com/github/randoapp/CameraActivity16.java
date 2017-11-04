@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,14 +23,12 @@ import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.github.randoapp.animation.AnimationFactory;
 import com.github.randoapp.animation.OnAnimationEnd;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
@@ -44,13 +41,15 @@ import com.github.randoapp.view.FlipImageView;
 import com.github.randoapp.view.FocusMarkerLayout;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.wonderkiln.camerakit.AspectRatio;
+import com.wonderkiln.camerakit.CKEvent;
+import com.wonderkiln.camerakit.CKEventListener;
+import com.wonderkiln.camerakit.CKEventListenerAdapter;
+import com.wonderkiln.camerakit.CKImage;
 import com.wonderkiln.camerakit.CameraKit;
 import com.wonderkiln.camerakit.CameraListener;
 import com.wonderkiln.camerakit.CameraView;
 import com.wonderkiln.camerakit.Facing;
 import com.wonderkiln.camerakit.Size;
-
-import java.io.File;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -100,12 +99,12 @@ public class CameraActivity16 extends Activity {
     private LinearLayout progressBar;
     private Handler mBackgroundHandler;
     private FirebaseAnalytics mFirebaseAnalytics;
-    private Animation[] leftToRightAnimation;
     private CircleMaskView circleMaskView;
     private FocusMarkerLayout focusMarker;
     private CropToSquareImageTask mCropTask;
     @Facing
     private int mCurrentFacing;
+    private boolean mTakingPicture = false;
 
     private static final SparseArrayCompat<Integer> CAMERA_FACING_ICONS = new SparseArrayCompat<>();
 
@@ -123,7 +122,7 @@ public class CameraActivity16 extends Activity {
         Fabric.with(this, new Crashlytics());
 
         cameraView = (CameraView) findViewById(R.id.camera);
-        cameraView.setCameraListener(mCallback);
+        cameraView.addCameraKitListener(mCKEventListener);
         cameraView.setFlash(CameraKit.Constants.FLASH_OFF);
         cameraView.setFocus(CameraKit.Constants.FOCUS_TAP);
 
@@ -146,7 +145,6 @@ public class CameraActivity16 extends Activity {
 
         final DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         int buttonsSideMargin = (displayMetrics.widthPixels - getResources().getDimensionPixelSize(R.dimen.rando_button_size)) / 4 - getResources().getDimensionPixelSize(R.dimen.switch_camera_button_size) / 2;
-        leftToRightAnimation = AnimationFactory.flipAnimation(getResources().getDimensionPixelSize(R.dimen.switch_camera_button_size), AnimationFactory.FlipDirection.LEFT_RIGHT, 150, null);
         if (Camera.getNumberOfCameras() > 1) {
             cameraSwitchButton = (FlipImageView) findViewById(R.id.camera_switch_button);
             RelativeLayout.LayoutParams cameraSwitchButtonLayoutParams = (RelativeLayout.LayoutParams) cameraSwitchButton.getLayoutParams();
@@ -397,6 +395,8 @@ public class CameraActivity16 extends Activity {
                     && ContextCompat.checkSelfPermission(v.getContext(), android.Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
                 ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(50);
             }
+            mTakingPicture = true;
+            progressBar.setVisibility(View.VISIBLE);
             Analytics.logTakeRando(mFirebaseAnalytics);
         }
     }
@@ -408,65 +408,49 @@ public class CameraActivity16 extends Activity {
         mCropTask = null;
     }
 
-    private CameraListener mCallback
-            = new CameraListener() {
-        @Override
-        public void onCameraOpened() {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+    private CKEventListener mCKEventListener
+            = new CKEventListenerAdapter() {
 
-                    adjustPreviewSize();
-                }
-            });
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    new Handler().postDelayed(new Runnable() {
-                                                  @Override
-                                                  public void run() {
-                                                      enableButtons(true);
-                                                  }
-                                              },
-                            500);
-                }
-            });
+        @Override
+        public void onEvent(CKEvent event) {
+            Log.d(CameraActivity16.class, "Event: " + event.getType());
+            if (!mTakingPicture && CKEvent.TYPE_CAMERA_OPEN.equals(event.getType())) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        adjustPreviewSize();
+                    }
+                });
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        new Handler().postDelayed(new Runnable() {
+                                                      @Override
+                                                      public void run() {
+                                                          enableButtons(true);
+                                                      }
+                                                  },
+                                500);
+                    }
+                });
+            } else if (CKEvent.TYPE_CAMERA_CLOSE.equals(event.getType())) {
+                Log.d(CameraListener.class, "onCameraClosed");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        enableButtons(false);
+                    }
+                });
+            }
         }
 
         @Override
-        public void onCameraClosed() {
-            Log.d(CameraListener.class, "onCameraClosed");
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    enableButtons(false);
-                }
-            });
-        }
-
-        @Override
-        public void onPictureTaken(byte[] jpeg) {
-            Log.d(CameraListener.class, "onPictureTaken " + jpeg.length + "Thread " + Thread.currentThread());
+        public void onImage(CKImage image) {
+            Log.d(CameraActivity16.class, "onPictureTaken " + image.getJpeg().length + "Thread " + Thread.currentThread());
             cameraView.stop();
-            mCropTask = new CropToSquareImageTask(jpeg, getBaseContext());
+            mCropTask = new CropToSquareImageTask(image.getJpeg(), getBaseContext());
             getBackgroundHandler().post(mCropTask);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    progressBar.setVisibility(View.VISIBLE);
-                }
-            });
-
-        }
-
-        @Override
-        public void onPictureTaken(YuvImage yuv) {
-            super.onPictureTaken(yuv);
-        }
-
-        @Override
-        public void onVideoTaken(File video) {
-            super.onVideoTaken(video);
         }
     };
 

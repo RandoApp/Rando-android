@@ -1,1 +1,1 @@
-include 'modules/volley'
+include 'modules/volley', 'modules/CircleMenu/cmlibrary'

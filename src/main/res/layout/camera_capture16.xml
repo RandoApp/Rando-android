@@ -9,7 +9,9 @@
         android:layout_height="match_parent"
         android:keepScreenOn="true"
         android:adjustViewBounds="true"
-        app:ckPermissions="picture"/>
+        app:ckPermissions="picture"
+        app:ckJpegQuality="85"
+        app:ckCropOutput="true" />
 
     <com.github.randoapp.view.CircleMaskView
         android:id="@+id/circle_mask"

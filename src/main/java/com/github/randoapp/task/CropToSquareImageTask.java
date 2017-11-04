@@ -85,6 +85,7 @@ public class CropToSquareImageTask implements Runnable {
 
     private WeakReference<Bitmap> decodeSquare(WeakReference<byte[]> data, BitmapFactory.Options options) {
         int size = Math.min(options.outWidth, options.outHeight);
+        Log.d(CropToSquareImageTask.class, options.outWidth +":"+ options.outHeight);
         //We need to crop square image from the center of the image
         int indent = (Math.max(options.outWidth, options.outHeight) - size) / 2;
         Rect rect;
