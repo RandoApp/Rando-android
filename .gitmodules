@@ -1,9 +1,9 @@
 [submodule "modules/volley"]
 	path = modules/volley
 	url = https://github.com/dimhold/volley.git
-[submodule "modules/CameraKit-Android"]
-	path = modules/CameraKit-Android
-	url = https://github.com/xp-vit/CameraKit-Android.git
 [submodule "modules/CircleMenu"]
 	path = modules/CircleMenu
 	url = https://github.com/RandoApp/CircleMenu.git
+[submodule "modules/CameraKit-Android"]
+	path = modules/CameraKit-Android
+	url = https://github.com/xp-vit/CameraKit-Android.git
