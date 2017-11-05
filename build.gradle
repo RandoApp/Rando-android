@@ -98,9 +98,9 @@ ext {
 }
 
 dependencies {
-    compile project('modules/volley')
-    compile project('modules/CameraKit-Android/camerakit')
-    compile project('modules/CircleMenu/cmlibrary')
+    compile project('volley')
+    compile project('CameraKit-Android')
+    compile project('CircleMenu')
 
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile 'com.makeramen:roundedimageview:2.3.+'
