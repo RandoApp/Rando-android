@@ -123,6 +123,8 @@ dependencies {
         transitive = true;
     }
 
+    compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
+
     testCompile 'junit:junit:4.12'
 
     androidTestCompile 'com.android.support.test:runner:0.5'
