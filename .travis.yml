@@ -50,6 +50,10 @@ cache:
 before_install:
   - export EMULATOR="system-images;android-${EMULATOR_API_LEVEL};${EMULATOR_TAG};${EMULATOR_ABI}" # Used to install/create emulator
   - echo 'count=0' > /home/travis/.android/repositories.cfg # Avoid warning
+  - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
+  - export ANDROID_NDK_HOME=$HOME/android-ndk-root
+  - echo "ndk.dir=$ANDROID_NDK_HOME" > local.properties
+
 install:
   # Install lftp for apk upload:
   - sudo apt-get update -qq
