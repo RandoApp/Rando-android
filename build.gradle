@@ -98,7 +98,7 @@ ext {
     minSdkVersion = 16
     targetSdkVersion = 27
     supportLibraryVersion = "27+"
-    firebaseLibraryVersion = "11.4.2"
+    firebaseLibraryVersion = "11.6.0"
 }
 
 configurations.all {
