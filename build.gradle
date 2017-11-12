@@ -106,26 +106,26 @@ configurations.all {
 }
 
 dependencies {
-    compile project(':volley')
-    compile project(':CircleMenu')
-    compile project(':CameraKit-Android')
+    implementation project(':volley')
+    implementation project(':CircleMenu')
+    implementation project(':CameraKit-Android')
 
-    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
-    compile 'com.makeramen:roundedimageview:2.3.+'
+    implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
+    implementation 'com.makeramen:roundedimageview:2.3.+'
 
-    compile "com.google.android.gms:play-services-auth:$firebaseLibraryVersion"
+    implementation "com.google.android.gms:play-services-auth:$firebaseLibraryVersion"
 
-    compile "com.google.firebase:firebase-core:$firebaseLibraryVersion"
-    compile "com.google.firebase:firebase-messaging:$firebaseLibraryVersion"
+    implementation "com.google.firebase:firebase-core:$firebaseLibraryVersion"
+    implementation "com.google.firebase:firebase-messaging:$firebaseLibraryVersion"
 
-    compile 'com.evernote:android-job:1.2.0'
-    compile "com.android.support:exifinterface:$supportLibraryVersion"
+    implementation 'com.evernote:android-job:1.2.0'
+    implementation "com.android.support:exifinterface:$supportLibraryVersion"
 
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+    implementation('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true;
     }
 
-    compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
+    implementation "com.android.support:recyclerview-v7:$supportLibraryVersion"
 
     testImplementation 'junit:junit:4.12'
 
