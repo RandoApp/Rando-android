@@ -29,7 +29,6 @@ android:
     - extra-google-m2repository
     - android-$ANDROID_API
     - sys-img-armeabi-v7a-android-$ANDROID_API
-    - ndk-bundle
 
   licenses:
     - 'android-sdk-preview-license-.+'
@@ -62,6 +61,7 @@ install:
   # Install base Android SDK
   - cd ${HOME}
   - if [ ! -d $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
+  - echo yes | sdkmanager ndk-bundle
   - echo yes | sdkmanager "cmake;3.6.4111459"
   - echo yes | sdkmanager "lldb;3.0"
 
