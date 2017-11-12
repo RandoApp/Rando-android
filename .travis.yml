@@ -29,8 +29,8 @@ android:
     - extra-google-m2repository
     - android-$ANDROID_API
     - sys-img-armeabi-v7a-android-$ANDROID_API
-    - cmake-3.6.4111459
-    - lldb-3.0
+    - cmake;3.6.4111459
+    - lldb;3.0
     - ndk-bundle
   licenses:
     - 'android-sdk-preview-license-.+'
