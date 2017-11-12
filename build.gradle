@@ -108,7 +108,7 @@ configurations.all {
 dependencies {
     compile project(':volley')
     compile project(':CircleMenu')
-    compile 'com.github.xp-vit:CameraKit-Android:master-SNAPSHOT'
+    compile project(':CameraKit-Android')
 
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile 'com.makeramen:roundedimageview:2.3.+'
