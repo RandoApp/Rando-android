@@ -97,7 +97,7 @@ ext {
     buildToolsVersion = "27.0.0"
     minSdkVersion = 16
     targetSdkVersion = 27
-    supportLibraryVersion = "27+"
+    supportLibraryVersion = "27.0.0"
     firebaseLibraryVersion = "11.6.0"
 }
 
