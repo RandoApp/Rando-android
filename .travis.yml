@@ -61,6 +61,7 @@ install:
   # Install base Android SDK
   - cd ${HOME}
   - if [ ! -d $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
+  - sdkmanager --list
 
   # Install Gradle
   - if [ ! -f $DOWNLOADS_HOME/gradle.zip ]; then  wget http://services.gradle.org/distributions/gradle-4.1-all.zip -O $DOWNLOADS_HOME/gradle.zip > /dev/null; fi
