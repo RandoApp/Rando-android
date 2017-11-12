@@ -119,9 +119,9 @@ script:
   - gradle build jacocoTestReport connectedAndroidTest --stacktrace
 
 after_success:
-  - tree .
   - bash <(curl -s https://codecov.io/bash)
   - if [ $NEED_UPLOAD_APK ]; then gradle assembleRelease; fi
+  - tree .
   - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "put build/outputs/apk/Rando-android-release.apk; bye"; fi
 
 after_failure:
