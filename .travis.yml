@@ -50,12 +50,12 @@ cache:
 before_install:
   - export EMULATOR="system-images;android-${EMULATOR_API_LEVEL};${EMULATOR_TAG};${EMULATOR_ABI}" # Used to install/create emulator
   - echo 'count=0' > /home/travis/.android/repositories.cfg # Avoid warning
-  #- git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
-  #- export ANDROID_NDK_HOME=$HOME/android-ndk-root
-  #- echo "ndk.dir=$ANDROID_NDK_HOME" > local.properties
-  #- wget https://github.com/Commit451/android-cmake-installer/releases/download/1.1.0/install-cmake.sh
-  #- chmod +x install-cmake.sh
-  #- ./install-cmake.sh
+  - wget https://dl.google.com/android/repository/android-ndk-r15c-linux-x86_64.zip -O
+  - unzip -q android-ndk-r15c-linux-x86_64.zip
+  - export ANDROID_NDK_HOME=`pwd`/android-ndk-r15c
+  - export LOCAL_ANDROID_NDK_HOME="$ANDROID_NDK_HOME"
+  - export LOCAL_ANDROID_NDK_HOST_PLATFORM="linux-x86_64"
+  - export PATH=$PATH:${ANDROID_NDK_HOME}
 
 install:
   # Install lftp for apk upload:
