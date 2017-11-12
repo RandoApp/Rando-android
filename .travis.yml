@@ -30,7 +30,7 @@ android:
     - android-$ANDROID_API
     - sys-img-armeabi-v7a-android-$ANDROID_API
     - ndk-bundle
-    - lldb;3.0
+    - lldb-3.0
   licenses:
     - 'android-sdk-preview-license-.+'
     - 'android-sdk-license-.+'
