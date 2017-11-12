@@ -50,12 +50,6 @@ cache:
 before_install:
   - export EMULATOR="system-images;android-${EMULATOR_API_LEVEL};${EMULATOR_TAG};${EMULATOR_ABI}" # Used to install/create emulator
   - echo 'count=0' > /home/travis/.android/repositories.cfg # Avoid warning
-  - wget https://dl.google.com/android/repository/android-ndk-r15c-linux-x86_64.zip -O
-  - unzip -q android-ndk-r15c-linux-x86_64.zip
-  - export ANDROID_NDK_HOME=`pwd`/android-ndk-r15c
-  - export LOCAL_ANDROID_NDK_HOME="$ANDROID_NDK_HOME"
-  - export LOCAL_ANDROID_NDK_HOST_PLATFORM="linux-x86_64"
-  - export PATH=$PATH:${ANDROID_NDK_HOME}
 
 install:
   # Install lftp for apk upload:
@@ -74,6 +68,13 @@ install:
   - export GRADLE_HOME=$APPS_HOME/gradle-4.1
   - export PATH=$GRADLE_HOME/bin:$PATH
   - gradle -version
+  - cd $DOWNLOADS_HOME
+  - wget https://dl.google.com/android/repository/android-ndk-r15c-linux-x86_64.zip -O android-ndk-r15c-linux-x86_64.zip
+  - unzip -q android-ndk-r15c-linux-x86_64.zip
+  - export ANDROID_NDK_HOME=`pwd`/android-ndk-r15c
+  - export LOCAL_ANDROID_NDK_HOME="$ANDROID_NDK_HOME"
+  - export LOCAL_ANDROID_NDK_HOST_PLATFORM="linux-x86_64"
+  - export PATH=$PATH:${ANDROID_NDK_HOME}
 
 #Clean up some space
   #- sdkmanager --list || true
