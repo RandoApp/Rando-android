@@ -1,11 +1,16 @@
 package com.github.randoapp.db.model;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,13 +21,17 @@ public class RandoFromJsonTest {
         InputStream is = getClass().getResourceAsStream(fileName);
         assertThat(is).isNotNull();
 
-        StringWriter writer = new StringWriter();
+        String theString = "";
         try {
-            IOUtils.copy(is, writer);
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String sCurrentLine;
+
+            while ((sCurrentLine = br.readLine()) != null) {
+                theString += sCurrentLine;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String theString = writer.toString();
         assertThat(theString).isNotEmpty();
         return theString;
     }

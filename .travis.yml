@@ -1,5 +1,4 @@
 language: android
-dist: trusty
 sudo: required
 
 group: edge
@@ -23,13 +22,14 @@ env:
 android:
   components:
     - tools
-    - build-tools-26.0.2
+    - build-tools-27.0.0
     - platform-tools
-    - android-26
+    - android-27
     - extra-android-m2repository
     - extra-google-m2repository
     - android-$ANDROID_API
     - sys-img-armeabi-v7a-android-$ANDROID_API
+
   licenses:
     - 'android-sdk-preview-license-.+'
     - 'android-sdk-license-.+'
@@ -50,6 +50,7 @@ cache:
 before_install:
   - export EMULATOR="system-images;android-${EMULATOR_API_LEVEL};${EMULATOR_TAG};${EMULATOR_ABI}" # Used to install/create emulator
   - echo 'count=0' > /home/travis/.android/repositories.cfg # Avoid warning
+
 install:
   # Install lftp for apk upload:
   - sudo apt-get update -qq
@@ -60,13 +61,23 @@ install:
   # Install base Android SDK
   - cd ${HOME}
   - if [ ! -d $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
+  - echo yes | sdkmanager ndk-bundle
+  - echo yes | sdkmanager "cmake;3.6.4111459"
+  - echo yes | sdkmanager "lldb;3.0"
 
   # Install Gradle
-  - if [ ! -f $DOWNLOADS_HOME/gradle.zip ]; then  wget http://services.gradle.org/distributions/gradle-3.3-bin.zip -O $DOWNLOADS_HOME/gradle.zip > /dev/null; fi
-  - if [ ! -d $APPS_HOME/gradle-3.3 ]; then unzip --qq $DOWNLOADS_HOME/gradle.zip -d $APPS_HOME; fi
-  - export GRADLE_HOME=$APPS_HOME/gradle-3.3
+  - if [ ! -f $DOWNLOADS_HOME/gradle.zip ]; then  wget http://services.gradle.org/distributions/gradle-4.1-all.zip -O $DOWNLOADS_HOME/gradle.zip > /dev/null; fi
+  - if [ ! -d $APPS_HOME/gradle-4.1 ]; then unzip --qq $DOWNLOADS_HOME/gradle.zip -d $APPS_HOME; fi
+  - export GRADLE_HOME=$APPS_HOME/gradle-4.1
   - export PATH=$GRADLE_HOME/bin:$PATH
   - gradle -version
+  #- cd $DOWNLOADS_HOME
+  #- wget https://dl.google.com/android/repository/android-ndk-r15c-linux-x86_64.zip -O android-ndk-r15c-linux-x86_64.zip
+  #- unzip -qq android-ndk-r15c-linux-x86_64.zip
+  #- export ANDROID_NDK_HOME=`pwd`/android-ndk-r15c
+  #- export LOCAL_ANDROID_NDK_HOME="$ANDROID_NDK_HOME"
+  #- export LOCAL_ANDROID_NDK_HOST_PLATFORM="linux-x86_64"
+  #- export PATH=$PATH:${ANDROID_NDK_HOME}
 
 #Clean up some space
   #- sdkmanager --list || true
@@ -114,7 +125,8 @@ script:
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   - if [ $NEED_UPLOAD_APK ]; then gradle assembleRelease; fi
-  - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "put build/outputs/apk/Rando-android-release.apk; bye"; fi
+  #- tree build/outputs
+  - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "put build/outputs/apk/release/Rando-android-release.apk; bye"; fi
 
 after_failure:
   - sudo apt-get install -qq pandoc
