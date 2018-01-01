@@ -1,8 +1,6 @@
 language: android
 sudo: required
 
-group: edge
-
 env:
   matrix:
     #- ANDROID_API=24 ANDROID_ABI=armeabi-v7a
