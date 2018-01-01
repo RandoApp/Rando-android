@@ -88,15 +88,6 @@ install:
   #- sdkmanager --uninstall "platforms;android-20"
   #- sdkmanager --uninstall "platforms;android-21"
   #- sdkmanager --uninstall "build-tools;21.1.2"
-# Create and start emulator
-  # For a full list of android targets, run "android list targets"
-  #- android list targets
-  #- android list sdk -a -e
-  - echo no | android create avd --force -n test -t android-$ANDROID_API --abi $ANDROID_ABI
-  - emulator -memory 1536 -avd test -no-window &
-  - travis_wait 10 android-wait-for-emulator
-  - adb shell input keyevent 82 &
-
   # Create gradle.properties with secret stroke password:
   - cd ${CI_HOME}
   - echo "keyStorePassword=$KEY_STROKE_PASSWORD" > gradle.properties
@@ -111,6 +102,14 @@ install:
   - curl -u travis:$APK_UPLOAD_PASS "scp://rando4.me/~/rando.keystore
   - mv rando.keystore $HOME/.android/
   - lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "get google-services.json; ; bye";
+# Create and start emulator
+  # For a full list of android targets, run "android list targets"
+  #- android list targets
+  #- android list sdk -a -e
+  - echo no | android create avd --force -n test -t android-$ANDROID_API --abi $ANDROID_ABI
+  - emulator -memory 1536 -avd test -no-window &
+  - travis_wait 10 android-wait-for-emulator
+  - adb shell input keyevent 82 &
 
 script:
   - gradle build jacocoTestReport connectedAndroidTest -x lint --stacktrace
