@@ -73,7 +73,7 @@ install:
   - gradle -version
 
 #Clean up some space
-  #- sdkmanager --list || true
+  #- sdkmanager Ghbd--list || true
   #- sdkmanager --uninstall "system-images;android-16;default;armeabi-v7a"
   #- sdkmanager --uninstall "system-images;android-17;default;armeabi-v7a"
   #- sdkmanager --uninstall "system-images;android-18;default;armeabi-v7a"

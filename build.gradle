@@ -97,8 +97,8 @@ ext {
     buildToolsVersion = "27.0.0"
     minSdkVersion = 16
     targetSdkVersion = 27
-    supportLibraryVersion = "27.0.0"
-    firebaseLibraryVersion = "11.6.0"
+    supportLibraryVersion = "27.0.2"
+    firebaseLibraryVersion = "11.8.0"
 }
 
 configurations.all {
@@ -118,23 +118,23 @@ dependencies {
     implementation "com.google.firebase:firebase-core:$firebaseLibraryVersion"
     implementation "com.google.firebase:firebase-messaging:$firebaseLibraryVersion"
 
-    implementation 'com.evernote:android-job:1.2.0'
+    implementation 'com.evernote:android-job:1.2.1'
     implementation "com.android.support:exifinterface:$supportLibraryVersion"
 
     implementation('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
-        transitive = true;
+        transitive = true
     }
 
     implementation "com.android.support:recyclerview-v7:$supportLibraryVersion"
 
     testImplementation 'junit:junit:4.12'
 
-    androidTestImplementation 'com.android.support.test:runner:0.5'
-    androidTestImplementation 'com.android.support.test:rules:0.5'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test:rules:1.0.1'
     androidTestImplementation "com.android.support:support-annotations:$supportLibraryVersion"
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
-    androidTestImplementation("com.android.support.test.espresso:espresso-intents:2.2.2")
-    androidTestImplementation 'javax.annotation:javax.annotation-api:1.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    androidTestImplementation("com.android.support.test.espresso:espresso-intents:3.0.1")
+    androidTestImplementation 'javax.annotation:javax.annotation-api:1.3.1'
     androidTestImplementation 'org.mockito:mockito-core:1.9.5'
     androidTestImplementation 'com.google.dexmaker:dexmaker-mockito:1.2'
     androidTestImplementation 'com.google.dexmaker:dexmaker:1.2'
