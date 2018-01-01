@@ -99,7 +99,7 @@ install:
   - echo "apiSecret=$CRASHLITICS_SECRET" >> fabric.properties
   #Download rando.keystore:
   #- lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "get rando.keystore; ; bye";
-  - curl -u travis:$APK_UPLOAD_PASS scp://rando4.me/~/rando.keystore
+  - curl -u travis:$APK_UPLOAD_PASS sftp://rando4.me/~/rando.keystore
   - mv rando.keystore $HOME/.android/
   - lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "get google-services.json; ; bye";
 # Create and start emulator
