@@ -99,12 +99,12 @@ install:
   - echo "apiKey=$CRASHLITICS_KEY" > fabric.properties
   - echo "apiSecret=$CRASHLITICS_SECRET" >> fabric.properties
   #Download rando.keystore:
-  #- lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "get rando.keystore; ; bye";
-  - export SSHPASS=$APK_UPLOAD_PASS
-  - sshpass scp travis@rando4.me:/home/travis/rando.keystore $HOME/.android/
+  - lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "get rando.keystore; ; bye";
+  #- export SSHPASS=$APK_UPLOAD_PASS
+  #- sshpass scp travis@rando4.me:/home/travis/rando.keystore $HOME/.android/
   #- mv rando.keystore $HOME/.android/
-  - sshpass scp travis@rando4.me:/home/travis/google-services.json ./
-  #- lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "get google-services.json; ; bye";
+  #- sshpass scp travis@rando4.me:/home/travis/google-services.json ./
+  - lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "get google-services.json; ; bye";
 # Create and start emulator
   # For a full list of android targets, run "android list targets"
   #- android list targets
