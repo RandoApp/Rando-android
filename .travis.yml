@@ -23,8 +23,8 @@ android:
     - build-tools-27.0.0
     - platform-tools
     - android-27
-    - extra-android-m2repository
-    - extra-google-m2repository
+    #- extra-android-m2repository
+    #- extra-google-m2repository
     - android-$ANDROID_API
     - sys-img-armeabi-v7a-android-$ANDROID_API
 
@@ -54,6 +54,7 @@ install:
   # Install lftp for apk upload:
   - sudo apt-get update -qq
   - sudo apt-get install -qq lftp
+  - sudo apt-get install sshpass
   # Install tree for directory structure debug
   #- sudo apt-get install -qq tree
 
@@ -99,9 +100,10 @@ install:
   - echo "apiSecret=$CRASHLITICS_SECRET" >> fabric.properties
   #Download rando.keystore:
   #- lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "get rando.keystore; ; bye";
-  - scp travis:$APK_UPLOAD_PASS@/rando4.me:/home/travis/rando.keystore ./
-  - mv rando.keystore $HOME/.android/
-  - lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "get google-services.json; ; bye";
+  - sshpass -p '$APK_UPLOAD_PASS' scp travis@rando4.me:/home/travis/rando.keystore $HOME/.android/
+  #- mv rando.keystore $HOME/.android/
+  - sshpass -p '$APK_UPLOAD_PASS' scp travis@rando4.me:/home/travis/google-services.json ./
+  #- lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "get google-services.json; ; bye";
 # Create and start emulator
   # For a full list of android targets, run "android list targets"
   #- android list targets
