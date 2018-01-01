@@ -1,5 +1,10 @@
 language: android
-sudo: required
+
+addons:
+  apt:
+    packages:
+    - cmake
+    - lftp
 
 env:
   matrix:
@@ -52,9 +57,9 @@ before_install:
 
 install:
   # Install lftp for apk upload:
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq lftp
-  - sudo apt-get install sshpass
+  #- sudo apt-get update -qq
+  #- sudo apt-get install -qq lftp
+  #- sudo apt-get install sshpass
   # Install tree for directory structure debug
   #- sudo apt-get install -qq tree
 
@@ -124,5 +129,5 @@ after_success:
   - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "put build/outputs/apk/release/Rando-android-release.apk; bye"; fi
 
 after_failure:
-  - sudo apt-get install -qq pandoc
-  - pandoc /home/travis/build/RandoApp/Rando-android/build/reports/androidTests/connected/index.html -t plain | sed -n '/^Failed tests/,/default-package/p'
+  #- sudo apt-get install -qq pandoc
+  #- pandoc /home/travis/build/RandoApp/Rando-android/build/reports/androidTests/connected/index.html -t plain | sed -n '/^Failed tests/,/default-package/p'
