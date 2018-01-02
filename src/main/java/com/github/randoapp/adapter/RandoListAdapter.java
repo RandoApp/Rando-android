@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,7 +16,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
-import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -54,7 +54,11 @@ import java.util.List;
 import static android.widget.Toast.makeText;
 import static com.android.volley.Request.Priority;
 
-public class RandoListAdapter extends BaseAdapter {
+public class RandoListAdapter extends RecyclerView.Adapter<RandoListAdapter.RandoViewHolder> {
+
+    public boolean isStranger() {
+        return isStranger;
+    }
 
     private boolean isStranger;
     private FirebaseAnalytics firebaseAnalytics;
@@ -65,18 +69,57 @@ public class RandoListAdapter extends BaseAdapter {
     private int size;
 
     @Override
-    public int getCount() {
-        return size;
+    public RandoViewHolder onCreateViewHolder(ViewGroup container, int position) {
+        if (imageSize == 0) {
+            imageSize = getRandoImageSize(container);
+        }
+
+        View convertView = LayoutInflater.from(container.getContext()).inflate(R.layout.rando_item, container, false);
+
+        RandoViewHolder holder = new RandoViewHolder(convertView, imageSize);
+        addListenersToHolder(holder);
+
+        return holder;
     }
 
+
     @Override
-    public Object getItem(int position) {
-        return randos.get(position);
+    public void onBindViewHolder(RandoViewHolder holder, int position) {
+        recycle(holder);
+
+        holder.rando = randos.get(position);
+        setRatingIcon(holder, false);
+        loadImages(holder.randoItemLayout.getContext(), holder, holder.rando);
+
+        if (holder.rando.isUnwanted()) {
+            UnwantedRandoView unwantedRandoView = new UnwantedRandoView(holder.randoItemLayout.getContext());
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
+            layoutParams.setMargins(holder.randoItemLayout.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left),
+                    holder.randoItemLayout.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
+                    holder.randoItemLayout.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right), 0);
+            //insert Unwanted view at index 1, right after "view_switcher"
+            holder.randoItemLayout.addView(unwantedRandoView, 1, layoutParams);
+            holder.unwantedRandoView = unwantedRandoView;
+        } else {
+            if (holder.rando.toUpload) {
+                RoundProgress progressBar = new RoundProgress(holder.randoItemLayout.getContext(), (float) (holder.randoItemLayout.getWidth() / 2.0 - holder.randoItemLayout.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left) * 0.6) - 3);
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(holder.randoItemLayout.getWidth(), holder.randoItemLayout.getWidth());
+                holder.randoItemLayout.addView(progressBar, 1, layoutParams);
+                holder.uploadingProgress = progressBar;
+            } else {
+                setAnimations(holder);
+            }
+        }
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return RecyclerView.NO_ID;
+    }
+
+    @Override
+    public int getItemCount() {
+        return randos.size();
     }
 
     public RandoListAdapter(Context context, boolean isStranger, FirebaseAnalytics firebaseAnalytics) {
@@ -86,7 +129,7 @@ public class RandoListAdapter extends BaseAdapter {
         initData();
     }
 
-    private void initData() {
+    public void initData() {
         if (isStranger) {
             randos = RandoDAO.getAllInRandos(context);
         } else {
@@ -95,91 +138,19 @@ public class RandoListAdapter extends BaseAdapter {
         size = randos.size();
     }
 
-    @Override
-    public void notifyDataSetChanged() {
-        initData();
-        super.notifyDataSetChanged();
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup container) {
-
-        final ViewHolder holder;
-
-        if (imageSize == 0) {
-            imageSize = getRandoImageSize(container);
-        }
-
-        Log.d(RandoListAdapter.class, "isStranger", String.valueOf(isStranger), "Size:", String.valueOf(size), "Position", String.valueOf(position));
-
-        if (convertView != null) {
-            holder = (ViewHolder) convertView.getTag();
-        } else {
-            LayoutInflater inflater = (LayoutInflater) container.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.rando_item, container, false);
-            holder = createHolder(convertView);
-            addListenersToHolder(holder);
-        }
-
-        recycle(holder);
-        holder.rando = randos.get(position);
-        setRatingIcon(holder, false);
-        loadImages(convertView.getContext(), holder, holder.rando);
-
-        if (holder.rando.isUnwanted()) {
-            UnwantedRandoView unwantedRandoView = new UnwantedRandoView(convertView.getContext());
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
-            layoutParams.setMargins(convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left),
-                    convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
-                    convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right), 0);
-            //insert Unwanted view at index 1, right after "view_switcher"
-            holder.randoItemLayout.addView(unwantedRandoView, 1, layoutParams);
-            holder.unwantedRandoView = unwantedRandoView;
-        } else {
-            if (holder.rando.toUpload) {
-                RoundProgress progressBar = new RoundProgress(convertView.getContext(), (float) (container.getWidth() / 2.0 - convertView.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left) * 0.6) - 3);
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(container.getWidth(), container.getWidth());
-                holder.randoItemLayout.addView(progressBar, 1, layoutParams);
-                holder.uploadingProgress = progressBar;
-            } else {
-                setAnimations(holder);
-            }
-        }
-        return convertView;
-    }
-
-    public int getPositionOfRando(Rando rando) {
-        if (rando == null) {
-            return 0;
+    public int getPositionOfRando(String randoId) {
+        if (randoId == null) {
+            return -1;
         }
         for (int i = 0; i < randos.size(); i++) {
-            if (randos.get(i).randoId.equals(rando.randoId)) {
+            if (randos.get(i).randoId.equals(randoId)) {
                 return i;
             }
         }
-        return 0;
+        return -1;
     }
 
-    private ViewHolder createHolder(View convertView) {
-        ViewHolder holder = new ViewHolder();
-
-        holder.randoItemLayout = (RelativeLayout) convertView.findViewWithTag("rando_item_layout");
-
-        holder.viewSwitcher = (ViewSwitcher) convertView.findViewWithTag("viewSwitcher");
-
-        holder.image = (RoundedImageView) convertView.findViewWithTag("image");
-        holder.image.setTag(null);
-        holder.map = (RoundedImageView) convertView.findViewWithTag("map");
-        ViewSwitcher.LayoutParams randoImagesLayout = new ViewSwitcher.LayoutParams(imageSize, imageSize);
-        holder.image.setLayoutParams(randoImagesLayout);
-        holder.map.setLayoutParams(randoImagesLayout);
-        holder.rateButton = (FlipImageView) convertView.findViewWithTag("rating");
-
-        convertView.setTag(holder);
-        return holder;
-    }
-
-    private void addListenersToHolder(final ViewHolder holder) {
+    private void addListenersToHolder(final RandoViewHolder holder) {
         View.OnClickListener randoOnClickListener = createRandoOnClickListener(holder);
         holder.image.setOnClickListener(randoOnClickListener);
         holder.map.setOnClickListener(randoOnClickListener);
@@ -332,7 +303,7 @@ public class RandoListAdapter extends BaseAdapter {
         }
     }
 
-    private void deleteRando(final ViewHolder holder) {
+    private void deleteRando(final RandoViewHolder holder) {
         Analytics.logDeleteRando(firebaseAnalytics);
         if (NetworkUtil.isOnline(holder.randoItemLayout.getContext()) || holder.rando.toUpload) {
             AlertDialog.Builder builder = new AlertDialog.Builder(holder.randoItemLayout.getContext());
@@ -340,7 +311,7 @@ public class RandoListAdapter extends BaseAdapter {
                 public void onClick(DialogInterface dialog, int id) {
                     if (holder.rando.toUpload) {
                         RandoDAO.deleteRandoToUploadById(holder.randoItemLayout.getContext(), holder.rando.id);
-                        notifyDataSetChanged();
+                        notifyItemRemoved(getPositionOfRando(holder.rando.randoId));
                         return;
                     }
                     try {
@@ -349,7 +320,9 @@ public class RandoListAdapter extends BaseAdapter {
                             @Override
                             public void onOk() {
                                 RandoDAO.deleteRandoByRandoId(holder.randoItemLayout.getContext(), holder.rando.randoId);
-                                notifyDataSetChanged();
+
+                                notifyItemRemoved(getPositionOfRando(holder.rando.randoId));
+
                                 makeText(holder.randoItemLayout.getContext(), R.string.rando_deleted,
                                         Toast.LENGTH_LONG).show();
                                 showSpinner(holder, false);
@@ -377,7 +350,7 @@ public class RandoListAdapter extends BaseAdapter {
         }
     }
 
-    private void reportRando(final ViewHolder holder) {
+    private void reportRando(final RandoViewHolder holder) {
         Analytics.logReportRando(firebaseAnalytics);
         if (NetworkUtil.isOnline(holder.randoItemLayout.getContext())) {
             AlertDialog.Builder builder = new AlertDialog.Builder(holder.randoItemLayout.getContext());
@@ -389,7 +362,9 @@ public class RandoListAdapter extends BaseAdapter {
                             @Override
                             public void onOk() {
                                 RandoDAO.deleteRandoByRandoId(holder.randoItemLayout.getContext(), holder.rando.randoId);
-                                notifyDataSetChanged();
+
+                                notifyItemRemoved(getPositionOfRando(holder.rando.randoId));
+
                                 makeText(holder.randoItemLayout.getContext(), R.string.rando_reported,
                                         Toast.LENGTH_LONG).show();
                                 showSpinner(holder, false);
@@ -417,7 +392,7 @@ public class RandoListAdapter extends BaseAdapter {
         }
     }
 
-    private void showSpinner(ViewHolder holder, boolean show) {
+    private void showSpinner(RandoViewHolder holder, boolean show) {
         if (show) {
             holder.spinner = new ProgressBar(holder.randoItemLayout.getContext(), null, android.R.attr.progressBarStyleLarge);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -430,7 +405,7 @@ public class RandoListAdapter extends BaseAdapter {
         }
     }
 
-    private View.OnClickListener createRandoOnClickListener(final ViewHolder holder) {
+    private View.OnClickListener createRandoOnClickListener(final RandoViewHolder holder) {
         return new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -466,7 +441,9 @@ public class RandoListAdapter extends BaseAdapter {
                                     @Override
                                     public void onOk() {
                                         RandoDAO.deleteRandoByRandoId(v.getContext(), holder.rando.randoId);
-                                        notifyDataSetChanged();
+
+                                        notifyItemRemoved(getPositionOfRando(holder.rando.randoId));
+
                                         makeText(v.getContext(), R.string.rando_deleted,
                                                 Toast.LENGTH_LONG).show();
                                         showSpinner(holder, false);
@@ -538,7 +515,7 @@ public class RandoListAdapter extends BaseAdapter {
         };
     }
 
-    private void rateRando(final ViewHolder holder, final int newRating) {
+    private void rateRando(final RandoViewHolder holder, final int newRating) {
         Analytics.logShareRando(firebaseAnalytics);
         API.rate(holder.rando.randoId, holder.randoItemLayout.getContext(), newRating, new NetworkResultListener(context) {
             @Override
@@ -566,7 +543,7 @@ public class RandoListAdapter extends BaseAdapter {
         });
     }
 
-    private void setRatingIcon(ViewHolder holder, boolean doAnimation) {
+    private void setRatingIcon(RandoViewHolder holder, boolean doAnimation) {
 
         if (holder.rando.rating == null || holder.rando.rating == 0) {
             if (!isStranger) {
@@ -614,7 +591,7 @@ public class RandoListAdapter extends BaseAdapter {
         }
     }
 
-    private void shareRando(final ViewHolder holder) {
+    private void shareRando(final RandoViewHolder holder) {
         Analytics.logShareRando(firebaseAnalytics);
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
@@ -627,7 +604,7 @@ public class RandoListAdapter extends BaseAdapter {
         holder.randoItemLayout.getContext().startActivity(Intent.createChooser(shareIntent, "Share Rando using"));
     }
 
-    private void recycle(ViewHolder holder) {
+    private void recycle(RandoViewHolder holder) {
         holder.animationInProgress = false;
 
         cancelRequests(holder);
@@ -666,7 +643,7 @@ public class RandoListAdapter extends BaseAdapter {
         holder.rando = null;
     }
 
-    private void recycleCircleMenu(ViewHolder holder) {
+    private void recycleCircleMenu(RandoViewHolder holder) {
         if (holder.circleMenu != null) {
             holder.circleMenu.closeMenu();
             holder.randoItemLayout.removeView(holder.circleMenu);
@@ -674,7 +651,7 @@ public class RandoListAdapter extends BaseAdapter {
         }
     }
 
-    private void recycleRatingMenu(ViewHolder holder) {
+    private void recycleRatingMenu(RandoViewHolder holder) {
         if (holder.ratingMenu != null) {
             holder.ratingMenu.closeMenu();
             holder.randoItemLayout.removeView(holder.ratingMenu);
@@ -690,7 +667,7 @@ public class RandoListAdapter extends BaseAdapter {
         viewSwitcher.setDisplayedChild(0);
     }
 
-    private void cancelRequests(ViewHolder holder) {
+    private void cancelRequests(RandoViewHolder holder) {
         if (holder.randoContainer != null) {
             holder.randoContainer.cancelRequest();
             holder.randoContainer = null;
@@ -706,7 +683,7 @@ public class RandoListAdapter extends BaseAdapter {
                 - container.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right);
     }
 
-    private void setAnimations(final ViewHolder holder) {
+    private void setAnimations(final RandoViewHolder holder) {
         final Animation[] leftToRightAnimation = AnimationFactory.flipAnimation(imageSize, AnimationFactory.FlipDirection.LEFT_RIGHT, 350, null);
         final Animation[] rightToLeftAnimation = AnimationFactory.flipAnimation(imageSize, AnimationFactory.FlipDirection.RIGHT_LEFT, 350, null);
 
@@ -740,7 +717,7 @@ public class RandoListAdapter extends BaseAdapter {
         });
     }
 
-    private void loadImages(final Context context, final ViewHolder holder, final Rando rando) {
+    private void loadImages(final Context context, final RandoViewHolder holder, final Rando rando) {
         if (rando.imageURLSize.small != null && !URLUtil.isNetworkUrl(rando.imageURLSize.small) && !rando.imageURLSize.small.isEmpty()) {
             loadFile(holder, rando.imageURL);
             return;
@@ -754,7 +731,7 @@ public class RandoListAdapter extends BaseAdapter {
         }
     }
 
-    private void loadFile(final ViewHolder holder, final String filePath) {
+    private void loadFile(final RandoViewHolder holder, final String filePath) {
         if (holder.image != null) {
             holder.image.setImageBitmap(BitmapUtil.decodeSampledBitmap(filePath, imageSize, imageSize));
         }
@@ -763,7 +740,7 @@ public class RandoListAdapter extends BaseAdapter {
         }
     }
 
-    private void loadImage(final Context context, final ViewHolder viewHolder, final String url, Priority priority) {
+    private void loadImage(final Context context, final RandoViewHolder viewHolder, final String url, Priority priority) {
         if (TextUtils.isEmpty(url)) {
             if (viewHolder.image != null) {
                 viewHolder.image.setImageResource(R.drawable.rando_pairing);
@@ -803,7 +780,7 @@ public class RandoListAdapter extends BaseAdapter {
         }
     }
 
-    private void loadMapImage(final Context context, final ViewHolder viewHolder, final String url, Priority priority) {
+    private void loadMapImage(final Context context, final RandoViewHolder viewHolder, final String url, Priority priority) {
         if (URLUtil.isValidUrl(url)) {
             Log.d(RandoListAdapter.class, "map url: ", url);
             viewHolder.mapContainer = VolleySingleton.getInstance(context).getImageLoader().get(url, new ImageLoader.ImageListener() {
@@ -836,7 +813,7 @@ public class RandoListAdapter extends BaseAdapter {
         }
     }
 
-    public static class ViewHolder {
+    public static class RandoViewHolder extends RecyclerView.ViewHolder{
         public Rando rando;
 
         public RelativeLayout randoItemLayout;
@@ -864,5 +841,23 @@ public class RandoListAdapter extends BaseAdapter {
 
         public boolean needSetImageError = false;
         public boolean needSetMapError = false;
+
+        public RandoViewHolder(View itemView, int imageSize) {
+            super(itemView);
+            randoItemLayout = (RelativeLayout) itemView.findViewWithTag("rando_item_layout");
+
+            viewSwitcher = (ViewSwitcher) itemView.findViewWithTag("viewSwitcher");
+
+            image = (RoundedImageView) itemView.findViewWithTag("image");
+            image.setTag(null);
+
+            map = (RoundedImageView) itemView.findViewWithTag("map");
+
+            ViewSwitcher.LayoutParams randoImagesLayout = new ViewSwitcher.LayoutParams(imageSize, imageSize);
+            image.setLayoutParams(randoImagesLayout);
+            map.setLayoutParams(randoImagesLayout);
+
+            rateButton = (FlipImageView) itemView.findViewWithTag("rating");
+        }
     }
 }
