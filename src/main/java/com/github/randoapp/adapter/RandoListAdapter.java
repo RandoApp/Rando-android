@@ -88,6 +88,7 @@ public class RandoListAdapter extends RecyclerView.Adapter<RandoListAdapter.Rand
         recycle(holder);
 
         holder.rando = randos.get(position);
+        holder.position = position;
         setRatingIcon(holder, false);
         loadImages(holder.randoItemLayout.getContext(), holder, holder.rando);
 
@@ -98,13 +99,13 @@ public class RandoListAdapter extends RecyclerView.Adapter<RandoListAdapter.Rand
                     holder.randoItemLayout.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
                     holder.randoItemLayout.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right), 0);
             //insert Unwanted view at index 1, right after "view_switcher"
-            holder.randoItemLayout.addView(unwantedRandoView, 1, layoutParams);
+            holder.randoItemLayout.addView(unwantedRandoView, layoutParams);
             holder.unwantedRandoView = unwantedRandoView;
         } else {
             if (holder.rando.toUpload) {
-                RoundProgress progressBar = new RoundProgress(holder.randoItemLayout.getContext(), (float) (holder.randoItemLayout.getWidth() / 2.0 - holder.randoItemLayout.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left) * 0.6) - 3);
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(holder.randoItemLayout.getWidth(), holder.randoItemLayout.getWidth());
-                holder.randoItemLayout.addView(progressBar, 1, layoutParams);
+                RoundProgress progressBar = new RoundProgress(holder.randoItemLayout.getContext(), (float) (imageSize/ 2.0)-8);
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
+                holder.randoItemLayout.addView(progressBar, layoutParams);
                 holder.uploadingProgress = progressBar;
             } else {
                 setAnimations(holder);
@@ -160,9 +161,7 @@ public class RandoListAdapter extends RecyclerView.Adapter<RandoListAdapter.Rand
                 recycleRatingMenu(holder);
                 if (holder.circleMenu == null && !holder.rando.isUnwanted()) {
                     Resources res = v.getResources();
-                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) (imageSize * 0.9), (int) (imageSize * 0.9));
-                    layoutParams.topMargin = (int) (imageSize * 0.05) + res.getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top);
-                    layoutParams.leftMargin = (int) (imageSize * 0.05) + res.getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left);
+                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize,imageSize);
 
                     holder.circleMenu = new CircleMenu(v.getContext());
                     holder.randoItemLayout.addView(holder.circleMenu, layoutParams);
@@ -235,9 +234,7 @@ public class RandoListAdapter extends RecyclerView.Adapter<RandoListAdapter.Rand
                     }
                     holder.ratingMenu = new CircleMenu(v.getContext());
                     Resources res = v.getResources();
-                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) (imageSize * 0.9), (int) (imageSize * 0.9));
-                    layoutParams.topMargin = (int) (imageSize * 0.05) + res.getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top);
-                    layoutParams.leftMargin = (int) (imageSize * 0.05) + res.getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left);
+                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
                     holder.randoItemLayout.addView(holder.ratingMenu, layoutParams);
 
                     holder.ratingMenu.setMainMenu(res.getColor(R.color.menu_button_color), R.drawable.ic_close_white_24dp, R.drawable.ic_close_white_24dp)
@@ -311,7 +308,7 @@ public class RandoListAdapter extends RecyclerView.Adapter<RandoListAdapter.Rand
                 public void onClick(DialogInterface dialog, int id) {
                     if (holder.rando.toUpload) {
                         RandoDAO.deleteRandoToUploadById(holder.randoItemLayout.getContext(), holder.rando.id);
-                        notifyItemRemoved(getPositionOfRando(holder.rando.randoId));
+                        notifyItemRemoved(holder.position);
                         return;
                     }
                     try {
@@ -321,7 +318,7 @@ public class RandoListAdapter extends RecyclerView.Adapter<RandoListAdapter.Rand
                             public void onOk() {
                                 RandoDAO.deleteRandoByRandoId(holder.randoItemLayout.getContext(), holder.rando.randoId);
 
-                                notifyItemRemoved(getPositionOfRando(holder.rando.randoId));
+                                notifyItemRemoved(holder.position);
 
                                 makeText(holder.randoItemLayout.getContext(), R.string.rando_deleted,
                                         Toast.LENGTH_LONG).show();
@@ -363,7 +360,7 @@ public class RandoListAdapter extends RecyclerView.Adapter<RandoListAdapter.Rand
                             public void onOk() {
                                 RandoDAO.deleteRandoByRandoId(holder.randoItemLayout.getContext(), holder.rando.randoId);
 
-                                notifyItemRemoved(getPositionOfRando(holder.rando.randoId));
+                                notifyItemRemoved(holder.position);
 
                                 makeText(holder.randoItemLayout.getContext(), R.string.rando_reported,
                                         Toast.LENGTH_LONG).show();
@@ -442,7 +439,7 @@ public class RandoListAdapter extends RecyclerView.Adapter<RandoListAdapter.Rand
                                     public void onOk() {
                                         RandoDAO.deleteRandoByRandoId(v.getContext(), holder.rando.randoId);
 
-                                        notifyItemRemoved(getPositionOfRando(holder.rando.randoId));
+                                        notifyItemRemoved(holder.position);
 
                                         makeText(v.getContext(), R.string.rando_deleted,
                                                 Toast.LENGTH_LONG).show();
@@ -815,6 +812,7 @@ public class RandoListAdapter extends RecyclerView.Adapter<RandoListAdapter.Rand
 
     public static class RandoViewHolder extends RecyclerView.ViewHolder{
         public Rando rando;
+        public int position;
 
         public RelativeLayout randoItemLayout;
 

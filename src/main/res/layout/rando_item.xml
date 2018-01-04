@@ -4,15 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/rando_pair_padding_bottom"
+    android:layout_marginLeft="@dimen/rando_padding_portrait_column_left"
+    android:layout_marginStart="@dimen/rando_padding_portrait_column_top"
+    android:layout_marginTop="@dimen/rando_padding_portrait_column_top"
     android:tag="rando_item_layout">
 
     <ViewSwitcher
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/rando_padding_portrait_column_left"
-        android:paddingRight="@dimen/rando_padding_portrait_column_right"
-        android:paddingTop="@dimen/rando_padding_portrait_column_top"
         android:tag="viewSwitcher">
 
         <FrameLayout
