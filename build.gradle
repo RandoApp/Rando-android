@@ -110,7 +110,9 @@ configurations.all {
 dependencies {
     implementation project(':volley')
     implementation project(':CircleMenu')
-    implementation project(':CameraKit-Android')
+    //implementation project(':CameraKit-Android')
+
+    implementation 'com.wonderkiln:camerakit:0.13.0'
 
     implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
     implementation 'com.makeramen:roundedimageview:2.3.+'

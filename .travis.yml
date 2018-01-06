@@ -65,9 +65,9 @@ install:
   # Install base Android SDK
   - cd ${HOME}
   - if [ ! -d $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
-  - echo yes | sdkmanager ndk-bundle
-  - echo yes | sdkmanager "cmake;3.6.4111459"
-  - echo yes | sdkmanager "lldb;3.0"
+  #- echo yes | sdkmanager ndk-bundle
+  #- echo yes | sdkmanager "cmake;3.6.4111459"
+  #- echo yes | sdkmanager "lldb;3.0"
 
   # Install Gradle
   - if [ ! -f $DOWNLOADS_HOME/gradle.zip ]; then  wget http://services.gradle.org/distributions/gradle-4.1-all.zip -O $DOWNLOADS_HOME/gradle.zip > /dev/null; fi
@@ -79,7 +79,7 @@ install:
 #Clean up some space
   #- sdkmanager Ghbd--list || true
   #- sdkmanager --uninstall "system-images;android-16;default;armeabi-v7a"
-  #- sdkmanager --uninstall "system-images;android-17;default;armeabi-v7a"
+  - sdkmanager --uninstall "system-images;android-17;default;armeabi-v7a"
   #- sdkmanager --uninstall "system-images;android-18;default;armeabi-v7a"
   #- sdkmanager --uninstall "system-images;android-21;default;armeabi-v7a"
   #- sdkmanager --uninstall "extras;google;google_play_services"

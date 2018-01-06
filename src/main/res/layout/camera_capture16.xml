@@ -8,7 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:keepScreenOn="true"
-        android:adjustViewBounds="true"
+        android:layout_marginLeft="@dimen/rando_padding_portrait_column_left"
+        android:layout_marginRight="@dimen/rando_padding_portrait_column_right"
         app:ckPermissions="picture"
         app:ckJpegQuality="85"
         app:ckCropOutput="true" />

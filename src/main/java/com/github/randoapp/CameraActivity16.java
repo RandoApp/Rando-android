@@ -146,6 +146,8 @@ public class CameraActivity16 extends Activity {
             }
         });
 
+        adjustPreviewSize();
+
         final DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         int buttonsSideMargin = (displayMetrics.widthPixels - getResources().getDimensionPixelSize(R.dimen.rando_button_size)) / 4 - getResources().getDimensionPixelSize(R.dimen.switch_camera_button_size) / 2;
         if (Camera.getNumberOfCameras() > 1) {
@@ -231,15 +233,10 @@ public class CameraActivity16 extends Activity {
     private void adjustPreviewSize() {
         final DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
 
-        Size size = cameraView.getPreviewSize();
-        AspectRatio aspectRatio = AspectRatio.of(size.getWidth(), size.getHeight());
-
         mCameraViewleftRightMargin = (int) getResources().getDimension(R.dimen.rando_padding_portrait_column_left);
 
-        //make preview height to be aligned with width according to AspectRatio
-        int heightRatio = Math.max(aspectRatio.getX(), aspectRatio.getY());
-        int widthRatio = Math.min(aspectRatio.getX(), aspectRatio.getY());
-        mCameraViewtopBottomMargin = (displayMetrics.heightPixels - (displayMetrics.widthPixels - 2 * mCameraViewleftRightMargin) * heightRatio / widthRatio) / 2;
+        //make preview height
+        mCameraViewtopBottomMargin = (displayMetrics.heightPixels - (displayMetrics.widthPixels - 2 * mCameraViewleftRightMargin)) / 2;
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) cameraView.getLayoutParams();
         layoutParams.setMargins(mCameraViewleftRightMargin, mCameraViewtopBottomMargin, mCameraViewleftRightMargin, mCameraViewtopBottomMargin);
@@ -419,13 +416,6 @@ public class CameraActivity16 extends Activity {
         public void onEvent(CameraKitEvent event) {
             Log.d(CameraActivity16.class, "Event: " + event.getType());
             if (!mTakingPicture && CameraKitEvent.TYPE_CAMERA_OPEN.equals(event.getType())) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        adjustPreviewSize();
-                    }
-                });
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

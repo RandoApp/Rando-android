@@ -1,11 +1,11 @@
 include ':volley'
 include ':CircleMenu'
-include ':CameraKit-Android'
-include('::camerakit-core')
-include('::camerakit-vision')
+//include ':CameraKit-Android'
+//include('::camerakit-core')
+//include('::camerakit-vision')
 
 project(':volley').projectDir = new File(settingsDir, 'modules/volley')
 project(':CircleMenu').projectDir = new File(settingsDir, 'modules/CircleMenu/cmlibrary')
-project(':CameraKit-Android').projectDir = new File(settingsDir, 'modules/CameraKit-Android/camerakit')
-project(':camerakit-core').projectDir = new File(settingsDir, 'modules/CameraKit-Android/camerakit-core')
-project(':camerakit-vision').projectDir = new File(settingsDir, 'modules/CameraKit-Android/camerakit-vision')
+//project(':CameraKit-Android').projectDir = new File(settingsDir, 'modules/CameraKit-Android/camerakit')
+//project(':camerakit-core').projectDir = new File(settingsDir, 'modules/CameraKit-Android/camerakit-core')
+//project(':camerakit-vision').projectDir = new File(settingsDir, 'modules/CameraKit-Android/camerakit-vision')
