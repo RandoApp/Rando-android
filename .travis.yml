@@ -8,11 +8,11 @@ addons:
 
 env:
   matrix:
-    - ANDROID_API=27 ANDROID_ABI=x86
-    - ANDROID_API=25 ANDROID_ABI=x86
-    - ANDROID_API=22 ANDROID_ABI=x86 NEED_UPLOAD_APK=true
-    - ANDROID_API=19 ANDROID_ABI=x86
-    - ANDROID_API=16 ANDROID_ABI=x86
+    #- ANDROID_API=27 ANDROID_ABI=android=27
+    #- ANDROID_API=25 ANDROID_ABI=android-25
+    - ANDROID_API=22 ANDROID_ABI=armeabi-v7a NEED_UPLOAD_APK=true
+    - ANDROID_API=19 ANDROID_ABI=armeabi-v7a
+    - ANDROID_API=16 ANDROID_ABI=armeabi-v7a
   global:
     - secure: Kq5NpWlyXvAvzZ5UUwAxtooG7Cwtdnzh1fhCNqE2Lx2441w9aEGntd5+ffCCTCF4orRHlFIbqfE4/D1YlH6cJtP9hW37SPI8swe3r6Zyfjftakbe3ld72bVfq0f2zx5T4zln63jppMs+XxKNYjg8UswC+9C8Vi2LeJdPUC/Zdzs=
     - secure: IjasoSr9pGo8xks18EVz7Oj8EtoJnOf3cac1T563CRHtGNHVOHjGxvTJKITNYGtRnBHDJKeTa5avz30UQc2xwBpCutBkigV2+Op5KWkMTmzftXOOwwJ1ofw8jNo7dgAWkwvm3io5juIwJsqCuqd6+xJIb44tlN109GLhqAKvfzU=
@@ -30,8 +30,8 @@ android:
     #- build-tools-27.0.3
     #- android-27
     - android-$ANDROID_API
-    - sys-img-x86-android-$ANDROID_API
-    #- sys-img-armeabi-v7a-android-$ANDROID_API
+    #- sys-img-x86-android-$ANDROID_API
+    - sys-img-armeabi-v7a-android-$ANDROID_API
 
   licenses:
     - 'android-sdk-preview-license-.+'
