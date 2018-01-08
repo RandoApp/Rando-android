@@ -99,8 +99,6 @@ ext {
     targetSdkVersion = 27
     supportLibraryVersion = "27.0.2"
     firebaseLibraryVersion = "11.8.0"
-    //CameraKit version
-    versionName = "0.13.0"
 }
 
 configurations.all {
