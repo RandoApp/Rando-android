@@ -64,6 +64,7 @@ install:
   # Install tree for directory structure debug
   #- sudo apt-get install -qq tree
 
+
   # Install base Android SDK
   - cd ${HOME}
   - if [ ! -d $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
@@ -80,6 +81,7 @@ install:
 
 #Clean up some space
   - sdkmanager --list
+  - sdkmanager --licenses
   - sdkmanager --uninstall "build-tools;25.0.2"
   # Create gradle.properties with secret stroke password:
   - cd ${CI_HOME}
