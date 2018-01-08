@@ -24,7 +24,7 @@ env:
 android:
   components:
     - tools
-    - build-tools-27.0.3
+    #- build-tools-27.0.3
     - platform-tools
     - android-27
     #- extra-android-m2repository
@@ -78,21 +78,7 @@ install:
 
 #Clean up some space
   - sdkmanager --list
-  #- sdkmanager --uninstall "system-images;android-16;default;armeabi-v7a"
-  - sdkmanager --uninstall "system-images;android-17;default;armeabi-v7a"
-  - sdkmanager --uninstall "system-images;android-18;default;armeabi-v7a"
-  - sdkmanager --uninstall "system-images;android-21;default;armeabi-v7a"
-  #- sdkmanager --uninstall "extras;google;google_play_services"
-  #- sdkmanager --uninstall "extras;android;support"
-  - sdkmanager --uninstall "platforms;android-10"
-  - sdkmanager --uninstall "platforms;android-15"
-  #- sdkmanager --uninstall "platforms;android-16"
-  #- sdkmanager --uninstall "platforms;android-17"
-  #- sdkmanager --uninstall "platforms;android-18"
-  #- sdkmanager --uninstall "platforms;android-19"
-  #- sdkmanager --uninstall "platforms;android-20"
-  #- sdkmanager --uninstall "platforms;android-21"
-  #- sdkmanager --uninstall "build-tools;21.1.2"
+  - sdkmanager --uninstall "build-tools;25.0.2"
   # Create gradle.properties with secret stroke password:
   - cd ${CI_HOME}
   - echo "keyStorePassword=$KEY_STROKE_PASSWORD" > gradle.properties
