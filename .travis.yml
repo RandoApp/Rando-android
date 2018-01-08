@@ -8,8 +8,8 @@ addons:
 
 env:
   matrix:
-    - ANDROID_API=27 ANDROID_ABI=armeabi-v7a
-    - ANDROID_API=25 ANDROID_ABI=armeabi-v7a
+    - ANDROID_API=27 ANDROID_ABI=android=27
+    - ANDROID_API=25 ANDROID_ABI=android-25
     - ANDROID_API=22 ANDROID_ABI=armeabi-v7a NEED_UPLOAD_APK=true
     - ANDROID_API=19 ANDROID_ABI=armeabi-v7a
     - ANDROID_API=16 ANDROID_ABI=armeabi-v7a
