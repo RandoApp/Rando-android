@@ -4,6 +4,7 @@ addons:
   apt:
     packages:
     - lftp
+    - tree
 
 env:
   matrix:
@@ -59,21 +60,8 @@ before_install:
   - echo 'count=0' > /home/travis/.android/repositories.cfg # Avoid warning
 
 install:
-  # Install lftp for apk upload:
-  #- sudo apt-get update -qq
-  #- sudo apt-get install -qq lftp
-  #- sudo apt-get install sshpass
-  # Install tree for directory structure debug
-  #- sudo apt-get install -qq tree
-
-
-  # Install base Android SDK
   - cd ${HOME}
   - if [ ! -d $DOWNLOADS_HOME ]; then mkdir $DOWNLOADS_HOME; fi
-  #- echo yes | sdkmanager ndk-bundle
-  #- echo yes | sdkmanager "cmake;3.6.4111459"
-  #- echo yes | sdkmanager "lldb;3.0"
-
   # Install Gradle
   - if [ ! -f $DOWNLOADS_HOME/gradle.zip ]; then  wget http://services.gradle.org/distributions/gradle-4.1-all.zip -O $DOWNLOADS_HOME/gradle.zip > /dev/null; fi
   - if [ ! -d $APPS_HOME/gradle-4.1 ]; then unzip --qq $DOWNLOADS_HOME/gradle.zip -d $APPS_HOME; fi
