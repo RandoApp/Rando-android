@@ -37,6 +37,8 @@ android:
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
     - '.*intel.+'
+    - 'android-sdk-license-.+'
+    - '.+'
 git:
   depth: 3
 # Not working for public repositories :(
