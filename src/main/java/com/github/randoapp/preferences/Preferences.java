@@ -194,17 +194,5 @@ public class Preferences {
         }
     }
 
-    public static boolean getEnableVibrate(Context context) {
-        synchronized (monitor) {
-            return getSharedPreferences(context).getBoolean(ENABLE_VIBRATE, true);
-        }
-    }
-
-    public static void setEnableVibrate(Context context, boolean cameraGrid) {
-        synchronized (monitor) {
-            getSharedPreferences(context).edit().putBoolean(ENABLE_VIBRATE, cameraGrid).apply();
-        }
-    }
-
 }
 
