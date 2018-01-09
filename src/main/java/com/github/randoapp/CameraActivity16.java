@@ -38,7 +38,6 @@ import com.github.randoapp.view.CircleMaskView;
 import com.github.randoapp.view.FlipImageView;
 import com.github.randoapp.view.FocusMarkerLayout;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.wonderkiln.camerakit.AspectRatio;
 import com.wonderkiln.camerakit.CameraKit;
 import com.wonderkiln.camerakit.CameraKitEvent;
 import com.wonderkiln.camerakit.CameraKitEventCallback;
@@ -47,7 +46,6 @@ import com.wonderkiln.camerakit.CameraKitEventListenerAdapter;
 import com.wonderkiln.camerakit.CameraKitImage;
 import com.wonderkiln.camerakit.CameraView;
 import com.wonderkiln.camerakit.Facing;
-import com.wonderkiln.camerakit.Size;
 
 import java.io.File;
 import java.io.FileNotFoundException;
