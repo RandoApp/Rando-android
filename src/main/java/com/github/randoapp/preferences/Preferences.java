@@ -4,15 +4,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 
-import com.wonderkiln.camerakit.CameraKit;
+import com.otaliastudios.cameraview.Facing;
+import com.otaliastudios.cameraview.Grid;
 
 import static com.github.randoapp.Constants.ACCOUNT;
 import static com.github.randoapp.Constants.AUTH_TOKEN;
 import static com.github.randoapp.Constants.BAN_RESET_AT;
-import static com.github.randoapp.Constants.CAMERA_FACING;
+import static com.github.randoapp.Constants.CAMERA_FACING_STRING;
 import static com.github.randoapp.Constants.CAMERA_FLASH_MODE;
-import static com.github.randoapp.Constants.CAMERA_GRID;
-import static com.github.randoapp.Constants.ENABLE_VIBRATE;
+import static com.github.randoapp.Constants.CAMERA_GRID_STRING;
 import static com.github.randoapp.Constants.FIREBASE_INSTANCE_ID;
 import static com.github.randoapp.Constants.LATITUDE_PARAM;
 import static com.github.randoapp.Constants.LOCATION;
@@ -151,34 +151,34 @@ public class Preferences {
         }
     }
 
-    public static int getCameraFacing(Context context) {
+    public static Facing getCameraFacing(Context context) {
         synchronized (monitor) {
-            int facing = getSharedPreferences(context).getInt(CAMERA_FACING, CameraKit.Constants.FACING_BACK);
-            return facing == CameraKit.Constants.FACING_BACK ? CameraKit.Constants.FACING_BACK : CameraKit.Constants.FACING_FRONT;
+            Facing facing = Facing.valueOf(getSharedPreferences(context).getString(CAMERA_FACING_STRING, Facing.BACK.name()));
+            return facing;
         }
     }
 
-    public static void setCameraFacing(Context context, int cameraFacing) {
+    public static void setCameraFacing(Context context, Facing facing) {
         synchronized (monitor) {
-            getSharedPreferences(context).edit().putInt(CAMERA_FACING, cameraFacing).apply();
+            getSharedPreferences(context).edit().putString(CAMERA_FACING_STRING, facing.name()).apply();
         }
     }
 
-    public static boolean getCameraGrid(Context context) {
+    public static Grid getCameraGrid(Context context) {
         synchronized (monitor) {
-            return getSharedPreferences(context).getBoolean(CAMERA_GRID, false);
+            return Grid.valueOf(getSharedPreferences(context).getString(CAMERA_GRID_STRING, Grid.OFF.name()));
         }
     }
 
-    public static void setCameraGrid(Context context, boolean cameraGrid) {
+    public static void setCameraGrid(Context context, Grid cameraGrid) {
         synchronized (monitor) {
-            getSharedPreferences(context).edit().putBoolean(CAMERA_GRID, cameraGrid).apply();
+            getSharedPreferences(context).edit().putString(CAMERA_GRID_STRING, cameraGrid.name()).apply();
         }
     }
 
     public static int getCameraFlashMode(Context context) {
         synchronized (monitor) {
-            return getSharedPreferences(context).getInt(CAMERA_FLASH_MODE, CameraKit.Constants.FLASH_OFF);
+            return getSharedPreferences(context).getInt(CAMERA_FLASH_MODE, 0);
         }
     }
 

@@ -1,34 +1,29 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/camera_layout"
     android:background="@color/black">
 
-    <com.wonderkiln.camerakit.CameraView xmlns:app="http://schemas.android.com/apk/res-auto"
+    <com.otaliastudios.cameraview.CameraView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/camera"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:keepScreenOn="true"
+        app:cameraAudio="off"
+        app:cameraPlaySounds="false"
+        app:cameraGesturePinch="zoom"
+        app:cameraSessionType="picture"
+        app:cameraPictureSizeAspectRatio="1:1"
+        app:cameraWhiteBalance="auto"
+        app:cameraGestureScrollVertical="exposureCorrection"
         android:layout_marginLeft="@dimen/rando_padding_portrait_column_left"
         android:layout_marginRight="@dimen/rando_padding_portrait_column_right"
-        app:ckPermissions="picture"
-        app:ckJpegQuality="85"
-        app:ckCropOutput="true" />
+        android:background="@color/rando_dark_grey"/>
 
     <com.github.randoapp.view.CircleMaskView
         android:id="@+id/circle_mask"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
-    <com.github.randoapp.view.FocusMarkerLayout
-        android:id="@+id/focusMarker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/camera"
-        android:layout_alignLeft="@+id/camera"
-        android:layout_alignStart="@+id/camera"
-        android:layout_alignRight="@+id/camera"
-        android:layout_alignEnd="@+id/camera"
-        android:layout_alignTop="@+id/camera" />
 
     <LinearLayout
         android:id="@+id/progressBar"
