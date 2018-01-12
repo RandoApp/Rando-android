@@ -11,12 +11,12 @@ import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -30,27 +30,24 @@ import com.crashlytics.android.Crashlytics;
 import com.github.randoapp.animation.OnAnimationEnd;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
+import com.github.randoapp.task.CropToSquareImageTask;
 import com.github.randoapp.util.Analytics;
-import com.github.randoapp.util.FileUtil;
 import com.github.randoapp.util.LocationHelper;
 import com.github.randoapp.util.PermissionUtils;
 import com.github.randoapp.view.CircleMaskView;
 import com.github.randoapp.view.FlipImageView;
-import com.github.randoapp.view.FocusMarkerLayout;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.wonderkiln.camerakit.CameraKit;
-import com.wonderkiln.camerakit.CameraKitEvent;
-import com.wonderkiln.camerakit.CameraKitEventCallback;
-import com.wonderkiln.camerakit.CameraKitEventListener;
-import com.wonderkiln.camerakit.CameraKitEventListenerAdapter;
-import com.wonderkiln.camerakit.CameraKitImage;
-import com.wonderkiln.camerakit.CameraView;
-import com.wonderkiln.camerakit.Facing;
+import com.otaliastudios.cameraview.CameraListener;
+import com.otaliastudios.cameraview.CameraOptions;
+import com.otaliastudios.cameraview.CameraView;
+import com.otaliastudios.cameraview.Facing;
+import com.otaliastudios.cameraview.Flash;
+import com.otaliastudios.cameraview.Gesture;
+import com.otaliastudios.cameraview.GestureAction;
+import com.otaliastudios.cameraview.Grid;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -58,7 +55,6 @@ import static com.github.randoapp.Constants.CAMERA_ACTIVITY_CAMERA_PERMISSION_RE
 import static com.github.randoapp.Constants.CAMERA_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.CAMERA_PERMISSION_REQUEST_CODE;
 import static com.github.randoapp.Constants.LOCATION_PERMISSION_REQUEST_CODE;
-import static com.github.randoapp.Constants.RANDO_PHOTO_PATH;
 
 public class CameraActivity16 extends Activity {
 
@@ -102,16 +98,18 @@ public class CameraActivity16 extends Activity {
     private Handler mBackgroundHandler;
     private FirebaseAnalytics mFirebaseAnalytics;
     private CircleMaskView circleMaskView;
-    private FocusMarkerLayout focusMarker;
-    @Facing
-    private int mCurrentFacing;
+    //private FocusMarkerLayout focusMarker;
+    private Facing mCurrentFacing;
+    private Grid gridMode;
     private boolean mTakingPicture = false;
 
-    private static final SparseArrayCompat<Integer> CAMERA_FACING_ICONS = new SparseArrayCompat<>();
+    private CropToSquareImageTask mCropTask;
+
+    private static final Map<Facing, Integer> CAMERA_FACING_ICONS = new HashMap<>(2);
 
     static {
-        CAMERA_FACING_ICONS.put(CameraKit.Constants.FACING_FRONT, R.drawable.ic_camera_front_white_24dp);
-        CAMERA_FACING_ICONS.put(CameraKit.Constants.FACING_BACK, R.drawable.ic_camera_rear_white_24dp);
+        CAMERA_FACING_ICONS.put(Facing.FRONT, R.drawable.ic_camera_front_white_24dp);
+        CAMERA_FACING_ICONS.put(Facing.BACK, R.drawable.ic_camera_rear_white_24dp);
     }
 
     @Override
@@ -123,13 +121,12 @@ public class CameraActivity16 extends Activity {
         Fabric.with(this, new Crashlytics());
 
         cameraView = findViewById(R.id.camera);
-        cameraView.addCameraKitListener(mCKEventListener);
-        cameraView.setFlash(CameraKit.Constants.FLASH_OFF);
-        cameraView.setFocus(CameraKit.Constants.FOCUS_TAP);
+        cameraView.addCameraListener(mCKEventListener);
+        cameraView.setFlash(Flash.OFF);
+        cameraView.mapGesture(Gesture.PINCH, GestureAction.ZOOM); // Pinch to zoom!
+        cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER); // Tap to focus!
 
-        focusMarker = findViewById(R.id.focusMarker);
-
-        cameraView.setFlash(Preferences.getCameraFlashMode(getBaseContext()));
+        //focusMarker = findViewById(R.id.focusMarker);
 
         captureButton = findViewById(R.id.capture_button);
         captureButton.setOnClickListener(new CameraActivity16.CaptureButtonListener());
@@ -143,7 +140,7 @@ public class CameraActivity16 extends Activity {
                 finish();
             }
         });
-
+        circleMaskView = findViewById(R.id.circle_mask);
         adjustPreviewSize();
 
         final DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
@@ -162,12 +159,12 @@ public class CameraActivity16 extends Activity {
                 public void onClick(View v) {
                     enableButtons(false);
                     if (cameraView != null) {
-                        int facing;
-                        if (mCurrentFacing == CameraKit.Constants.FACING_FRONT) {
-                            facing = CameraKit.Constants.FACING_BACK;
+                        Facing facing;
+                        if (mCurrentFacing == Facing.FRONT) {
+                            facing = Facing.BACK;
                             Analytics.logSwitchCameraToBack(mFirebaseAnalytics);
                         } else {
-                            facing = CameraKit.Constants.FACING_FRONT;
+                            facing = Facing.FRONT;
                             Analytics.logSwitchCameraToFront(mFirebaseAnalytics);
                         }
                         cameraSwitchButton.flipView(CAMERA_FACING_ICONS.get(facing), 0, null);
@@ -179,16 +176,14 @@ public class CameraActivity16 extends Activity {
                 }
             });
         }
-        circleMaskView = findViewById(R.id.circle_mask);
-        circleMaskView.setDrawGrid(Preferences.getCameraGrid(getBaseContext()));
+        cameraView.setGrid(Preferences.getCameraGrid(getBaseContext()));
         circleMaskView.setOnTouchListener(
                 new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
-                        if (mCurrentFacing == CameraKit.Constants.FACING_FRONT) {
+                        if (mCurrentFacing == Facing.FRONT) {
                             return true;
                         }
-                        Log.d(CameraActivity16.class, event.toString());
                         int size = Math.min(displayMetrics.heightPixels, displayMetrics.widthPixels);
                         float radius = size / 2.0f;
                         float delta = (displayMetrics.heightPixels - displayMetrics.widthPixels) / 2;
@@ -196,7 +191,6 @@ public class CameraActivity16 extends Activity {
                         float eY = event.getY() - radius - delta;
                         float vector = (float) Math.sqrt(eX * eX + eY * eY);
                         if (vector < radius) {
-                            focusMarker.focus(event.getX(), event.getY(), mCameraViewleftRightMargin, mCameraViewtopBottomMargin);
                             return false;
                         }
                         return true;
@@ -210,15 +204,18 @@ public class CameraActivity16 extends Activity {
         gridButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                circleMaskView.setDrawGrid(!circleMaskView.isDrawGrid());
-                Preferences.setCameraGrid(getBaseContext(), circleMaskView.isDrawGrid());
+                if (Grid.OFF.equals(cameraView.getGrid())) {
+                    cameraView.setGrid(Grid.DRAW_3X3);
+                } else {
+                    cameraView.setGrid(Grid.OFF);
+                }
+                Preferences.setCameraGrid(getBaseContext(), cameraView.getGrid());
                 OnAnimationEnd onAnimationEnd = new OnAnimationEnd() {
                     @Override
                     public void onEnd() {
-                        circleMaskView.invalidate();
                     }
                 };
-                if (circleMaskView.isDrawGrid()) {
+                if (cameraView.getGrid().equals(Grid.DRAW_3X3)) {
                     gridButton.flipView(R.drawable.ic_grid_on_white_24dp, R.drawable.switch_camera_background, onAnimationEnd);
                 } else {
                     gridButton.flipView(R.drawable.ic_grid_off_white_24dp, R.drawable.camera_action_button_background_off, onAnimationEnd);
@@ -239,6 +236,9 @@ public class CameraActivity16 extends Activity {
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) cameraView.getLayoutParams();
         layoutParams.setMargins(mCameraViewleftRightMargin, mCameraViewtopBottomMargin, mCameraViewleftRightMargin, mCameraViewtopBottomMargin);
         cameraView.setLayoutParams(layoutParams);
+        layoutParams = (RelativeLayout.LayoutParams) circleMaskView.getLayoutParams();
+        layoutParams.setMargins(mCameraViewleftRightMargin, mCameraViewtopBottomMargin, mCameraViewleftRightMargin, mCameraViewtopBottomMargin);
+        circleMaskView.setLayoutParams(layoutParams);
     }
 
     @Override
@@ -287,20 +287,21 @@ public class CameraActivity16 extends Activity {
     }
 
     private void setupGridIcon() {
-        if (circleMaskView.isDrawGrid()) {
+        if (Grid.DRAW_3X3.equals(cameraView.getGrid())) {
             gridButton.setImageResource(R.drawable.ic_grid_on_white_24dp);
             gridButton.setBackgroundResource(R.drawable.switch_camera_background);
         } else {
             gridButton.setImageResource(R.drawable.ic_grid_off_white_24dp);
             gridButton.setBackgroundResource(R.drawable.camera_action_button_background_off);
         }
-        circleMaskView.invalidate();
+        //circleMaskView.invalidate();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         cameraView.stop();
+        circleMaskView.recycle();
         mUnexpectedTerminationHelper.fini();
         if (progressBar.getVisibility() != View.GONE) {
             progressBar.setVisibility(View.GONE);
@@ -377,43 +378,19 @@ public class CameraActivity16 extends Activity {
         public void onClick(View v) {
             Log.d(CameraActivity16.class, "Take Pic Click ");
             enableButtons(false);
-            cameraView.captureImage(new CameraKitEventCallback<CameraKitImage>() {
-                @Override
-                public void callback(CameraKitImage event) {
-                    Log.d(CameraKitEventCallback.class, "onPictureTaken.callback " + event.getJpeg().length + "Thread " + Thread.currentThread());
-
-                    File image = null;
-                    try {
-                        image = FileUtil.getOutputMediaFile();
-                        FileOutputStream fos = new FileOutputStream(image);
-                        fos.write(event.getJpeg());
-                        fos.close();
-                        Log.d(CameraKitEventCallback.class, "Camera Pic Processed.");
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    Intent intent = new Intent(CAMERA_BROADCAST_EVENT);
-                    if (image != null && mTakingPicture) {
-                        intent.putExtra(RANDO_PHOTO_PATH, image.getAbsolutePath());
-                        LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
-                    }
-                }
-            });
+            cameraView.capturePicture();
             mTakingPicture = true;
             progressBar.setVisibility(View.VISIBLE);
             Analytics.logTakeRando(mFirebaseAnalytics);
         }
     }
 
-    private CameraKitEventListener mCKEventListener
-            = new CameraKitEventListenerAdapter() {
+    private CameraListener mCKEventListener
+            = new CameraListener() {
 
         @Override
-        public void onEvent(CameraKitEvent event) {
-            Log.d(CameraActivity16.class, "Event: " + event.getType());
-            if (!mTakingPicture && CameraKitEvent.TYPE_CAMERA_OPEN.equals(event.getType())) {
+        public void onCameraOpened(CameraOptions options) {
+            if (!mTakingPicture) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -426,22 +403,29 @@ public class CameraActivity16 extends Activity {
                                 500);
                     }
                 });
-            } else if (CameraKitEvent.TYPE_CAMERA_CLOSE.equals(event.getType())) {
-                Log.d(CameraKitEventListener.class, "onCameraClosed");
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        enableButtons(false);
-                    }
-                });
             }
         }
 
-        @Override
-        public void onImage(CameraKitImage image) {
+        public void onCameraClosed() {
+            enableButtons(false);
+        }
+
+        public void onPictureTaken(byte[] jpeg) {
             cameraView.stop();
+
+            mCropTask = new CropToSquareImageTask(jpeg, mCurrentFacing == Facing.FRONT, getBaseContext());
+            getBackgroundHandler().post(mCropTask);
         }
     };
+
+    private Handler getBackgroundHandler() {
+        if (mBackgroundHandler == null) {
+            HandlerThread thread = new HandlerThread("background");
+            thread.start();
+            mBackgroundHandler = new Handler(thread.getLooper());
+        }
+        return mBackgroundHandler;
+    }
 
     private class UnexpectedTerminationHelper {
         private Thread mThread;
