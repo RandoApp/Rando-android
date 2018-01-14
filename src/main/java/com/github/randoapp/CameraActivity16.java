@@ -98,9 +98,7 @@ public class CameraActivity16 extends Activity {
     private Handler mBackgroundHandler;
     private FirebaseAnalytics mFirebaseAnalytics;
     private CircleMaskView circleMaskView;
-    //private FocusMarkerLayout focusMarker;
     private Facing mCurrentFacing;
-    private Grid gridMode;
     private boolean mTakingPicture = false;
 
     private CropToSquareImageTask mCropTask;
@@ -177,26 +175,6 @@ public class CameraActivity16 extends Activity {
             });
         }
         cameraView.setGrid(Preferences.getCameraGrid(getBaseContext()));
-        circleMaskView.setOnTouchListener(
-                new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        if (mCurrentFacing == Facing.FRONT) {
-                            return true;
-                        }
-                        int size = Math.min(displayMetrics.heightPixels, displayMetrics.widthPixels);
-                        float radius = size / 2.0f;
-                        float delta = (displayMetrics.heightPixels - displayMetrics.widthPixels) / 2;
-                        float eX = event.getX() - radius;
-                        float eY = event.getY() - radius - delta;
-                        float vector = (float) Math.sqrt(eX * eX + eY * eY);
-                        if (vector < radius) {
-                            return false;
-                        }
-                        return true;
-                    }
-                }
-        );
         gridButton = findViewById(R.id.grid_button);
         RelativeLayout.LayoutParams gridButtonLayoutParams = (RelativeLayout.LayoutParams) gridButton.getLayoutParams();
         gridButtonLayoutParams.setMargins(0, 0, buttonsSideMargin, getResources().getDimensionPixelSize(R.dimen.switch_camera_margin_bottom));

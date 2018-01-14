@@ -17,8 +17,7 @@
         app:cameraWhiteBalance="auto"
         app:cameraGestureScrollVertical="exposureCorrection"
         android:layout_marginLeft="@dimen/rando_padding_portrait_column_left"
-        android:layout_marginRight="@dimen/rando_padding_portrait_column_right"
-        android:background="@color/rando_dark_grey"/>
+        android:layout_marginRight="@dimen/rando_padding_portrait_column_right" />
 
     <com.github.randoapp.view.CircleMaskView
         android:id="@+id/circle_mask"
