@@ -19,7 +19,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -89,8 +88,6 @@ public class CameraActivity16 extends Activity {
     private boolean isReturningFromLocationPermissionRequest = false;
 
     private CameraView cameraView;
-    private int mCameraViewleftRightMargin = 0;
-    private int mCameraViewtopBottomMargin = 0;
     private ImageView captureButton;
     private FlipImageView cameraSwitchButton;
     private FlipImageView gridButton;
@@ -119,7 +116,7 @@ public class CameraActivity16 extends Activity {
         Fabric.with(this, new Crashlytics());
 
         cameraView = findViewById(R.id.camera);
-        cameraView.addCameraListener(mCKEventListener);
+        cameraView.addCameraListener(cameraListener);
         cameraView.setFlash(Flash.OFF);
         cameraView.mapGesture(Gesture.PINCH, GestureAction.ZOOM); // Pinch to zoom!
         cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER); // Tap to focus!
@@ -203,19 +200,20 @@ public class CameraActivity16 extends Activity {
         setupGridIcon();
     }
 
+    /**
+     * Makes camera preview to be Square
+     */
     private void adjustPreviewSize() {
         final DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
 
-        mCameraViewleftRightMargin = (int) getResources().getDimension(R.dimen.rando_padding_portrait_column_left);
-
-        //make preview height
-        mCameraViewtopBottomMargin = (displayMetrics.heightPixels - (displayMetrics.widthPixels - 2 * mCameraViewleftRightMargin)) / 2;
+        int cameraViewleftRightMargin = (int) getResources().getDimension(R.dimen.rando_padding_portrait_column_left);
+        int cameraViewtopBottomMargin = (displayMetrics.heightPixels - (displayMetrics.widthPixels - 2 * cameraViewleftRightMargin)) / 2;
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) cameraView.getLayoutParams();
-        layoutParams.setMargins(mCameraViewleftRightMargin, mCameraViewtopBottomMargin, mCameraViewleftRightMargin, mCameraViewtopBottomMargin);
+        layoutParams.setMargins(cameraViewleftRightMargin, cameraViewtopBottomMargin, cameraViewleftRightMargin, cameraViewtopBottomMargin);
         cameraView.setLayoutParams(layoutParams);
         layoutParams = (RelativeLayout.LayoutParams) circleMaskView.getLayoutParams();
-        layoutParams.setMargins(mCameraViewleftRightMargin, mCameraViewtopBottomMargin, mCameraViewleftRightMargin, mCameraViewtopBottomMargin);
+        layoutParams.setMargins(cameraViewleftRightMargin, cameraViewtopBottomMargin, cameraViewleftRightMargin, cameraViewtopBottomMargin);
         circleMaskView.setLayoutParams(layoutParams);
     }
 
@@ -272,7 +270,6 @@ public class CameraActivity16 extends Activity {
             gridButton.setImageResource(R.drawable.ic_grid_off_white_24dp);
             gridButton.setBackgroundResource(R.drawable.camera_action_button_background_off);
         }
-        //circleMaskView.invalidate();
     }
 
     @Override
@@ -284,6 +281,7 @@ public class CameraActivity16 extends Activity {
         if (progressBar.getVisibility() != View.GONE) {
             progressBar.setVisibility(View.GONE);
         }
+        stopCropTask();
         if (mBackgroundHandler != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 mBackgroundHandler.getLooper().quitSafely();
@@ -321,6 +319,13 @@ public class CameraActivity16 extends Activity {
                     break;
             }
         }
+    }
+
+    private void stopCropTask() {
+        if (mCropTask != null) {
+            mCropTask.cancel();
+        }
+        mCropTask = null;
     }
 
     public void updateLocation() {
@@ -363,7 +368,7 @@ public class CameraActivity16 extends Activity {
         }
     }
 
-    private CameraListener mCKEventListener
+    private CameraListener cameraListener
             = new CameraListener() {
 
         @Override
@@ -373,12 +378,11 @@ public class CameraActivity16 extends Activity {
                     @Override
                     public void run() {
                         new Handler().postDelayed(new Runnable() {
-                                                      @Override
-                                                      public void run() {
-                                                          enableButtons(true);
-                                                      }
-                                                  },
-                                500);
+                            @Override
+                            public void run() {
+                                enableButtons(true);
+                            }
+                        }, 500);
                     }
                 });
             }

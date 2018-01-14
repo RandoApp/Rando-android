@@ -27,10 +27,7 @@ android:
   components:
     - tools
     - platform-tools
-    #- build-tools-27.0.3
-    #- android-27
     - android-$ANDROID_API
-    #- sys-img-x86-android-$ANDROID_API
     - sys-img-armeabi-v7a-android-$ANDROID_API
 
   licenses:
@@ -38,8 +35,6 @@ android:
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
     - '.*intel.+'
-    - 'android-sdk-license-.+'
-    - '.+'
 git:
   depth: 3
 cache:
@@ -81,10 +76,7 @@ install:
   - echo "apiSecret=$CRASHLITICS_SECRET" >> fabric.properties
   #Download rando.keystore:
   - lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "get rando.keystore; ; bye";
-  #- export SSHPASS=$APK_UPLOAD_PASS
-  #- sshpass scp travis@rando4.me:/home/travis/rando.keystore $HOME/.android/
   - mv rando.keystore $HOME/.android/
-  #- sshpass scp travis@rando4.me:/home/travis/google-services.json ./
   - lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "get google-services.json; ; bye";
 # Create and start emulator
   # For a full list of android targets, run "android list targets"
@@ -101,9 +93,4 @@ script:
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   - if [ $NEED_UPLOAD_APK ]; then gradle assembleRelease -x lint; fi
-  #- tree build/outputs
   - if [ $NEED_UPLOAD_APK ]; then lftp "sftp://travis:$APK_UPLOAD_PASS@rando4.me" -e "put build/outputs/apk/release/Rando-android-release.apk; bye"; fi
-
-after_failure:
-  #- sudo apt-get install -qq pandoc
-  #- pandoc /home/travis/build/RandoApp/Rando-android/build/reports/androidTests/connected/index.html -t plain | sed -n '/^Failed tests/,/default-package/p'

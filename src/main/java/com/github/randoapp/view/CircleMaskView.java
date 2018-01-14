@@ -64,7 +64,6 @@ public class CircleMaskView extends View {
             initMask(height, width);
         }
 
-        //setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         canvas.drawBitmap(bitmap, 0, 0, null);
     }
 

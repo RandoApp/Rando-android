@@ -16,19 +16,19 @@ public class RandoFromJsonTest {
         InputStream is = getClass().getResourceAsStream(fileName);
         assertThat(is).isNotNull();
 
-        String theString = "";
+        StringBuilder theString = new StringBuilder();
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             String sCurrentLine;
 
             while ((sCurrentLine = br.readLine()) != null) {
-                theString += sCurrentLine;
+                theString.append(sCurrentLine);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         assertThat(theString).isNotEmpty();
-        return theString;
+        return theString.toString();
     }
 
     @Test
