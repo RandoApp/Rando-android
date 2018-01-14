@@ -25,10 +25,6 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.microphone" tools:node="remove" />
 
-    <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="25" />
-
     <application
         android:name=".App"
         android:allowBackup="true"
