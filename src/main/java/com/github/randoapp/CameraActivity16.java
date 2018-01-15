@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,6 +37,7 @@ import com.github.randoapp.util.PermissionUtils;
 import com.github.randoapp.view.CircleMaskView;
 import com.github.randoapp.view.FlipImageView;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.otaliastudios.cameraview.CameraException;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraView;
@@ -220,6 +222,7 @@ public class CameraActivity16 extends Activity {
     @Override
     public void onResume() {
         super.onResume();
+        switchSound(true);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(CAMERA_BROADCAST_EVENT));
     }
 
@@ -276,6 +279,7 @@ public class CameraActivity16 extends Activity {
     protected void onPause() {
         super.onPause();
         cameraView.stop();
+        switchSound(true);
         circleMaskView.recycle();
         mUnexpectedTerminationHelper.fini();
         if (progressBar.getVisibility() != View.GONE) {
@@ -361,6 +365,7 @@ public class CameraActivity16 extends Activity {
         public void onClick(View v) {
             Log.d(CameraActivity16.class, "Take Pic Click ");
             enableButtons(false);
+            switchSound(false);
             cameraView.capturePicture();
             mTakingPicture = true;
             progressBar.setVisibility(View.VISIBLE);
@@ -394,11 +399,21 @@ public class CameraActivity16 extends Activity {
 
         public void onPictureTaken(byte[] jpeg) {
             cameraView.stop();
-
+            switchSound(true);
             mCropTask = new CropToSquareImageTask(jpeg, mCurrentFacing == Facing.FRONT, getBaseContext());
             getBackgroundHandler().post(mCropTask);
         }
+
+        @Override
+        public void onCameraError(@NonNull CameraException exception) {
+            switchSound(true);
+        }
     };
+
+    private void switchSound(boolean on) {
+        AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        mgr.setStreamMute(AudioManager.STREAM_SYSTEM, !on);
+    }
 
     private Handler getBackgroundHandler() {
         if (mBackgroundHandler == null) {
