@@ -4,3 +4,6 @@
 [submodule "modules/CircleMenu"]
 	path = modules/CircleMenu
 	url = https://github.com/RandoApp/CircleMenu.git
+[submodule "modules/CameraView"]
+	path = modules/CameraView
+	url = https://github.com/RandoApp/CameraView.git

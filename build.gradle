@@ -9,6 +9,8 @@ buildscript {
         classpath 'com.google.gms:google-services:3.1.2'
         classpath 'com.dicedmelon.gradle:jacoco-android:0.1.2'
         classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
     }
 }
 apply plugin: 'com.android.application'
@@ -94,6 +96,7 @@ ext {
     buildToolsVersion = "27.0.3"
     minSdkVersion = 16
     targetSdkVersion = 27
+    supportLibVersion = "27.0.2"
     supportLibraryVersion = "27.0.2"
     firebaseLibraryVersion = "11.8.0"
 }
@@ -105,8 +108,7 @@ configurations.all {
 dependencies {
     implementation project(':volley')
     implementation project(':CircleMenu')
-
-    implementation 'com.otaliastudios:cameraview:1.4.1'
+    implementation project(':CameraView')
 
     implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
     implementation 'com.makeramen:roundedimageview:2.3.+'

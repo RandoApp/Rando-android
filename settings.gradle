@@ -1,5 +1,7 @@
 include ':volley'
 include ':CircleMenu'
+include ':CameraView'
 
 project(':volley').projectDir = new File(settingsDir, 'modules/volley')
 project(':CircleMenu').projectDir = new File(settingsDir, 'modules/CircleMenu/cmlibrary')
+project(':CameraView').projectDir = new File(settingsDir, 'modules/CameraView/cameraview')
