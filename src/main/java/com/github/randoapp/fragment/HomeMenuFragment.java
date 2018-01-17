@@ -74,15 +74,6 @@ public class HomeMenuFragment extends Fragment {
             }
         });
 
-        CheckBox enablebleVibrate = (CheckBox) rootView.findViewById(R.id.enable_vibrate);
-        enablebleVibrate.setChecked(Preferences.getEnableVibrate(getContext()));
-        enablebleVibrate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Preferences.setEnableVibrate(getContext(), isChecked);
-            }
-        });
-
         accountName = (TextView) rootView.findViewById(R.id.accountName);
         initVersion(rootView);
         initHelp(rootView);

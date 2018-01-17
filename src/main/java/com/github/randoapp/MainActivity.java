@@ -81,6 +81,8 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Fabric.with(this, new Crashlytics());
+        //reset ban. Will be set again after next Forbidden upload.
+        Preferences.setBanResetAt(getBaseContext(), 0);
     }
 
     private Fragment getFragment() {

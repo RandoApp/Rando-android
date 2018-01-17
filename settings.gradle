@@ -1,7 +1,7 @@
 include ':volley'
 include ':CircleMenu'
-include ':CameraKit-Android'
+include ':CameraView'
 
 project(':volley').projectDir = new File(settingsDir, 'modules/volley')
 project(':CircleMenu').projectDir = new File(settingsDir, 'modules/CircleMenu/cmlibrary')
-project(':CameraKit-Android').projectDir = new File(settingsDir, 'modules/CameraKit-Android/camerakit')
+project(':CameraView').projectDir = new File(settingsDir, 'modules/CameraView/cameraview')

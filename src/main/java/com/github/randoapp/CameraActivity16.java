@@ -7,37 +7,26 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.YuvImage;
 import android.hardware.Camera;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.flurgle.camerakit.AspectRatio;
-import com.flurgle.camerakit.CameraKit;
-import com.flurgle.camerakit.CameraListener;
-import com.flurgle.camerakit.CameraView;
-import com.flurgle.camerakit.Facing;
-import com.flurgle.camerakit.Size;
-import com.github.randoapp.animation.AnimationFactory;
 import com.github.randoapp.animation.OnAnimationEnd;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
@@ -47,10 +36,19 @@ import com.github.randoapp.util.LocationHelper;
 import com.github.randoapp.util.PermissionUtils;
 import com.github.randoapp.view.CircleMaskView;
 import com.github.randoapp.view.FlipImageView;
-import com.github.randoapp.view.FocusMarkerLayout;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.otaliastudios.cameraview.CameraException;
+import com.otaliastudios.cameraview.CameraListener;
+import com.otaliastudios.cameraview.CameraOptions;
+import com.otaliastudios.cameraview.CameraView;
+import com.otaliastudios.cameraview.Facing;
+import com.otaliastudios.cameraview.Flash;
+import com.otaliastudios.cameraview.Gesture;
+import com.otaliastudios.cameraview.GestureAction;
+import com.otaliastudios.cameraview.Grid;
 
-import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -92,26 +90,23 @@ public class CameraActivity16 extends Activity {
     private boolean isReturningFromLocationPermissionRequest = false;
 
     private CameraView cameraView;
-    private int mCameraViewleftRightMargin = 0;
-    private int mCameraViewtopBottomMargin = 0;
     private ImageView captureButton;
     private FlipImageView cameraSwitchButton;
     private FlipImageView gridButton;
     private LinearLayout progressBar;
     private Handler mBackgroundHandler;
     private FirebaseAnalytics mFirebaseAnalytics;
-    private Animation[] leftToRightAnimation;
     private CircleMaskView circleMaskView;
-    private FocusMarkerLayout focusMarker;
-    private CropToSquareImageTask mCropTask;
-    @Facing
-    private int mCurrentFacing;
+    private Facing mCurrentFacing;
+    private boolean mTakingPicture = false;
 
-    private static final SparseArrayCompat<Integer> CAMERA_FACING_ICONS = new SparseArrayCompat<>();
+    private CropToSquareImageTask mCropTask;
+
+    private static final Map<Facing, Integer> CAMERA_FACING_ICONS = new HashMap<>(2);
 
     static {
-        CAMERA_FACING_ICONS.put(CameraKit.Constants.FACING_FRONT, R.drawable.ic_camera_front_white_24dp);
-        CAMERA_FACING_ICONS.put(CameraKit.Constants.FACING_BACK, R.drawable.ic_camera_rear_white_24dp);
+        CAMERA_FACING_ICONS.put(Facing.FRONT, R.drawable.ic_camera_front_white_24dp);
+        CAMERA_FACING_ICONS.put(Facing.BACK, R.drawable.ic_camera_rear_white_24dp);
     }
 
     @Override
@@ -122,20 +117,19 @@ public class CameraActivity16 extends Activity {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         Fabric.with(this, new Crashlytics());
 
-        cameraView = (CameraView) findViewById(R.id.camera);
-        cameraView.setCameraListener(mCallback);
-        cameraView.setFlash(CameraKit.Constants.FLASH_OFF);
-        cameraView.setFocus(CameraKit.Constants.FOCUS_TAP);
+        cameraView = findViewById(R.id.camera);
+        cameraView.addCameraListener(cameraListener);
+        cameraView.setFlash(Flash.OFF);
+        cameraView.mapGesture(Gesture.PINCH, GestureAction.ZOOM); // Pinch to zoom!
+        cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER); // Tap to focus!
 
-        focusMarker = (FocusMarkerLayout) findViewById(R.id.focusMarker);
+        //focusMarker = findViewById(R.id.focusMarker);
 
-        cameraView.setFlash(Preferences.getCameraFlashMode(getBaseContext()));
-
-        captureButton = (ImageView) findViewById(R.id.capture_button);
+        captureButton = findViewById(R.id.capture_button);
         captureButton.setOnClickListener(new CameraActivity16.CaptureButtonListener());
         enableButtons(false);
 
-        progressBar = (LinearLayout) findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progressBar);
 
         findViewById(R.id.back_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,12 +137,13 @@ public class CameraActivity16 extends Activity {
                 finish();
             }
         });
+        circleMaskView = findViewById(R.id.circle_mask);
+        adjustPreviewSize();
 
         final DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         int buttonsSideMargin = (displayMetrics.widthPixels - getResources().getDimensionPixelSize(R.dimen.rando_button_size)) / 4 - getResources().getDimensionPixelSize(R.dimen.switch_camera_button_size) / 2;
-        leftToRightAnimation = AnimationFactory.flipAnimation(getResources().getDimensionPixelSize(R.dimen.switch_camera_button_size), AnimationFactory.FlipDirection.LEFT_RIGHT, 150, null);
         if (Camera.getNumberOfCameras() > 1) {
-            cameraSwitchButton = (FlipImageView) findViewById(R.id.camera_switch_button);
+            cameraSwitchButton = findViewById(R.id.camera_switch_button);
             RelativeLayout.LayoutParams cameraSwitchButtonLayoutParams = (RelativeLayout.LayoutParams) cameraSwitchButton.getLayoutParams();
             cameraSwitchButtonLayoutParams.setMargins(buttonsSideMargin, 0, 0, getResources().getDimensionPixelSize(R.dimen.switch_camera_margin_bottom));
             cameraSwitchButton.setLayoutParams(cameraSwitchButtonLayoutParams);
@@ -161,12 +156,12 @@ public class CameraActivity16 extends Activity {
                 public void onClick(View v) {
                     enableButtons(false);
                     if (cameraView != null) {
-                        int facing;
-                        if (mCurrentFacing == CameraKit.Constants.FACING_FRONT) {
-                            facing = CameraKit.Constants.FACING_BACK;
+                        Facing facing;
+                        if (mCurrentFacing == Facing.FRONT) {
+                            facing = Facing.BACK;
                             Analytics.logSwitchCameraToBack(mFirebaseAnalytics);
                         } else {
-                            facing = CameraKit.Constants.FACING_FRONT;
+                            facing = Facing.FRONT;
                             Analytics.logSwitchCameraToFront(mFirebaseAnalytics);
                         }
                         cameraSwitchButton.flipView(CAMERA_FACING_ICONS.get(facing), 0, null);
@@ -178,46 +173,26 @@ public class CameraActivity16 extends Activity {
                 }
             });
         }
-        circleMaskView = (CircleMaskView) findViewById(R.id.circle_mask);
-        circleMaskView.setDrawGrid(Preferences.getCameraGrid(getBaseContext()));
-        circleMaskView.setOnTouchListener(
-                new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        if (mCurrentFacing == CameraKit.Constants.FACING_FRONT) {
-                            return true;
-                        }
-                        Log.d(CameraActivity16.class, event.toString());
-                        int size = Math.min(displayMetrics.heightPixels, displayMetrics.widthPixels);
-                        float radius = size / 2.0f;
-                        float delta = (displayMetrics.heightPixels - displayMetrics.widthPixels) / 2;
-                        float eX = event.getX() - radius;
-                        float eY = event.getY() - radius - delta;
-                        float vector = (float) Math.sqrt(eX * eX + eY * eY);
-                        if (vector < radius) {
-                            focusMarker.focus(event.getX(), event.getY(), mCameraViewleftRightMargin, mCameraViewtopBottomMargin);
-                            return false;
-                        }
-                        return true;
-                    }
-                }
-        );
-        gridButton = (FlipImageView) findViewById(R.id.grid_button);
+        cameraView.setGrid(Preferences.getCameraGrid(getBaseContext()));
+        gridButton = findViewById(R.id.grid_button);
         RelativeLayout.LayoutParams gridButtonLayoutParams = (RelativeLayout.LayoutParams) gridButton.getLayoutParams();
         gridButtonLayoutParams.setMargins(0, 0, buttonsSideMargin, getResources().getDimensionPixelSize(R.dimen.switch_camera_margin_bottom));
         gridButton.setLayoutParams(gridButtonLayoutParams);
         gridButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                circleMaskView.setDrawGrid(!circleMaskView.isDrawGrid());
-                Preferences.setCameraGrid(getBaseContext(), circleMaskView.isDrawGrid());
+                if (Grid.OFF.equals(cameraView.getGrid())) {
+                    cameraView.setGrid(Grid.DRAW_3X3);
+                } else {
+                    cameraView.setGrid(Grid.OFF);
+                }
+                Preferences.setCameraGrid(getBaseContext(), cameraView.getGrid());
                 OnAnimationEnd onAnimationEnd = new OnAnimationEnd() {
                     @Override
                     public void onEnd() {
-                        circleMaskView.invalidate();
                     }
                 };
-                if (circleMaskView.isDrawGrid()) {
+                if (cameraView.getGrid().equals(Grid.DRAW_3X3)) {
                     gridButton.flipView(R.drawable.ic_grid_on_white_24dp, R.drawable.switch_camera_background, onAnimationEnd);
                 } else {
                     gridButton.flipView(R.drawable.ic_grid_off_white_24dp, R.drawable.camera_action_button_background_off, onAnimationEnd);
@@ -227,27 +202,27 @@ public class CameraActivity16 extends Activity {
         setupGridIcon();
     }
 
+    /**
+     * Makes camera preview to be Square
+     */
     private void adjustPreviewSize() {
         final DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
 
-        Size size = cameraView.getPreviewSize();
-        AspectRatio aspectRatio = AspectRatio.of(size.getWidth(), size.getHeight());
-
-        mCameraViewleftRightMargin = (int) getResources().getDimension(R.dimen.rando_padding_portrait_column_left);
-
-        //make preview height to be aligned with width according to AspectRatio
-        int heightRatio = Math.max(aspectRatio.getX(), aspectRatio.getY());
-        int widthRatio = Math.min(aspectRatio.getX(), aspectRatio.getY());
-        mCameraViewtopBottomMargin = (displayMetrics.heightPixels - (displayMetrics.widthPixels - 2 * mCameraViewleftRightMargin) * heightRatio / widthRatio) / 2;
+        int cameraViewleftRightMargin = (int) getResources().getDimension(R.dimen.rando_padding_portrait_column_left);
+        int cameraViewtopBottomMargin = (displayMetrics.heightPixels - (displayMetrics.widthPixels - 2 * cameraViewleftRightMargin)) / 2;
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) cameraView.getLayoutParams();
-        layoutParams.setMargins(mCameraViewleftRightMargin, mCameraViewtopBottomMargin, mCameraViewleftRightMargin, mCameraViewtopBottomMargin);
+        layoutParams.setMargins(cameraViewleftRightMargin, cameraViewtopBottomMargin, cameraViewleftRightMargin, cameraViewtopBottomMargin);
         cameraView.setLayoutParams(layoutParams);
+        layoutParams = (RelativeLayout.LayoutParams) circleMaskView.getLayoutParams();
+        layoutParams.setMargins(cameraViewleftRightMargin, cameraViewtopBottomMargin, cameraViewleftRightMargin, cameraViewtopBottomMargin);
+        circleMaskView.setLayoutParams(layoutParams);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        switchSound(true);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(CAMERA_BROADCAST_EVENT));
     }
 
@@ -291,20 +266,21 @@ public class CameraActivity16 extends Activity {
     }
 
     private void setupGridIcon() {
-        if (circleMaskView.isDrawGrid()) {
+        if (Grid.DRAW_3X3.equals(cameraView.getGrid())) {
             gridButton.setImageResource(R.drawable.ic_grid_on_white_24dp);
             gridButton.setBackgroundResource(R.drawable.switch_camera_background);
         } else {
             gridButton.setImageResource(R.drawable.ic_grid_off_white_24dp);
             gridButton.setBackgroundResource(R.drawable.camera_action_button_background_off);
         }
-        circleMaskView.invalidate();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         cameraView.stop();
+        switchSound(true);
+        circleMaskView.recycle();
         mUnexpectedTerminationHelper.fini();
         if (progressBar.getVisibility() != View.GONE) {
             progressBar.setVisibility(View.GONE);
@@ -349,6 +325,13 @@ public class CameraActivity16 extends Activity {
         }
     }
 
+    private void stopCropTask() {
+        if (mCropTask != null) {
+            mCropTask.cancel();
+        }
+        mCropTask = null;
+    }
+
     public void updateLocation() {
         if (LocationHelper.isGpsEnabled(this)) {
 
@@ -377,6 +360,61 @@ public class CameraActivity16 extends Activity {
         }
     }
 
+    private class CaptureButtonListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            Log.d(CameraActivity16.class, "Take Pic Click ");
+            enableButtons(false);
+            switchSound(false);
+            cameraView.capturePicture();
+            mTakingPicture = true;
+            progressBar.setVisibility(View.VISIBLE);
+            Analytics.logTakeRando(mFirebaseAnalytics);
+        }
+    }
+
+    private CameraListener cameraListener
+            = new CameraListener() {
+
+        @Override
+        public void onCameraOpened(CameraOptions options) {
+            if (!mTakingPicture) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                enableButtons(true);
+                            }
+                        }, 500);
+                    }
+                });
+            }
+        }
+
+        public void onCameraClosed() {
+            enableButtons(false);
+        }
+
+        public void onPictureTaken(byte[] jpeg) {
+            cameraView.stop();
+            switchSound(true);
+            mCropTask = new CropToSquareImageTask(jpeg, mCurrentFacing == Facing.FRONT, getBaseContext());
+            getBackgroundHandler().post(mCropTask);
+        }
+
+        @Override
+        public void onCameraError(@NonNull CameraException exception) {
+            switchSound(true);
+        }
+    };
+
+    private void switchSound(boolean on) {
+        AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        mgr.setStreamMute(AudioManager.STREAM_SYSTEM, !on);
+    }
+
     private Handler getBackgroundHandler() {
         if (mBackgroundHandler == null) {
             HandlerThread thread = new HandlerThread("background");
@@ -385,78 +423,6 @@ public class CameraActivity16 extends Activity {
         }
         return mBackgroundHandler;
     }
-
-    private class CaptureButtonListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            Log.d(CameraActivity16.class, "Take Pic Click ");
-            stopCropTask();
-            enableButtons(false);
-            cameraView.captureImage();
-            if (Preferences.getEnableVibrate(getBaseContext())
-                    && ContextCompat.checkSelfPermission(v.getContext(), android.Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
-                ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(50);
-            }
-            Analytics.logTakeRando(mFirebaseAnalytics);
-        }
-    }
-
-    private void stopCropTask() {
-        if (mCropTask != null) {
-            mCropTask.cancel();
-        }
-        mCropTask = null;
-    }
-
-    private CameraListener mCallback
-            = new CameraListener() {
-        @Override
-        public void onCameraOpened() {
-            adjustPreviewSize();
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    new Handler().postDelayed(new Runnable() {
-                                                  @Override
-                                                  public void run() {
-                                                      enableButtons(true);
-                                                  }
-                                              },
-                            500);
-                }
-            });
-        }
-
-        @Override
-        public void onCameraClosed() {
-            Log.d(CameraListener.class, "onCameraClosed");
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    enableButtons(false);
-                }
-            });
-        }
-
-        @Override
-        public void onPictureTaken(byte[] jpeg) {
-            Log.d(CameraListener.class, "onPictureTaken " + jpeg.length + "Thread " + Thread.currentThread());
-            cameraView.stop();
-            mCropTask = new CropToSquareImageTask(jpeg, mCurrentFacing == CameraKit.Constants.FACING_FRONT, getBaseContext());
-            getBackgroundHandler().post(mCropTask);
-            progressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        public void onPictureTaken(YuvImage yuv) {
-            super.onPictureTaken(yuv);
-        }
-
-        @Override
-        public void onVideoTaken(File video) {
-            super.onVideoTaken(video);
-        }
-    };
 
     private class UnexpectedTerminationHelper {
         private Thread mThread;
