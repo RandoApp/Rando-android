@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -34,6 +35,7 @@ import com.github.randoapp.api.API;
 import com.github.randoapp.api.beans.Error;
 import com.github.randoapp.api.listeners.NetworkResultListener;
 import com.github.randoapp.db.RandoDAO;
+import com.github.randoapp.db.RandoDBHelper;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
@@ -49,12 +51,10 @@ import com.hitomi.cmlibrary.OnMenuSelectedListener;
 import com.hitomi.cmlibrary.OnMenuStatusChangeListener;
 import com.makeramen.roundedimageview.RoundedImageView;
 
-import java.util.List;
-
 import static android.widget.Toast.makeText;
 import static com.android.volley.Request.Priority;
 
-public class RandoListAdapter extends RecyclerView.Adapter<RandoListAdapter.RandoViewHolder> {
+public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter.RandoViewHolder> {
 
     public boolean isStranger() {
         return isStranger;
@@ -62,11 +62,16 @@ public class RandoListAdapter extends RecyclerView.Adapter<RandoListAdapter.Rand
 
     private boolean isStranger;
     private FirebaseAnalytics firebaseAnalytics;
-    private List<Rando> randos;
     private int imageSize;
-    private Context context;
 
-    private int size;
+    private Context mContext;
+
+    public RandoListAdapter(Context context, boolean isStranger, FirebaseAnalytics firebaseAnalytics) {
+        super(RandoDAO.getCursor(context, isStranger));
+        mContext = context;
+        this.isStranger = isStranger;
+        this.firebaseAnalytics =firebaseAnalytics;
+    }
 
     @Override
     public RandoViewHolder onCreateViewHolder(ViewGroup container, int position) {
@@ -84,25 +89,23 @@ public class RandoListAdapter extends RecyclerView.Adapter<RandoListAdapter.Rand
 
 
     @Override
-    public void onBindViewHolder(RandoViewHolder holder, int position) {
+    public void onBindViewHolder(RandoViewHolder holder, Cursor cursor) {
         recycle(holder);
 
-        holder.rando = randos.get(position);
-        holder.position = position;
+        holder.rando = RandoDAO.cursorToRando(cursor);
+        holder.position = cursor.getPosition();
+
         setRatingIcon(holder, false);
         loadImages(holder.randoItemLayout.getContext(), holder, holder.rando);
 
         if (holder.rando.isUnwanted()) {
             UnwantedRandoView unwantedRandoView = new UnwantedRandoView(holder.randoItemLayout.getContext());
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
-            layoutParams.setMargins(holder.randoItemLayout.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left),
-                    holder.randoItemLayout.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_top),
-                    holder.randoItemLayout.getContext().getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_right), 0);
             //insert Unwanted view at index 1, right after "view_switcher"
             holder.randoItemLayout.addView(unwantedRandoView, layoutParams);
             holder.unwantedRandoView = unwantedRandoView;
         } else {
-            if (holder.rando.toUpload) {
+            if (holder.rando.isToUpload()) {
                 RoundProgress progressBar = new RoundProgress(holder.randoItemLayout.getContext(), (float) (imageSize/ 2.0)-8);
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
                 holder.randoItemLayout.addView(progressBar, layoutParams);
@@ -113,43 +116,16 @@ public class RandoListAdapter extends RecyclerView.Adapter<RandoListAdapter.Rand
         }
     }
 
-    @Override
-    public long getItemId(int position) {
-        return RecyclerView.NO_ID;
-    }
-
-    @Override
-    public int getItemCount() {
-        return randos.size();
-    }
-
-    public RandoListAdapter(Context context, boolean isStranger, FirebaseAnalytics firebaseAnalytics) {
-        this.firebaseAnalytics = firebaseAnalytics;
-        this.isStranger = isStranger;
-        this.context = context;
-        initData();
-    }
-
-    public void initData() {
-        if (isStranger) {
-            randos = RandoDAO.getAllInRandos(context);
-        } else {
-            randos = RandoDAO.getAllOutRandosWithUploadQueue(context);
-        }
-        size = randos.size();
-    }
-
-    public int getPositionOfRando(String randoId) {
-        if (randoId == null) {
-            return -1;
-        }
-        for (int i = 0; i < randos.size(); i++) {
-            if (randos.get(i).randoId.equals(randoId)) {
-                return i;
+    public int findElementById(String randoId) {
+        int randoIdColumn = mCursor.getColumnIndexOrThrow(RandoDBHelper.RandoTable.COLUMN_USER_RANDO_ID);
+        for (mCursor.moveToFirst(); !mCursor.isAfterLast(); mCursor.moveToNext()) {
+            if (mCursor.getString(randoIdColumn).equals(randoId)) {
+                return mCursor.getPosition();
             }
         }
-        return -1;
+        return 0;
     }
+
 
     private void addListenersToHolder(final RandoViewHolder holder) {
         View.OnClickListener randoOnClickListener = createRandoOnClickListener(holder);
@@ -167,7 +143,7 @@ public class RandoListAdapter extends RecyclerView.Adapter<RandoListAdapter.Rand
                     holder.randoItemLayout.addView(holder.circleMenu, layoutParams);
 
                     holder.circleMenu.setMainMenu(res.getColor(R.color.menu_button_color), R.drawable.ic_close_white_24dp, R.drawable.ic_close_white_24dp);
-                    if (!holder.rando.toUpload) {
+                    if (!holder.rando.isToUpload()) {
                         holder.circleMenu.addSubMenu(res.getColor(R.color.share_menu_button_color), R.drawable.ic_share_white_24dp);
                     }
 
@@ -179,7 +155,7 @@ public class RandoListAdapter extends RecyclerView.Adapter<RandoListAdapter.Rand
 
                         @Override
                         public void onMenuSelected(int index) {
-                            if (index == 0 && holder.rando.toUpload) {
+                            if (index == 0 && holder.rando.isToUpload()) {
                                 deleteRando(holder);
                                 return;
                             }
@@ -302,18 +278,18 @@ public class RandoListAdapter extends RecyclerView.Adapter<RandoListAdapter.Rand
 
     private void deleteRando(final RandoViewHolder holder) {
         Analytics.logDeleteRando(firebaseAnalytics);
-        if (NetworkUtil.isOnline(holder.randoItemLayout.getContext()) || holder.rando.toUpload) {
+        if (NetworkUtil.isOnline(holder.randoItemLayout.getContext()) || holder.rando.isToUpload()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(holder.randoItemLayout.getContext());
             builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    if (holder.rando.toUpload) {
+                    if (holder.rando.isToUpload()) {
                         RandoDAO.deleteRandoToUploadById(holder.randoItemLayout.getContext(), holder.rando.id);
                         notifyItemRemoved(holder.position);
                         return;
                     }
                     try {
                         showSpinner(holder, true);
-                        API.delete(holder.rando.randoId, holder.randoItemLayout.getContext(), new NetworkResultListener(context) {
+                        API.delete(holder.rando.randoId, holder.randoItemLayout.getContext(), new NetworkResultListener(mContext) {
                             @Override
                             public void onOk() {
                                 RandoDAO.deleteRandoByRandoId(holder.randoItemLayout.getContext(), holder.rando.randoId);
@@ -355,7 +331,7 @@ public class RandoListAdapter extends RecyclerView.Adapter<RandoListAdapter.Rand
                 public void onClick(DialogInterface dialog, int id) {
                     try {
                         showSpinner(holder, true);
-                        API.report(holder.rando.randoId, holder.randoItemLayout.getContext(), new NetworkResultListener(context) {
+                        API.report(holder.rando.randoId, holder.randoItemLayout.getContext(), new NetworkResultListener(mContext) {
                             @Override
                             public void onOk() {
                                 RandoDAO.deleteRandoByRandoId(holder.randoItemLayout.getContext(), holder.rando.randoId);
@@ -406,7 +382,7 @@ public class RandoListAdapter extends RecyclerView.Adapter<RandoListAdapter.Rand
         return new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                if (holder.rando.toUpload) {
+                if (holder.rando.isToUpload()) {
                     LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     final View uploadingToast = inflater.inflate(R.layout.uploading_toast, null);
 
@@ -434,7 +410,7 @@ public class RandoListAdapter extends RecyclerView.Adapter<RandoListAdapter.Rand
                             Analytics.logDeleteUnwantedRandoDialog(firebaseAnalytics);
                             try {
                                 showSpinner(holder, true);
-                                API.delete(holder.rando.randoId, v.getContext(), new NetworkResultListener(context) {
+                                API.delete(holder.rando.randoId, v.getContext(), new NetworkResultListener(mContext) {
                                     @Override
                                     public void onOk() {
                                         RandoDAO.deleteRandoByRandoId(v.getContext(), holder.rando.randoId);
@@ -514,7 +490,7 @@ public class RandoListAdapter extends RecyclerView.Adapter<RandoListAdapter.Rand
 
     private void rateRando(final RandoViewHolder holder, final int newRating) {
         Analytics.logShareRando(firebaseAnalytics);
-        API.rate(holder.rando.randoId, holder.randoItemLayout.getContext(), newRating, new NetworkResultListener(context) {
+        API.rate(holder.rando.randoId, holder.randoItemLayout.getContext(), newRating, new NetworkResultListener(mContext) {
             @Override
             public void onOk() {
                 Rando rando = RandoDAO.getRandoByRandoId(holder.randoItemLayout.getContext(), holder.rando.randoId);

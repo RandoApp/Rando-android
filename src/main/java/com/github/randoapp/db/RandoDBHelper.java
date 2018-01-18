@@ -6,6 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.github.randoapp.Constants;
+import com.github.randoapp.db.model.Rando;
+
 public class RandoDBHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 12;
@@ -170,7 +173,28 @@ public class RandoDBHelper extends SQLiteOpenHelper {
         public static final String COLUMN_DATE = "RANDO_DATE";
         public static final String COLUMN_LAST_TRY_DATE = "RANDO_LAST_TRY_DATE";
 
-        public static final String[] ALL_COLUMNS = {COLUMN_ID, COLUMN_FILE, COLUMN_LATITUDE, COLUMN_LONGITUDE, COLUMN_DATE, COLUMN_LAST_TRY_DATE};
+        public static final String[] ALL_COLUMNS = {
+                COLUMN_ID,
+                "'"+Constants.TO_UPLOAD_RANDO_ID+"' AS " + RandoTable.COLUMN_USER_RANDO_ID,
+                COLUMN_FILE,
+                COLUMN_FILE +" AS " + RandoTable.COLUMN_USER_RANDO_URL,
+                COLUMN_FILE+" AS " + RandoTable.COLUMN_USER_RANDO_URL_MEDIUM,
+                COLUMN_FILE+" AS " + RandoTable.COLUMN_USER_RANDO_URL_SMALL,
+                COLUMN_FILE+" AS " + RandoTable.COLUMN_USER_RANDO_URL_LARGE,
+                COLUMN_DATE+" AS " + RandoTable.COLUMN_USER_RANDO_DATE,
+                "'' AS " + RandoTable.COLUMN_USER_MAP_URL,
+                "'' AS " + RandoTable.COLUMN_USER_MAP_URL,
+                "'' AS " + RandoTable.COLUMN_USER_MAP_URL_SMALL,
+                "'' AS " + RandoTable.COLUMN_USER_MAP_URL_MEDIUM,
+                "'' AS " + RandoTable.COLUMN_USER_MAP_URL_LARGE,
+                "'"+ Rando.Status.OUT+"' AS " + RandoTable.COLUMN_RANDO_STATUS,
+                "'' AS " + RandoTable.COLUMN_DETECTED,
+                "0 AS " + RandoTable.COLUMN_RATING,
+
+                COLUMN_LATITUDE,
+                COLUMN_LONGITUDE,
+                COLUMN_DATE,
+                COLUMN_LAST_TRY_DATE};
 
         private static final String CREATE_TABLE_SQL = "CREATE TABLE " + RandoUploadTable.NAME +
                 " (" + COLUMN_ID + " integer primary key autoincrement, " +

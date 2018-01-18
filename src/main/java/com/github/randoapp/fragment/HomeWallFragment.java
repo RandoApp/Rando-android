@@ -21,6 +21,8 @@ public class HomeWallFragment extends Fragment {
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
+    private static boolean isPhotoResult;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.home, container, false);
@@ -63,8 +65,9 @@ public class HomeWallFragment extends Fragment {
                 //not needed
             }
         });
-        if (scrollToRando != null && scrollToRando.status == Rando.Status.OUT) {
+        if (isPhotoResult || (scrollToRando != null && scrollToRando.status == Rando.Status.OUT))  {
             viewPager.setCurrentItem(2);
+            isPhotoResult = false;
         } else {
             viewPager.setCurrentItem(1);
         }
@@ -80,5 +83,13 @@ public class HomeWallFragment extends Fragment {
 
 
         return rootView;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_REQUEST_CODE &&
+                resultCode == Constants.CAMERA_ACTIVITY_UPLOAD_PRESSED_RESULT_CODE) {
+            isPhotoResult = true;
+        }
     }
 }

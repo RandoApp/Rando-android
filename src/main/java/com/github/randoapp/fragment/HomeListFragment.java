@@ -56,18 +56,15 @@ public class HomeListFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             Log.i(BroadcastReceiver.class, "Recieved Update request");
             if (SYNC_BROADCAST_EVENT.equals(intent.getAction())) {
-                randoPairsAdapter.initData();
                 randoPairsAdapter.notifyDataSetChanged();
             } else if (UPLOAD_SERVICE_BROADCAST_EVENT.equals(intent.getAction())) {
-                randoPairsAdapter.initData();
-                randoPairsAdapter.notifyDataSetChanged();
+                randoPairsAdapter.changeCursor(RandoDAO.getCursor(context, isStranger));
             } else if (PUSH_NOTIFICATION_BROADCAST_EVENT.equals(intent.getAction())) {
                 String randoId = intent.getStringExtra(RANDO_ID_PARAM);
                 if (randoId != null && !randoPairsAdapter.isStranger()) {
-                    randoPairsAdapter.notifyItemChanged(randoPairsAdapter.getPositionOfRando(randoId));
+                    randoPairsAdapter.notifyDataSetChanged();
                 }
                 else {
-                    randoPairsAdapter.initData();
                     randoPairsAdapter.notifyDataSetChanged();
 
                 }
@@ -103,11 +100,13 @@ public class HomeListFragment extends Fragment {
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
         randoPairsAdapter = new RandoListAdapter(getContext(), isStranger, mFirebaseAnalytics);
+        randoPairsAdapter.setHasStableIds(true);
 
         listView.setAdapter(randoPairsAdapter);
 
+        //ToDo: fix position of rando
         if (scrollToRando != null) {
-            listView.getLayoutManager().scrollToPosition(randoPairsAdapter.getPositionOfRando(scrollToRando.randoId));
+            listView.getLayoutManager().scrollToPosition(randoPairsAdapter.findElementById(scrollToRando.randoId));
         }
 
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
@@ -149,10 +148,11 @@ public class HomeListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        randoPairsAdapter.initData();
         randoPairsAdapter.notifyDataSetChanged();
         getActivity().registerReceiver(receiver, new IntentFilter(SYNC_BROADCAST_EVENT));
-        getActivity().registerReceiver(receiver, new IntentFilter(UPLOAD_SERVICE_BROADCAST_EVENT));
+        if(!isStranger) {
+            getActivity().registerReceiver(receiver, new IntentFilter(UPLOAD_SERVICE_BROADCAST_EVENT));
+        }
         getActivity().registerReceiver(receiver, new IntentFilter(PUSH_NOTIFICATION_BROADCAST_EVENT));
     }
 

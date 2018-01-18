@@ -1,8 +1,10 @@
 package com.github.randoapp.db.model;
 
+import android.database.Cursor;
 import android.text.TextUtils;
 
 import com.github.randoapp.Constants;
+import com.github.randoapp.R;
 import com.github.randoapp.log.Log;
 
 import org.json.JSONArray;
@@ -13,6 +15,7 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Date;
 
+import static com.github.randoapp.Constants.CONTACTS_PERMISSION_REQUEST_CODE;
 import static com.github.randoapp.Constants.CREATION_PARAM;
 import static com.github.randoapp.Constants.DETECTED_PARAM;
 import static com.github.randoapp.Constants.IMAGE_URL_PARAM;
@@ -42,7 +45,11 @@ public class Rando implements Serializable {
     public String detected;
     public Integer rating;
 
-    public boolean toUpload = false;
+    public boolean isToUpload() {
+        return Constants.TO_UPLOAD_RANDO_ID.equals(randoId);
+    }
+
+    private boolean toUpload = false;
 
     public boolean isUnwanted() {
         return detected != null && detected.contains("\"unwanted\"");
@@ -133,7 +140,7 @@ public class Rando implements Serializable {
                 ", status=" + status +
                 ", detected='" + detected + '\'' +
                 ", rating=" + rating +
-                ", toUpload=" + toUpload +
+                ", toUpload=" + isToUpload() +
                 '}';
     }
 
