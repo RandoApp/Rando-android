@@ -57,7 +57,8 @@ public class Constants {
     public static final String FIREBASE_INSTANCE_ID = "firebase.instance.id";
     public static final String UPDATE_PLAY_SETVICES_DIALOG_SHOWN_DATE = "play.services.update.dialog.shown.date";
     public static final String CAMERA_FACING = "camera.facing";
-    public static final String CAMERA_GRID = "camera.grid";
+    public static final String CAMERA_FACING_STRING = "camera.facing.string";
+    public static final String CAMERA_GRID_STRING = "camera.grid.string";
     public static final String ENABLE_VIBRATE = "enable.vibrate";
     public static final String CAMERA_FLASH_MODE = "camera.flash.mode";
     public static final String ACCOUNT = "account";

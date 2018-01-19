@@ -78,10 +78,7 @@ public class CropToSquareImageTask implements Runnable {
             bitmap.get().recycle();
         }
         bitmap.clear();
-        bitmap = null;
         resultedBitmap.recycle();
-        resultedBitmap = null;
-
         return file;
     }
 
@@ -105,7 +102,6 @@ public class CropToSquareImageTask implements Runnable {
             BitmapRegionDecoder regionDecoder = BitmapRegionDecoder.newInstance(data.get(), 0, data.get().length, true);
             result = new WeakReference<>(regionDecoder.decodeRegion(rect, options));
             regionDecoder.recycle();
-            regionDecoder = null;
         } catch (IOException ex) {
             Log.e(CropToSquareImageTask.class, "exception creating BitmapRegionDecoder", ex);
             throw new RuntimeException("Error creating BitmapRegionDecoder");
