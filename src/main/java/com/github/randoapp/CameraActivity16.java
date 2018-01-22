@@ -1,6 +1,7 @@
 package com.github.randoapp;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -411,8 +412,15 @@ public class CameraActivity16 extends Activity {
     };
 
     private void switchSound(boolean on) {
-        AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        mgr.setStreamMute(AudioManager.STREAM_SYSTEM, !on);
+        try {
+            NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted()) {
+                AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                mgr.setStreamMute(AudioManager.STREAM_SYSTEM, !on);
+            }
+        } catch (SecurityException e) {
+            Crashlytics.logException(e);
+        }
     }
 
     private Handler getBackgroundHandler() {
