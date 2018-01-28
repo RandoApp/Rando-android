@@ -14,6 +14,8 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
 
+import static com.github.randoapp.Constants.RANDO_ID_PARAM;
+
 public class RandoMessagingService extends FirebaseMessagingService {
 
     @Override
@@ -29,6 +31,7 @@ public class RandoMessagingService extends FirebaseMessagingService {
         if (data != null) {
             String notificationType = data.get(Constants.NOTIFICATION_TYPE_PARAM);
             String randoString = data.get(Constants.RANDO_PARAM);
+            Intent intent = new Intent(Constants.PUSH_NOTIFICATION_BROADCAST_EVENT);
             if (notificationType != null && randoString != null) {
                 Rando rando = null;
                 boolean shouldSendNotification = true;
@@ -39,8 +42,10 @@ public class RandoMessagingService extends FirebaseMessagingService {
                 } else if (Constants.PUSH_NOTIFICATION_LANDED.equals(notificationType)) {
                     rando = Rando.fromJSON(randoString, Rando.Status.OUT);
                     notificationTextResId = R.string.rando_landed;
+                    intent.putExtra(RANDO_ID_PARAM, rando.randoId);
                 } else if (Constants.PUSH_NOTIFICATION_RATED.equals(notificationType)) {
                     rando = Rando.fromJSON(randoString, Rando.Status.OUT);
+                    intent.putExtra(RANDO_ID_PARAM, rando.randoId);
                     if (rando != null) {
                         switch (rando.rating) {
                             case 3:
@@ -68,7 +73,6 @@ public class RandoMessagingService extends FirebaseMessagingService {
                     }
                 }
             }
-            Intent intent = new Intent(Constants.UPLOAD_SERVICE_BROADCAST_EVENT);
             sendBroadcast(intent);
         }
     }

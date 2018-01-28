@@ -42,7 +42,9 @@ public class Rando implements Serializable {
     public String detected;
     public Integer rating;
 
-    public boolean toUpload = false;
+    public boolean isToUpload() {
+        return Constants.TO_UPLOAD_RANDO_ID.equals(randoId);
+    }
 
     public boolean isUnwanted() {
         return detected != null && detected.contains("\"unwanted\"");
@@ -133,7 +135,7 @@ public class Rando implements Serializable {
                 ", status=" + status +
                 ", detected='" + detected + '\'' +
                 ", rating=" + rating +
-                ", toUpload=" + toUpload +
+                ", toUpload=" + isToUpload() +
                 '}';
     }
 
