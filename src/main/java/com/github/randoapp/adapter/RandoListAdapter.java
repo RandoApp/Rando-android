@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.support.v7.app.AlertDialog;
@@ -26,7 +25,6 @@ import android.widget.ViewSwitcher;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.github.randoapp.Constants;
 import com.github.randoapp.R;
 import com.github.randoapp.animation.AnimationFactory;
 import com.github.randoapp.animation.AnimationListenerAdapter;
@@ -41,8 +39,8 @@ import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.BitmapUtil;
-import com.github.randoapp.util.NetworkUtil;
 import com.github.randoapp.view.FlipImageView;
+import com.github.randoapp.view.RandoOnLongTapListener;
 import com.github.randoapp.view.RoundProgress;
 import com.github.randoapp.view.UnwantedRandoView;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -63,14 +61,13 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
     private boolean isStranger;
     private FirebaseAnalytics firebaseAnalytics;
     private int imageSize;
-
     private Context mContext;
 
     public RandoListAdapter(Context context, boolean isStranger, FirebaseAnalytics firebaseAnalytics) {
         super(RandoDAO.getCursor(context, isStranger));
         mContext = context;
         this.isStranger = isStranger;
-        this.firebaseAnalytics =firebaseAnalytics;
+        this.firebaseAnalytics = firebaseAnalytics;
     }
 
     @Override
@@ -131,72 +128,8 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
         View.OnClickListener randoOnClickListener = createRandoOnClickListener(holder);
         holder.image.setOnClickListener(randoOnClickListener);
         holder.map.setOnClickListener(randoOnClickListener);
-        View.OnLongClickListener onLongClickListener = new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                recycleRatingMenu(holder);
-                if (holder.circleMenu == null && !holder.rando.isUnwanted()) {
-                    Resources res = v.getResources();
-                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize,imageSize);
 
-                    holder.circleMenu = new CircleMenu(v.getContext());
-                    holder.randoItemLayout.addView(holder.circleMenu, layoutParams);
-
-                    holder.circleMenu.setMainMenu(res.getColor(R.color.menu_button_color), R.drawable.ic_close_white_24dp, R.drawable.ic_close_white_24dp);
-                    if (!holder.rando.isToUpload()) {
-                        holder.circleMenu.addSubMenu(res.getColor(R.color.share_menu_button_color), R.drawable.ic_share_white_24dp);
-                    }
-
-                    holder.circleMenu.addSubMenu(res.getColor(R.color.delete_menu_button_color), R.drawable.ic_delete_white_24dp);
-                    if (isStranger) {
-                        holder.circleMenu.addSubMenu(res.getColor(R.color.report_menu_button_color), R.drawable.ic_flag_white_24dp);
-                    }
-                    holder.circleMenu.setOnMenuSelectedListener(new OnMenuSelectedListener() {
-
-                        @Override
-                        public void onMenuSelected(int index) {
-                            if (index == 0 && holder.rando.isToUpload()) {
-                                deleteRando(holder);
-                                return;
-                            }
-                            switch (index) {
-                                case 0:
-                                    shareRando(holder);
-                                    break;
-                                case 1:
-                                    deleteRando(holder);
-                                    break;
-                                case 2:
-                                    reportRando(holder);
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    }).setOnMenuStatusChangeListener(new OnMenuStatusChangeListener() {
-
-                        @Override
-                        public void onMenuOpened() {
-                            //do nothing
-                        }
-
-                        @Override
-                        public void onMenuClosed() {
-                            recycleCircleMenu(holder);
-                            if (holder.ratingMenu == null) {
-                                holder.image.setAlpha(1f);
-                                holder.map.setAlpha(1f);
-                            }
-                        }
-
-                    });
-                    holder.image.setAlpha(0.25f);
-                    holder.map.setAlpha(0.25f);
-                    holder.circleMenu.openMenu();
-                }
-                return true;
-            }
-        };
+        View.OnLongClickListener onLongClickListener = new RandoOnLongTapListener(this, holder, firebaseAnalytics);
         holder.image.setOnLongClickListener(onLongClickListener);
         holder.map.setOnLongClickListener(onLongClickListener);
 
@@ -204,7 +137,7 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
             holder.rateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    recycleCircleMenu(holder);
+                    holder.recycleCircleMenu();
                     if (holder.ratingMenu != null) {
                         return;
                     }
@@ -262,7 +195,7 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
 
                         @Override
                         public void onMenuClosed() {
-                            recycleRatingMenu(holder);
+                            holder.recycleRatingMenu();
                             if (holder.circleMenu == null) {
                                 holder.image.setAlpha(1f);
                                 holder.map.setAlpha(1f);
@@ -276,107 +209,6 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
         }
     }
 
-    private void deleteRando(final RandoViewHolder holder) {
-        Analytics.logDeleteRando(firebaseAnalytics);
-        if (NetworkUtil.isOnline(holder.randoItemLayout.getContext()) || holder.rando.isToUpload()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(holder.randoItemLayout.getContext());
-            builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    if (holder.rando.isToUpload()) {
-                        RandoDAO.deleteRandoToUploadById(holder.randoItemLayout.getContext(), holder.rando.id);
-                        notifyItemRemoved(holder.position);
-                        return;
-                    }
-                    try {
-                        showSpinner(holder, true);
-                        API.delete(holder.rando.randoId, holder.randoItemLayout.getContext(), new NetworkResultListener(mContext) {
-                            @Override
-                            public void onOk() {
-                                RandoDAO.deleteRandoByRandoId(holder.randoItemLayout.getContext(), holder.rando.randoId);
-
-                                notifyItemRemoved(holder.position);
-
-                                makeText(holder.randoItemLayout.getContext(), R.string.rando_deleted,
-                                        Toast.LENGTH_LONG).show();
-                                showSpinner(holder, false);
-                            }
-
-                            @Override
-                            protected void onFail(Error error) {
-                                makeText(holder.randoItemLayout.getContext(), R.string.error_unknown_err,
-                                        Toast.LENGTH_LONG).show();
-                                showSpinner(holder, false);
-                            }
-                        });
-                    } catch (Exception e) {
-                        makeText(holder.randoItemLayout.getContext(), R.string.error_unknown_err,
-                                Toast.LENGTH_LONG).show();
-                        showSpinner(holder, false);
-                    }
-                }
-            });
-            builder.setNegativeButton(R.string.cancel, null).setTitle(R.string.delete_rando).setMessage(R.string.delete_rando_confirm).create().show();
-            return;
-        } else {
-            makeText(holder.randoItemLayout.getContext(), R.string.error_no_network,
-                    Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void reportRando(final RandoViewHolder holder) {
-        Analytics.logReportRando(firebaseAnalytics);
-        if (NetworkUtil.isOnline(holder.randoItemLayout.getContext())) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(holder.randoItemLayout.getContext());
-            builder.setPositiveButton(R.string.report, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    try {
-                        showSpinner(holder, true);
-                        API.report(holder.rando.randoId, holder.randoItemLayout.getContext(), new NetworkResultListener(mContext) {
-                            @Override
-                            public void onOk() {
-                                RandoDAO.deleteRandoByRandoId(holder.randoItemLayout.getContext(), holder.rando.randoId);
-
-                                notifyItemRemoved(holder.position);
-
-                                makeText(holder.randoItemLayout.getContext(), R.string.rando_reported,
-                                        Toast.LENGTH_LONG).show();
-                                showSpinner(holder, false);
-                            }
-
-                            @Override
-                            protected void onFail(Error error) {
-                                makeText(holder.randoItemLayout.getContext(), R.string.error_unknown_err,
-                                        Toast.LENGTH_LONG).show();
-                                showSpinner(holder, false);
-                            }
-                        });
-                    } catch (Exception e) {
-                        makeText(holder.randoItemLayout.getContext(), R.string.error_unknown_err,
-                                Toast.LENGTH_LONG).show();
-                        showSpinner(holder, false);
-                    }
-                }
-            });
-            builder.setNegativeButton(R.string.cancel, null).setTitle(R.string.report_rando).setMessage(R.string.report_rando_confirm).create().show();
-            return;
-        } else {
-            makeText(holder.randoItemLayout.getContext(), R.string.error_no_network,
-                    Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void showSpinner(RandoViewHolder holder, boolean show) {
-        if (show) {
-            holder.spinner = new ProgressBar(holder.randoItemLayout.getContext(), null, android.R.attr.progressBarStyleLarge);
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-            holder.spinner.setIndeterminate(true);
-            holder.randoItemLayout.addView(holder.spinner, holder.randoItemLayout.getChildCount(), layoutParams);
-        } else if (holder.spinner != null) {
-            holder.randoItemLayout.removeView(holder.spinner);
-            holder.spinner = null;
-        }
-    }
 
     private View.OnClickListener createRandoOnClickListener(final RandoViewHolder holder) {
         return new View.OnClickListener() {
@@ -409,7 +241,7 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
                         public void onClick(DialogInterface dialog, int id) {
                             Analytics.logDeleteUnwantedRandoDialog(firebaseAnalytics);
                             try {
-                                showSpinner(holder, true);
+                                holder.showSpinner(true);
                                 API.delete(holder.rando.randoId, v.getContext(), new NetworkResultListener(mContext) {
                                     @Override
                                     public void onOk() {
@@ -419,20 +251,21 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
 
                                         makeText(v.getContext(), R.string.rando_deleted,
                                                 Toast.LENGTH_LONG).show();
-                                        showSpinner(holder, false);
+                                        holder.showSpinner(false);
                                     }
 
                                     @Override
                                     protected void onFail(Error error) {
                                         makeText(v.getContext(), R.string.error_unknown_err,
                                                 Toast.LENGTH_LONG).show();
-                                        showSpinner(holder, false);
+                                        holder.showSpinner(false);
                                     }
                                 });
                             } catch (Exception e) {
                                 makeText(v.getContext(), R.string.error_unknown_err,
                                         Toast.LENGTH_LONG).show();
-                                showSpinner(holder, false);
+                                holder.showSpinner(false);
+
                             }
                         }
                     });
@@ -510,7 +343,7 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
             protected void onFail(Error error) {
                 makeText(holder.randoItemLayout.getContext(), R.string.error_unknown_err,
                         Toast.LENGTH_LONG).show();
-                showSpinner(holder, false);
+                holder.showSpinner(false);
             }
 
         });
@@ -564,19 +397,6 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
         }
     }
 
-    private void shareRando(final RandoViewHolder holder) {
-        Analytics.logShareRando(firebaseAnalytics);
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.setType("text/plain");
-        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-
-        // Add data to the intent, the receiving app will decide
-        // what to do with it.
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT, holder.randoItemLayout.getContext().getResources().getString(R.string.share_subject));
-        shareIntent.putExtra(Intent.EXTRA_TEXT, holder.randoItemLayout.getContext().getResources().getString(R.string.share_text) + " " + String.format(Constants.SHARE_URL, holder.rando.randoId));
-        holder.randoItemLayout.getContext().startActivity(Intent.createChooser(shareIntent, "Share Rando using"));
-    }
-
     private void recycle(RandoViewHolder holder) {
         holder.animationInProgress = false;
 
@@ -590,10 +410,10 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
 
         holder.image.setAlpha(1f);
         holder.map.setAlpha(1f);
-        showSpinner(holder, false);
+        holder.showSpinner(false);
 
-        recycleCircleMenu(holder);
-        recycleRatingMenu(holder);
+        holder.recycleCircleMenu();
+        holder.recycleRatingMenu();
 
         if (holder.unwantedRandoView != null) {
             holder.unwantedRandoView.clearAnimation();
@@ -616,21 +436,6 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
         holder.rando = null;
     }
 
-    private void recycleCircleMenu(RandoViewHolder holder) {
-        if (holder.circleMenu != null) {
-            holder.circleMenu.closeMenu();
-            holder.randoItemLayout.removeView(holder.circleMenu);
-            holder.circleMenu = null;
-        }
-    }
-
-    private void recycleRatingMenu(RandoViewHolder holder) {
-        if (holder.ratingMenu != null) {
-            holder.ratingMenu.closeMenu();
-            holder.randoItemLayout.removeView(holder.ratingMenu);
-            holder.ratingMenu = null;
-        }
-    }
 
     private void recycleViewSwitcher(ViewSwitcher viewSwitcher) {
         //disable animation for immediately and undetectable switching to zero child:
@@ -788,7 +593,9 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
 
     public static class RandoViewHolder extends RecyclerView.ViewHolder{
         public Rando rando;
+
         public int position;
+        public int imageSize;
 
         public RelativeLayout randoItemLayout;
 
@@ -818,20 +625,52 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
 
         public RandoViewHolder(View itemView, int imageSize) {
             super(itemView);
-            randoItemLayout = (RelativeLayout) itemView.findViewWithTag("rando_item_layout");
+            randoItemLayout = itemView.findViewWithTag("rando_item_layout");
 
-            viewSwitcher = (ViewSwitcher) itemView.findViewWithTag("viewSwitcher");
+            viewSwitcher = itemView.findViewWithTag("viewSwitcher");
 
-            image = (RoundedImageView) itemView.findViewWithTag("image");
+            image = itemView.findViewWithTag("image");
             image.setTag(null);
 
-            map = (RoundedImageView) itemView.findViewWithTag("map");
+            map = itemView.findViewWithTag("map");
+
+            this.imageSize = imageSize;
 
             ViewSwitcher.LayoutParams randoImagesLayout = new ViewSwitcher.LayoutParams(imageSize, imageSize);
             image.setLayoutParams(randoImagesLayout);
             map.setLayoutParams(randoImagesLayout);
 
-            rateButton = (FlipImageView) itemView.findViewWithTag("rating");
+            rateButton = itemView.findViewWithTag("rating");
+        }
+
+        public void showSpinner(boolean show) {
+            if (show) {
+                spinner = new ProgressBar(randoItemLayout.getContext(), null, android.R.attr.progressBarStyleLarge);
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+                spinner.setIndeterminate(true);
+                randoItemLayout.addView(spinner, randoItemLayout.getChildCount(), layoutParams);
+            } else if (this.spinner != null) {
+                randoItemLayout.removeView(spinner);
+                spinner = null;
+            }
+        }
+
+        public void recycleCircleMenu() {
+            if (circleMenu != null) {
+                circleMenu.closeMenu();
+                randoItemLayout.removeView(circleMenu);
+                circleMenu = null;
+            }
+        }
+
+        public void recycleRatingMenu() {
+            if (ratingMenu != null) {
+                ratingMenu.closeMenu();
+                randoItemLayout.removeView(ratingMenu);
+                ratingMenu = null;
+            }
         }
     }
+
 }

@@ -1,61 +1,11 @@
 package com.github.randoapp.adapter;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DataSetObserver;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.webkit.URLUtil;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-import android.widget.ViewSwitcher;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.github.randoapp.Constants;
-import com.github.randoapp.R;
-import com.github.randoapp.animation.AnimationFactory;
-import com.github.randoapp.animation.AnimationListenerAdapter;
-import com.github.randoapp.animation.AnimatorListenerAdapter;
-import com.github.randoapp.api.API;
-import com.github.randoapp.api.beans.Error;
-import com.github.randoapp.api.listeners.NetworkResultListener;
-import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.RandoDBHelper;
-import com.github.randoapp.db.model.Rando;
-import com.github.randoapp.log.Log;
-import com.github.randoapp.network.VolleySingleton;
-import com.github.randoapp.util.Analytics;
-import com.github.randoapp.util.BitmapUtil;
-import com.github.randoapp.util.NetworkUtil;
-import com.github.randoapp.view.FlipImageView;
-import com.github.randoapp.view.RoundProgress;
-import com.github.randoapp.view.UnwantedRandoView;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.hitomi.cmlibrary.CircleMenu;
-import com.hitomi.cmlibrary.OnMenuSelectedListener;
-import com.hitomi.cmlibrary.OnMenuStatusChangeListener;
-import com.makeramen.roundedimageview.RoundedImageView;
-
-import java.util.List;
-
-import static android.widget.Toast.makeText;
-import static com.android.volley.Request.Priority;
 
 public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
