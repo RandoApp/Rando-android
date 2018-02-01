@@ -110,6 +110,7 @@ public class RandoOnLongTapListener implements View.OnLongClickListener {
                 public void onClick(DialogInterface dialog, int id) {
                     if (holder.rando.isToUpload()) {
                         RandoDAO.deleteRandoToUploadById(holder.randoItemLayout.getContext(), holder.rando.id);
+                        randoListAdapter.changeCursor(RandoDAO.getCursor(holder.image.getContext(), randoListAdapter.isStranger()));
                         randoListAdapter.notifyItemRemoved(holder.position);
                         return;
                     }
@@ -118,8 +119,7 @@ public class RandoOnLongTapListener implements View.OnLongClickListener {
                         API.delete(holder.rando.randoId, holder.randoItemLayout.getContext(), new NetworkResultListener(holder.randoItemLayout.getContext()) {
                             @Override
                             public void onOk() {
-                                RandoDAO.deleteRandoByRandoId(holder.randoItemLayout.getContext(), holder.rando.randoId);
-
+                                randoListAdapter.changeCursor(RandoDAO.getCursor(context, randoListAdapter.isStranger()));
                                 randoListAdapter.notifyItemRemoved(holder.position);
 
                                 makeText(holder.randoItemLayout.getContext(), R.string.rando_deleted,
@@ -161,7 +161,7 @@ public class RandoOnLongTapListener implements View.OnLongClickListener {
                             @Override
                             public void onOk() {
                                 RandoDAO.deleteRandoByRandoId(holder.randoItemLayout.getContext(), holder.rando.randoId);
-
+                                randoListAdapter.swapCursor(RandoDAO.getCursor(holder.image.getContext(), randoListAdapter.isStranger()));
                                 randoListAdapter.notifyItemRemoved(holder.position);
 
                                 makeText(holder.randoItemLayout.getContext(), R.string.rando_reported,
