@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -41,12 +40,11 @@ import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.BitmapUtil;
 import com.github.randoapp.view.FlipImageView;
 import com.github.randoapp.view.RandoOnLongTapListener;
+import com.github.randoapp.view.RateButtonOnClickListener;
 import com.github.randoapp.view.RoundProgress;
 import com.github.randoapp.view.UnwantedRandoView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.hitomi.cmlibrary.CircleMenu;
-import com.hitomi.cmlibrary.OnMenuSelectedListener;
-import com.hitomi.cmlibrary.OnMenuStatusChangeListener;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import static android.widget.Toast.makeText;
@@ -54,14 +52,14 @@ import static com.android.volley.Request.Priority;
 
 public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter.RandoViewHolder> {
 
-    public boolean isStranger() {
-        return isStranger;
-    }
-
     private boolean isStranger;
     private FirebaseAnalytics firebaseAnalytics;
     private int imageSize;
     private Context mContext;
+
+    public boolean isStranger() {
+        return isStranger;
+    }
 
     public RandoListAdapter(Context context, boolean isStranger, FirebaseAnalytics firebaseAnalytics) {
         super(RandoDAO.getCursor(context, isStranger));
@@ -134,78 +132,7 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
         holder.map.setOnLongClickListener(onLongClickListener);
 
         if (isStranger) {
-            holder.rateButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    holder.recycleCircleMenu();
-                    if (holder.ratingMenu != null) {
-                        return;
-                    }
-                    holder.ratingMenu = new CircleMenu(v.getContext());
-                    Resources res = v.getResources();
-                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
-                    holder.randoItemLayout.addView(holder.ratingMenu, layoutParams);
-
-                    holder.ratingMenu.setMainMenu(res.getColor(R.color.menu_button_color), R.drawable.ic_close_white_24dp, R.drawable.ic_close_white_24dp)
-                            .addSubMenu(res.getColor(R.color.thumbs_up_down_button_background), R.drawable.ic_thumbs_up_down_white_24dp)
-                            .addSubMenu(res.getColor(R.color.thumbs_up_button_background), R.drawable.ic_thumb_up_white_24dp)
-                            .addSubMenu(res.getColor(R.color.thumbs_down_button_background), R.drawable.ic_thumb_down_white_24dp)
-                            .setOnMenuSelectedListener(new OnMenuSelectedListener() {
-                                @Override
-                                public void onMenuSelected(int index) {
-                                    boolean isRatingChanged = false;
-                                    switch (index) {
-                                        case 0:
-                                            Analytics.logRateRandoNormal(firebaseAnalytics);
-                                            isRatingChanged = 2 != holder.rando.rating;
-                                            if (isRatingChanged) {
-                                                holder.rando.rating = 2;
-                                                rateRando(holder, 2);
-                                            }
-                                            break;
-                                        case 1:
-                                            Analytics.logRateRandoGood(firebaseAnalytics);
-                                            isRatingChanged = 3 != holder.rando.rating;
-                                            if (isRatingChanged) {
-                                                holder.rando.rating = 3;
-                                                rateRando(holder, 3);
-                                            }
-                                            break;
-                                        case 2:
-                                            Analytics.logRateRandoBad(firebaseAnalytics);
-                                            isRatingChanged = 1 != holder.rando.rating;
-                                            if (isRatingChanged) {
-                                                holder.rando.rating = 1;
-                                                rateRando(holder, 1);
-                                            }
-                                            break;
-                                        default:
-                                            break;
-                                    }
-
-                                    setRatingIcon(holder, isRatingChanged);
-                                }
-
-                            }).setOnMenuStatusChangeListener(new OnMenuStatusChangeListener() {
-
-                        @Override
-                        public void onMenuOpened() {
-                            //do nothing
-                        }
-
-                        @Override
-                        public void onMenuClosed() {
-                            holder.recycleRatingMenu();
-                            if (holder.circleMenu == null) {
-                                holder.image.setAlpha(1f);
-                                holder.map.setAlpha(1f);
-                            }
-                        }
-                    }).openMenu();
-                    holder.image.setAlpha(0.25f);
-                    holder.map.setAlpha(0.25f);
-                }
-            });
+            holder.rateButton.setOnClickListener(new RateButtonOnClickListener(this, holder, firebaseAnalytics));
         }
     }
 
@@ -321,36 +248,8 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
         };
     }
 
-    private void rateRando(final RandoViewHolder holder, final int newRating) {
-        Analytics.logShareRando(firebaseAnalytics);
-        API.rate(holder.rando.randoId, holder.randoItemLayout.getContext(), newRating, new NetworkResultListener(mContext) {
-            @Override
-            public void onOk() {
-                Rando rando = RandoDAO.getRandoByRandoId(holder.randoItemLayout.getContext(), holder.rando.randoId);
-                rando.rating = newRating;
-                holder.rando.rating = newRating;
-                RandoDAO.updateRando(holder.randoItemLayout.getContext(), rando);
-                holder.rando = rando;
-                setRatingIcon(holder, false);
-            }
 
-            @Override
-            public void onError(Error error) {
-                makeText(holder.randoItemLayout.getContext(), "Error setting rating. Please check internet connection.", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            protected void onFail(Error error) {
-                makeText(holder.randoItemLayout.getContext(), R.string.error_unknown_err,
-                        Toast.LENGTH_LONG).show();
-                holder.showSpinner(false);
-            }
-
-        });
-    }
-
-    private void setRatingIcon(RandoViewHolder holder, boolean doAnimation) {
-
+    public void setRatingIcon(RandoViewHolder holder, boolean doAnimation) {
         if (holder.rando.rating == null || holder.rando.rating == 0) {
             if (!isStranger) {
                 holder.rateButton.setVisibility(View.GONE);

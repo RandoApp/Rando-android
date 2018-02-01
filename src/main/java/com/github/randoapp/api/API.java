@@ -257,19 +257,24 @@ public class API {
 
     public static void delete(final String randoId, final Context context, final NetworkResultListener resultListener) throws Exception {
         Log.d(API.class, "Deleting Rando:", randoId);
-        BackgroundPreprocessedRequest request = new BackgroundPreprocessedRequest(Request.Method.POST, DELETE_URL + randoId, null, null, new Response.Listener<JSONObject>() {
+        BackgroundPreprocessedRequest request = new BackgroundPreprocessedRequest(Request.Method.POST, DELETE_URL + randoId, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     if ("delete".equals(response.getString("command")) &&
                             "done".equals(response.getString("result"))) {
                         Log.d(API.class, "Deleted Rando:", randoId);
-                        resultListener.onOk();
+                        RandoDAO.deleteRandoByRandoId(context, randoId);
                     }
                 } catch (JSONException e) {
                     Log.e(API.class, "Error Deleting Rando", e);
                     resultListener.onError(null);
                 }
+            }
+        }, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                resultListener.onOk();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -323,19 +328,26 @@ public class API {
 
     public static void rate(final String randoId, final Context context, final int rating, final NetworkResultListener reportRandoListener) {
         Log.d(API.class, "Rate Rando:", randoId);
-        BackgroundPreprocessedRequest request = new BackgroundPreprocessedRequest(Request.Method.POST, RATE_URL + randoId + "?rating=" + rating, null, null, new Response.Listener<JSONObject>() {
+        BackgroundPreprocessedRequest request = new BackgroundPreprocessedRequest(Request.Method.POST, RATE_URL + randoId + "?rating=" + rating, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     if ("rate".equals(response.getString("command")) &&
                             "done".equals(response.getString("result"))) {
                         Log.d(API.class, "Rated Rando:", randoId);
-                        reportRandoListener.onOk();
+                        Rando rando = RandoDAO.getRandoByRandoId(context, randoId);
+                        rando.rating = rating;
+                        RandoDAO.updateRando(context, rando);
                     }
                 } catch (JSONException e) {
                     Log.e(API.class, "Error Rating Rando", e);
                     reportRandoListener.onError(null);
                 }
+            }
+        }, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                reportRandoListener.onOk();
             }
         }, new Response.ErrorListener() {
             @Override
