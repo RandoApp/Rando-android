@@ -16,7 +16,7 @@ public class RoundProgress extends View {
     private int sweepAngle = -90;
     private RectF oval = new RectF();
 
-    private float out_rad;
+    private float in_rad;
     private int currentColor;
     private int currentBackgroundColor;
 
@@ -30,7 +30,7 @@ public class RoundProgress extends View {
         paint.setStyle(Paint.Style.STROKE);
         paint.setFlags(Paint.ANTI_ALIAS_FLAG);
         paint.setAntiAlias(true);
-        this.out_rad = radius == 0 ? 50 : radius - 8;
+        this.in_rad = radius == 0 ? 50 : radius - 8;
         currentColor = colors[currentColorId];
         currentBackgroundColor = Color.parseColor("#66dce0df");
         paint.setStrokeWidth((int) (getResources().getDimensionPixelSize(R.dimen.rando_padding_portrait_column_left) * 1.4));
@@ -41,7 +41,7 @@ public class RoundProgress extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         paint.setStyle(Paint.Style.STROKE);
-        oval.set(getWidth() / 2 - out_rad, getHeight() / 2 - out_rad, getWidth() / 2 + out_rad, getHeight() / 2 + out_rad);
+        oval.set(getWidth() / 2 - in_rad, getHeight() / 2 - in_rad, getWidth() / 2 + in_rad, getHeight() / 2 + in_rad);
         paint.setColor(currentBackgroundColor);
         canvas.drawArc(oval, startAngle2 + sweepAngle, 360 - startAngle2, false, paint);
         paint.setColor(currentColor);

@@ -3,6 +3,7 @@ package com.github.randoapp.db;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.MergeCursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.github.randoapp.Constants;
@@ -48,38 +49,6 @@ public class RandoDAO {
         int result = cursor.getCount();
         cursor.close();
         return result;
-    }
-
-    public static synchronized List<RandoUpload> getAllRandosToUpload(final Context context, String sortOrder) {
-        List<RandoUpload> randos = new ArrayList<>();
-
-        Cursor cursor = getDB(context).query(RandoDBHelper.RandoUploadTable.NAME,
-                RandoDBHelper.RandoUploadTable.ALL_COLUMNS, null, null, null, null, RandoDBHelper.RandoUploadTable.COLUMN_DATE + " " + sortOrder, null);
-
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            RandoUpload rando = new RandoUpload();
-            rando.id = cursor.getInt(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_ID));
-            rando.file = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_FILE));
-            rando.latitude = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_LATITUDE));
-            rando.longitude = cursor.getString(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_LONGITUDE));
-            long userDate = cursor.getLong(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_DATE));
-            long lastTryDate = cursor.getLong(cursor.getColumnIndexOrThrow(RandoDBHelper.RandoUploadTable.COLUMN_LAST_TRY_DATE));
-            if (userDate > 0) {
-                rando.date = new Date(userDate);
-            } else {
-                rando.date = new Date();
-            }
-            if (lastTryDate > 0) {
-                rando.lastTry = new Date(lastTryDate);
-            } else {
-                rando.lastTry = new Date(0);
-            }
-            randos.add(rando);
-            cursor.moveToNext();
-        }
-        cursor.close();
-        return randos;
     }
 
     public static synchronized RandoUpload getNextRandoToUpload(final Context context) {
@@ -255,6 +224,7 @@ public class RandoDAO {
     /**
      * @return all rando instances found in DB
      */
+    // ToDo: replace with cursor solution
     public static synchronized List<Rando> getAllRandos(final Context context) {
         List<Rando> randos = new LinkedList<>();
 
@@ -272,69 +242,27 @@ public class RandoDAO {
         return randos;
     }
 
-    /**
-     * @return all incoming rando instances found in DB
-     */
-    public static synchronized List<Rando> getAllRandosByStatus(final Context context, Rando.Status status) {
-        List<Rando> randos = new LinkedList<>();
+    public static synchronized Cursor getCursor(final Context context, boolean isStranger) {
 
-        Cursor cursor = getDB(context).query(RandoDBHelper.RandoTable.NAME,
-                null, RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS
-                        + " = '" + status.name() + "'", null, null, null, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE + " DESC", null);
-
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            Rando rando = cursorToRando(cursor);
-            randos.add(rando);
-            cursor.moveToNext();
+        if (isStranger) {
+            return getDB(context).query(RandoDBHelper.RandoTable.NAME,
+                    null, RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS
+                            + " = '" + Rando.Status.IN.name() + "'", null, null, null, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE + " DESC", null);
         }
-        cursor.close();
+        else {
+            // randos to upload
+            Cursor cursor1 = getDB(context).query(RandoDBHelper.RandoUploadTable.NAME,
+                    RandoDBHelper.RandoUploadTable.ALL_COLUMNS, null, null, null, null, RandoDBHelper.RandoUploadTable.COLUMN_DATE + " " + "DESC", null);
 
-        return randos;
-    }
+            // uploaded randos
+            Cursor cursor2 = getDB(context).query(RandoDBHelper.RandoTable.NAME,
+                    null, RandoDBHelper.RandoTable.COLUMN_RANDO_STATUS
+                            + " = '" + Rando.Status.OUT.name() + "'", null, null, null, RandoDBHelper.RandoTable.COLUMN_USER_RANDO_DATE + " DESC", null);
 
-    /**
-     * @return all incoming rando instances found in DB
-     */
-    public static synchronized List<Rando> getAllInRandos(final Context context) {
-        return getAllRandosByStatus(context, Rando.Status.IN);
 
-    }
-
-    /**
-     * @return all outgoing rando instances found in DB including Randos to Upload
-     */
-    public static synchronized List<Rando> getAllOutRandosWithUploadQueue(final Context context) {
-        List<Rando> randos = new ArrayList<>();
-        List<RandoUpload> randosToUpload = getAllRandosToUpload(context, "DESC");
-        for (RandoUpload randoUpload : randosToUpload) {
-            Rando rando = new Rando();
-            rando.id = randoUpload.id;
-            rando.randoId = String.valueOf(Constants.TO_UPLOAD_RANDO_ID);
-            rando.date = randoUpload.date;
-            rando.imageURL = randoUpload.file;
-            rando.imageURLSize.small = randoUpload.file;
-            rando.imageURLSize.medium = randoUpload.file;
-            rando.imageURLSize.large = randoUpload.file;
-            rando.toUpload = true;
-            randos.add(rando);
+            return new MergeCursor(new Cursor[] {cursor1, cursor2});
         }
-        randos.addAll(getAllRandosByStatus(context, Rando.Status.OUT));
 
-        return randos;
-    }
-
-    /**
-     * Counts randos amount in DB
-     *
-     * @return randos amount in DB
-     */
-    public static synchronized int getRandosNumber(final Context context) {
-        Cursor cursor = getDB(context).query(RandoDBHelper.RandoTable.NAME,
-                null, null, null, null, null, null);
-        int result = cursor.getCount();
-        cursor.close();
-        return result;
     }
 
     /**
@@ -365,7 +293,7 @@ public class RandoDAO {
      * @return rando object extracted from cursor
      */
 
-    private static Rando cursorToRando(Cursor cursor) {
+    public static Rando cursorToRando(Cursor cursor) {
         if (cursor.getCount() == 0) {
             return null;
         } else {

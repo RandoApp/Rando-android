@@ -114,8 +114,6 @@ public class Constants {
     public static final String SHARE_URL = SERVER_URL + "/s/%s";
     public static final String RATE_URL = SERVER_API_URL + "/rate/";
 
-    public static final String REPORT_BROADCAST = "Report";
-
     public static final String GOOGLE_AUTH_SCOPE = "oauth2:https://www.googleapis.com/auth/userinfo.profile";
     public static final String GOOGLE_USER_INFO_URL = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=";
 

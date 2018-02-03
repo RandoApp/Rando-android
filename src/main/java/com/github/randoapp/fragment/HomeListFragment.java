@@ -7,12 +7,13 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -36,7 +37,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import org.json.JSONObject;
 
 import static com.github.randoapp.Constants.PUSH_NOTIFICATION_BROADCAST_EVENT;
-import static com.github.randoapp.Constants.REPORT_BROADCAST;
+import static com.github.randoapp.Constants.RANDO_ID_PARAM;
 import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_BROADCAST_EVENT;
 
@@ -54,19 +55,20 @@ public class HomeListFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.i(BroadcastReceiver.class, "Recieved Update request");
-            if (REPORT_BROADCAST.equals(intent.getAction())) {
-                toggleReportMode();
-            } else if (SYNC_BROADCAST_EVENT.equals(intent.getAction())) {
+            if (SYNC_BROADCAST_EVENT.equals(intent.getAction())) {
                 randoPairsAdapter.notifyDataSetChanged();
             } else if (UPLOAD_SERVICE_BROADCAST_EVENT.equals(intent.getAction())) {
-                randoPairsAdapter.notifyDataSetChanged();
+                randoPairsAdapter.changeCursor(RandoDAO.getCursor(context, isStranger));
             } else if (PUSH_NOTIFICATION_BROADCAST_EVENT.equals(intent.getAction())) {
-                randoPairsAdapter.notifyDataSetChanged();
-            }
-        }
+                String randoId = intent.getStringExtra(RANDO_ID_PARAM);
+                if (randoId != null && !randoPairsAdapter.isStranger()) {
+                    randoPairsAdapter.notifyDataSetChanged();
+                }
+                else {
+                    randoPairsAdapter.notifyDataSetChanged();
 
-        private void toggleReportMode() {
-            randoPairsAdapter.notifyDataSetChanged();
+                }
+            }
         }
     };
 
@@ -90,13 +92,21 @@ public class HomeListFragment extends Fragment {
             icHome.setVisibility(View.VISIBLE);
         }
 
-        ListView listView = (ListView) rootView.findViewById(R.id.listView);
+        RecyclerView listView = (RecyclerView) rootView.findViewById(R.id.listView);
+        listView.setHasFixedSize(true);
+
+        LinearLayoutManager llm = new LinearLayoutManager(getContext());
+        listView.setLayoutManager(llm);
+
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
         randoPairsAdapter = new RandoListAdapter(getContext(), isStranger, mFirebaseAnalytics);
+        randoPairsAdapter.setHasStableIds(true);
+
         listView.setAdapter(randoPairsAdapter);
 
+        //ToDo: fix position of rando
         if (scrollToRando != null) {
-            listView.setSelection(randoPairsAdapter.getPositionOfRando(scrollToRando));
+            listView.getLayoutManager().scrollToPosition(randoPairsAdapter.findElementById(scrollToRando.randoId));
         }
 
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
@@ -140,8 +150,9 @@ public class HomeListFragment extends Fragment {
         super.onResume();
         randoPairsAdapter.notifyDataSetChanged();
         getActivity().registerReceiver(receiver, new IntentFilter(SYNC_BROADCAST_EVENT));
-        getActivity().registerReceiver(receiver, new IntentFilter(REPORT_BROADCAST));
-        getActivity().registerReceiver(receiver, new IntentFilter(UPLOAD_SERVICE_BROADCAST_EVENT));
+        if(!isStranger) {
+            getActivity().registerReceiver(receiver, new IntentFilter(UPLOAD_SERVICE_BROADCAST_EVENT));
+        }
         getActivity().registerReceiver(receiver, new IntentFilter(PUSH_NOTIFICATION_BROADCAST_EVENT));
     }
 

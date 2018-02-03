@@ -88,7 +88,7 @@
     <string name="storage_permission_allow">Allow Storage Access</string>
     <!-- Permission strings END -->
     
-    <string name="rando_deleted">Rando has beed deleted.</string>
+    <string name="rando_deleted">Rando has been deleted.</string>
     <string name="delete">Yes, delete</string>
     <string name="cancel">Cancel</string>
     <string name="delete_rando">Delete Rando</string>
