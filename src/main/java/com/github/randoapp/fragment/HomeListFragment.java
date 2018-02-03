@@ -60,7 +60,7 @@ public class HomeListFragment extends Fragment {
                 randoPairsAdapter.notifyDataSetChanged();
             } else if (UPLOAD_SERVICE_BROADCAST_EVENT.equals(intent.getAction())) {
                 randoPairsAdapter.changeCursor(RandoDAO.getCursor(context, isStranger));
-                randoPairsAdapter.changeCursor(RandoDAO.getCursor(context, isStranger));
+                randoPairsAdapter.notifyDataSetChanged();
             } else if (PUSH_NOTIFICATION_BROADCAST_EVENT.equals(intent.getAction())) {
                 String randoId = intent.getStringExtra(RANDO_ID_PARAM);
                 if (randoId != null && !randoPairsAdapter.isStranger()) {
