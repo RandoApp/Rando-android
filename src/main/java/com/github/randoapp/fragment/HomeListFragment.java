@@ -56,15 +56,18 @@ public class HomeListFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             Log.i(BroadcastReceiver.class, "Recieved Update request");
             if (SYNC_BROADCAST_EVENT.equals(intent.getAction())) {
+                randoPairsAdapter.changeCursor(RandoDAO.getCursor(context, isStranger));
                 randoPairsAdapter.notifyDataSetChanged();
             } else if (UPLOAD_SERVICE_BROADCAST_EVENT.equals(intent.getAction())) {
+                randoPairsAdapter.changeCursor(RandoDAO.getCursor(context, isStranger));
                 randoPairsAdapter.changeCursor(RandoDAO.getCursor(context, isStranger));
             } else if (PUSH_NOTIFICATION_BROADCAST_EVENT.equals(intent.getAction())) {
                 String randoId = intent.getStringExtra(RANDO_ID_PARAM);
                 if (randoId != null && !randoPairsAdapter.isStranger()) {
+                    randoPairsAdapter.changeCursor(RandoDAO.getCursor(context, isStranger));
                     randoPairsAdapter.notifyDataSetChanged();
-                }
-                else {
+                } else {
+                    randoPairsAdapter.changeCursor(RandoDAO.getCursor(context, isStranger));
                     randoPairsAdapter.notifyDataSetChanged();
 
                 }
@@ -148,9 +151,10 @@ public class HomeListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        randoPairsAdapter.changeCursor(RandoDAO.getCursor(getContext(), isStranger));
         randoPairsAdapter.notifyDataSetChanged();
         getActivity().registerReceiver(receiver, new IntentFilter(SYNC_BROADCAST_EVENT));
-        if(!isStranger) {
+        if (!isStranger) {
             getActivity().registerReceiver(receiver, new IntentFilter(UPLOAD_SERVICE_BROADCAST_EVENT));
         }
         getActivity().registerReceiver(receiver, new IntentFilter(PUSH_NOTIFICATION_BROADCAST_EVENT));
