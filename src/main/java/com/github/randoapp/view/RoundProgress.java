@@ -38,6 +38,16 @@ public class RoundProgress extends View {
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (stopAnimation) {
+            stopAnimation = false;
+            post(animator);
+
+        }
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         paint.setStyle(Paint.Style.STROKE);
