@@ -94,17 +94,15 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
         loadImages(holder.randoItemLayout.getContext(), holder, holder.rando);
 
         if (holder.rando.isUnwanted()) {
-            UnwantedRandoView unwantedRandoView = new UnwantedRandoView(holder.randoItemLayout.getContext());
+            holder.unwantedRandoView = new UnwantedRandoView(holder.randoItemLayout.getContext());
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
             //insert Unwanted view at index 1, right after "view_switcher"
-            holder.randoItemLayout.addView(unwantedRandoView, layoutParams);
-            holder.unwantedRandoView = unwantedRandoView;
+            holder.randoItemLayout.addView(holder.unwantedRandoView, layoutParams);
         } else {
             if (holder.rando.isToUpload()) {
-                RoundProgress progressBar = new RoundProgress(holder.randoItemLayout.getContext(), (float) (imageSize/ 2.0)-8);
+                holder.uploadingProgress = new RoundProgress(holder.randoItemLayout.getContext(), (float) (imageSize / 2.0) - 8);
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
-                holder.randoItemLayout.addView(progressBar, layoutParams);
-                holder.uploadingProgress = progressBar;
+                holder.randoItemLayout.addView(holder.uploadingProgress, layoutParams);
             } else {
                 setAnimations(holder);
             }
@@ -490,7 +488,7 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
         }
     }
 
-    public static class RandoViewHolder extends RecyclerView.ViewHolder{
+    public static class RandoViewHolder extends RecyclerView.ViewHolder {
         public Rando rando;
 
         public int position;
