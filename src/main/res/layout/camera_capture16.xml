@@ -45,8 +45,18 @@
         android:contentDescription="@string/back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="18dp"
+        android:layout_margin="25dp"
         android:background="@drawable/ic_arrow_back_gray_32dp"/>
+
+    <ImageButton
+        android:id="@+id/flash_button"
+        android:contentDescription="@string/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="25dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:visibility="gone"/>
 
     <com.github.randoapp.view.FlipImageView
         android:id="@+id/grid_button"
@@ -58,6 +68,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="@dimen/switch_camera_margin_bottom"
         android:layout_marginRight="@dimen/camera_button_margin_left"
+        android:layout_marginEnd="@dimen/camera_button_margin_left"
         android:background="@drawable/switch_camera_background"
         android:scaleType="center"
         android:src="@drawable/ic_grid_on_white_24dp"/>
@@ -70,6 +81,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/switch_camera_margin_bottom"
         android:layout_marginLeft="@dimen/camera_button_margin_left"
+        android:layout_marginStart="@dimen/camera_button_margin_left"
         android:background="@drawable/switch_camera_background"
         android:scaleType="center"
         android:src="@drawable/ic_camera_front_white_24dp" />

@@ -48,7 +48,11 @@ import com.otaliastudios.cameraview.Gesture;
 import com.otaliastudios.cameraview.GestureAction;
 import com.otaliastudios.cameraview.Grid;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
@@ -93,22 +97,28 @@ public class CameraActivity16 extends Activity {
     private CameraView cameraView;
     private ImageView captureButton;
     private FlipImageView cameraSwitchButton;
+    private ImageView flashButton;
     private FlipImageView gridButton;
     private LinearLayout progressBar;
     private Handler mBackgroundHandler;
     private FirebaseAnalytics mFirebaseAnalytics;
     private CircleMaskView circleMaskView;
     private Facing mCurrentFacing;
+    private Iterator<Flash> mFlashModeIterator;
     private boolean mTakingPicture = false;
+    private List<Flash> mFlashModes = new ArrayList<>(FLASH_MODES.size());
 
     private CropToSquareImageTask mCropTask;
 
     private static final Map<Facing, Integer> CAMERA_FACING_ICONS = new HashMap<>(2);
+    private static final List<Flash> FLASH_MODES = Arrays.asList(Flash.AUTO, Flash.ON);
 
     static {
         CAMERA_FACING_ICONS.put(Facing.FRONT, R.drawable.ic_camera_front_white_24dp);
         CAMERA_FACING_ICONS.put(Facing.BACK, R.drawable.ic_camera_rear_white_24dp);
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,11 +130,8 @@ public class CameraActivity16 extends Activity {
 
         cameraView = findViewById(R.id.camera);
         cameraView.addCameraListener(cameraListener);
-        cameraView.setFlash(Flash.OFF);
         cameraView.mapGesture(Gesture.PINCH, GestureAction.ZOOM); // Pinch to zoom!
         cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER); // Tap to focus!
-
-        //focusMarker = findViewById(R.id.focusMarker);
 
         captureButton = findViewById(R.id.capture_button);
         captureButton.setOnClickListener(new CameraActivity16.CaptureButtonListener());
@@ -138,6 +145,20 @@ public class CameraActivity16 extends Activity {
                 finish();
             }
         });
+        flashButton = findViewById(R.id.flash_button);
+        flashButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!mFlashModeIterator.hasNext()) {
+                    mFlashModeIterator = mFlashModes.iterator();
+                }
+                cameraView.setFlash(mFlashModeIterator.next());
+                setFlashButtonIcon(cameraView.getFlash());
+                Preferences.setCameraFlashMode(getApplicationContext(), mCurrentFacing, cameraView.getFlash());
+            }
+
+        });
+
         circleMaskView = findViewById(R.id.circle_mask);
         adjustPreviewSize();
 
@@ -203,6 +224,18 @@ public class CameraActivity16 extends Activity {
         setupGridIcon();
     }
 
+    private void setFlashButtonIcon(Flash mCurrentFlashMode) {
+        if (mCurrentFlashMode == Flash.OFF) {
+            flashButton.setBackgroundResource(R.drawable.ic_flash_off_grey_26dp);
+        }
+        else if (mCurrentFlashMode == Flash.ON) {
+            flashButton.setBackgroundResource(R.drawable.ic_flash_on_grey_26dp);
+        }
+        else if (mCurrentFlashMode == Flash.AUTO) {
+            flashButton.setBackgroundResource(R.drawable.ic_flash_auto_grey_26dp);
+        }
+    }
+
     /**
      * Makes camera preview to be Square
      */
@@ -263,6 +296,9 @@ public class CameraActivity16 extends Activity {
         captureButton.setEnabled(enable);
         if (cameraSwitchButton != null) {
             cameraSwitchButton.setEnabled(enable);
+        }
+        if (flashButton != null) {
+            flashButton.setEnabled(enable);
         }
     }
 
@@ -378,14 +414,28 @@ public class CameraActivity16 extends Activity {
             = new CameraListener() {
 
         @Override
-        public void onCameraOpened(CameraOptions options) {
+        public void onCameraOpened(final CameraOptions options) {
             if (!mTakingPicture) {
+                mFlashModes.clear();
+                mFlashModes.addAll(FLASH_MODES);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
+                                mFlashModes.retainAll(options.getSupportedFlash());
+                                if (!mFlashModes.isEmpty()) {
+                                    flashButton.setVisibility(ImageView.VISIBLE);
+                                    mFlashModes.add(0, Flash.OFF);
+                                    mFlashModeIterator = mFlashModes.iterator();
+                                    cameraView.setFlash(Preferences.getCameraFlashMode(getApplicationContext(),mCurrentFacing));
+                                    while (cameraView.getFlash() != mFlashModeIterator.next());
+                                    setFlashButtonIcon(cameraView.getFlash());
+                                }
+                                else {
+                                    flashButton.setVisibility(ImageView.GONE);
+                                }
                                 enableButtons(true);
                             }
                         }, 500);
