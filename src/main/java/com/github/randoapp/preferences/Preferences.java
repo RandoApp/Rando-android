@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.location.Location;
 
 import com.otaliastudios.cameraview.Facing;
+import com.otaliastudios.cameraview.Flash;
 import com.otaliastudios.cameraview.Grid;
 
 import static com.github.randoapp.Constants.ACCOUNT;
@@ -176,23 +177,31 @@ public class Preferences {
         }
     }
 
-    public static int getCameraFlashMode(Context context) {
+    public static Flash getCameraFlashMode(Context context, Facing facing) {
         synchronized (monitor) {
-            return getSharedPreferences(context).getInt(CAMERA_FLASH_MODE, 0);
+            if (facing != null) {
+                return Flash.valueOf(getSharedPreferences(context).getString(CAMERA_FLASH_MODE + facing.name(), Flash.OFF.name()));
+            } else {
+                return Flash.OFF;
+            }
         }
     }
 
-    public static void setCameraFlashMode(Context context, int cameraFacing) {
+    public static void setCameraFlashMode(Context context, Facing facing, Flash flashMode) {
         synchronized (monitor) {
-            getSharedPreferences(context).edit().putInt(CAMERA_FLASH_MODE, cameraFacing).apply();
+            if (flashMode != null) {
+                getSharedPreferences(context).edit().putString(CAMERA_FLASH_MODE + facing.name(), flashMode.name()).apply();
+            }
+            else {
+                getSharedPreferences(context).edit().putString(CAMERA_FLASH_MODE + facing.name(), Flash.OFF.name()).apply();
+            }
         }
     }
 
-    public static void removeCameraFlashMode(Context context) {
+    public static void removeCameraFlashMode(Context context, Facing facing) {
         synchronized (monitor) {
-            getSharedPreferences(context).edit().remove(CAMERA_FLASH_MODE).apply();
+            getSharedPreferences(context).edit().remove(CAMERA_FLASH_MODE + facing.name()).apply();
         }
     }
-
 }
 

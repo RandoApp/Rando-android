@@ -7,7 +7,10 @@ import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.github.randoapp.preferences.Preferences;
+import com.otaliastudios.cameraview.Facing;
+import com.otaliastudios.cameraview.Flash;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +22,7 @@ import static com.github.randoapp.Constants.LOCATION;
 import static com.github.randoapp.Constants.PREFERENCES_FILE_NAME;
 import static com.github.randoapp.preferences.Preferences.ACCOUNT_DEFAULT_VALUE;
 import static com.github.randoapp.preferences.Preferences.AUTH_TOKEN_DEFAULT_VALUE;
+import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -223,5 +227,49 @@ public class PreferencesTest {
         Preferences.removeFirebaseInstanceId(context);
 
         assertThat(Preferences.getFirebaseInstanceId(context), is(AUTH_TOKEN_DEFAULT_VALUE));
+    }
+
+    @Test
+    public void shouldSetFrontCameraFlashModeAndNotAffectBackCameraFlashMode() {
+
+        Preferences.setCameraFlashMode(context, Facing.BACK, Flash.AUTO);
+        Preferences.setCameraFlashMode(context, Facing.FRONT, Flash.ON);
+
+        Assertions.assertThat(Preferences.getCameraFlashMode(context, Facing.BACK)).isEqualTo(Flash.AUTO);
+        Assertions.assertThat(Preferences.getCameraFlashMode(context, Facing.FRONT)).isEqualTo(Flash.ON);
+    }
+
+    @Test
+    public void shouldSetBackCameraFlashModeAndNotAffectFrontCameraFlashMode() {
+
+        Preferences.setCameraFlashMode(context, Facing.BACK, Flash.AUTO);
+
+        Assertions.assertThat(Preferences.getCameraFlashMode(context, Facing.BACK)).isEqualTo(Flash.AUTO);
+        Assertions.assertThat(Preferences.getCameraFlashMode(context, Facing.FRONT)).isEqualTo(Flash.OFF);
+    }
+
+    @Test
+    public void shouldSetCameraFlashModeWhenFlashModeNull() {
+
+        Preferences.setCameraFlashMode(context, Facing.BACK, null);
+
+        Assertions.assertThat(Preferences.getCameraFlashMode(context, Facing.BACK)).isEqualTo(Flash.OFF);
+    }
+
+    @Test
+    public void shouldGetCameraFlashModeWhenFacingNull() {
+        Assertions.assertThat(Preferences.getCameraFlashMode(context, null)).isEqualTo(Flash.OFF);
+    }
+
+    @Test
+    public void shouldRemoveCameraFlashMode() {
+
+        Preferences.setCameraFlashMode(context, Facing.BACK, Flash.ON);
+        Preferences.setCameraFlashMode(context, Facing.FRONT, Flash.AUTO);
+
+        Preferences.removeCameraFlashMode(context, Facing.BACK);
+
+        Assertions.assertThat(Preferences.getCameraFlashMode(context, Facing.BACK)).isEqualTo(Flash.OFF);
+        Assertions.assertThat(Preferences.getCameraFlashMode(context, Facing.FRONT)).isEqualTo(Flash.AUTO);
     }
 }
