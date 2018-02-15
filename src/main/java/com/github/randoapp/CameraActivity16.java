@@ -424,17 +424,22 @@ public class CameraActivity16 extends Activity {
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                mFlashModes.retainAll(options.getSupportedFlash());
-                                if (!mFlashModes.isEmpty()) {
-                                    flashButton.setVisibility(ImageView.VISIBLE);
-                                    mFlashModes.add(0, Flash.OFF);
-                                    mFlashModeIterator = mFlashModes.iterator();
-                                    cameraView.setFlash(Preferences.getCameraFlashMode(getApplicationContext(),mCurrentFacing));
-                                    while (cameraView.getFlash() != mFlashModeIterator.next());
-                                    setFlashButtonIcon(cameraView.getFlash());
-                                }
-                                else {
+                                // exclude xiaomi phones front camera
+                                if (cameraView.getFacing() == Facing.FRONT && Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")) {
                                     flashButton.setVisibility(ImageView.GONE);
+                                    mFlashModes.clear();
+                                } else {
+                                    mFlashModes.retainAll(options.getSupportedFlash());
+                                    if (!mFlashModes.isEmpty()) {
+                                        flashButton.setVisibility(ImageView.VISIBLE);
+                                        mFlashModes.add(0, Flash.OFF);
+                                        mFlashModeIterator = mFlashModes.iterator();
+                                        cameraView.setFlash(Preferences.getCameraFlashMode(getApplicationContext(), mCurrentFacing));
+                                        while (cameraView.getFlash() != mFlashModeIterator.next()) ;
+                                        setFlashButtonIcon(cameraView.getFlash());
+                                    } else {
+                                        flashButton.setVisibility(ImageView.GONE);
+                                    }
                                 }
                                 enableButtons(true);
                             }
