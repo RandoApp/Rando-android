@@ -61,7 +61,7 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
     private FirebaseAnalytics firebaseAnalytics;
     private int imageSize;
     private Context mContext;
-    final DateFormat dateFormat = new SimpleDateFormat("MMM, d", Locale.UK);
+    private final DateFormat dateFormat = new SimpleDateFormat("MMM, d", Locale.UK);
 
     public boolean isStranger() {
         return isStranger;
