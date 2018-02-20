@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginLeft="@dimen/rando_padding_portrait_column_left"
     android:layout_marginStart="@dimen/rando_padding_portrait_column_top"
     android:layout_marginTop="@dimen/rando_padding_portrait_column_top"
@@ -23,6 +24,24 @@
                 android:layout_height="match_parent"
                 android:tag="image"
                 app:riv_oval="true" />
+
+            <TextView
+                android:tag="timestamp"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:gravity="bottom"
+                android:textSize="16dp"
+                android:layout_marginBottom="1dp"
+                android:layout_centerHorizontal="true" />
+
+
+            <!--<TextView-->
+                <!--android:tag="timestamp"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:layout_marginTop="140dp"-->
+                <!--android:text="Feb, 14"/>-->
         </FrameLayout>
 
         <FrameLayout
