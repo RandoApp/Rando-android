@@ -9,7 +9,7 @@
         android:layout_centerHorizontal="true"
         android:text="@string/tap_to_update"
         android:textColor="@color/rando_dark_grey"
-        android:textSize="18dp"
+        android:textSize="18sp"
         style="@style/GrayButton"
         android:visibility="visible"/>
 
@@ -23,15 +23,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="@null"
-        android:dividerHeight="0dp" />
+        android:dividerHeight="0dp">
+    </android.support.v7.widget.RecyclerView>
     </android.support.v4.widget.SwipeRefreshLayout>
     <ImageView
         android:layout_width="@dimen/ic_home_size"
         android:layout_height="@dimen/ic_home_size"
+        android:contentDescription="@string/desc"
         android:src="@drawable/ic_home_32dp"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/ic_home_margin_top"
         android:layout_marginRight="@dimen/ic_home_margin_right"
+        android:layout_marginEnd="@dimen/ic_home_margin_right"
         android:id="@+id/ic_home"
         android:visibility="gone"/>
 </RelativeLayout>

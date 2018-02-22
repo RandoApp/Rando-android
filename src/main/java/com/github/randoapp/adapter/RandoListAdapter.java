@@ -61,7 +61,7 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
     private FirebaseAnalytics firebaseAnalytics;
     private int imageSize;
     private Context mContext;
-    private final DateFormat dateFormat = new SimpleDateFormat("MMM, d", Locale.UK);
+    private final DateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.UK);
 
     public boolean isStranger() {
         return isStranger;
@@ -95,7 +95,7 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
 
         holder.rando = RandoDAO.cursorToRando(cursor);
         holder.position = cursor.getPosition();
-        holder.timestamp.setText(dateFormat.format(holder.rando.date));
+        holder.timestamp.setText(dateFormat.format(holder.rando.date).toUpperCase());
 
         setRatingIcon(holder, false);
         loadImages(holder.randoItemLayout.getContext(), holder, holder.rando);
