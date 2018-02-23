@@ -34,6 +34,7 @@
     <string name="loading_user_progress">Loading user data…</string>
 
     <string name="report_rando">Report inappropriate content</string>
+    <string name="desc">Rando image</string>
 
     <string name="logout_progress">Logout…</string>
     <string name="uploading_progress">To be uploaded</string>
