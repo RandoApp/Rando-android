@@ -66,7 +66,7 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
     private Context mContext;
     private final DateFormat dateFormat = new SimpleDateFormat("MMM d", Locale.UK);
     private final DateFormat dateYearFormat = new SimpleDateFormat("MMM d, yyyy", Locale.UK);
-    private Date nyDate = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), Calendar.JANUARY, 1).getTime();
+    private final Date nyDate = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), Calendar.JANUARY, 1).getTime();
 
     public boolean isStranger() {
         return isStranger;
