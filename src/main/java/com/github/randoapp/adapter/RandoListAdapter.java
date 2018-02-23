@@ -50,6 +50,9 @@ import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import static android.widget.Toast.makeText;
@@ -61,7 +64,9 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
     private FirebaseAnalytics firebaseAnalytics;
     private int imageSize;
     private Context mContext;
-    private final DateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.UK);
+    private final DateFormat dateFormat = new SimpleDateFormat("MMM d", Locale.UK);
+    private final DateFormat dateYearFormat = new SimpleDateFormat("MMM d, yyyy", Locale.UK);
+    private Date nyDate = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), Calendar.JANUARY, 1).getTime();
 
     public boolean isStranger() {
         return isStranger;
@@ -95,7 +100,10 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
 
         holder.rando = RandoDAO.cursorToRando(cursor);
         holder.position = cursor.getPosition();
-        holder.timestamp.setText(dateFormat.format(holder.rando.date).toUpperCase());
+
+        String timestamp = holder.rando.date.after(nyDate) ?
+                dateFormat.format(holder.rando.date) : dateYearFormat.format(holder.rando.date);
+        holder.timestamp.setText(timestamp.toUpperCase());
 
         setRatingIcon(holder, false);
         loadImages(holder.randoItemLayout.getContext(), holder, holder.rando);
