@@ -65,11 +65,11 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
     private FirebaseAnalytics firebaseAnalytics;
     private int imageSize;
     private Context mContext;
-    private final DateFormat dateFormat = new SimpleDateFormat("MMMM d", Locale.UK);
-    private final DateFormat dateYearFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.UK);
-    private final long one_hour = TimeUnit.HOURS.toMillis(1);
-    private final long one_day = TimeUnit.DAYS.toMillis(1);
-    private final long one_week = TimeUnit.DAYS.toMillis(7);
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("MMMM d", Locale.UK);
+    private static final DateFormat DATE_YEAR_FORMAT = new SimpleDateFormat("MMMM d, yyyy", Locale.UK);
+    private static final long ONE_HOUR = TimeUnit.HOURS.toMillis(1);
+    private static final long ONE_DAY = TimeUnit.DAYS.toMillis(1);
+    private static final long ONE_WEEK = TimeUnit.DAYS.toMillis(7);
 
     private final Date nyDate = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), Calendar.JANUARY, 1).getTime();
 
@@ -107,7 +107,7 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
         holder.position = cursor.getPosition();
 
         String timestamp = holder.rando.date.after(nyDate) ?
-                formatTimeStamp(holder.rando.date) : dateYearFormat.format(holder.rando.date);
+                formatTimeStamp(holder.rando.date) : DATE_YEAR_FORMAT.format(holder.rando.date);
         holder.timestamp.setText(timestamp.toUpperCase());
 
         setRatingIcon(holder, false);
@@ -142,19 +142,19 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
     private String formatTimeStamp(Date date) {
         long diff = System.currentTimeMillis() - date.getTime();
 
-        if (diff < one_hour) {
+        if (diff < ONE_HOUR) {
             long time = TimeUnit.MINUTES.convert(diff, TimeUnit.MILLISECONDS);
             return String.format("%s %s", time, time <= 1 ?  "minute ago":  "minutes ago");
         }
-        else if (diff < one_day) {
+        else if (diff < ONE_DAY) {
             long time = TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS);
             return String.format("%s %s", time, time <= 1 ?  "hour ago":  "hours ago");
         }
-        else if (diff < one_week) {
+        else if (diff < ONE_WEEK) {
             long time = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
             return String.format("%s %s", time, time <= 1 ?  "day ago":  "days ago");
         }
-        else return dateFormat.format(date);
+        else return DATE_FORMAT.format(date);
     }
 
     private void addListenersToHolder(final RandoViewHolder holder) {
