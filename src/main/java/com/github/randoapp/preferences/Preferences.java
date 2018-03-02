@@ -161,7 +161,9 @@ public class Preferences {
 
     public static void setCameraFacing(Context context, Facing facing) {
         synchronized (monitor) {
-            getSharedPreferences(context).edit().putString(CAMERA_FACING_STRING, facing.name()).apply();
+            if (facing != null) {
+                getSharedPreferences(context).edit().putString(CAMERA_FACING_STRING, facing.name()).apply();
+            }
         }
     }
 
@@ -189,11 +191,8 @@ public class Preferences {
 
     public static void setCameraFlashMode(Context context, Facing facing, Flash flashMode) {
         synchronized (monitor) {
-            if (flashMode != null) {
+            if (flashMode != null && facing != null) {
                 getSharedPreferences(context).edit().putString(CAMERA_FLASH_MODE + facing.name(), flashMode.name()).apply();
-            }
-            else {
-                getSharedPreferences(context).edit().putString(CAMERA_FLASH_MODE + facing.name(), Flash.OFF.name()).apply();
             }
         }
     }

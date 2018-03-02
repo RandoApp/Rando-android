@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
@@ -47,6 +48,13 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.hitomi.cmlibrary.CircleMenu;
 import com.makeramen.roundedimageview.RoundedImageView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+
 import static android.widget.Toast.makeText;
 import static com.android.volley.Request.Priority;
 
@@ -56,6 +64,9 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
     private FirebaseAnalytics firebaseAnalytics;
     private int imageSize;
     private Context mContext;
+    private final DateFormat dateFormat = new SimpleDateFormat("MMM d", Locale.UK);
+    private final DateFormat dateYearFormat = new SimpleDateFormat("MMM d, yyyy", Locale.UK);
+    private final Date nyDate = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), Calendar.JANUARY, 1).getTime();
 
     public boolean isStranger() {
         return isStranger;
@@ -89,6 +100,10 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
 
         holder.rando = RandoDAO.cursorToRando(cursor);
         holder.position = cursor.getPosition();
+
+        String timestamp = holder.rando.date.after(nyDate) ?
+                dateFormat.format(holder.rando.date) : dateYearFormat.format(holder.rando.date);
+        holder.timestamp.setText(timestamp.toUpperCase());
 
         setRatingIcon(holder, false);
         loadImages(holder.randoItemLayout.getContext(), holder, holder.rando);
@@ -505,6 +520,7 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
 
         public ViewSwitcher viewSwitcher;
         public RoundedImageView image;
+        public TextView timestamp;
         public RoundedImageView map;
         public boolean isMap;
 
@@ -529,6 +545,7 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
             image = itemView.findViewWithTag("image");
             image.setTag(null);
 
+            timestamp = itemView.findViewWithTag("timestamp");
             map = itemView.findViewWithTag("map");
 
             this.imageSize = imageSize;

@@ -22,7 +22,6 @@ import static com.github.randoapp.Constants.LOCATION;
 import static com.github.randoapp.Constants.PREFERENCES_FILE_NAME;
 import static com.github.randoapp.preferences.Preferences.ACCOUNT_DEFAULT_VALUE;
 import static com.github.randoapp.preferences.Preferences.AUTH_TOKEN_DEFAULT_VALUE;
-import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -249,11 +248,30 @@ public class PreferencesTest {
     }
 
     @Test
-    public void shouldSetCameraFlashModeWhenFlashModeNull() {
-
+    public void shouldNotSetCameraFlashModeWhenFlashModeNull() {
+        Preferences.setCameraFlashMode(context, Facing.BACK, Flash.AUTO);
         Preferences.setCameraFlashMode(context, Facing.BACK, null);
 
-        Assertions.assertThat(Preferences.getCameraFlashMode(context, Facing.BACK)).isEqualTo(Flash.OFF);
+        Assertions.assertThat(Preferences.getCameraFlashMode(context, Facing.BACK)).isEqualTo(Flash.AUTO);
+    }
+
+    @Test
+    public void shouldNotSetCameraFlashModeWhenFacingNull() {
+        Preferences.setCameraFlashMode(context, Facing.BACK, Flash.AUTO);
+        Preferences.setCameraFlashMode(context, null, Flash.ON);
+
+        Assertions.assertThat(Preferences.getCameraFlashMode(context, Facing.BACK)).isEqualTo(Flash.AUTO);
+    }
+
+    @Test
+    public void shouldNotSetCameraFlashModeWhenBothFacingAndFlashModeNull() {
+        Preferences.setCameraFlashMode(context, Facing.BACK, Flash.AUTO);
+        Preferences.setCameraFlashMode(context, Facing.FRONT, Flash.ON);
+
+        Preferences.setCameraFlashMode(context, null, null);
+
+        Assertions.assertThat(Preferences.getCameraFlashMode(context, Facing.BACK)).isEqualTo(Flash.AUTO);
+        Assertions.assertThat(Preferences.getCameraFlashMode(context, Facing.FRONT)).isEqualTo(Flash.ON);
     }
 
     @Test
