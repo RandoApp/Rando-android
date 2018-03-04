@@ -43,20 +43,19 @@ public class RateButtonOnClickListener implements View.OnClickListener {
         holder.randoItemLayout.addView(holder.ratingMenu, layoutParams);
 
         holder.ratingMenu.setMainMenu(res.getColor(R.color.menu_button_color), R.drawable.ic_close_white_24dp, R.drawable.ic_close_white_24dp)
-                .addSubMenu(res.getColor(R.color.thumbs_up_down_button_background), R.drawable.ic_thumbs_up_down_white_24dp)
-                .addSubMenu(res.getColor(R.color.thumbs_up_button_background), R.drawable.ic_thumb_up_white_24dp)
                 .addSubMenu(res.getColor(R.color.thumbs_down_button_background), R.drawable.ic_thumb_down_white_24dp)
+                .addSubMenu(res.getColor(R.color.thumbs_up_button_background), R.drawable.ic_thumb_up_white_24dp)
                 .setOnMenuSelectedListener(new OnMenuSelectedListener() {
                     @Override
                     public void onMenuSelected(int index) {
                         boolean isRatingChanged = false;
                         switch (index) {
                             case 0:
-                                Analytics.logRateRandoNormal(firebaseAnalytics);
-                                isRatingChanged = 2 != holder.rando.rating;
+                                Analytics.logRateRandoBad(firebaseAnalytics);
+                                isRatingChanged = 1 != holder.rando.rating;
                                 if (isRatingChanged) {
-                                    holder.rando.rating = 2;
-                                    rateRando(holder, 2);
+                                    holder.rando.rating = 1;
+                                    rateRando(holder, 1);
                                 }
                                 break;
                             case 1:
@@ -65,14 +64,6 @@ public class RateButtonOnClickListener implements View.OnClickListener {
                                 if (isRatingChanged) {
                                     holder.rando.rating = 3;
                                     rateRando(holder, 3);
-                                }
-                                break;
-                            case 2:
-                                Analytics.logRateRandoBad(firebaseAnalytics);
-                                isRatingChanged = 1 != holder.rando.rating;
-                                if (isRatingChanged) {
-                                    holder.rando.rating = 1;
-                                    rateRando(holder, 1);
                                 }
                                 break;
                             default:
