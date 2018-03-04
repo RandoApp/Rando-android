@@ -59,7 +59,7 @@ import java.util.concurrent.TimeUnit;
 import static android.widget.Toast.makeText;
 import static com.android.volley.Request.Priority;
 
-public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter.RandoViewHolder> {
+public class RandoListAdapter extends CursorRecyclerViewAdapter<RecyclerView.ViewHolder> {
 
     private boolean isStranger;
     private FirebaseAnalytics firebaseAnalytics;
@@ -73,6 +73,9 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
 
     private final Date nyDate = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), Calendar.JANUARY, 1).getTime();
 
+    private static final int TYPE_HEADER = 0;
+    private static final int TYPE_ITEM = 1;
+
     public boolean isStranger() {
         return isStranger;
     }
@@ -85,48 +88,70 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
     }
 
     @Override
-    public RandoViewHolder onCreateViewHolder(ViewGroup container, int position) {
-        if (imageSize == 0) {
-            imageSize = getRandoImageSize(container);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup container, int position) {
+        if(position == TYPE_HEADER) {
+            View v = LayoutInflater.from(container.getContext()).inflate(R.layout.header_item, container, false);
+            return  new HeaderViewHolder(v);
         }
 
-        View convertView = LayoutInflater.from(container.getContext()).inflate(R.layout.rando_item, container, false);
+        else if(position == TYPE_ITEM) {
 
-        RandoViewHolder holder = new RandoViewHolder(convertView, imageSize);
-        addListenersToHolder(holder);
+            if (imageSize == 0) {
+                imageSize = getRandoImageSize(container);
+            }
 
-        return holder;
+                View convertView = LayoutInflater.from(container.getContext()).inflate(R.layout.rando_item, container, false);
+
+                RandoViewHolder holder = new RandoViewHolder(convertView, imageSize);
+                addListenersToHolder(holder);
+
+                return holder;
+            }
+
+        throw new RuntimeException("there is no type that matches the type " + container + " + make sure your using types correctly");
     }
 
 
     @Override
-    public void onBindViewHolder(RandoViewHolder holder, Cursor cursor) {
-        recycle(holder);
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, Cursor cursor) {
+        if (viewHolder instanceof  RandoViewHolder) {
+            RandoViewHolder randoHolder = (RandoViewHolder) viewHolder;
+            recycle(randoHolder);
 
-        holder.rando = RandoDAO.cursorToRando(cursor);
-        holder.position = cursor.getPosition();
+            randoHolder.rando = RandoDAO.cursorToRando(cursor);
+            randoHolder.position = cursor.getPosition();
 
-        String timestamp = holder.rando.date.after(nyDate) ?
-                formatTimeStamp(holder.rando.date) : DATE_YEAR_FORMAT.format(holder.rando.date);
-        holder.timestamp.setText(timestamp.toUpperCase());
+        String timestamp = randoHolder.rando.date.after(nyDate) ?
+                formatTimeStamp(randoHolder.rando.date) : DATE_YEAR_FORMAT.format(randoHolder.rando.date);
+        randoHolder.timestamp.setText(timestamp.toUpperCase());
 
-        setRatingIcon(holder, false);
-        loadImages(holder.randoItemLayout.getContext(), holder, holder.rando);
+            setRatingIcon(randoHolder, false);
+            loadImages(randoHolder.randoItemLayout.getContext(), randoHolder, randoHolder.rando);
 
-        if (holder.rando.isUnwanted()) {
-            holder.unwantedRandoView = new UnwantedRandoView(holder.randoItemLayout.getContext());
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
-            //insert Unwanted view at index 1, right after "view_switcher"
-            holder.randoItemLayout.addView(holder.unwantedRandoView, layoutParams);
-        } else {
-            if (holder.rando.isToUpload()) {
-                holder.uploadingProgress = new RoundProgress(holder.randoItemLayout.getContext(), (float) (imageSize / 2.0) - 8);
+            if (randoHolder.rando.isUnwanted()) {
+                randoHolder.unwantedRandoView = new UnwantedRandoView(randoHolder.randoItemLayout.getContext());
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
-                holder.randoItemLayout.addView(holder.uploadingProgress, layoutParams);
+                //insert Unwanted view at index 1, right after "view_switcher"
+                randoHolder.randoItemLayout.addView(randoHolder.unwantedRandoView, layoutParams);
             } else {
-                setAnimations(holder);
+                if (randoHolder.rando.isToUpload()) {
+                    randoHolder.uploadingProgress = new RoundProgress(randoHolder.randoItemLayout.getContext(), (float) (imageSize / 2.0) - 8);
+                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
+                    randoHolder.randoItemLayout.addView(randoHolder.uploadingProgress, layoutParams);
+                } else {
+                    setAnimations(randoHolder);
+                }
             }
         }
+
+        else if(viewHolder instanceof HeaderViewHolder)
+        {
+            ListItem currentItem = getItem(position-1);
+            VHItem VHitem = (VHItem)holder;
+            VHitem.txtName.setText(currentItem.getName());
+            VHitem.iv.setBackgroundResource(currentItem.getId());
+        }
+
     }
 
     public int findElementById(String randoId) {
@@ -525,6 +550,17 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
         }
     }
 
+
+
+    public static class HeaderViewHolder extends RecyclerView.ViewHolder{
+        TextView txtTitle;
+
+        public HeaderViewHolder(View itemView) {
+            super(itemView);
+            this.txtTitle = itemView.findViewById(R.id.txtHeader);
+        }
+    }
+
     public static class RandoViewHolder extends RecyclerView.ViewHolder {
         public Rando rando;
 
@@ -557,6 +593,7 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
 
         public boolean needSetImageError = false;
         public boolean needSetMapError = false;
+
 
         public RandoViewHolder(View itemView, int imageSize) {
             super(itemView);
