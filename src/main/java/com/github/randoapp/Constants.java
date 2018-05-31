@@ -46,6 +46,7 @@ public class Constants {
     public static final String SERVER_HOST = BuildConfig.RANDO_HOST;
     public static final String SERVER_API_URL = "https://" + SERVER_API_HOST;
     public static final String SERVER_URL = "https://" + SERVER_HOST;
+    public static final String PRIVACY_POLICY_URL = "https://github.com/RandoApp/Rando/wiki/Privacy-Policy";
     public static final int UPLOAD_CONNECTION_TIMEOUT = (int) TimeUnit.MINUTES.toMillis(10);
     public static final int API_CONNECTION_TIMEOUT = (int) TimeUnit.MINUTES.toMillis(2);
 
