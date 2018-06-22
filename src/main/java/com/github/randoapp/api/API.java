@@ -25,6 +25,7 @@ import com.github.randoapp.api.request.VolleyMultipartRequest;
 import com.github.randoapp.db.RandoDAO;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.db.model.RandoUpload;
+import com.github.randoapp.db.model.Statistics;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
 import com.github.randoapp.notification.Notification;
@@ -69,6 +70,7 @@ import static com.github.randoapp.Constants.REPORT_URL;
 import static com.github.randoapp.Constants.SIGNUP_EMAIL_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_PASSWORD_PARAM;
 import static com.github.randoapp.Constants.SIGNUP_URL;
+import static com.github.randoapp.Constants.STATISTICS_URL;
 import static com.github.randoapp.Constants.UPDATED;
 import static com.github.randoapp.Constants.UPLOAD_CONNECTION_TIMEOUT;
 import static com.github.randoapp.Constants.UPLOAD_RANDO_URL;
@@ -107,6 +109,29 @@ public class API {
             }
         }));
     }
+
+    public static void statistics(final Context context, final NetworkResultListener resultListener) {
+        Log.d(API.class, "API.statistics");
+
+        VolleySingleton.getInstance(context).getRequestQueue().add(new BackgroundPreprocessedRequest(Request.Method.GET, STATISTICS_URL, null, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Preferences.setUserStatistics(context, Statistics.from(response));
+                if (resultListener != null) {
+                    resultListener.onOk();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Response<JSONObject> resp = parseNetworkResponse(error.networkResponse);
+                if (resultListener != null) {
+                    resultListener.onError(processServerError(resp.result));
+                }
+            }
+        }).setHeaders(getHeaders(context)));
+    }
+
 
     public static void google(String email, String token, final Context context, final NetworkResultListener resultListener) {
         Map<String, String> params = new HashMap<>();

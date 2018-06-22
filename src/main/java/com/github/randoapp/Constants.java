@@ -60,6 +60,8 @@ public class Constants {
     public static final String CAMERA_GRID_STRING = "camera.grid.string";
     public static final String ENABLE_VIBRATE = "enable.vibrate";
     public static final String CAMERA_FLASH_MODE = "camera.flash.mode";
+    public static final String USER_STATISTICS_LIKES = "likes";
+    public static final String USER_STATISTICS_DISLIKES = "dislikes";
     public static final String ACCOUNT = "account";
     public static final String TRAINING_FRAGMENT_SHOWN = "training.fragment.shown";
     public static final String BAN_RESET_AT = "main.ban.reset.at";
@@ -82,6 +84,7 @@ public class Constants {
     public static final String DETECTED_PARAM = "detected";
     public static final String RATING_PARAM = "rating";
     public static final String RANDO_PARAM = "rando";
+    public static final String STATISTICS_PARAM = "statistics";
     public static final String NOTIFICATION_TYPE_PARAM = "notificationType";
     public static final String IN_RANDOS_PARAM = "in";
     public static final String OUT_RANDOS_PARAM = "out";
@@ -103,6 +106,7 @@ public class Constants {
 
     public static final String IMAGE_MIME_TYPE = "image/jpeg";
     public static final String SIGNUP_URL = SERVER_API_URL + "/user";
+    public static final String STATISTICS_URL = SERVER_API_URL + "/user/statistics";
     public static final String GOOGLE_URL = SERVER_API_URL + "/google";
     public static final String ANONYMOUS_URL = SERVER_API_URL + "/anonymous";
     public static final String LOGOUT_URL = SERVER_API_URL + "/logout";

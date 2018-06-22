@@ -46,7 +46,8 @@ public class BackgroundPreprocessedRequest extends JsonObjectRequest {
         }
     }
 
-    public void setHeaders(Map<String, String> mHeaders) {
+    public BackgroundPreprocessedRequest setHeaders(Map<String, String> mHeaders) {
         this.mHeaders = mHeaders;
+        return this;
     }
 }
