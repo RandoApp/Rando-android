@@ -93,39 +93,35 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RecyclerView.Vie
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup container, int position) {
         if (hasHeader() && position == TYPE_HEADER) {
             View v = LayoutInflater.from(container.getContext()).inflate(R.layout.header_item, container, false);
-            return  new HeaderViewHolder(v);
-        }
-        else if (position == TYPE_ITEM) {
+            return new HeaderViewHolder(v);
+        } else {
             if (imageSize == 0) {
                 imageSize = getRandoImageSize(container);
             }
-                View convertView = LayoutInflater.from(container.getContext()).inflate(R.layout.rando_item, container, false);
-                RandoViewHolder holder = new RandoViewHolder(convertView, imageSize);
-                addListenersToHolder(holder);
-                return holder;
-            }
-
-        throw new RuntimeException("there is no type that matches the type " + container + " + make sure your using types correctly");
+            View convertView = LayoutInflater.from(container.getContext()).inflate(R.layout.rando_item, container, false);
+            RandoViewHolder holder = new RandoViewHolder(convertView, imageSize);
+            addListenersToHolder(holder);
+            return holder;
+        }
     }
 
     @Override
     public int getItemCount() {
         if (hasHeader()) {
             return super.getItemCount() + 1;
-        }
-        else return super.getItemCount();
+        } else return super.getItemCount();
     }
 
     @Override
     public int getItemViewType(int position) {
-        if(position == 0 && hasHeader())
+        if (position == 0 && hasHeader())
             return TYPE_HEADER;
         return TYPE_ITEM;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, Cursor cursor) {
-        if (viewHolder instanceof  RandoViewHolder) {
+        if (viewHolder instanceof RandoViewHolder) {
             RandoViewHolder randoHolder = (RandoViewHolder) viewHolder;
             recycle(randoHolder);
 
@@ -153,10 +149,7 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RecyclerView.Vie
                     setAnimations(randoHolder);
                 }
             }
-        }
-
-        else if (viewHolder instanceof HeaderViewHolder)
-        {
+        } else if (viewHolder instanceof HeaderViewHolder) {
             HeaderViewHolder headerHolder = (HeaderViewHolder) viewHolder;
             headerHolder.likes.setText(String.valueOf(
                     Preferences.getUserStatistics(mContext).getLikes()));
@@ -182,17 +175,14 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RecyclerView.Vie
 
         if (diff < ONE_HOUR) {
             long time = TimeUnit.MINUTES.convert(diff, TimeUnit.MILLISECONDS);
-            return String.format("%s %s", time, time <= 1 ?  "minute ago":  "minutes ago");
-        }
-        else if (diff < ONE_DAY) {
+            return String.format("%s %s", time, time <= 1 ? "minute ago" : "minutes ago");
+        } else if (diff < ONE_DAY) {
             long time = TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS);
-            return String.format("%s %s", time, time <= 1 ?  "hour ago":  "hours ago");
-        }
-        else if (diff < ONE_WEEK) {
+            return String.format("%s %s", time, time <= 1 ? "hour ago" : "hours ago");
+        } else if (diff < ONE_WEEK) {
             long time = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-            return String.format("%s %s", time, time <= 1 ?  "day ago":  "days ago");
-        }
-        else return DATE_FORMAT.format(date);
+            return String.format("%s %s", time, time <= 1 ? "day ago" : "days ago");
+        } else return DATE_FORMAT.format(date);
     }
 
     private void addListenersToHolder(final RandoViewHolder holder) {
@@ -555,17 +545,15 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RecyclerView.Vie
     }
 
 
-
     public static class HeaderViewHolder extends RecyclerView.ViewHolder {
-        TextView likes;
-        TextView dislikes;
-        TextView logo;
+        private TextView likes;
+        private TextView dislikes;
+        private TextView logo;
 
         public HeaderViewHolder(View itemView) {
             super(itemView);
             this.likes = itemView.findViewById(R.id.my_likes);
             this.dislikes = itemView.findViewById(R.id.my_dislikes);
-
             this.logo = itemView.findViewById(R.id.my_logo);
         }
     }
