@@ -554,7 +554,7 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RecyclerView.Vie
             super(itemView);
             this.likes = itemView.findViewById(R.id.my_likes);
             this.dislikes = itemView.findViewById(R.id.my_dislikes);
-            this.logo = itemView.findViewById(R.id.my_logo);
+            this.logo = itemView.findViewById(R.id.rando_logo);
         }
     }
 
