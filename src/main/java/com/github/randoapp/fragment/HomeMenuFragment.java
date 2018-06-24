@@ -67,6 +67,15 @@ public class HomeMenuFragment extends Fragment {
             }
         });
 
+        rootView.findViewById(R.id.policyButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(Constants.PRIVACY_POLICY_URL));
+                startActivity(i);
+            }
+        });
+
         rootView.findViewById(R.id.contactUsButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

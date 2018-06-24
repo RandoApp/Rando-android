@@ -24,6 +24,7 @@
 
     <string name="logout">Log out</string>
     <string name="about">About</string>
+    <string name="privacy_policy">Privacy Policy</string>
     <string name="enable_vibration">Vibrate on take rando</string>
     <string name="contact_us">Contact Us</string>
     <string name="report">Yes, report</string>
