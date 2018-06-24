@@ -38,6 +38,7 @@ import org.json.JSONObject;
 
 import static com.github.randoapp.Constants.PUSH_NOTIFICATION_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.RANDO_ID_PARAM;
+import static com.github.randoapp.Constants.STATISTICS_PARAM;
 import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_BROADCAST_EVENT;
 
@@ -66,6 +67,9 @@ public class HomeListFragment extends Fragment {
                 if (randoId != null && !randoPairsAdapter.isStranger()) {
                     randoPairsAdapter.changeCursor(RandoDAO.getCursor(context, isStranger));
                     randoPairsAdapter.notifyDataSetChanged();
+                    if (intent.getBooleanExtra(STATISTICS_PARAM, false)) {
+                        API.statistics(getContext(), null);
+                    }
                 } else {
                     randoPairsAdapter.changeCursor(RandoDAO.getCursor(context, isStranger));
                     randoPairsAdapter.notifyDataSetChanged();
@@ -95,7 +99,7 @@ public class HomeListFragment extends Fragment {
             icHome.setVisibility(View.VISIBLE);
         }
 
-        RecyclerView listView = (RecyclerView) rootView.findViewById(R.id.listView);
+        RecyclerView listView = rootView.findViewById(R.id.listView);
         listView.setHasFixedSize(true);
 
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
@@ -107,12 +111,14 @@ public class HomeListFragment extends Fragment {
 
         listView.setAdapter(randoPairsAdapter);
 
+        API.statistics(getContext(), null);
+
         //ToDo: fix position of rando
         if (scrollToRando != null) {
             listView.getLayoutManager().scrollToPosition(randoPairsAdapter.findElementById(scrollToRando.randoId));
         }
 
-        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout = rootView.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -129,6 +135,7 @@ public class HomeListFragment extends Fragment {
                             swipeRefreshLayout.setRefreshing(false);
                         }
                     });
+
                     if (RandoDAO.getNextRandoToUpload(getContext()) != null) {
                         UploadJobScheduler.scheduleUpload(getContext());
                     }
@@ -163,7 +170,7 @@ public class HomeListFragment extends Fragment {
     private void showForceSyncButtonIfNecessary(final View rootView) {
         GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
         int status = googleApiAvailability.isGooglePlayServicesAvailable(getContext());
-        Button forceSyncButton = (Button) rootView.findViewById(R.id.forceSyncButton);
+        Button forceSyncButton = rootView.findViewById(R.id.forceSyncButton);
         if (status != ConnectionResult.SUCCESS
                 && (status == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED && GooglePlayServicesUtil.isGPSVersionLowerThanRequired(getActivity().getPackageManager()))) {
             forceSyncButton.setVisibility(View.VISIBLE);

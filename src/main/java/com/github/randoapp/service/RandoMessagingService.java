@@ -15,6 +15,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.Map;
 
 import static com.github.randoapp.Constants.RANDO_ID_PARAM;
+import static com.github.randoapp.Constants.STATISTICS_PARAM;
 
 public class RandoMessagingService extends FirebaseMessagingService {
 
@@ -62,6 +63,7 @@ public class RandoMessagingService extends FirebaseMessagingService {
                                 break;
                         }
                         shouldSendNotification = RandoUtil.isRatedFirstTime(rando.randoId, getBaseContext());
+                        intent.putExtra(STATISTICS_PARAM, shouldSendNotification);
                     }
 
                 }
