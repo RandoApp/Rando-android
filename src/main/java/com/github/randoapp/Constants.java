@@ -20,6 +20,7 @@ public class Constants {
 
     public static final String CAMERA_BROADCAST_EVENT = "RANDO_CAMERA_EVENT";
     public static final String SYNC_BROADCAST_EVENT = "Rando4MeSyncEvent";
+    public static final String SYNC_STATISTICS_EVENT = "Rando4MeSyncStatEvent";
     public static final String UPLOAD_SERVICE_BROADCAST_EVENT = "Rando4MeUploadDoneEvent";
     public static final String AUTH_FAILURE_BROADCAST_EVENT = "Rando4MeAuthFailureEvent";
     public static final String LOGOUT_BROADCAST_EVENT = "Rando4MeLogoutEvent";

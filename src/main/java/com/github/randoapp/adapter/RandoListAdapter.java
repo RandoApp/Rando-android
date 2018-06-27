@@ -155,9 +155,7 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RecyclerView.Vie
                     Preferences.getUserStatistics(mContext).getLikes()));
             headerHolder.dislikes.setText(String.valueOf(
                     Preferences.getUserStatistics(mContext).getDislikes()));
-
         }
-
     }
 
     public int findElementById(String randoId) {

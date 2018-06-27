@@ -40,6 +40,7 @@ import static com.github.randoapp.Constants.PUSH_NOTIFICATION_BROADCAST_EVENT;
 import static com.github.randoapp.Constants.RANDO_ID_PARAM;
 import static com.github.randoapp.Constants.STATISTICS_PARAM;
 import static com.github.randoapp.Constants.SYNC_BROADCAST_EVENT;
+import static com.github.randoapp.Constants.SYNC_STATISTICS_EVENT;
 import static com.github.randoapp.Constants.UPLOAD_SERVICE_BROADCAST_EVENT;
 
 public class HomeListFragment extends Fragment {
@@ -62,6 +63,8 @@ public class HomeListFragment extends Fragment {
             } else if (UPLOAD_SERVICE_BROADCAST_EVENT.equals(intent.getAction())) {
                 randoPairsAdapter.changeCursor(RandoDAO.getCursor(context, isStranger));
                 randoPairsAdapter.notifyDataSetChanged();
+            } else if (SYNC_STATISTICS_EVENT.equals(intent.getAction())) {
+                randoPairsAdapter.notifyItemChanged(0);
             } else if (PUSH_NOTIFICATION_BROADCAST_EVENT.equals(intent.getAction())) {
                 String randoId = intent.getStringExtra(RANDO_ID_PARAM);
                 if (randoId != null && !randoPairsAdapter.isStranger()) {
@@ -110,7 +113,6 @@ public class HomeListFragment extends Fragment {
         randoPairsAdapter.setHasStableIds(true);
 
         listView.setAdapter(randoPairsAdapter);
-
         API.statistics(getContext(), null);
 
         //ToDo: fix position of rando
@@ -163,6 +165,7 @@ public class HomeListFragment extends Fragment {
         getActivity().registerReceiver(receiver, new IntentFilter(SYNC_BROADCAST_EVENT));
         if (!isStranger) {
             getActivity().registerReceiver(receiver, new IntentFilter(UPLOAD_SERVICE_BROADCAST_EVENT));
+            getActivity().registerReceiver(receiver, new IntentFilter(SYNC_STATISTICS_EVENT));
         }
         getActivity().registerReceiver(receiver, new IntentFilter(PUSH_NOTIFICATION_BROADCAST_EVENT));
     }

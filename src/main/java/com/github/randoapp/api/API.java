@@ -1,6 +1,9 @@
 package com.github.randoapp.api;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
@@ -117,6 +120,10 @@ public class API {
             @Override
             public void onResponse(JSONObject response) {
                 Preferences.setUserStatistics(context, Statistics.from(response));
+                Intent intent = new Intent(Constants.SYNC_STATISTICS_EVENT);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pendingIntent);
                 if (resultListener != null) {
                     resultListener.onOk();
                 }

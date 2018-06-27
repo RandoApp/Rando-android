@@ -138,6 +138,7 @@ public class MainActivity extends FragmentActivity {
                             new AlertDialog.Builder(this).setTitle(R.string.storage_needed_title).setMessage(R.string.storage_needed_message).setPositiveButton(R.string.permission_positive_button, null).create().show();
                         }
                     } else {
+                        API.statistics(getBaseContext(), null);
                         API.syncUserAsync(getBaseContext(), null, null);
                     }
                     break;
