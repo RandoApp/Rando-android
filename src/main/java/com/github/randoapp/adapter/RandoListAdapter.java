@@ -37,6 +37,7 @@ import com.github.randoapp.db.RandoDBHelper;
 import com.github.randoapp.db.model.Rando;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.network.VolleySingleton;
+import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.BitmapUtil;
 import com.github.randoapp.view.FlipImageView;
@@ -59,7 +60,7 @@ import java.util.concurrent.TimeUnit;
 import static android.widget.Toast.makeText;
 import static com.android.volley.Request.Priority;
 
-public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter.RandoViewHolder> {
+public class RandoListAdapter extends CursorRecyclerViewAdapter<RecyclerView.ViewHolder> {
 
     private boolean isStranger;
     private FirebaseAnalytics firebaseAnalytics;
@@ -73,6 +74,9 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
 
     private final Date nyDate = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), Calendar.JANUARY, 1).getTime();
 
+    private static final int TYPE_HEADER = 0;
+    private static final int TYPE_ITEM = 1;
+
     public boolean isStranger() {
         return isStranger;
     }
@@ -81,51 +85,76 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
         super(RandoDAO.getCursor(context, isStranger));
         mContext = context;
         this.isStranger = isStranger;
+        setHasHeader(!isStranger);
         this.firebaseAnalytics = firebaseAnalytics;
     }
 
     @Override
-    public RandoViewHolder onCreateViewHolder(ViewGroup container, int position) {
-        if (imageSize == 0) {
-            imageSize = getRandoImageSize(container);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup container, int position) {
+        if (hasHeader() && position == TYPE_HEADER) {
+            View v = LayoutInflater.from(container.getContext()).inflate(R.layout.header_item, container, false);
+            return new HeaderViewHolder(v);
+        } else {
+            if (imageSize == 0) {
+                imageSize = getRandoImageSize(container);
+            }
+            View convertView = LayoutInflater.from(container.getContext()).inflate(R.layout.rando_item, container, false);
+            RandoViewHolder holder = new RandoViewHolder(convertView, imageSize);
+            addListenersToHolder(holder);
+            return holder;
         }
-
-        View convertView = LayoutInflater.from(container.getContext()).inflate(R.layout.rando_item, container, false);
-
-        RandoViewHolder holder = new RandoViewHolder(convertView, imageSize);
-        addListenersToHolder(holder);
-
-        return holder;
     }
 
+    @Override
+    public int getItemCount() {
+        if (hasHeader()) {
+            return super.getItemCount() + 1;
+        } else return super.getItemCount();
+    }
 
     @Override
-    public void onBindViewHolder(RandoViewHolder holder, Cursor cursor) {
-        recycle(holder);
+    public int getItemViewType(int position) {
+        if (position == 0 && hasHeader())
+            return TYPE_HEADER;
+        return TYPE_ITEM;
+    }
 
-        holder.rando = RandoDAO.cursorToRando(cursor);
-        holder.position = cursor.getPosition();
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, Cursor cursor) {
+        if (viewHolder instanceof RandoViewHolder) {
+            RandoViewHolder randoHolder = (RandoViewHolder) viewHolder;
+            recycle(randoHolder);
 
-        String timestamp = holder.rando.date.after(nyDate) ?
-                formatTimeStamp(holder.rando.date) : DATE_YEAR_FORMAT.format(holder.rando.date);
-        holder.timestamp.setText(timestamp.toUpperCase());
+            randoHolder.rando = RandoDAO.cursorToRando(cursor);
+            randoHolder.position = cursor.getPosition();
 
-        setRatingIcon(holder, false);
-        loadImages(holder.randoItemLayout.getContext(), holder, holder.rando);
+            String timestamp = randoHolder.rando.date.after(nyDate) ?
+                    formatTimeStamp(randoHolder.rando.date) : DATE_YEAR_FORMAT.format(randoHolder.rando.date);
+            randoHolder.timestamp.setText(timestamp.toUpperCase());
 
-        if (holder.rando.isUnwanted()) {
-            holder.unwantedRandoView = new UnwantedRandoView(holder.randoItemLayout.getContext());
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
-            //insert Unwanted view at index 1, right after "view_switcher"
-            holder.randoItemLayout.addView(holder.unwantedRandoView, layoutParams);
-        } else {
-            if (holder.rando.isToUpload()) {
-                holder.uploadingProgress = new RoundProgress(holder.randoItemLayout.getContext(), (float) (imageSize / 2.0) - 8);
+            setRatingIcon(randoHolder, false);
+            loadImages(randoHolder.randoItemLayout.getContext(), randoHolder, randoHolder.rando);
+
+            if (randoHolder.rando.isUnwanted()) {
+                randoHolder.unwantedRandoView = new UnwantedRandoView(randoHolder.randoItemLayout.getContext());
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
-                holder.randoItemLayout.addView(holder.uploadingProgress, layoutParams);
+                //insert Unwanted view at index 1, right after "view_switcher"
+                randoHolder.randoItemLayout.addView(randoHolder.unwantedRandoView, layoutParams);
             } else {
-                setAnimations(holder);
+                if (randoHolder.rando.isToUpload()) {
+                    randoHolder.uploadingProgress = new RoundProgress(randoHolder.randoItemLayout.getContext(), (float) (imageSize / 2.0) - 8);
+                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageSize, imageSize);
+                    randoHolder.randoItemLayout.addView(randoHolder.uploadingProgress, layoutParams);
+                } else {
+                    setAnimations(randoHolder);
+                }
             }
+        } else if (viewHolder instanceof HeaderViewHolder) {
+            HeaderViewHolder headerHolder = (HeaderViewHolder) viewHolder;
+            headerHolder.likes.setText(String.valueOf(
+                    Preferences.getUserStatistics(mContext).getLikes()));
+            headerHolder.dislikes.setText(String.valueOf(
+                    Preferences.getUserStatistics(mContext).getDislikes()));
         }
     }
 
@@ -144,17 +173,14 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
 
         if (diff < ONE_HOUR) {
             long time = TimeUnit.MINUTES.convert(diff, TimeUnit.MILLISECONDS);
-            return String.format("%s %s", time, time <= 1 ?  "minute ago":  "minutes ago");
-        }
-        else if (diff < ONE_DAY) {
+            return String.format("%s %s", time, time <= 1 ? "minute ago" : "minutes ago");
+        } else if (diff < ONE_DAY) {
             long time = TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS);
-            return String.format("%s %s", time, time <= 1 ?  "hour ago":  "hours ago");
-        }
-        else if (diff < ONE_WEEK) {
+            return String.format("%s %s", time, time <= 1 ? "hour ago" : "hours ago");
+        } else if (diff < ONE_WEEK) {
             long time = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-            return String.format("%s %s", time, time <= 1 ?  "day ago":  "days ago");
-        }
-        else return DATE_FORMAT.format(date);
+            return String.format("%s %s", time, time <= 1 ? "day ago" : "days ago");
+        } else return DATE_FORMAT.format(date);
     }
 
     private void addListenersToHolder(final RandoViewHolder holder) {
@@ -516,6 +542,20 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
         }
     }
 
+
+    public static class HeaderViewHolder extends RecyclerView.ViewHolder {
+        private TextView likes;
+        private TextView dislikes;
+        private TextView logo;
+
+        public HeaderViewHolder(View itemView) {
+            super(itemView);
+            this.likes = itemView.findViewById(R.id.my_likes);
+            this.dislikes = itemView.findViewById(R.id.my_dislikes);
+            this.logo = itemView.findViewById(R.id.rando_logo);
+        }
+    }
+
     public static class RandoViewHolder extends RecyclerView.ViewHolder {
         public Rando rando;
 
@@ -548,6 +588,7 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RandoListAdapter
 
         public boolean needSetImageError = false;
         public boolean needSetMapError = false;
+
 
         public RandoViewHolder(View itemView, int imageSize) {
             super(itemView);

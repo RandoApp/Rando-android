@@ -16,6 +16,7 @@ import com.github.randoapp.api.API;
 import com.github.randoapp.api.beans.Error;
 import com.github.randoapp.api.listeners.NetworkResultListener;
 import com.github.randoapp.db.RandoDAO;
+import com.github.randoapp.db.model.Statistics;
 import com.github.randoapp.log.Log;
 import com.github.randoapp.preferences.Preferences;
 import com.github.randoapp.service.ContactUsService;
@@ -196,6 +197,7 @@ public class AuthActivity extends AppCompatActivity {
             Preferences.removeLocation(getBaseContext());
             RandoDAO.clearRandos(getBaseContext());
             RandoDAO.clearRandoToUpload(getBaseContext());
+            Preferences.setUserStatistics(getBaseContext(), Statistics.of(0,0));
         } catch (Exception e) {
             Log.w(AuthActivity.class, "Logout failed: ", e.getMessage());
         } finally {

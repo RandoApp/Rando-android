@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 
+import com.github.randoapp.db.model.Statistics;
 import com.otaliastudios.cameraview.Facing;
 import com.otaliastudios.cameraview.Flash;
 import com.otaliastudios.cameraview.Grid;
@@ -20,11 +21,14 @@ import static com.github.randoapp.Constants.LOCATION;
 import static com.github.randoapp.Constants.LONGITUDE_PARAM;
 import static com.github.randoapp.Constants.PREFERENCES_FILE_NAME;
 import static com.github.randoapp.Constants.TRAINING_FRAGMENT_SHOWN;
+import static com.github.randoapp.Constants.USER_STATISTICS_DISLIKES;
+import static com.github.randoapp.Constants.USER_STATISTICS_LIKES;
 
 public class Preferences {
     public static final String AUTH_TOKEN_DEFAULT_VALUE = "";
     public static final String FIREBASE_INSTANCE_ID_DEFAULT_VALUE = "";
     public static final String ACCOUNT_DEFAULT_VALUE = "";
+    public static final int STATISTICS_DEFAULT_VALUE = 0;
 
     private static Object monitor = new Object();
 
@@ -200,6 +204,23 @@ public class Preferences {
     public static void removeCameraFlashMode(Context context, Facing facing) {
         synchronized (monitor) {
             getSharedPreferences(context).edit().remove(CAMERA_FLASH_MODE + facing.name()).apply();
+        }
+    }
+
+    public static void setUserStatistics(Context context, Statistics statistics) {
+        synchronized (monitor) {
+            if (statistics != null) {
+                getSharedPreferences(context).edit().putInt(USER_STATISTICS_LIKES, statistics.getLikes()).apply();
+                getSharedPreferences(context).edit().putInt(USER_STATISTICS_DISLIKES, statistics.getDislikes()).apply();
+            }
+        }
+    }
+
+    public static Statistics getUserStatistics(Context context) {
+        synchronized (monitor) {
+            return Statistics.of(
+                    getSharedPreferences(context).getInt(USER_STATISTICS_LIKES, STATISTICS_DEFAULT_VALUE),
+                    getSharedPreferences(context).getInt(USER_STATISTICS_DISLIKES, STATISTICS_DEFAULT_VALUE));
         }
     }
 }

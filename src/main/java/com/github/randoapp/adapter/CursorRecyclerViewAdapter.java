@@ -15,6 +15,7 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
 
     private int mRowIdColumn;
     private int mRandoIdColumn;
+    private boolean hasHeader;
 
     private DataSetObserver mDataSetObserver;
 
@@ -43,7 +44,7 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
         if (mDataValid && mCursor != null && mCursor.moveToPosition(position)) {
             return Constants.TO_UPLOAD_RANDO_ID.equals(mCursor.getString(mRandoIdColumn)) ?
                     //add 1000_000 to the RandoToUpload id
-                    mCursor.getLong(mRowIdColumn)+1000_000
+                    mCursor.getLong(mRowIdColumn) + 1000_000
                     :
                     mCursor.getLong(mRowIdColumn);
         }
@@ -54,10 +55,13 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(VH viewHolder, int position) {
+        if (hasHeader) {
+            position--;
+        }
         if (!mDataValid) {
             throw new IllegalStateException("this should only be called when the cursor is valid");
         }
-        if (!mCursor.moveToPosition(position)) {
+        if (position >= 0 && !mCursor.moveToPosition(position)) {
             throw new IllegalStateException("couldn't move cursor to position " + position);
         }
         onBindViewHolder(viewHolder, mCursor);
@@ -102,6 +106,14 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
             //There is no notifyDataSetInvalidated() method in RecyclerView.Adapter
         }
         return oldCursor;
+    }
+
+    public void setHasHeader(boolean hasHeader) {
+        this.hasHeader = hasHeader;
+    }
+
+    public boolean hasHeader() {
+        return hasHeader;
     }
 
     private class NotifyingDataSetObserver extends DataSetObserver {
