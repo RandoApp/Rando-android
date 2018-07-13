@@ -141,6 +141,7 @@ public class HomeListFragment extends Fragment {
                     if (RandoDAO.getNextRandoToUpload(getContext()) != null) {
                         UploadJobScheduler.scheduleUpload(getContext());
                     }
+                    API.statistics(getContext(), null);
                 } else {
                     swipeRefreshLayout.setRefreshing(false);
                     Toast.makeText(getActivity(), R.string.error_no_network, Toast.LENGTH_LONG).show();

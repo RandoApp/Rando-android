@@ -6,6 +6,7 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.github.randoapp.db.model.Statistics;
 import com.github.randoapp.preferences.Preferences;
 import com.otaliastudios.cameraview.Facing;
 import com.otaliastudios.cameraview.Flash;
@@ -289,5 +290,26 @@ public class PreferencesTest {
 
         Assertions.assertThat(Preferences.getCameraFlashMode(context, Facing.BACK)).isEqualTo(Flash.OFF);
         Assertions.assertThat(Preferences.getCameraFlashMode(context, Facing.FRONT)).isEqualTo(Flash.AUTO);
+    }
+
+    @Test
+    public void shouldSetUserStatistics() {
+        Preferences.setUserStatistics(context, Statistics.of(10,5));
+        Assertions.assertThat(Preferences.getUserStatistics(context)).extracting("likes", "dislikes")
+                .containsExactly(10, 5);
+
+        Preferences.setUserStatistics(context, Statistics.of(0,0));
+        Assertions.assertThat(Preferences.getUserStatistics(context)).extracting("likes", "dislikes")
+                .containsExactly(0, 0);
+    }
+
+    @Test
+    public void shouldNotSetUserStatistics() {
+        Assertions.assertThat(Preferences.getUserStatistics(context)).extracting("likes", "dislikes")
+                .containsExactly(0, 0);
+
+        Preferences.setUserStatistics(context, null);
+        Assertions.assertThat(Preferences.getUserStatistics(context)).extracting("likes", "dislikes")
+                .containsExactly(0, 0);
     }
 }

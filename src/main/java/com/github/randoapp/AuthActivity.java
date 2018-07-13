@@ -23,7 +23,6 @@ import com.github.randoapp.service.ContactUsService;
 import com.github.randoapp.service.EmailAndPasswordAuthService;
 import com.github.randoapp.service.GoogleAuthService;
 import com.github.randoapp.service.SkipAuthService;
-import com.github.randoapp.util.AccountUtil;
 import com.github.randoapp.util.Analytics;
 import com.github.randoapp.util.PermissionUtils;
 import com.github.randoapp.view.Progress;
@@ -129,7 +128,6 @@ public class AuthActivity extends AppCompatActivity {
             requestAccountsOnFirstLoad = false;
         }
         Log.i(AuthActivity.class, this.toString());
-        setEmailFromFirstAccount();
     }
 
     @Override
@@ -153,14 +151,6 @@ public class AuthActivity extends AppCompatActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
-
-    private void setEmailFromFirstAccount() {
-        String[] accounts = AccountUtil.getAccountNames(getBaseContext());
-        if (accounts.length > 0) {
-            emailText.setText(accounts[0]);
-        }
-    }
-
 
     private void fullLogout() {
         try {
