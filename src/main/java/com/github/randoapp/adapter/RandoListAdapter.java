@@ -234,7 +234,7 @@ public class RandoListAdapter extends CursorRecyclerViewAdapter<RecyclerView.Vie
                                     @Override
                                     public void onOk() {
                                         RandoDAO.deleteRandoByRandoId(v.getContext(), holder.rando.randoId);
-
+                                        changeCursor(RandoDAO.getCursor(holder.image.getContext(), isStranger()));
                                         notifyItemRemoved(holder.position);
 
                                         makeText(v.getContext(), R.string.rando_deleted,
